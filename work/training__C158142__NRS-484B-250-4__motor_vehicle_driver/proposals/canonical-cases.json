@@ -1,0 +1,732 @@
+{
+  "cell_id": "C158142",
+  "law_id": "NRS-484B-250-4",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweep_specs": [
+    {
+      "sweep_id": "training__C158142__NRS-484B-250-4__motor_vehicle_driver__halt_sweep",
+      "target_law_id": "NRS-484B-250-4",
+      "judgment_refs": [
+        {
+          "phrase": "proceed cautiously",
+          "note": "Qualitative cautious entry after the required stop; no numeric legal threshold."
+        }
+      ],
+      "rationale": "Two requested stop policies at one selected near-side crosswalk; no legal threshold.",
+      "status": "complete",
+      "mode": "one_dimensional",
+      "axes": [
+        {
+          "variable": "commanded_stop_policy",
+          "observable": "complete_halt_before_applicable_boundary",
+          "unit": "boolean",
+          "min": 0.0,
+          "max": 1.0,
+          "spacing": 1.0,
+          "range_rationale": "Two exact authored controller policies: halt request and roll request.",
+          "spacing_rationale": "One code step distinguishes the two requested policies.",
+          "feasibility_evidence": "Both 600-frame constructions pass CPU offline and diagnostic compatibility; Native motion pending.",
+          "measurement": {
+            "method": "source-joined ego speed and crosswalk boundary order",
+            "time_window": "30 s",
+            "statistic": "max"
+          }
+        }
+      ],
+      "landmarks": [],
+      "variable_assignments": {
+        "signal_and_crosswalk_layout": {
+          "kind": "world_setup",
+          "value": "surveyed selected layout"
+        },
+        "commanded_stop_policy": {
+          "kind": "controller",
+          "value": 0.0
+        },
+        "complete_halt_before_applicable_boundary": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_ego_speed": {
+          "kind": "controller",
+          "value": 6.0,
+          "unit": "m/s"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "priority_vehicle_history": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "dev.traffic_signal",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "dev.inoperative",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "st.lane_enters",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "st.stop_line",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "st.crosswalk",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "st.sight_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "rel.visible",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "drv.stopped",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "drv.entering_intersection",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "drv.arrival_order",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "drv.in_intersection",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "drv.yields_to",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Synthetic CPU proof is not observed CARLA behavior, physical signal visibility or legal verdict"
+        ]
+      },
+      "spec_version": "0859e2dc7c8a484d6a6d53d1a5787d90801d05a13cf96f7391ed3ade8c4291c7",
+      "planned_case_count": 2,
+      "selection_order": [
+        "training__C158142__NRS-484B-250-4__motor_vehicle_driver__witness_1",
+        "training__C158142__NRS-484B-250-4__motor_vehicle_driver__witness_2"
+      ]
+    }
+  ],
+  "sweeps_expanded": true,
+  "cases": [
+    {
+      "case_id": "training__C158142__NRS-484B-250-4__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared authored signal and crosswalk setup; no baseline recording selected.",
+      "variable_assignments": {
+        "signal_and_crosswalk_layout": {
+          "kind": "world_setup",
+          "value": "surveyed selected layout"
+        },
+        "commanded_stop_policy": {
+          "kind": "controller",
+          "value": 0.0
+        },
+        "complete_halt_before_applicable_boundary": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_ego_speed": {
+          "kind": "controller",
+          "value": 6.0,
+          "unit": "m/s"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "priority_vehicle_history": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "proceed cautiously"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "dev.traffic_signal",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "dev.inoperative",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "st.lane_enters",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "st.stop_line",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "st.crosswalk",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "st.sight_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "rel.visible",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "drv.stopped",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "drv.entering_intersection",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "drv.arrival_order",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "drv.in_intersection",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "drv.yields_to",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Synthetic CPU proof is not observed CARLA behavior, physical signal visibility or legal verdict"
+        ]
+      },
+      "paired_probe_id": "training__C158142__NRS-484B-250-4__motor_vehicle_driver__halt_sweep",
+      "deliberate_differences": [
+        "commanded_stop_policy"
+      ],
+      "probe": {
+        "primary_variable": "commanded_stop_policy",
+        "comparison_or_standard": "physical halt coverage; legal caution unresolved",
+        "target_value_or_branch": {
+          "commanded_stop_policy": 0.0
+        }
+      },
+      "sweep_id": "training__C158142__NRS-484B-250-4__motor_vehicle_driver__halt_sweep",
+      "sweep_point": {
+        "commanded_stop_policy": 0.0
+      },
+      "sweep_spec_version": "0859e2dc7c8a484d6a6d53d1a5787d90801d05a13cf96f7391ed3ade8c4291c7"
+    },
+    {
+      "case_id": "training__C158142__NRS-484B-250-4__motor_vehicle_driver__witness_1",
+      "target_law_id": "NRS-484B-250-4",
+      "target_type": "judgment_sweep",
+      "rationale": "Selected no-stop-line near-crosswalk halt contrast; physical truth pending",
+      "variable_assignments": {
+        "signal_and_crosswalk_layout": {
+          "kind": "world_setup",
+          "value": "surveyed selected layout"
+        },
+        "commanded_stop_policy": {
+          "kind": "controller",
+          "value": 0.0
+        },
+        "complete_halt_before_applicable_boundary": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_ego_speed": {
+          "kind": "controller",
+          "value": 6.0,
+          "unit": "m/s"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "priority_vehicle_history": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "proceed cautiously"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "dev.traffic_signal",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "dev.inoperative",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "st.lane_enters",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "st.stop_line",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "st.crosswalk",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "st.sight_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "rel.visible",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "drv.stopped",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "drv.entering_intersection",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "drv.arrival_order",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "drv.in_intersection",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "drv.yields_to",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Synthetic CPU proof is not observed CARLA behavior, physical signal visibility or legal verdict"
+        ]
+      },
+      "paired_probe_id": "training__C158142__NRS-484B-250-4__motor_vehicle_driver__halt_sweep",
+      "deliberate_differences": [
+        "commanded_stop_policy"
+      ],
+      "probe": {
+        "primary_variable": "commanded_stop_policy",
+        "comparison_or_standard": "physical halt coverage; legal caution unresolved",
+        "target_value_or_branch": {
+          "commanded_stop_policy": 0.0
+        }
+      },
+      "sweep_id": "training__C158142__NRS-484B-250-4__motor_vehicle_driver__halt_sweep",
+      "sweep_point": {
+        "commanded_stop_policy": 0.0
+      },
+      "sweep_spec_version": "0859e2dc7c8a484d6a6d53d1a5787d90801d05a13cf96f7391ed3ade8c4291c7"
+    },
+    {
+      "case_id": "training__C158142__NRS-484B-250-4__motor_vehicle_driver__witness_2",
+      "target_law_id": "NRS-484B-250-4",
+      "target_type": "judgment_sweep",
+      "rationale": "Selected no-stop-line near-crosswalk halt contrast; physical truth pending",
+      "variable_assignments": {
+        "signal_and_crosswalk_layout": {
+          "kind": "world_setup",
+          "value": "surveyed selected layout"
+        },
+        "commanded_stop_policy": {
+          "kind": "controller",
+          "value": 1.0
+        },
+        "complete_halt_before_applicable_boundary": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "commanded_ego_speed": {
+          "kind": "controller",
+          "value": 6.0,
+          "unit": "m/s"
+        },
+        "ego_speed": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "priority_vehicle_history": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "unresolved_judgment_calls": [
+        "proceed cautiously"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "dev.traffic_signal",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "dev.inoperative",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "st.lane_enters",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "st.stop_line",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "st.crosswalk",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "st.sight_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "rel.visible",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "drv.stopped",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "drv.entering_intersection",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "drv.arrival_order",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "drv.in_intersection",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "drv.yields_to",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original Native actor, surveyed map, source camera and frame join",
+            "time_window": "30 s / 600 joined frames",
+            "reference_frame": "Native map and original frame",
+            "uncertainty": "50 ms sample; physical visibility pending"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Synthetic CPU proof is not observed CARLA behavior, physical signal visibility or legal verdict"
+        ]
+      },
+      "paired_probe_id": "training__C158142__NRS-484B-250-4__motor_vehicle_driver__halt_sweep",
+      "deliberate_differences": [
+        "commanded_stop_policy"
+      ],
+      "probe": {
+        "primary_variable": "commanded_stop_policy",
+        "comparison_or_standard": "physical halt coverage; legal caution unresolved",
+        "target_value_or_branch": {
+          "commanded_stop_policy": 1.0
+        }
+      },
+      "sweep_id": "training__C158142__NRS-484B-250-4__motor_vehicle_driver__halt_sweep",
+      "sweep_point": {
+        "commanded_stop_policy": 1.0
+      },
+      "sweep_spec_version": "0859e2dc7c8a484d6a6d53d1a5787d90801d05a13cf96f7391ed3ade8c4291c7"
+    }
+  ]
+}

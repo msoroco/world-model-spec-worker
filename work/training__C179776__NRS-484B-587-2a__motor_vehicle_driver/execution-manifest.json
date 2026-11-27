@@ -1,0 +1,446 @@
+{
+  "assignment_id": "training__C179776__NRS-484B-587-2a__motor_vehicle_driver",
+  "cases": [
+    {
+      "acquisition": {
+        "dev.regulatory_sign": {
+          "entrypoint": "runner.py",
+          "evidence": "designation-source.json, native-raw-actors.jsonl, video_frames.jsonl, original four-camera pixels and independent review",
+          "method": "same-tick original Native readback followed by source-joined saved-only derivation; unresolved authority and pixels remain unknown"
+        },
+        "drv.responding_emergency": {
+          "entrypoint": "runner.py",
+          "evidence": "designation-source.json, native-raw-actors.jsonl, video_frames.jsonl, original four-camera pixels and independent review",
+          "method": "same-tick original Native readback followed by source-joined saved-only derivation; unresolved authority and pixels remain unknown"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "evidence": "native-raw-actors.jsonl, trace.jsonl, video_frames.jsonl, native-road-readback.json",
+          "method": "same-tick original Native readback followed by source-joined saved-only derivation; unresolved authority and pixels remain unknown"
+        },
+        "ru.emergency_vehicle": {
+          "entrypoint": "runner.py",
+          "evidence": "designation-source.json, native-raw-actors.jsonl, video_frames.jsonl, original four-camera pixels and independent review",
+          "method": "same-tick original Native readback followed by source-joined saved-only derivation; unresolved authority and pixels remain unknown"
+        },
+        "ru.official_vehicle": {
+          "entrypoint": "runner.py",
+          "evidence": "designation-source.json, native-raw-actors.jsonl, video_frames.jsonl, original four-camera pixels and independent review",
+          "method": "same-tick original Native readback followed by source-joined saved-only derivation; unresolved authority and pixels remain unknown"
+        },
+        "ru.transit_bus": {
+          "entrypoint": "runner.py",
+          "evidence": "designation-source.json, native-raw-actors.jsonl, video_frames.jsonl, original four-camera pixels and independent review",
+          "method": "same-tick original Native readback followed by source-joined saved-only derivation; unresolved authority and pixels remain unknown"
+        },
+        "st.controlled_access": {
+          "entrypoint": "runner.py",
+          "evidence": "designation-source.json, native-raw-actors.jsonl, video_frames.jsonl, original four-camera pixels and independent review",
+          "method": "same-tick original Native readback followed by source-joined saved-only derivation; unresolved authority and pixels remain unknown"
+        },
+        "st.lane": {
+          "entrypoint": "runner.py",
+          "evidence": "road.xodr, native-road-readback.json, native-raw-actors.jsonl, four-camera pixels and independent review",
+          "method": "same-tick original Native readback followed by source-joined saved-only derivation; unresolved authority and pixels remain unknown"
+        },
+        "st.lane_marking": {
+          "entrypoint": "runner.py",
+          "evidence": "road.xodr, native-road-readback.json, native-raw-actors.jsonl, four-camera pixels and independent review",
+          "method": "same-tick original Native readback followed by source-joined saved-only derivation; unresolved authority and pixels remain unknown"
+        },
+        "st.shoulder": {
+          "entrypoint": "runner.py",
+          "evidence": "road.xodr, native-road-readback.json, native-raw-actors.jsonl, four-camera pixels and independent review",
+          "method": "same-tick original Native readback followed by source-joined saved-only derivation; unresolved authority and pixels remain unknown"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Original Native lane positioning may miss the authored lane or shoulder target; recorded full-body occupancy and route tracking select a controller gain fallback.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "throttle gain 0.19",
+            "steer gain 1.2"
+          ],
+          "compatibility": {
+            "log": "selected-compatibility-probe_a-fallback1-analysis.log",
+            "negative_log": "selected-compatibility-probe_a-fallback1-negative.log",
+            "receipt": "selected-compatibility-probe_a-fallback1.json",
+            "sha256": "3c87bec3e71f2a7ea743ffcea202ca408a1b8174eebad2a24d1f4ca3ea39beac"
+          },
+          "construction": "selected-candidates/probe_a/fallback1/construction.json",
+          "construction_sha256": "0d36251623bdc9954dd9bade4eaa54614a925403fc95161e516265bc369d1fe2",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C179776__NRS-484B-587-2a__motor_vehicle_driver/selected-probe-manifest.json --case training__C179776__NRS-484B-587-2a__motor_vehicle_driver__probe_a --candidate fallback1 --output .runtime-work/c179776-offline-v6-probe_a-fallback1",
+            "construction_sha256": "0d36251623bdc9954dd9bade4eaa54614a925403fc95161e516265bc369d1fe2",
+            "exit_code": 0,
+            "log": "selected-offline-probe_a-fallback1.log",
+            "log_sha256": "c0ba9851ed7dfcede1646306069a6be814bc7664a550d29029b4e9bddc620657"
+          },
+          "trigger": {
+            "failure_condition": "unexpected lane crossing or failure to reach case target",
+            "metric": "outside-lane frames and target tracking error",
+            "source": "original Native body/route readback"
+          }
+        },
+        {
+          "changed_knobs": [
+            "throttle gain 0.22",
+            "steer gain 1.0"
+          ],
+          "compatibility": {
+            "log": "selected-compatibility-probe_a-fallback2-analysis.log",
+            "negative_log": "selected-compatibility-probe_a-fallback2-negative.log",
+            "receipt": "selected-compatibility-probe_a-fallback2.json",
+            "sha256": "ecaff99f5facbbf34940612703e40fe1ce0e86266e2279e00f94efa96ee858c0"
+          },
+          "construction": "selected-candidates/probe_a/fallback2/construction.json",
+          "construction_sha256": "687347cb2b757e01d0b8fd1b4642bcd5731d5aeb9a7acf8b9601b1cc549b72b2",
+          "id": "fallback2",
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C179776__NRS-484B-587-2a__motor_vehicle_driver/selected-probe-manifest.json --case training__C179776__NRS-484B-587-2a__motor_vehicle_driver__probe_a --candidate fallback2 --output .runtime-work/c179776-offline-v6-probe_a-fallback2",
+            "construction_sha256": "687347cb2b757e01d0b8fd1b4642bcd5731d5aeb9a7acf8b9601b1cc549b72b2",
+            "exit_code": 0,
+            "log": "selected-offline-probe_a-fallback2.log",
+            "log_sha256": "78602e31212511d24b4256c3cec4c9631ca81a6c591e9caebca05c052d01747d"
+          },
+          "trigger": {
+            "failure_condition": "unexpected lane crossing or failure to reach case target",
+            "metric": "outside-lane frames and target tracking error",
+            "source": "original Native body/route readback"
+          }
+        },
+        {
+          "changed_knobs": [
+            "throttle gain 0.19",
+            "steer gain 1.0"
+          ],
+          "compatibility": {
+            "log": "selected-compatibility-probe_a-fallback3-analysis.log",
+            "negative_log": "selected-compatibility-probe_a-fallback3-negative.log",
+            "receipt": "selected-compatibility-probe_a-fallback3.json",
+            "sha256": "b1cdeccf82e1ce82adb3b82a4d590b24b47052c9700b7fa20bef2c4f681fde2f"
+          },
+          "construction": "selected-candidates/probe_a/fallback3/construction.json",
+          "construction_sha256": "ce81fc22256fcea91024eb7db420899633e01428815b119307538c1820011540",
+          "id": "fallback3",
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C179776__NRS-484B-587-2a__motor_vehicle_driver/selected-probe-manifest.json --case training__C179776__NRS-484B-587-2a__motor_vehicle_driver__probe_a --candidate fallback3 --output .runtime-work/c179776-offline-v6-probe_a-fallback3",
+            "construction_sha256": "ce81fc22256fcea91024eb7db420899633e01428815b119307538c1820011540",
+            "exit_code": 0,
+            "log": "selected-offline-probe_a-fallback3.log",
+            "log_sha256": "c622caba7ed893676c3a8a0a09227d0304012c3f21b97888b586a11fec63208b"
+          },
+          "trigger": {
+            "failure_condition": "unexpected lane crossing or failure to reach case target",
+            "metric": "outside-lane frames and target tracking error",
+            "source": "original Native body/route readback"
+          }
+        }
+      ],
+      "case_id": "training__C179776__NRS-484B-587-2a__motor_vehicle_driver__probe_a",
+      "compatibility": {
+        "log": "selected-compatibility-probe_a-primary-analysis.log",
+        "negative_log": "selected-compatibility-probe_a-primary-negative.log",
+        "receipt": "selected-compatibility-probe_a-primary.json",
+        "sha256": "e361f2c2c1bcb3bc89a24f9f64bdf1f68fdef40a2be6db11708e1bc87887963d"
+      },
+      "construction": "selected-candidates/probe_a/primary/construction.json",
+      "construction_sha256": "f8ef3b5711b0b68bbcc278f130e63217fe6b4c06522971042a71d5ff8037d5c3",
+      "delivery_acceptance": {
+        "case_id": "training__C179776__NRS-484B-587-2a__motor_vehicle_driver__probe_a",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python -B work/training__C179776__NRS-484B-587-2a__motor_vehicle_driver/delivery_audit.py --case training__C179776__NRS-484B-587-2a__motor_vehicle_driver__probe_a --self-test",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C179776__NRS-484B-587-2a__motor_vehicle_driver/delivery_audit.py --case training__C179776__NRS-484B-587-2a__motor_vehicle_driver__probe_a --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: exact original Native result",
+        "negative_log": "delivery-proofs/probe_a-negative.log",
+        "negative_log_sha256": "2030588c9175724f14d09168246819d74ea52a6408c8f7ebb0b696f15523f62e",
+        "scope": "CPU predicates only; original Native capture/pixel review pending",
+        "script": "delivery_audit.py",
+        "script_sha256": "7018b6dd3986418aeae4b95cc4eeb0ef56e67600cce86be4b24cb5496ffb0831",
+        "sets": [
+          "full-train"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/probe_a-positive.log",
+        "test_log_sha256": "c6c809fbf4254ee7704fba42c9fdf2523eb0664e114d4783f0935ab5ca5b9ee1"
+      },
+      "delivery_readiness": "incomplete_original_native_capture_pending",
+      "fixture_recipe": "work/training__C179776__NRS-484B-587-2a__motor_vehicle_driver/diagnostic-recipe-probe_a.json",
+      "kind": "delivery",
+      "measurement_contract": "measurement-probe_a.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize_lane.py",
+        "output_schema": "c179776-saved-lane-analysis-v1"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "selected-compatibility-probe_a-primary-negative.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C179776__NRS-484B-587-2a__motor_vehicle_driver/selected-probe-manifest.json --case training__C179776__NRS-484B-587-2a__motor_vehicle_driver__probe_a --candidate primary --output .runtime-work/c179776-offline-v6-probe_a-primary",
+        "construction_sha256": "f8ef3b5711b0b68bbcc278f130e63217fe6b4c06522971042a71d5ff8037d5c3",
+        "exit_code": 0,
+        "log": "selected-offline-probe-a-primary.log",
+        "log_sha256": "b2fe0fd25ef5bc5c10622acf27307519c8c57d9e377041106048d5ce1213d27f"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/probe_a/proof.json",
+        "sha256": "ada47bddab0298f2b089f0190cb55d297aa5bb7c29057fee021a8981ba81c0a5"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C179776__NRS-484B-587-2a__motor_vehicle_driver/execution-manifest.json --case training__C179776__NRS-484B-587-2a__motor_vehicle_driver__probe_a --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C179776__NRS-484B-587-2a__motor_vehicle_driver/execution-manifest.json --case training__C179776__NRS-484B-587-2a__motor_vehicle_driver__probe_a --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "processing_receipt": "selected-saved-probe_a-primary.json",
+        "processing_receipt_sha256": "d94b0ebd9a78db1b35f7f7e87d3b3a3b2abc1900e78d056dacb9acbb2d7ca04f",
+        "recorded_only": true,
+        "test_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C179776__NRS-484B-587-2a__motor_vehicle_driver/selected-compatibility-probe.json --case training__C179776__NRS-484B-587-2a__motor_vehicle_driver__probe_a --attempt .runtime-work/c179776-compat-v9-a-primary --output .runtime-work/c179776-saved-v3-a --library runtime/library --validator .runtime-work/c229398-pinned-decoder/.lake/build/bin/adapterCheck",
+        "test_exit_code": 0,
+        "test_log": "selected-saved-probe_a-primary.json",
+        "test_log_sha256": "d94b0ebd9a78db1b35f7f7e87d3b3a3b2abc1900e78d056dacb9acbb2d7ca04f"
+      }
+    },
+    {
+      "acquisition": {
+        "dev.regulatory_sign": {
+          "entrypoint": "runner.py",
+          "evidence": "designation-source.json, native-raw-actors.jsonl, video_frames.jsonl, original four-camera pixels and independent review",
+          "method": "same-tick original Native readback followed by source-joined saved-only derivation; unresolved authority and pixels remain unknown"
+        },
+        "drv.responding_emergency": {
+          "entrypoint": "runner.py",
+          "evidence": "designation-source.json, native-raw-actors.jsonl, video_frames.jsonl, original four-camera pixels and independent review",
+          "method": "same-tick original Native readback followed by source-joined saved-only derivation; unresolved authority and pixels remain unknown"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "evidence": "native-raw-actors.jsonl, trace.jsonl, video_frames.jsonl, native-road-readback.json",
+          "method": "same-tick original Native readback followed by source-joined saved-only derivation; unresolved authority and pixels remain unknown"
+        },
+        "ru.emergency_vehicle": {
+          "entrypoint": "runner.py",
+          "evidence": "designation-source.json, native-raw-actors.jsonl, video_frames.jsonl, original four-camera pixels and independent review",
+          "method": "same-tick original Native readback followed by source-joined saved-only derivation; unresolved authority and pixels remain unknown"
+        },
+        "ru.official_vehicle": {
+          "entrypoint": "runner.py",
+          "evidence": "designation-source.json, native-raw-actors.jsonl, video_frames.jsonl, original four-camera pixels and independent review",
+          "method": "same-tick original Native readback followed by source-joined saved-only derivation; unresolved authority and pixels remain unknown"
+        },
+        "ru.transit_bus": {
+          "entrypoint": "runner.py",
+          "evidence": "designation-source.json, native-raw-actors.jsonl, video_frames.jsonl, original four-camera pixels and independent review",
+          "method": "same-tick original Native readback followed by source-joined saved-only derivation; unresolved authority and pixels remain unknown"
+        },
+        "st.controlled_access": {
+          "entrypoint": "runner.py",
+          "evidence": "designation-source.json, native-raw-actors.jsonl, video_frames.jsonl, original four-camera pixels and independent review",
+          "method": "same-tick original Native readback followed by source-joined saved-only derivation; unresolved authority and pixels remain unknown"
+        },
+        "st.lane": {
+          "entrypoint": "runner.py",
+          "evidence": "road.xodr, native-road-readback.json, native-raw-actors.jsonl, four-camera pixels and independent review",
+          "method": "same-tick original Native readback followed by source-joined saved-only derivation; unresolved authority and pixels remain unknown"
+        },
+        "st.lane_marking": {
+          "entrypoint": "runner.py",
+          "evidence": "road.xodr, native-road-readback.json, native-raw-actors.jsonl, four-camera pixels and independent review",
+          "method": "same-tick original Native readback followed by source-joined saved-only derivation; unresolved authority and pixels remain unknown"
+        },
+        "st.shoulder": {
+          "entrypoint": "runner.py",
+          "evidence": "road.xodr, native-road-readback.json, native-raw-actors.jsonl, four-camera pixels and independent review",
+          "method": "same-tick original Native readback followed by source-joined saved-only derivation; unresolved authority and pixels remain unknown"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Original Native lane positioning may miss the authored lane or shoulder target; recorded full-body occupancy and route tracking select a controller gain fallback.",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "throttle gain 0.19",
+            "steer gain 1.2"
+          ],
+          "compatibility": {
+            "log": "selected-compatibility-probe_b-fallback1-analysis.log",
+            "negative_log": "selected-compatibility-probe_b-fallback1-negative.log",
+            "receipt": "selected-compatibility-probe_b-fallback1.json",
+            "sha256": "e03ccb0e52a4c315ac80b10371f62842270357d3853b0d6a7bead53d88d55a7b"
+          },
+          "construction": "selected-candidates/probe_b/fallback1/construction.json",
+          "construction_sha256": "781141334f7a2e0136eb627cc11e4045cf565e00bbe2dcc4d70dde0e8503ca89",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C179776__NRS-484B-587-2a__motor_vehicle_driver/selected-probe-manifest.json --case training__C179776__NRS-484B-587-2a__motor_vehicle_driver__probe_b --candidate fallback1 --output .runtime-work/c179776-offline-v6-probe_b-fallback1",
+            "construction_sha256": "781141334f7a2e0136eb627cc11e4045cf565e00bbe2dcc4d70dde0e8503ca89",
+            "exit_code": 0,
+            "log": "selected-offline-probe_b-fallback1.log",
+            "log_sha256": "bab38fb311347d6c4b29ecc57eeb28d8364b49d0723810ccaecb9d9889548a08"
+          },
+          "trigger": {
+            "failure_condition": "unexpected lane crossing or failure to reach case target",
+            "metric": "outside-lane frames and target tracking error",
+            "source": "original Native body/route readback"
+          }
+        },
+        {
+          "changed_knobs": [
+            "throttle gain 0.22",
+            "steer gain 1.0"
+          ],
+          "compatibility": {
+            "log": "selected-compatibility-probe_b-fallback2-analysis.log",
+            "negative_log": "selected-compatibility-probe_b-fallback2-negative.log",
+            "receipt": "selected-compatibility-probe_b-fallback2.json",
+            "sha256": "dc8ad9314de290faa65cae9dc94b22226af55d618dfa5b2d11297820e93a0f9e"
+          },
+          "construction": "selected-candidates/probe_b/fallback2/construction.json",
+          "construction_sha256": "d94af02f619f0663cbb9c7bfa5d398aae7cd563562c3c0061b7181437b207de3",
+          "id": "fallback2",
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C179776__NRS-484B-587-2a__motor_vehicle_driver/selected-probe-manifest.json --case training__C179776__NRS-484B-587-2a__motor_vehicle_driver__probe_b --candidate fallback2 --output .runtime-work/c179776-offline-v6-probe_b-fallback2",
+            "construction_sha256": "d94af02f619f0663cbb9c7bfa5d398aae7cd563562c3c0061b7181437b207de3",
+            "exit_code": 0,
+            "log": "selected-offline-probe_b-fallback2.log",
+            "log_sha256": "8a575d0ffd26cf1428a50606e93b0e688d54643c546fe4661de38bde5690c83a"
+          },
+          "trigger": {
+            "failure_condition": "unexpected lane crossing or failure to reach case target",
+            "metric": "outside-lane frames and target tracking error",
+            "source": "original Native body/route readback"
+          }
+        },
+        {
+          "changed_knobs": [
+            "throttle gain 0.19",
+            "steer gain 1.0"
+          ],
+          "compatibility": {
+            "log": "selected-compatibility-probe_b-fallback3-analysis.log",
+            "negative_log": "selected-compatibility-probe_b-fallback3-negative.log",
+            "receipt": "selected-compatibility-probe_b-fallback3.json",
+            "sha256": "c5ebccf2ca3057cd83542105f0fe4aad87aa87da5358c1c13788259c6ddaa678"
+          },
+          "construction": "selected-candidates/probe_b/fallback3/construction.json",
+          "construction_sha256": "e392ea218aeeca1e19dad865f854fb06e20273cba534a28c6ce11dd4292ee965",
+          "id": "fallback3",
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C179776__NRS-484B-587-2a__motor_vehicle_driver/selected-probe-manifest.json --case training__C179776__NRS-484B-587-2a__motor_vehicle_driver__probe_b --candidate fallback3 --output .runtime-work/c179776-offline-v6-probe_b-fallback3",
+            "construction_sha256": "e392ea218aeeca1e19dad865f854fb06e20273cba534a28c6ce11dd4292ee965",
+            "exit_code": 0,
+            "log": "selected-offline-probe_b-fallback3.log",
+            "log_sha256": "504fbe12a84b0006f1cf783404145047f82ee155511ee7abd13f4e8e7a7ae5c5"
+          },
+          "trigger": {
+            "failure_condition": "unexpected lane crossing or failure to reach case target",
+            "metric": "outside-lane frames and target tracking error",
+            "source": "original Native body/route readback"
+          }
+        }
+      ],
+      "case_id": "training__C179776__NRS-484B-587-2a__motor_vehicle_driver__probe_b",
+      "compatibility": {
+        "log": "selected-compatibility-probe_b-primary-analysis.log",
+        "negative_log": "selected-compatibility-probe_b-primary-negative.log",
+        "receipt": "selected-compatibility-probe_b-primary.json",
+        "sha256": "9b2f95dfa084ec67fe2110c1758151b656fb8859d75372f8fce07660b90fdd4c"
+      },
+      "construction": "selected-candidates/probe_b/primary/construction.json",
+      "construction_sha256": "e55e12c1e71421963cedb18a4695095669a3be647626cde87c1091e55ad4059c",
+      "delivery_acceptance": {
+        "case_id": "training__C179776__NRS-484B-587-2a__motor_vehicle_driver__probe_b",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python -B work/training__C179776__NRS-484B-587-2a__motor_vehicle_driver/delivery_audit.py --case training__C179776__NRS-484B-587-2a__motor_vehicle_driver__probe_b --self-test",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C179776__NRS-484B-587-2a__motor_vehicle_driver/delivery_audit.py --case training__C179776__NRS-484B-587-2a__motor_vehicle_driver__probe_b --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: exact original Native result",
+        "negative_log": "delivery-proofs/probe_b-negative.log",
+        "negative_log_sha256": "2030588c9175724f14d09168246819d74ea52a6408c8f7ebb0b696f15523f62e",
+        "scope": "CPU predicates only; original Native capture/pixel review pending",
+        "script": "delivery_audit.py",
+        "script_sha256": "7018b6dd3986418aeae4b95cc4eeb0ef56e67600cce86be4b24cb5496ffb0831",
+        "sets": [
+          "full-train"
+        ],
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/probe_b-positive.log",
+        "test_log_sha256": "5891a00f08f9fd4aa163eb8fdc393b77c6e6fd36d8c0d3d958ce7e92d84912dd"
+      },
+      "delivery_readiness": "incomplete_original_native_capture_pending",
+      "fixture_recipe": "work/training__C179776__NRS-484B-587-2a__motor_vehicle_driver/diagnostic-recipe-probe_b.json",
+      "kind": "delivery",
+      "measurement_contract": "measurement-probe_b.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize_lane.py",
+        "output_schema": "c179776-saved-lane-analysis-v1"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "selected-compatibility-probe_b-primary-negative.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C179776__NRS-484B-587-2a__motor_vehicle_driver/selected-probe-manifest.json --case training__C179776__NRS-484B-587-2a__motor_vehicle_driver__probe_b --candidate primary --output .runtime-work/c179776-offline-v6-probe_b-primary",
+        "construction_sha256": "e55e12c1e71421963cedb18a4695095669a3be647626cde87c1091e55ad4059c",
+        "exit_code": 0,
+        "log": "selected-offline-probe_b-primary.log",
+        "log_sha256": "d445241c4b5fc8f2fc138f1e0be5595b2e266df720be26f058e57b4384fd2829"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/probe_b/proof.json",
+        "sha256": "e2b30c867a75cec624d7aa45f2699b5341184471b15a491c20e46f013361db97"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C179776__NRS-484B-587-2a__motor_vehicle_driver/execution-manifest.json --case training__C179776__NRS-484B-587-2a__motor_vehicle_driver__probe_b --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C179776__NRS-484B-587-2a__motor_vehicle_driver/execution-manifest.json --case training__C179776__NRS-484B-587-2a__motor_vehicle_driver__probe_b --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "processing_receipt": "selected-saved-probe_b-primary.json",
+        "processing_receipt_sha256": "1aab5d1e7c4aa394183530130be189599af1ac0369ee06361f8920a1f8447a8e",
+        "recorded_only": true,
+        "test_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C179776__NRS-484B-587-2a__motor_vehicle_driver/selected-compatibility-probe.json --case training__C179776__NRS-484B-587-2a__motor_vehicle_driver__probe_b --attempt .runtime-work/c179776-compat-v9-b-primary --output .runtime-work/c179776-saved-v3-b --library runtime/library --validator .runtime-work/c229398-pinned-decoder/.lake/build/bin/adapterCheck",
+        "test_exit_code": 0,
+        "test_log": "selected-saved-probe_b-primary.json",
+        "test_log_sha256": "1aab5d1e7c4aa394183530130be189599af1ac0369ee06361f8920a1f8447a8e"
+      }
+    }
+  ],
+  "comparison_audit": {
+    "comparison_id": "training__C179776__NRS-484B-587-2a__motor_vehicle_driver__comparison",
+    "negative_log": "comparison-negative.log",
+    "negative_log_sha256": "58f21aee07f877cd250d6a2a90bb6e0a8de544fa1f8d1ccde444a4255628aef8",
+    "positive_log": "comparison-positive.log",
+    "positive_log_sha256": "9c06acc1d36fdac325003febac691d234a3b1ebc3856e7c9c835b97a925a71a1",
+    "scope": "CPU source-shaped isolation; original Native comparison pending",
+    "script": "comparison_audit.py",
+    "script_sha256": "92ee812798148275a24fd8d66b013a0bba4b6424babd808e528dd405ba106853"
+  },
+  "format": "worker-execution-manifest",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "draft_cpu_prepared"
+}

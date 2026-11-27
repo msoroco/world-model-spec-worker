@@ -2,8 +2,16 @@
   "applied_update": 16,
   "assignment_id": "training__C179776__NRS-484B-587-2a__motor_vehicle_driver",
   "candidate_count": 8,
+  "comparison_audit_sha256": "92ee812798148275a24fd8d66b013a0bba4b6424babd808e528dd405ba106853",
+  "compatibility_receipts_sha256": {
+    "probe_a": "e361f2c2c1bcb3bc89a24f9f64bdf1f68fdef40a2be6db11708e1bc87887963d",
+    "probe_b": "9b2f95dfa084ec67fe2110c1758151b656fb8859d75372f8fce07660b90fdd4c"
+  },
   "controlled_road_proof_log_sha256": "096fafd3fa5ff22f877db18f7c814d717f8b1a2d263a7d69b7b3a52d4c5e4612",
+  "delivery_audit_sha256": "7018b6dd3986418aeae4b95cc4eeb0ef56e67600cce86be4b24cb5496ffb0831",
   "exception_context_proof_log_sha256": "0bad05dc2724dc70c7e84894547f3f41e39d810225a6f81c553a086a00437fc7",
+  "execution_manifest_sha256": "f78846840f5141144e4bb2c78e91daae96f64dba8511da4d77bba8ad7d133c7c",
+  "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline python3.11 -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C179776__NRS-484B-587-2a__motor_vehicle_driver --case training__C179776__NRS-484B-587-2a__motor_vehicle_driver__probe_a --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT",
   "input_sha256": "1c98ddb04121ac5ee430df5add5c6a5a2a326cbe242685331887deb3546e9243",
   "lane_boundary_independent_audit_sha256": "b9dbfa0a9d582ec20a523f9e7adda4d79aa423fe65cb88147d605bc29d3ee454",
   "lane_boundary_proof_sha256": "82de2691344a4ff2341d05755942c96d7bff3b4b24d1563e7fd12509a969f48e",
@@ -12,14 +20,57 @@
     "probe_b": "c97b1e0732fbcb7cb6e0a3e14ebd06fce150a2d24049eeebd4f85101cad76e27"
   },
   "native_survey_proof_log_sha256": "dcf2de40ea7796a946a2454d2b443290ee194f0c5c00d11745b379a4a703373d",
-  "offline_proof_sha256": "2326b6fa4d167b1553b6b9850a3a9fd79e416ddfd6fe2a6d0f7e48f25fc6e8d0",
+  "offline_proof_sha256": "bdd6f8ca908af9c3f29bf54ca97c5c3def4c94c3e7f58131dca5dcab26cbcaf9",
+  "physical_preparation_sha256": {
+    "probe_a": "ada47bddab0298f2b089f0190cb55d297aa5bb7c29057fee021a8981ba81c0a5",
+    "probe_b": "e2b30c867a75cec624d7aa45f2699b5341184471b15a491c20e46f013361db97"
+  },
   "planned_case_count": 2,
-  "readiness_kind": "implementation_checkpoint",
-  "reason": "Eight source-bound candidate bundles passed exact pinned offline CPU materialization and static checks; saved-source finalizer and synthetic four-view 600-frame full decode/comparison pass. Original Native authority/map/sign/event, public compatibility, semantic/delivery and strict readiness proofs remain incomplete.",
+  "readiness_kind": "delivery_prepared",
+  "reason": null,
+  "remaining_gpu_checks": [
+    "original controlled-access authority and boundary verification",
+    "original Native map/lane and entrance/exit survey",
+    "four-view original pixel review of marking, shoulder, sign and vehicle class",
+    "original physical motion and full video decode",
+    "independent exception and subsection-3 legal review"
+  ],
   "saved_lane_proof_log_sha256": "e139dd75525130bc3357045ac0337028db3f2f9c701db1c6a2447d4d5075fbcb",
+  "saved_processing_receipts_sha256": {
+    "probe_a": "d94b0ebd9a78db1b35f7f7e87d3b3a3b2abc1900e78d056dacb9acbb2d7ca04f",
+    "probe_b": "1aab5d1e7c4aa394183530130be189599af1ac0369ee06361f8920a1f8447a8e"
+  },
   "selected_contract_cpu_log_sha256": "cdee90a9edaebccca3d04e4757bbe04f7d9e94d0d161abfe112b2e7d17e9b176",
+  "semantic_cpu_log_sha256": "b7d0cf996d1648d51e548f527de853a545039b0380f886fbe8553961bb141576",
+  "semantic_index_sha256": "339ca2318176d52988253676d619fb318a20a8dcd5717ef480eccceba7a6531f",
   "source_law_review": "Exact law text copied from frozen assignment; summary marked recovered_requires_source_review",
-  "status": "partial",
+  "status": "ready",
   "statutory_review_sha256": "021958365dc320c248e7916cf769c40e7925be9b669e1956f3534d7b1df13a8e",
-  "synthetic_media_decode_log_sha256": "23f0ea5ca6f0efebaa70d2b0f706943e40a063dc0128d75d51aa72805f22fde4"
+  "synthetic_media_decode_log_sha256": "23f0ea5ca6f0efebaa70d2b0f706943e40a063dc0128d75d51aa72805f22fde4",
+  "tests": [
+    {
+      "command": "(cd work/training__C179776__NRS-484B-587-2a__motor_vehicle_driver && PYTHONPATH=$PWD ../../.venv-cpu/bin/python -B tests/test_selected.py)",
+      "exit_code": 0,
+      "log": "current-selected-test.log",
+      "sha256": "d10ffbd9f0faa72cd6837063279524e199b59fbc3d035051302a1e8dbc4b36ad"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c179776-output PYTHONPATH=$PWD/runtime:$PWD/runtime/scenario_pipeline .venv-cpu/bin/python -B work/training__C179776__NRS-484B-587-2a__motor_vehicle_driver/prove-saved-lane.py",
+      "exit_code": 0,
+      "log": "saved-lane-cpu.log",
+      "sha256": "e139dd75525130bc3357045ac0337028db3f2f9c701db1c6a2447d4d5075fbcb"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c179776-output .venv-cpu/bin/python -B work/training__C179776__NRS-484B-587-2a__motor_vehicle_driver/prove-semantic.py",
+      "exit_code": 0,
+      "log": "selected-semantic-cpu.log",
+      "sha256": "b7d0cf996d1648d51e548f527de853a545039b0380f886fbe8553961bb141576"
+    },
+    {
+      "command": ".venv-cpu/bin/python -B work/training__C179776__NRS-484B-587-2a__motor_vehicle_driver/comparison_audit.py --inside work/training__C179776__NRS-484B-587-2a__motor_vehicle_driver/diagnostic-source/probe_a --outside work/training__C179776__NRS-484B-587-2a__motor_vehicle_driver/diagnostic-source/probe_b",
+      "exit_code": 0,
+      "log": "comparison-positive.log",
+      "sha256": "9c06acc1d36fdac325003febac691d234a3b1ebc3856e7c9c835b97a925a71a1"
+    }
+  ]
 }

@@ -1,9 +1,202 @@
 {
   "actor": "motor_vehicle_driver",
+  "assignment_id": "training__C179776__NRS-484B-587-2a__motor_vehicle_driver",
   "cases": [
     {
+      "case_id": "training__C179776__NRS-484B-587-2a__motor_vehicle_driver__baseline",
+      "rationale": "Shared marked-lane engineering reference; excluded from selected delivery cases.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original Native map/body/class/event source joined by frame",
+            "name": "st.controlled_access",
+            "reference_frame": "original Native frame and surveyed highway",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s attempt",
+            "uncertainty": "designation, physical marking pixels and exception applicability require source review",
+            "unit": "structured"
+          },
+          {
+            "method": "original Native map/body/class/event source joined by frame",
+            "name": "st.lane",
+            "reference_frame": "original Native frame and surveyed highway",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s attempt",
+            "uncertainty": "designation, physical marking pixels and exception applicability require source review",
+            "unit": "structured"
+          },
+          {
+            "method": "original Native map/body/class/event source joined by frame",
+            "name": "st.lane_marking",
+            "reference_frame": "original Native frame and surveyed highway",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s attempt",
+            "uncertainty": "designation, physical marking pixels and exception applicability require source review",
+            "unit": "structured"
+          },
+          {
+            "method": "original Native map/body/class/event source joined by frame",
+            "name": "rel.occupies",
+            "reference_frame": "original Native frame and surveyed highway",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s attempt",
+            "uncertainty": "designation, physical marking pixels and exception applicability require source review",
+            "unit": "structured"
+          },
+          {
+            "method": "original Native map/body/class/event source joined by frame",
+            "name": "st.shoulder",
+            "reference_frame": "original Native frame and surveyed highway",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s attempt",
+            "uncertainty": "designation, physical marking pixels and exception applicability require source review",
+            "unit": "structured"
+          },
+          {
+            "method": "original Native map/body/class/event source joined by frame",
+            "name": "dev.regulatory_sign",
+            "reference_frame": "original Native frame and surveyed highway",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s attempt",
+            "uncertainty": "designation, physical marking pixels and exception applicability require source review",
+            "unit": "structured"
+          },
+          {
+            "method": "original Native map/body/class/event source joined by frame",
+            "name": "ru.emergency_vehicle",
+            "reference_frame": "original Native frame and surveyed highway",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s attempt",
+            "uncertainty": "designation, physical marking pixels and exception applicability require source review",
+            "unit": "structured"
+          },
+          {
+            "method": "original Native map/body/class/event source joined by frame",
+            "name": "ru.official_vehicle",
+            "reference_frame": "original Native frame and surveyed highway",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s attempt",
+            "uncertainty": "designation, physical marking pixels and exception applicability require source review",
+            "unit": "structured"
+          },
+          {
+            "method": "original Native map/body/class/event source joined by frame",
+            "name": "ru.transit_bus",
+            "reference_frame": "original Native frame and surveyed highway",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s attempt",
+            "uncertainty": "designation, physical marking pixels and exception applicability require source review",
+            "unit": "structured"
+          },
+          {
+            "method": "original Native map/body/class/event source joined by frame",
+            "name": "drv.responding_emergency",
+            "reference_frame": "original Native frame and surveyed highway",
+            "sampling_rate_hz": 20,
+            "time_window": "entire 30 s attempt",
+            "uncertainty": "designation, physical marking pixels and exception applicability require source review",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "independent public highway authority packet",
+            "name": "designation_source",
+            "unit": "document"
+          },
+          {
+            "method": "original Native road/lane survey",
+            "name": "native_road_readback",
+            "unit": "structured"
+          }
+        ],
+        "limitations": [
+          "No original CARLA capture, road designation, sign/event class source or legal verdict is claimed by CPU offline preparation"
+        ]
+      },
+      "target_law_id": "NRS-484B-587-2a",
+      "target_type": "baseline",
+      "unresolved_judgment_calls": [
+        "controlled-access highway",
+        "outside of a marked traffic lane or marked entrance or exit lane",
+        "required by an emergency",
+        "lawfully placed signage allows that vehicle to use the shoulder in that manner",
+        "otherwise authorized by subsection 3"
+      ],
+      "variable_assignments": {
+        "controlled_access_designation": {
+          "kind": "world_setup",
+          "value": "authority packet, verification pending"
+        },
+        "emergency_event_context": {
+          "kind": "world_setup",
+          "value": "none requested, original review pending"
+        },
+        "lane_path_target": {
+          "kind": "controller",
+          "value": "marked_lane"
+        },
+        "observed_outside_lane": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "sign_context": {
+          "kind": "world_setup",
+          "value": "no shoulder permission sign requested, original review pending"
+        },
+        "vehicle_class_context": {
+          "kind": "world_setup",
+          "value": "ordinary motor vehicle requested, original review pending"
+        }
+      }
+    },
+    {
       "case_id": "training__C179776__NRS-484B-587-2a__motor_vehicle_driver__probe_a",
-      "rationale": "controlled source-bound lane occupancy comparison",
+      "deliberate_differences": [
+        "lane_path_target"
+      ],
+      "deterministic_branch": {
+        "judgment_context": [
+          {
+            "note": "Authority, access restriction and highway boundary must be verified from original public source.",
+            "phrase": "controlled-access highway",
+            "reason": "This paired physical-path probe retains original source review; no legal meaning or exception is preaccepted.",
+            "status": "not_exercised"
+          },
+          {
+            "note": "Full body footprint, marked traffic lanes and entrance or exit topology require original map and pixel review.",
+            "phrase": "outside of a marked traffic lane or marked entrance or exit lane",
+            "reason": "This paired physical-path probe retains original source review; no legal meaning or exception is preaccepted.",
+            "status": "not_exercised"
+          },
+          {
+            "note": "The specific emergency and necessity during the excursion need source review.",
+            "phrase": "required by an emergency",
+            "reason": "This paired physical-path probe retains original source review; no legal meaning or exception is preaccepted.",
+            "status": "not_exercised"
+          },
+          {
+            "note": "Vehicle class, paved shoulder, sign text, placement and authorized manner need source review.",
+            "phrase": "lawfully placed signage allows that vehicle to use the shoulder in that manner",
+            "reason": "This paired physical-path probe retains original source review; no legal meaning or exception is preaccepted.",
+            "status": "not_exercised"
+          },
+          {
+            "note": "The appended subsection 3 names a separate subparagraph, so applicability to subsection 2(a) needs independent legal review.",
+            "phrase": "otherwise authorized by subsection 3",
+            "reason": "This paired physical-path probe retains original source review; no legal meaning or exception is preaccepted.",
+            "status": "not_exercised"
+          }
+        ],
+        "source_clause": "Upon any portion of the highway that lies outside of a marked traffic lane or marked entrance or exit lane."
+      },
+      "paired_probe_id": "training__C179776__NRS-484B-587-2a__motor_vehicle_driver__comparison",
+      "probe": {
+        "comparison_or_standard": "paired marked-lane versus outside-lane original body footprint",
+        "primary_variable": "lane_path_target",
+        "target_value_or_branch": "marked_lane"
+      },
+      "rationale": "Hypothesis for source-bound paired lane occupancy; legal outcome remains unresolved.",
       "recording_description": {
         "channels": [
           {
@@ -116,15 +309,86 @@
       "target_law_id": "NRS-484B-587-2a",
       "target_type": "compliant_attempt",
       "unresolved_judgment_calls": [
-        "public authority, emergency, subsection-3 cross-reference, sign/class applicability, physical pixels"
+        "controlled-access highway",
+        "outside of a marked traffic lane or marked entrance or exit lane",
+        "required by an emergency",
+        "lawfully placed signage allows that vehicle to use the shoulder in that manner",
+        "otherwise authorized by subsection 3"
       ],
       "variable_assignments": {
-        "controlled_access_lane_occupancy": "probe_a"
+        "controlled_access_designation": {
+          "kind": "world_setup",
+          "value": "authority packet, verification pending"
+        },
+        "emergency_event_context": {
+          "kind": "world_setup",
+          "value": "none requested, original review pending"
+        },
+        "lane_path_target": {
+          "kind": "controller",
+          "value": "marked_lane"
+        },
+        "observed_outside_lane": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "sign_context": {
+          "kind": "world_setup",
+          "value": "no shoulder permission sign requested, original review pending"
+        },
+        "vehicle_class_context": {
+          "kind": "world_setup",
+          "value": "ordinary motor vehicle requested, original review pending"
+        }
       }
     },
     {
       "case_id": "training__C179776__NRS-484B-587-2a__motor_vehicle_driver__probe_b",
-      "rationale": "controlled source-bound lane occupancy comparison",
+      "deliberate_differences": [
+        "lane_path_target"
+      ],
+      "deterministic_branch": {
+        "judgment_context": [
+          {
+            "note": "Authority, access restriction and highway boundary must be verified from original public source.",
+            "phrase": "controlled-access highway",
+            "reason": "This paired physical-path probe retains original source review; no legal meaning or exception is preaccepted.",
+            "status": "not_exercised"
+          },
+          {
+            "note": "Full body footprint, marked traffic lanes and entrance or exit topology require original map and pixel review.",
+            "phrase": "outside of a marked traffic lane or marked entrance or exit lane",
+            "reason": "This paired physical-path probe retains original source review; no legal meaning or exception is preaccepted.",
+            "status": "not_exercised"
+          },
+          {
+            "note": "The specific emergency and necessity during the excursion need source review.",
+            "phrase": "required by an emergency",
+            "reason": "This paired physical-path probe retains original source review; no legal meaning or exception is preaccepted.",
+            "status": "not_exercised"
+          },
+          {
+            "note": "Vehicle class, paved shoulder, sign text, placement and authorized manner need source review.",
+            "phrase": "lawfully placed signage allows that vehicle to use the shoulder in that manner",
+            "reason": "This paired physical-path probe retains original source review; no legal meaning or exception is preaccepted.",
+            "status": "not_exercised"
+          },
+          {
+            "note": "The appended subsection 3 names a separate subparagraph, so applicability to subsection 2(a) needs independent legal review.",
+            "phrase": "otherwise authorized by subsection 3",
+            "reason": "This paired physical-path probe retains original source review; no legal meaning or exception is preaccepted.",
+            "status": "not_exercised"
+          }
+        ],
+        "source_clause": "Upon any portion of the highway that lies outside of a marked traffic lane or marked entrance or exit lane."
+      },
+      "paired_probe_id": "training__C179776__NRS-484B-587-2a__motor_vehicle_driver__comparison",
+      "probe": {
+        "comparison_or_standard": "paired marked-lane versus outside-lane original body footprint",
+        "primary_variable": "lane_path_target",
+        "target_value_or_branch": "paved_shoulder"
+      },
+      "rationale": "Hypothesis for source-bound paired lane occupancy; legal outcome remains unresolved.",
       "recording_description": {
         "channels": [
           {
@@ -237,16 +501,119 @@
       "target_law_id": "NRS-484B-587-2a",
       "target_type": "violating_attempt",
       "unresolved_judgment_calls": [
-        "public authority, emergency, subsection-3 cross-reference, sign/class applicability, physical pixels"
+        "controlled-access highway",
+        "outside of a marked traffic lane or marked entrance or exit lane",
+        "required by an emergency",
+        "lawfully placed signage allows that vehicle to use the shoulder in that manner",
+        "otherwise authorized by subsection 3"
       ],
       "variable_assignments": {
-        "controlled_access_lane_occupancy": "probe_b"
+        "controlled_access_designation": {
+          "kind": "world_setup",
+          "value": "authority packet, verification pending"
+        },
+        "emergency_event_context": {
+          "kind": "world_setup",
+          "value": "none requested, original review pending"
+        },
+        "lane_path_target": {
+          "kind": "controller",
+          "value": "paved_shoulder"
+        },
+        "observed_outside_lane": {
+          "kind": "subject_behavior",
+          "value": null
+        },
+        "sign_context": {
+          "kind": "world_setup",
+          "value": "no shoulder permission sign requested, original review pending"
+        },
+        "vehicle_class_context": {
+          "kind": "world_setup",
+          "value": "ordinary motor vehicle requested, original review pending"
+        }
       }
     }
   ],
   "cell_id": "C179776",
   "law_id": "NRS-484B-587-2a",
   "status": "draft",
-  "sweep_specs": [],
+  "sweep_specs": [
+    {
+      "judgment_refs": [
+        {
+          "note": "Authority, access restriction and highway boundary must be verified from original public source.",
+          "phrase": "controlled-access highway"
+        }
+      ],
+      "missing_inputs": [
+        "Original Native feasibility and independent source review for controlled-access highway"
+      ],
+      "rationale": "Source-verified physical or legal landmark and feasible original sweep range are not established in CPU preparation.",
+      "status": "incomplete",
+      "sweep_id": "c179776-1",
+      "target_law_id": "NRS-484B-587-2a"
+    },
+    {
+      "judgment_refs": [
+        {
+          "note": "Full body footprint, marked traffic lanes and entrance or exit topology require original map and pixel review.",
+          "phrase": "outside of a marked traffic lane or marked entrance or exit lane"
+        }
+      ],
+      "missing_inputs": [
+        "Original Native feasibility and independent source review for outside of a marked traffic lane or marked entrance or exit lane"
+      ],
+      "rationale": "Source-verified physical or legal landmark and feasible original sweep range are not established in CPU preparation.",
+      "status": "incomplete",
+      "sweep_id": "c179776-2",
+      "target_law_id": "NRS-484B-587-2a"
+    },
+    {
+      "judgment_refs": [
+        {
+          "note": "The specific emergency and necessity during the excursion need source review.",
+          "phrase": "required by an emergency"
+        }
+      ],
+      "missing_inputs": [
+        "Original Native feasibility and independent source review for required by an emergency"
+      ],
+      "rationale": "Source-verified physical or legal landmark and feasible original sweep range are not established in CPU preparation.",
+      "status": "incomplete",
+      "sweep_id": "c179776-3",
+      "target_law_id": "NRS-484B-587-2a"
+    },
+    {
+      "judgment_refs": [
+        {
+          "note": "Vehicle class, paved shoulder, sign text, placement and authorized manner need source review.",
+          "phrase": "lawfully placed signage allows that vehicle to use the shoulder in that manner"
+        }
+      ],
+      "missing_inputs": [
+        "Original Native feasibility and independent source review for lawfully placed signage allows that vehicle to use the shoulder in that manner"
+      ],
+      "rationale": "Source-verified physical or legal landmark and feasible original sweep range are not established in CPU preparation.",
+      "status": "incomplete",
+      "sweep_id": "c179776-4",
+      "target_law_id": "NRS-484B-587-2a"
+    },
+    {
+      "judgment_refs": [
+        {
+          "note": "The appended subsection 3 names a separate subparagraph, so applicability to subsection 2(a) needs independent legal review.",
+          "phrase": "otherwise authorized by subsection 3"
+        }
+      ],
+      "missing_inputs": [
+        "Original Native feasibility and independent source review for otherwise authorized by subsection 3"
+      ],
+      "rationale": "Source-verified physical or legal landmark and feasible original sweep range are not established in CPU preparation.",
+      "status": "incomplete",
+      "sweep_id": "c179776-5",
+      "target_law_id": "NRS-484B-587-2a"
+    }
+  ],
   "sweeps_expanded": true
 }

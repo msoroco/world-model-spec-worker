@@ -84,6 +84,7 @@ def finalize(attempt, output):
                                  "requested": config["route_kind"],
                                  "measured": measured["inside_governed_segment_frames"],
                                  "method": "source joined original rider, roadway and sign interval",
+                                 "tolerance": "exact frame join; no legal spatial tolerance inferred",
                                  "matched": complete,
                                  "physical_cause_confirmed": complete and
                                  measured["sign_pixels_verified"],

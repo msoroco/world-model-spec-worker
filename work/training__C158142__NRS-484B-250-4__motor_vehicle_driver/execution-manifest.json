@@ -1,0 +1,82 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C158142__NRS-484B-250-4__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "partial",
+  "cases": [
+    {
+      "case_id": "training__C158142__NRS-484B-250-4__motor_vehicle_driver__witness_1",
+      "kind": "delivery",
+      "construction": "construction.json",
+      "construction_sha256": "e1669d334069238bcec3fb029e16ab81ff16c8c6f9acd170272e951ea922f30c",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C158142__NRS-484B-250-4__motor_vehicle_driver/diagnostic-halt-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native OpenDRIVE signal actor and two-vehicle clearance may differ from authored geometry; surveyed lane/state and original motion determine the trigger."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "candidates/witness_1/fallback1/construction.json",
+          "construction_sha256": "df9b15c18298256d14efc80bef9b218cf9786db9624a0e0bb8210b3277bd5d83",
+          "trigger": {
+            "source": "interaction_history.jsonl",
+            "metric": "ego/priority vehicle entry and clearance within 600 joined frames",
+            "failure_condition": "one vehicle fails the planned junction passage or clearance despite correct signal/lane survey"
+          },
+          "changed_knobs": [
+            "ego rolling throttle",
+            "priority vehicle entry and clear speed"
+          ]
+        }
+      ],
+      "delivery_readiness": "incomplete"
+    },
+    {
+      "case_id": "training__C158142__NRS-484B-250-4__motor_vehicle_driver__witness_2",
+      "kind": "delivery",
+      "construction": "cases/witness_2/construction.json",
+      "construction_sha256": "b0636426d5dafbac8289c4d94fd39117f72f6e7e5c52e5adb66d81b5edff4e95",
+      "measurement_contract": "cases/witness_2/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C158142__NRS-484B-250-4__motor_vehicle_driver/diagnostic-roll-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native OpenDRIVE signal actor and two-vehicle clearance may differ from authored geometry; surveyed lane/state and original motion determine the trigger."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "candidates/witness_2/fallback1/construction.json",
+          "construction_sha256": "9235e7d4028a3a50d54172915f400f0d982f30d4fc42cd8cd2a02da1976356da",
+          "trigger": {
+            "source": "interaction_history.jsonl",
+            "metric": "ego/priority vehicle entry and clearance within 600 joined frames",
+            "failure_condition": "one vehicle fails the planned junction passage or clearance despite correct signal/lane survey"
+          },
+          "changed_knobs": [
+            "ego rolling throttle",
+            "priority vehicle entry and clear speed"
+          ]
+        }
+      ],
+      "delivery_readiness": "incomplete"
+    }
+  ]
+}

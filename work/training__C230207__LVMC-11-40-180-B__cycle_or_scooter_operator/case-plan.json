@@ -21,7 +21,7 @@
   "witness_branches": [
     "Signed roadway riding restriction"
   ],
-  "selected_branch": null,
+  "selected_branch": "Signed roadway riding restriction",
   "requirement_dispositions": [
     {
       "requirement": "LVMC-11-40-180-B",
@@ -32,7 +32,8 @@
         "training__C230207__LVMC-11-40-180-B__cycle_or_scooter_operator__witness_1",
         "training__C230207__LVMC-11-40-180-B__cycle_or_scooter_operator__witness_2"
       ],
-      "evidence_or_gap": "No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified."
+      "evidence_or_gap": "Two selected 600-frame 20 Hz roadway riding requests, source-reviewed physical prohibition sign and governed interval, and source-joined sign/rider measurement. Original sign pixels and Director authority must be reviewed at delivery.",
+      "disposition_index": 0
     }
   ],
   "activation_conditions": [
@@ -56,7 +57,7 @@
     {
       "case_id": "training__C230207__LVMC-11-40-180-B__cycle_or_scooter_operator__witness_1",
       "target_law_id": "LVMC-11-40-180-B",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
       "physical_target": "cycle operator rides outside sign-governed prohibited segment",
       "comparison_variable": "signed_cycle_access",
@@ -86,12 +87,17 @@
       "expected_scenario_outcome": null,
       "unresolved_judgment_calls": [
         "the Director's determination is administrative; the erected sign is the observable the rule requires"
-      ]
+      ],
+      "gap_ids": [
+        "no_accepted_original"
+      ],
+      "construction": "construction.json",
+      "physical_or_legal_acceptance": false
     },
     {
       "case_id": "training__C230207__LVMC-11-40-180-B__cycle_or_scooter_operator__witness_2",
       "target_law_id": "LVMC-11-40-180-B",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
       "physical_target": "cycle operator rides within sign-governed prohibited segment",
       "comparison_variable": "signed_cycle_access",
@@ -121,7 +127,12 @@
       "expected_scenario_outcome": null,
       "unresolved_judgment_calls": [
         "the Director's determination is administrative; the erected sign is the observable the rule requires"
-      ]
+      ],
+      "gap_ids": [
+        "no_accepted_original"
+      ],
+      "construction": "cases/witness_2/construction.json",
+      "physical_or_legal_acceptance": false
     }
   ],
   "comparisons": [
@@ -132,19 +143,18 @@
         "training__C230207__LVMC-11-40-180-B__cycle_or_scooter_operator__witness_2"
       ],
       "deliberate_differences": [
-        "signed_cycle_access"
+        "requested rider route position and speed so one remains outside and one enters the governed interval"
       ],
       "fixed_conditions": [
-        "frozen cell and actor",
-        "same map geometry except named comparison variable",
-        "same non-target actors, recording policy, controller capability and observation windows; exact sameness pending construction"
-      ]
+        "same signed OpenDRIVE roadway, sign position and prohibition, reviewed authority, actor type, weather, four camera policy and 600-frame time window"
+      ],
+      "physical_or_legal_acceptance": false
     }
   ],
   "mandatory_observation_terms": [
     {
       "term": "dev.regulatory_sign",
-      "purpose": "code bicycles_prohibited — the signs erected on the sidewalk or roadway",
+      "purpose": "code bicycles_prohibited \u2014 the signs erected on the sidewalk or roadway",
       "status": "measurement_mapping_pending"
     },
     {
@@ -192,7 +202,7 @@
     {
       "name": "dev.regulatory_sign",
       "mandatory": true,
-      "reason": "code bicycles_prohibited — the signs erected on the sidewalk or roadway"
+      "reason": "code bicycles_prohibited \u2014 the signs erected on the sidewalk or roadway"
     },
     {
       "name": "dev.governs",
@@ -253,8 +263,131 @@
     "No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified."
   ],
   "runtime_uncertainties": [
-    "No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified.",
-    "Exact Core atom mapping and capture channel support for source observation terms are unverified. Additional alternatives in the full clause require manual branch inventory."
+    "Original sign blueprint, sign pixels and Director determination require local source survey and review; the CPU diagnostic does not establish them.",
+    "Original Native rider motion and four-camera full 600-frame acceptance remain unverified."
   ],
-  "readiness_limitation": "Planning return only. Case requests are not selected delivery recordings, proofs, or legal verdicts."
+  "readiness_limitation": "Planning return only. Case requests are not selected delivery recordings, proofs, or legal verdicts.",
+  "source_observation_mapping": {
+    "dev.regulatory_sign": {
+      "evidence": "source-joined sign, rider and roadway observations from selected finalizer; original review required",
+      "channels": [
+        "dev.regulatory_sign"
+      ],
+      "source_refs": [
+        "inputs/training__C230207__LVMC-11-40-180-B__cycle_or_scooter_operator/assignment.json"
+      ]
+    },
+    "dev.governs": {
+      "evidence": "source-joined sign, rider and roadway observations from selected finalizer; original review required",
+      "channels": [
+        "dev.governs"
+      ],
+      "source_refs": [
+        "inputs/training__C230207__LVMC-11-40-180-B__cycle_or_scooter_operator/assignment.json"
+      ]
+    },
+    "dev.position": {
+      "evidence": "source-joined sign, rider and roadway observations from selected finalizer; original review required",
+      "channels": [
+        "dev.position"
+      ],
+      "source_refs": [
+        "inputs/training__C230207__LVMC-11-40-180-B__cycle_or_scooter_operator/assignment.json"
+      ]
+    },
+    "ru.bicycle": {
+      "evidence": "source-joined sign, rider and roadway observations from selected finalizer; original review required",
+      "channels": [
+        "ru.bicycle"
+      ],
+      "source_refs": [
+        "inputs/training__C230207__LVMC-11-40-180-B__cycle_or_scooter_operator/assignment.json"
+      ]
+    },
+    "ru.electric_bicycle": {
+      "evidence": "source-joined sign, rider and roadway observations from selected finalizer; original review required",
+      "channels": [
+        "ru.electric_bicycle"
+      ],
+      "source_refs": [
+        "inputs/training__C230207__LVMC-11-40-180-B__cycle_or_scooter_operator/assignment.json"
+      ]
+    },
+    "ru.electric_scooter": {
+      "evidence": "source-joined sign, rider and roadway observations from selected finalizer; original review required",
+      "channels": [
+        "ru.electric_scooter"
+      ],
+      "source_refs": [
+        "inputs/training__C230207__LVMC-11-40-180-B__cycle_or_scooter_operator/assignment.json"
+      ]
+    },
+    "st.sidewalk": {
+      "evidence": "source-joined sign, rider and roadway observations from selected finalizer; original review required",
+      "channels": [
+        "st.sidewalk"
+      ],
+      "source_refs": [
+        "inputs/training__C230207__LVMC-11-40-180-B__cycle_or_scooter_operator/assignment.json"
+      ]
+    },
+    "st.roadway": {
+      "evidence": "source-joined sign, rider and roadway observations from selected finalizer; original review required",
+      "channels": [
+        "st.roadway"
+      ],
+      "source_refs": [
+        "inputs/training__C230207__LVMC-11-40-180-B__cycle_or_scooter_operator/assignment.json"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "source-joined sign, rider and roadway observations from selected finalizer; original review required",
+      "channels": [
+        "rel.occupies"
+      ],
+      "source_refs": [
+        "inputs/training__C230207__LVMC-11-40-180-B__cycle_or_scooter_operator/assignment.json"
+      ]
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "physical sign, governed road and full rider route",
+        "interval": "all 600 original 20 Hz frames"
+      },
+      {
+        "view": "approach",
+        "subject": "sign and rider approach from roadway",
+        "interval": "all 600 original 20 Hz frames"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "governed interval and physical sign",
+        "interval": "all 600 original 20 Hz frames"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "rider and sign visibility",
+        "interval": "all 600 original 20 Hz frames"
+      }
+    ]
+  },
+  "evidence_review": {
+    "reviewer": "assignment owner",
+    "method": "Frozen assignment has no accepted original recording membership; no equivalence is claimed.",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "no_accepted_original",
+        "requirement": "original signed roadway prohibition and two controlled rider routes",
+        "source": "inputs/training__C230207__LVMC-11-40-180-B__cycle_or_scooter_operator/assignment.json",
+        "why_existing_insufficient": "No accepted recording is supplied for this exact assignment."
+      }
+    ]
+  }
 }

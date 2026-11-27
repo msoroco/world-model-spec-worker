@@ -46,7 +46,9 @@ def derive(folder, *, require_original=False):
             not all(isinstance(x, (int, float)) and math.isfinite(x) for x in zone)
             or zone[0] >= zone[1]):
         raise ValueError('Sign-governed interval source missing')
-    if len(frames) != FRAME_COUNT and not (source_kind == 'synthetic_native_sample' and 2 <= len(frames) <= 2000):
+    if len(frames) != FRAME_COUNT and not (source_kind == 'synthetic_native_sample'
+                                          and setup.get('diagnostic_excerpt') is True
+                                          and 2 <= len(frames) <= 2000):
         raise ValueError('Incomplete riding history')
     inside = []
     for i, frame in enumerate(frames):

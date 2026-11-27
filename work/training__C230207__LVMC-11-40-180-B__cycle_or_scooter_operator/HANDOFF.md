@@ -1,37 +1,32 @@
-# LVMC-11-40-180-B at C230207
+# C230207 signed roadway access handoff
 
-Actor: `cycle_or_scooter_operator`. Frozen cell: `road` / `travel` / `access_restriction_sign`.
+Selected LVMC 11.40.180(B) branch: a bicycle, electric bicycle, or electric scooter rider on a roadway or sidewalk where an erected prohibition sign governs. The Director of Public Works determination and sign applicability are administrative and visual review inputs. This package does not make a legal verdict.
 
-Exact statutory source: LVMC 11.40.180(B). Source text and hash are in `case-plan.json`. Historical summary status: `recovered_requires_source_review`.
+## Exact selected delivery
 
-Selected witness: Signed roadway riding restriction. Planned comparison variable: `signed_cycle_access`. Requests: cycle operator rides outside sign-governed prohibited segment; cycle operator rides within sign-governed prohibited segment. These are proposed targets, never measured behavior or legal verdicts.
+- `witness_1`: the rider stays outside the sign-governed roadway interval.
+- `witness_2`: the rider enters it. The selected construction fixes the OpenDRIVE road, governed interval, machine type, four cameras and 600-frame/20-Hz window.
+- Both exact bundles passed CPU offline checks. The Native runner surveys the physical sign prop, covered machine, four cameras and road source, captures synchronized source video and rider frames, and seals after restoration. Local delivery must inspect sign pixels, Director determination and roadway access sources before labeling original review complete.
+- `native/signed-access-proof.json` records the 600-frame synthetic riding comparison: 0 versus 400 frames inside the governed interval, plus missing-source negatives. This is diagnostic, not actual Native motion or legal acceptance.
+- Public compatibility used separate 9-frame synthetic pixel fixtures for each case. Both passed selected finalization, native validation, decoder, render, video decode and missing-setup negative. The 9-frame fixtures do not prove 600-frame camera capture.
+- Saved-only processing passed for both 9-frame attempts, preserving originals and timestamp joins. Independent delivery audit decodes actual pixels and checks the separate 600-frame synthetic receipt. Independent comparison audit rejects a changed held interval.
 
-Activation to verify: signs prohibiting riding are in place on the sidewalk or roadway; the subject rides such a machine there.
+## Local delivery
 
-Timing to retain: judged at every instant the machine is ridden in the signed place.
+Set `CARLA_PYTHON`, `CARLA_HOST`, `CARLA_PORT`, `JOB_ID`, `DB`, and `RUN`; execute the `first_gpu_delivery_command` from `result.json`. Capture must provide original sign pixels, the Director determination and exact interval applicability, and a full 600-frame four-camera source join. Process only saved capture after Native exit, restoration and owner release. A 9-frame public fixture never substitutes for original source review.
 
-Exceptions and numeric alternatives planned: none in supplied clause.
+## Bound CPU evidence
 
-Unresolved judgment or rule composition: the Director's determination is administrative; the erected sign is the observable the rule requires. No judgment bound is set by this plan.
+- `construction.json` SHA-256 `a4c7dcb869c3958109785f10d8cd22c1d48723d53a06aeaabb335125689655f6`
+- `cases/witness_2/construction.json` SHA-256 `2d9f183addfe00a780d26c7e29a59965a19c02ee0ad171bdea11e56f881a1bb6`
+- `execution-manifest.json` SHA-256 `3ce1896041f6687c89cc2da6f8a543e5beabde065d94b66441baa3857f18dde4`
+- `native/signed-access-proof.json` SHA-256 `4c0c06d8df904cbebba921a09a38d4b7108827d95d57daf800bbec0323f020f6`
+- `proposals/semantic-index.json` SHA-256 `79a2bef1d6314ec6cf7679ac3dff550cf2296eacbf93d41111d98c4037c8e366`
+- `compat-witness_1.json` SHA-256 `fa33723d76b2d8cd099aa953271abab9d79ee2aa29a7ea910ba0ee028637995b`
+- `compat-witness_2.json` SHA-256 `690144cfd6ffffeacb0c18878e93b23a869f955a9f25dcfbe99e3a12363a0217`
+- `saved-witness_1.json` SHA-256 `b112245dbdd5d4d4325f0e2009eba971d84330881564af9e87a61a68894582d3`
+- `saved-witness_2.json` SHA-256 `b477a2ca4724d928277e398038b78024eb8e19c6b33b2d89862490d67256c5ab`
+- `native/comparison-positive.log` SHA-256 `06a518791e5b640f1b4844a476a69660d20b6bfc085ed10c2a43170c2d642644`
+- `native/comparison-negative.log` SHA-256 `b9a3bd5621543b88b3ddd6b41b16c35c03f2181b741ea55d0ac19865ebe2b9fa`
 
-Accepted membership: 0 membership rows; exact source-hashed equivalence and reuse are unverified.
-
-Blocker: No executable Native construction or four distinct source-preserving candidate plans have been produced; exact offline and compatibility proofs, mandatory saved measurement fixtures, and independent audits are absent. Physical feasibility and legal outcome remain unverified.
-
-Resume: reconcile each branch against the exact law and cited provisions; establish compatible Native construction and measurement channels; produce four distinct candidate plans and exact offline, compatibility, saved-only, semantic and audit proofs; then evaluate readiness.
-
-## 2026-11-23 CPU signed-access source diagnostic
-
-Added `native/signed_access_measure.py` and `native/prove_signed_access_measure.py`. The saved-source diagnostic requires a covered bicycle, electric bicycle or electric scooter; sidewalk or roadway; an erected applicable prohibition sign; a bounded governed interval; 600 joined riding frames at 20 Hz; and four pinned camera identities. It counts ridden frames inside the sign-governed interval while keeping administrative authority and actual sign pixels unverified. A source-declared sign alone is not proof that the Director made the statutory determination or that the physical sign was visible and applicable.
-
-Two controlled synthetic electric-scooter routes hold the roadway and sign setup fixed. `witness_1` remains outside the governed interval; `witness_2` enters it at frame 200 and rides inside for 400 frames. Six missing-source mutations reject absent erected sign, uncovered actor type, missing interval, truncated history, camera loss and missing riding state. These are `synthetic_native_sample` traces, not Native motion or legal acceptance.
-
-Commands, each exit 0 with `TMPDIR`, `PYTHONDONTWRITEBYTECODE=1`, and `SCENARIO_PIPELINE_OUTPUT_ROOT` set under `.runtime-work/`:
-
-- `.venv-cpu/bin/python runtime.py preflight > native/current-preflight.log 2>&1`
-- `.venv-cpu/bin/python native/prove_signed_access_measure.py > native/signed-access-proof.json`
-- `.venv-cpu/bin/python worker_check.py --assignment training__C230207__LVMC-11-40-180-B__cycle_or_scooter_operator --complete > native/current-static-check.log 2>&1`
-
-SHA-256: measurement code `6273d0239873bc6d000de2b156fbb4efc72a38ce471922e225967772593a189b`; proof script `c9e9009d4f1aa885975dba136849949c17522d323e5c47b7f3c398404e1f19f5`; proof result `5f43ce4dce30dc3795ee6da0880d70c6f040203d3f411809610e366ce5681b72`; preflight log `8de2d13a98ec544a4312a317cea6ddd34385b7430b6d900c860434da057eb3bd`; scoped checkpoint log `e16c9661e2b042c524816d014b3116e34d5c022ce00268f6926591a2e30c7ae7`.
-
-Next CPU work: construct the exact roadway and erected-sign Native scene, controller for both route variants, actor identity and sign-visibility source acquisition, four source camera videos, execution manifest, pinned offline, positive/negative compatibility, saved-only, semantic and independent audits. The Director's determination remains administrative context to source; this diagnostic does not infer it. There is no exact construction bundle yet, so keep `result.json` partial.
+Final scoped strict command: `.venv-cpu/bin/python worker_check.py --assignment training__C230207__LVMC-11-40-180-B__cycle_or_scooter_operator --complete --require-delivery-ready`. It passed on the prepared package; recheck after this handoff update.

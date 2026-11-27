@@ -9,6 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "native"))
 from excavation_runner import reviewed_context
+from statutory_runner import reviewed_context as reviewed_physical_context
 
 
 def sha(path):
@@ -88,3 +89,21 @@ class ExcavationSourceTest(unittest.TestCase):
         context.write_text(json.dumps(data) + "\n")
         with self.assertRaisesRegex(ValueError, "excavation source"):
             reviewed_context(context, self.case_id, self.config)
+
+    def test_selected_physical_obstruction_camera_and_source_protocol(self):
+        bundle = json.loads((ROOT / "cases/baseline/statutory-construction.json").read_text())
+        cfg = json.loads(next(item["content"] for item in bundle["files"] if item["path"] == "config.json"))
+        self.case_id = cfg["case_id"]
+        self.config.write_text(json.dumps(cfg) + "\n")
+        context = self.context()
+        record = self.folder / "obstruction_kind.json"
+        body = json.loads(record.read_text())
+        body["requested_value"] = "physical_obstruction"
+        body["excavation_source_refs"] = []
+        record.write_text(json.dumps(body) + "\n")
+        data = json.loads(context.read_text())
+        data["obstruction_kind_request"] = "physical_obstruction"
+        data["spatial_source"]["obstruction_kind"]["sha256"] = sha(record)
+        data["source_records"]["obstruction_kind"] = data["spatial_source"]["obstruction_kind"]
+        context.write_text(json.dumps(data) + "\n")
+        self.assertEqual(reviewed_physical_context(context, self.case_id, self.config)[1], sha(context))
