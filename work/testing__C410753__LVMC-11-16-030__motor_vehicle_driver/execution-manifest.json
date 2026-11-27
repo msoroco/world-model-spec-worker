@@ -2,10 +2,51 @@
   "assignment_id": "testing__C410753__LVMC-11-16-030__motor_vehicle_driver",
   "cases": [
     {
+      "acquisition": {
+        "four_original_camera_streams": {
+          "entrypoint": "rail_core_projection.py",
+          "evidence": "channels/four_original_camera_streams.jsonl",
+          "method": "four original camera frame identities, source hashes and full decode"
+        },
+        "original_native_frame_history": {
+          "entrypoint": "rail_core_projection.py",
+          "evidence": "channels/original_native_frame_history.jsonl",
+          "method": "source-bound 900-frame Native readback of railway route, speed, sight and exceptions"
+        }
+      },
       "candidate_risk": {
         "reason": "Reviewed original grade-crossing geometry, sight rays and speed may miss the requested condition; actual Native readback determines feasibility.",
         "status": "physical"
       },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "controller speed-gap gain: 0.18 to 0.24",
+            "controller throttle cap: 0.55 to 0.52"
+          ],
+          "compatibility": {
+            "log": "compat-analysis-obscured_14mph-fallback1.log",
+            "negative_log": "compat-negative-obscured_14mph-fallback1.log",
+            "receipt": "compat-obscured_14mph-fallback1.json",
+            "sha256": "1456c6c9afc412362ae0357d967727fffe36225192eded2817f2e10d898d29bd"
+          },
+          "construction": "cases/obscured_14mph/fallback1-construction.json",
+          "construction_sha256": "7d61b2c4cbc57eb6b6b38cd592791ecf744a8ffae32668b99680990f0ff46f32",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C410753__LVMC-11-16-030__motor_vehicle_driver/execution-manifest.json --case testing__C410753__LVMC-11-16-030__motor_vehicle_driver__obscured_14mph --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c410753-offline-obscured_14mph-fallback1",
+            "construction_sha256": "7d61b2c4cbc57eb6b6b38cd592791ecf744a8ffae32668b99680990f0ff46f32",
+            "exit_code": 0,
+            "log": "cpu-offline-obscured_14mph-fallback1.log",
+            "log_sha256": "b03fb3750bc4bef1ffa1439dccba691f05a152a6a136bccfb93c8c0bd04d1eb1"
+          },
+          "trigger": {
+            "failure_condition": "measured traversal speed differs from selected target by over 0.5 mph or crossing interval is incomplete",
+            "metric": "maximum traversal speed mph and complete original frame continuity",
+            "source": "original native-rail-frames.json and original-cameras/approach"
+          }
+        }
+      ],
       "case_id": "testing__C410753__LVMC-11-16-030__motor_vehicle_driver__obscured_14mph",
       "compatibility": {
         "log": "compat-analysis-obscured_14mph-primary.log",
@@ -15,20 +56,112 @@
       },
       "construction": "cases/obscured_14mph/construction.json",
       "construction_sha256": "4fa42470400a1231ebbad57d55ebed6265c3189c5111b902c2c43a278e923e22",
+      "delivery_acceptance": {
+        "case_id": "testing__C410753__LVMC-11-16-030__motor_vehicle_driver__obscured_14mph",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C410753__LVMC-11-16-030__motor_vehicle_driver/rail_delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c410753-compat-first-v8 --case-id testing__C410753__LVMC-11-16-030__motor_vehicle_driver__obscured_14mph --diagnostic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c410753-delivery-batch/obscured_14mph-positive.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C410753__LVMC-11-16-030__motor_vehicle_driver/rail_delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c410753-compat-first-v8 --case-id testing__C410753__LVMC-11-16-030__motor_vehicle_driver__obscured_14mph --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c410753-delivery-batch/obscured_14mph-negative.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "diagnostic fixture cannot establish Native delivery",
+        "negative_log": "cpu-delivery-obscured_14mph-negative.log",
+        "negative_log_sha256": "b23c1c6cda7215f0fd287874d5282958b5112f9ac29177525a95f4e319bb75b6",
+        "script": "rail_delivery_audit.py",
+        "script_sha256": "d548b2010eada6e4862106b3fe47443882cfa753a505556c53b62b4b9753e36c",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-obscured_14mph-positive.log",
+        "test_log_sha256": "2253f9416536879ada97e6deb6d4a2329068ce2a3a5c13a374173d9429bccbbe"
+      },
       "fixture_recipe": "work/testing__C410753__LVMC-11-16-030__motor_vehicle_driver/diagnostic-fixtures/obscured_14mph/fixture-recipe.json",
+      "kind": "delivery",
       "measurement_contract": "cases/obscured_14mph/measurement-contract.json",
       "measurement_procedure": {
-        "entrypoint": "analysis.py"
+        "entrypoint": "analysis.py",
+        "method": "measure_saved"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
       },
       "negative": {
         "log": "compat-negative-obscured_14mph-primary.log"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C410753__LVMC-11-16-030__motor_vehicle_driver/execution-manifest.json --case testing__C410753__LVMC-11-16-030__motor_vehicle_driver__obscured_14mph --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c410753-offline-obscured_14mph-primary",
+        "construction_sha256": "4fa42470400a1231ebbad57d55ebed6265c3189c5111b902c2c43a278e923e22",
+        "exit_code": 0,
+        "log": "cpu-offline-obscured_14mph-primary.log",
+        "log_sha256": "b03fb3750bc4bef1ffa1439dccba691f05a152a6a136bccfb93c8c0bd04d1eb1"
+      },
+      "physical_preparation": {
+        "receipt": "physical-obscured_14mph-receipt.json",
+        "sha256": "22abb0a4a6ad08666c754249e6feeeb91f6faded60269aae26aea93b5b16d3d3"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C410753__LVMC-11-16-030__motor_vehicle_driver/execution-manifest.json --case testing__C410753__LVMC-11-16-030__motor_vehicle_driver__obscured_14mph --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$OUTPUT/feedback.json\"",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-obscured_14mph.log",
+        "test_log_sha256": "05c013855642c2d248ba25458d26c246c950d3df6c1979051e1b1d0bdc4042d5"
       }
     },
     {
+      "acquisition": {
+        "four_original_camera_streams": {
+          "entrypoint": "rail_core_projection.py",
+          "evidence": "channels/four_original_camera_streams.jsonl",
+          "method": "four original camera frame identities, source hashes and full decode"
+        },
+        "original_native_frame_history": {
+          "entrypoint": "rail_core_projection.py",
+          "evidence": "channels/original_native_frame_history.jsonl",
+          "method": "source-bound 900-frame Native readback of railway route, speed, sight and exceptions"
+        }
+      },
       "candidate_risk": {
         "reason": "Reviewed original grade-crossing geometry, sight rays and speed may miss the requested condition; actual Native readback determines feasibility.",
         "status": "physical"
       },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "controller speed-gap gain: 0.18 to 0.24",
+            "controller throttle cap: 0.55 to 0.52"
+          ],
+          "compatibility": {
+            "log": "compat-analysis-obscured_15mph-fallback1.log",
+            "negative_log": "compat-negative-obscured_15mph-fallback1.log",
+            "receipt": "compat-obscured_15mph-fallback1.json",
+            "sha256": "8443f05c4776d966cb4110cdb900387164b7c812a2dfbab7d551551813629674"
+          },
+          "construction": "cases/obscured_15mph/fallback1-construction.json",
+          "construction_sha256": "ee4d743c665ed0082c5d65c8cd7b7128b4a51e93cec03d61172a76c3033fcfda",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C410753__LVMC-11-16-030__motor_vehicle_driver/execution-manifest.json --case testing__C410753__LVMC-11-16-030__motor_vehicle_driver__obscured_15mph --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c410753-offline-obscured_15mph-fallback1",
+            "construction_sha256": "ee4d743c665ed0082c5d65c8cd7b7128b4a51e93cec03d61172a76c3033fcfda",
+            "exit_code": 0,
+            "log": "cpu-offline-obscured_15mph-fallback1.log",
+            "log_sha256": "7c72ca40bd174d454506a8f98798bdfbd96aba28a3dabf0efdc29f3475106a61"
+          },
+          "trigger": {
+            "failure_condition": "measured traversal speed differs from selected target by over 0.5 mph or crossing interval is incomplete",
+            "metric": "maximum traversal speed mph and complete original frame continuity",
+            "source": "original native-rail-frames.json and original-cameras/approach"
+          }
+        }
+      ],
       "case_id": "testing__C410753__LVMC-11-16-030__motor_vehicle_driver__obscured_15mph",
       "compatibility": {
         "log": "compat-analysis-obscured_15mph-primary.log",
@@ -38,20 +171,112 @@
       },
       "construction": "cases/obscured_15mph/construction.json",
       "construction_sha256": "92ccd4ff66f96943f35a78c4a06b9ad66ff7ae5a3ddd72932d49df0b0b845135",
+      "delivery_acceptance": {
+        "case_id": "testing__C410753__LVMC-11-16-030__motor_vehicle_driver__obscured_15mph",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C410753__LVMC-11-16-030__motor_vehicle_driver/rail_delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c410753-compat-obscured_15mph-v8 --case-id testing__C410753__LVMC-11-16-030__motor_vehicle_driver__obscured_15mph --diagnostic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c410753-delivery-batch/obscured_15mph-positive.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C410753__LVMC-11-16-030__motor_vehicle_driver/rail_delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c410753-compat-obscured_15mph-v8 --case-id testing__C410753__LVMC-11-16-030__motor_vehicle_driver__obscured_15mph --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c410753-delivery-batch/obscured_15mph-negative.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "diagnostic fixture cannot establish Native delivery",
+        "negative_log": "cpu-delivery-obscured_15mph-negative.log",
+        "negative_log_sha256": "b23c1c6cda7215f0fd287874d5282958b5112f9ac29177525a95f4e319bb75b6",
+        "script": "rail_delivery_audit.py",
+        "script_sha256": "d548b2010eada6e4862106b3fe47443882cfa753a505556c53b62b4b9753e36c",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-obscured_15mph-positive.log",
+        "test_log_sha256": "3951b61817b85b4879a7c415818077c0691ecbf4847e246b2025d0ec7ff64415"
+      },
       "fixture_recipe": "work/testing__C410753__LVMC-11-16-030__motor_vehicle_driver/diagnostic-fixtures/obscured_15mph/fixture-recipe.json",
+      "kind": "delivery",
       "measurement_contract": "cases/obscured_15mph/measurement-contract.json",
       "measurement_procedure": {
-        "entrypoint": "analysis.py"
+        "entrypoint": "analysis.py",
+        "method": "measure_saved"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
       },
       "negative": {
         "log": "compat-negative-obscured_15mph-primary.log"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C410753__LVMC-11-16-030__motor_vehicle_driver/execution-manifest.json --case testing__C410753__LVMC-11-16-030__motor_vehicle_driver__obscured_15mph --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c410753-offline-obscured_15mph-primary",
+        "construction_sha256": "92ccd4ff66f96943f35a78c4a06b9ad66ff7ae5a3ddd72932d49df0b0b845135",
+        "exit_code": 0,
+        "log": "cpu-offline-obscured_15mph-primary.log",
+        "log_sha256": "7c72ca40bd174d454506a8f98798bdfbd96aba28a3dabf0efdc29f3475106a61"
+      },
+      "physical_preparation": {
+        "receipt": "physical-obscured_15mph-receipt.json",
+        "sha256": "ced807b001205f3268bc1533a09f5265920a58d51c4c5addb4e4cd70096771bf"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C410753__LVMC-11-16-030__motor_vehicle_driver/execution-manifest.json --case testing__C410753__LVMC-11-16-030__motor_vehicle_driver__obscured_15mph --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$OUTPUT/feedback.json\"",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-obscured_15mph.log",
+        "test_log_sha256": "badb4867c41a174109a97d196008f9662505df23c2df6baacfc3f73c95223f9d"
       }
     },
     {
+      "acquisition": {
+        "four_original_camera_streams": {
+          "entrypoint": "rail_core_projection.py",
+          "evidence": "channels/four_original_camera_streams.jsonl",
+          "method": "four original camera frame identities, source hashes and full decode"
+        },
+        "original_native_frame_history": {
+          "entrypoint": "rail_core_projection.py",
+          "evidence": "channels/original_native_frame_history.jsonl",
+          "method": "source-bound 900-frame Native readback of railway route, speed, sight and exceptions"
+        }
+      },
       "candidate_risk": {
         "reason": "Reviewed original grade-crossing geometry, sight rays and speed may miss the requested condition; actual Native readback determines feasibility.",
         "status": "physical"
       },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "controller speed-gap gain: 0.18 to 0.24",
+            "controller throttle cap: 0.55 to 0.52"
+          ],
+          "compatibility": {
+            "log": "compat-analysis-obscured_16mph-fallback1.log",
+            "negative_log": "compat-negative-obscured_16mph-fallback1.log",
+            "receipt": "compat-obscured_16mph-fallback1.json",
+            "sha256": "d18895e1dc05865562a13cd4ba1599d6873025e593b57c518057d5a981d66c8f"
+          },
+          "construction": "cases/obscured_16mph/fallback1-construction.json",
+          "construction_sha256": "51866d051328799a848e81aa60b320b667c8629e601be9ba6e61361b90994116",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C410753__LVMC-11-16-030__motor_vehicle_driver/execution-manifest.json --case testing__C410753__LVMC-11-16-030__motor_vehicle_driver__obscured_16mph --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c410753-offline-obscured_16mph-fallback1",
+            "construction_sha256": "51866d051328799a848e81aa60b320b667c8629e601be9ba6e61361b90994116",
+            "exit_code": 0,
+            "log": "cpu-offline-obscured_16mph-fallback1.log",
+            "log_sha256": "ad7471de4b561f5eabad9a5685c0767c8c6775b39f35f7a1aa2c3dd12bfdf032"
+          },
+          "trigger": {
+            "failure_condition": "measured traversal speed differs from selected target by over 0.5 mph or crossing interval is incomplete",
+            "metric": "maximum traversal speed mph and complete original frame continuity",
+            "source": "original native-rail-frames.json and original-cameras/approach"
+          }
+        }
+      ],
       "case_id": "testing__C410753__LVMC-11-16-030__motor_vehicle_driver__obscured_16mph",
       "compatibility": {
         "log": "compat-analysis-obscured_16mph-primary.log",
@@ -61,20 +286,112 @@
       },
       "construction": "cases/obscured_16mph/construction.json",
       "construction_sha256": "bc692bf6a071dc7ed0177c4d53a8ca45ec6976399b73de25e0b2c3c28c54e9aa",
+      "delivery_acceptance": {
+        "case_id": "testing__C410753__LVMC-11-16-030__motor_vehicle_driver__obscured_16mph",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C410753__LVMC-11-16-030__motor_vehicle_driver/rail_delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c410753-compat-obscured_16mph-v8 --case-id testing__C410753__LVMC-11-16-030__motor_vehicle_driver__obscured_16mph --diagnostic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c410753-delivery-batch/obscured_16mph-positive.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C410753__LVMC-11-16-030__motor_vehicle_driver/rail_delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c410753-compat-obscured_16mph-v8 --case-id testing__C410753__LVMC-11-16-030__motor_vehicle_driver__obscured_16mph --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c410753-delivery-batch/obscured_16mph-negative.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "diagnostic fixture cannot establish Native delivery",
+        "negative_log": "cpu-delivery-obscured_16mph-negative.log",
+        "negative_log_sha256": "b23c1c6cda7215f0fd287874d5282958b5112f9ac29177525a95f4e319bb75b6",
+        "script": "rail_delivery_audit.py",
+        "script_sha256": "d548b2010eada6e4862106b3fe47443882cfa753a505556c53b62b4b9753e36c",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-obscured_16mph-positive.log",
+        "test_log_sha256": "58082e35a3e899183d2260fd9b6d4ffc51bf37e91f1c783014e3b08911f669c3"
+      },
       "fixture_recipe": "work/testing__C410753__LVMC-11-16-030__motor_vehicle_driver/diagnostic-fixtures/obscured_16mph/fixture-recipe.json",
+      "kind": "delivery",
       "measurement_contract": "cases/obscured_16mph/measurement-contract.json",
       "measurement_procedure": {
-        "entrypoint": "analysis.py"
+        "entrypoint": "analysis.py",
+        "method": "measure_saved"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
       },
       "negative": {
         "log": "compat-negative-obscured_16mph-primary.log"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C410753__LVMC-11-16-030__motor_vehicle_driver/execution-manifest.json --case testing__C410753__LVMC-11-16-030__motor_vehicle_driver__obscured_16mph --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c410753-offline-obscured_16mph-primary",
+        "construction_sha256": "bc692bf6a071dc7ed0177c4d53a8ca45ec6976399b73de25e0b2c3c28c54e9aa",
+        "exit_code": 0,
+        "log": "cpu-offline-obscured_16mph-primary.log",
+        "log_sha256": "ad7471de4b561f5eabad9a5685c0767c8c6775b39f35f7a1aa2c3dd12bfdf032"
+      },
+      "physical_preparation": {
+        "receipt": "physical-obscured_16mph-receipt.json",
+        "sha256": "f96a1ff6b9d4199894611d515e10b7389314936ce08f89213272d3362aaabb9b"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C410753__LVMC-11-16-030__motor_vehicle_driver/execution-manifest.json --case testing__C410753__LVMC-11-16-030__motor_vehicle_driver__obscured_16mph --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$OUTPUT/feedback.json\"",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-obscured_16mph.log",
+        "test_log_sha256": "384b38a34df48328c9fdf9addfbd02ca81a1dd407cfd929b2fda611b2e0a4abf"
       }
     },
     {
+      "acquisition": {
+        "four_original_camera_streams": {
+          "entrypoint": "rail_core_projection.py",
+          "evidence": "channels/four_original_camera_streams.jsonl",
+          "method": "four original camera frame identities, source hashes and full decode"
+        },
+        "original_native_frame_history": {
+          "entrypoint": "rail_core_projection.py",
+          "evidence": "channels/original_native_frame_history.jsonl",
+          "method": "source-bound 900-frame Native readback of railway route, speed, sight and exceptions"
+        }
+      },
       "candidate_risk": {
         "reason": "Reviewed original grade-crossing geometry, sight rays and speed may miss the requested condition; actual Native readback determines feasibility.",
         "status": "physical"
       },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "controller speed-gap gain: 0.18 to 0.24",
+            "controller throttle cap: 0.55 to 0.52"
+          ],
+          "compatibility": {
+            "log": "compat-analysis-clear_view_16mph-fallback1.log",
+            "negative_log": "compat-negative-clear_view_16mph-fallback1.log",
+            "receipt": "compat-clear_view_16mph-fallback1.json",
+            "sha256": "ada64e55251a3afce64aad250364a90304021aca2259faae0cb26b4a8cbeeef4"
+          },
+          "construction": "cases/clear_view_16mph/fallback1-construction.json",
+          "construction_sha256": "8691f7660d334cfde294e28359b8df52227141032d4473ac3094a9e6b5d3e818",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C410753__LVMC-11-16-030__motor_vehicle_driver/execution-manifest.json --case testing__C410753__LVMC-11-16-030__motor_vehicle_driver__clear_view_16mph --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c410753-offline-clear_view_16mph-fallback1",
+            "construction_sha256": "8691f7660d334cfde294e28359b8df52227141032d4473ac3094a9e6b5d3e818",
+            "exit_code": 0,
+            "log": "cpu-offline-clear_view_16mph-fallback1.log",
+            "log_sha256": "c5415af4f7a8a49ecbe0805b04fd8db00d51fa60010dffd4f2102b9dbae09bbe"
+          },
+          "trigger": {
+            "failure_condition": "measured traversal speed differs from selected target by over 0.5 mph or crossing interval is incomplete",
+            "metric": "maximum traversal speed mph and complete original frame continuity",
+            "source": "original native-rail-frames.json and original-cameras/approach"
+          }
+        }
+      ],
       "case_id": "testing__C410753__LVMC-11-16-030__motor_vehicle_driver__clear_view_16mph",
       "compatibility": {
         "log": "compat-analysis-clear_view_16mph-primary.log",
@@ -84,20 +401,112 @@
       },
       "construction": "cases/clear_view_16mph/construction.json",
       "construction_sha256": "dd8161f658f5a297de2ad064280810af52e8f523589d23cea239e26f7f4982ce",
+      "delivery_acceptance": {
+        "case_id": "testing__C410753__LVMC-11-16-030__motor_vehicle_driver__clear_view_16mph",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C410753__LVMC-11-16-030__motor_vehicle_driver/rail_delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c410753-compat-clear_view_16mph-v8 --case-id testing__C410753__LVMC-11-16-030__motor_vehicle_driver__clear_view_16mph --diagnostic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c410753-delivery-batch/clear_view_16mph-positive.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C410753__LVMC-11-16-030__motor_vehicle_driver/rail_delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c410753-compat-clear_view_16mph-v8 --case-id testing__C410753__LVMC-11-16-030__motor_vehicle_driver__clear_view_16mph --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c410753-delivery-batch/clear_view_16mph-negative.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "diagnostic fixture cannot establish Native delivery",
+        "negative_log": "cpu-delivery-clear_view_16mph-negative.log",
+        "negative_log_sha256": "b23c1c6cda7215f0fd287874d5282958b5112f9ac29177525a95f4e319bb75b6",
+        "script": "rail_delivery_audit.py",
+        "script_sha256": "d548b2010eada6e4862106b3fe47443882cfa753a505556c53b62b4b9753e36c",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-clear_view_16mph-positive.log",
+        "test_log_sha256": "d6f917e4ce88c5cc9d3030627b96201039f84c65939ccf62ce6a4f3eed9706c3"
+      },
       "fixture_recipe": "work/testing__C410753__LVMC-11-16-030__motor_vehicle_driver/diagnostic-fixtures/clear_view_16mph/fixture-recipe.json",
+      "kind": "delivery",
       "measurement_contract": "cases/clear_view_16mph/measurement-contract.json",
       "measurement_procedure": {
-        "entrypoint": "analysis.py"
+        "entrypoint": "analysis.py",
+        "method": "measure_saved"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
       },
       "negative": {
         "log": "compat-negative-clear_view_16mph-primary.log"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C410753__LVMC-11-16-030__motor_vehicle_driver/execution-manifest.json --case testing__C410753__LVMC-11-16-030__motor_vehicle_driver__clear_view_16mph --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c410753-offline-clear_view_16mph-primary",
+        "construction_sha256": "dd8161f658f5a297de2ad064280810af52e8f523589d23cea239e26f7f4982ce",
+        "exit_code": 0,
+        "log": "cpu-offline-clear_view_16mph-primary.log",
+        "log_sha256": "c5415af4f7a8a49ecbe0805b04fd8db00d51fa60010dffd4f2102b9dbae09bbe"
+      },
+      "physical_preparation": {
+        "receipt": "physical-clear_view_16mph-receipt.json",
+        "sha256": "70c143d08510cebe833724430c7125d234b4cc102e739e4edfd95e9903cb12ef"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C410753__LVMC-11-16-030__motor_vehicle_driver/execution-manifest.json --case testing__C410753__LVMC-11-16-030__motor_vehicle_driver__clear_view_16mph --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$OUTPUT/feedback.json\"",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-clear_view_16mph.log",
+        "test_log_sha256": "ca3c38fce5cbd7a2654260d4b175c742d5dd172bdff5f9af737f3fb283ab6fec"
       }
     },
     {
+      "acquisition": {
+        "four_original_camera_streams": {
+          "entrypoint": "rail_core_projection.py",
+          "evidence": "channels/four_original_camera_streams.jsonl",
+          "method": "four original camera frame identities, source hashes and full decode"
+        },
+        "original_native_frame_history": {
+          "entrypoint": "rail_core_projection.py",
+          "evidence": "channels/original_native_frame_history.jsonl",
+          "method": "source-bound 900-frame Native readback of railway route, speed, sight and exceptions"
+        }
+      },
       "candidate_risk": {
         "reason": "Reviewed original grade-crossing geometry, sight rays and speed may miss the requested condition; actual Native readback determines feasibility.",
         "status": "physical"
       },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "controller speed-gap gain: 0.18 to 0.24",
+            "controller throttle cap: 0.55 to 0.52"
+          ],
+          "compatibility": {
+            "log": "compat-analysis-flagman_16mph-fallback1.log",
+            "negative_log": "compat-negative-flagman_16mph-fallback1.log",
+            "receipt": "compat-flagman_16mph-fallback1.json",
+            "sha256": "d97ba3b70098a8effbffa9173681084d6bd636db25ce54c8d21f6be80486cebb"
+          },
+          "construction": "cases/flagman_16mph/fallback1-construction.json",
+          "construction_sha256": "aa5c747c2f61fdffc9cbc0a5d53e9dab2858e1bf4638564fee7c204fa46f5cb8",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C410753__LVMC-11-16-030__motor_vehicle_driver/execution-manifest.json --case testing__C410753__LVMC-11-16-030__motor_vehicle_driver__flagman_16mph --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c410753-offline-flagman_16mph-fallback1",
+            "construction_sha256": "aa5c747c2f61fdffc9cbc0a5d53e9dab2858e1bf4638564fee7c204fa46f5cb8",
+            "exit_code": 0,
+            "log": "cpu-offline-flagman_16mph-fallback1.log",
+            "log_sha256": "225c6216338be657c3d3c81e50295fb052bd99ea227a5e5ca5b62bf4961f6ac7"
+          },
+          "trigger": {
+            "failure_condition": "measured traversal speed differs from selected target by over 0.5 mph or crossing interval is incomplete",
+            "metric": "maximum traversal speed mph and complete original frame continuity",
+            "source": "original native-rail-frames.json and original-cameras/approach"
+          }
+        }
+      ],
       "case_id": "testing__C410753__LVMC-11-16-030__motor_vehicle_driver__flagman_16mph",
       "compatibility": {
         "log": "compat-analysis-flagman_16mph-primary.log",
@@ -107,20 +516,112 @@
       },
       "construction": "cases/flagman_16mph/construction.json",
       "construction_sha256": "16f1f232b5da425fd2ba7116316aabe7d17e46748ccd1f674cf17e192404f63a",
+      "delivery_acceptance": {
+        "case_id": "testing__C410753__LVMC-11-16-030__motor_vehicle_driver__flagman_16mph",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C410753__LVMC-11-16-030__motor_vehicle_driver/rail_delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c410753-compat-flagman_16mph-v8 --case-id testing__C410753__LVMC-11-16-030__motor_vehicle_driver__flagman_16mph --diagnostic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c410753-delivery-batch/flagman_16mph-positive.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C410753__LVMC-11-16-030__motor_vehicle_driver/rail_delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c410753-compat-flagman_16mph-v8 --case-id testing__C410753__LVMC-11-16-030__motor_vehicle_driver__flagman_16mph --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c410753-delivery-batch/flagman_16mph-negative.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "diagnostic fixture cannot establish Native delivery",
+        "negative_log": "cpu-delivery-flagman_16mph-negative.log",
+        "negative_log_sha256": "b23c1c6cda7215f0fd287874d5282958b5112f9ac29177525a95f4e319bb75b6",
+        "script": "rail_delivery_audit.py",
+        "script_sha256": "d548b2010eada6e4862106b3fe47443882cfa753a505556c53b62b4b9753e36c",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-flagman_16mph-positive.log",
+        "test_log_sha256": "6343a658b3b7dfa443984ed1b25d6871e432c6536999c7d49451838a2a792a30"
+      },
       "fixture_recipe": "work/testing__C410753__LVMC-11-16-030__motor_vehicle_driver/diagnostic-fixtures/flagman_16mph/fixture-recipe.json",
+      "kind": "delivery",
       "measurement_contract": "cases/flagman_16mph/measurement-contract.json",
       "measurement_procedure": {
-        "entrypoint": "analysis.py"
+        "entrypoint": "analysis.py",
+        "method": "measure_saved"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
       },
       "negative": {
         "log": "compat-negative-flagman_16mph-primary.log"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C410753__LVMC-11-16-030__motor_vehicle_driver/execution-manifest.json --case testing__C410753__LVMC-11-16-030__motor_vehicle_driver__flagman_16mph --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c410753-offline-flagman_16mph-primary",
+        "construction_sha256": "16f1f232b5da425fd2ba7116316aabe7d17e46748ccd1f674cf17e192404f63a",
+        "exit_code": 0,
+        "log": "cpu-offline-flagman_16mph-primary.log",
+        "log_sha256": "225c6216338be657c3d3c81e50295fb052bd99ea227a5e5ca5b62bf4961f6ac7"
+      },
+      "physical_preparation": {
+        "receipt": "physical-flagman_16mph-receipt.json",
+        "sha256": "2f7c5aeb032d4abcb53ae7bc5568087f578fdd9cccb132dbb3bf244bdcfd5980"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C410753__LVMC-11-16-030__motor_vehicle_driver/execution-manifest.json --case testing__C410753__LVMC-11-16-030__motor_vehicle_driver__flagman_16mph --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$OUTPUT/feedback.json\"",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-flagman_16mph.log",
+        "test_log_sha256": "03e3f59984bd4aa7b1f2cbaced38ce2ca5838cc17c9aba29bb79b5d4f30b5ecc"
       }
     },
     {
+      "acquisition": {
+        "four_original_camera_streams": {
+          "entrypoint": "rail_core_projection.py",
+          "evidence": "channels/four_original_camera_streams.jsonl",
+          "method": "four original camera frame identities, source hashes and full decode"
+        },
+        "original_native_frame_history": {
+          "entrypoint": "rail_core_projection.py",
+          "evidence": "channels/original_native_frame_history.jsonl",
+          "method": "source-bound 900-frame Native readback of railway route, speed, sight and exceptions"
+        }
+      },
       "candidate_risk": {
         "reason": "Reviewed original grade-crossing geometry, sight rays and speed may miss the requested condition; actual Native readback determines feasibility.",
         "status": "physical"
       },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "controller speed-gap gain: 0.18 to 0.24",
+            "controller throttle cap: 0.55 to 0.52"
+          ],
+          "compatibility": {
+            "log": "compat-analysis-signal_nonwarning_16mph-fallback1.log",
+            "negative_log": "compat-negative-signal_nonwarning_16mph-fallback1.log",
+            "receipt": "compat-signal_nonwarning_16mph-fallback1.json",
+            "sha256": "054485c86c5ad0c6d335041faae512cf09620ac2fe9dff97f47bad9491405534"
+          },
+          "construction": "cases/signal_nonwarning_16mph/fallback1-construction.json",
+          "construction_sha256": "4fc24c64385d5983f70f65ff89d492b14638345bf788a89719e83546846aef37",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C410753__LVMC-11-16-030__motor_vehicle_driver/execution-manifest.json --case testing__C410753__LVMC-11-16-030__motor_vehicle_driver__signal_nonwarning_16mph --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c410753-offline-signal_nonwarning_16mph-fallback1",
+            "construction_sha256": "4fc24c64385d5983f70f65ff89d492b14638345bf788a89719e83546846aef37",
+            "exit_code": 0,
+            "log": "cpu-offline-signal_nonwarning_16mph-fallback1.log",
+            "log_sha256": "e61efb71ded510ea05d970a2a22555135a252a6c911011d4bb7b8c64c39ff376"
+          },
+          "trigger": {
+            "failure_condition": "measured traversal speed differs from selected target by over 0.5 mph or crossing interval is incomplete",
+            "metric": "maximum traversal speed mph and complete original frame continuity",
+            "source": "original native-rail-frames.json and original-cameras/approach"
+          }
+        }
+      ],
       "case_id": "testing__C410753__LVMC-11-16-030__motor_vehicle_driver__signal_nonwarning_16mph",
       "compatibility": {
         "log": "compat-analysis-signal_nonwarning_16mph-primary.log",
@@ -130,20 +631,112 @@
       },
       "construction": "cases/signal_nonwarning_16mph/construction.json",
       "construction_sha256": "dac2f1114a57b6324db2c9d212a75dcd1e5cba1708bcd3967ddb7ce598f8f286",
+      "delivery_acceptance": {
+        "case_id": "testing__C410753__LVMC-11-16-030__motor_vehicle_driver__signal_nonwarning_16mph",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C410753__LVMC-11-16-030__motor_vehicle_driver/rail_delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c410753-compat-signal_nonwarning_16mph-v8 --case-id testing__C410753__LVMC-11-16-030__motor_vehicle_driver__signal_nonwarning_16mph --diagnostic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c410753-delivery-batch/signal_nonwarning_16mph-positive.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C410753__LVMC-11-16-030__motor_vehicle_driver/rail_delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c410753-compat-signal_nonwarning_16mph-v8 --case-id testing__C410753__LVMC-11-16-030__motor_vehicle_driver__signal_nonwarning_16mph --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c410753-delivery-batch/signal_nonwarning_16mph-negative.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "diagnostic fixture cannot establish Native delivery",
+        "negative_log": "cpu-delivery-signal_nonwarning_16mph-negative.log",
+        "negative_log_sha256": "b23c1c6cda7215f0fd287874d5282958b5112f9ac29177525a95f4e319bb75b6",
+        "script": "rail_delivery_audit.py",
+        "script_sha256": "d548b2010eada6e4862106b3fe47443882cfa753a505556c53b62b4b9753e36c",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-signal_nonwarning_16mph-positive.log",
+        "test_log_sha256": "0c771658b7bdeccaa6089ee196512a51612c86aef7e106f7ee2d311598ba6ae9"
+      },
       "fixture_recipe": "work/testing__C410753__LVMC-11-16-030__motor_vehicle_driver/diagnostic-fixtures/signal_nonwarning_16mph/fixture-recipe.json",
+      "kind": "delivery",
       "measurement_contract": "cases/signal_nonwarning_16mph/measurement-contract.json",
       "measurement_procedure": {
-        "entrypoint": "analysis.py"
+        "entrypoint": "analysis.py",
+        "method": "measure_saved"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
       },
       "negative": {
         "log": "compat-negative-signal_nonwarning_16mph-primary.log"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C410753__LVMC-11-16-030__motor_vehicle_driver/execution-manifest.json --case testing__C410753__LVMC-11-16-030__motor_vehicle_driver__signal_nonwarning_16mph --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c410753-offline-signal_nonwarning_16mph-primary",
+        "construction_sha256": "dac2f1114a57b6324db2c9d212a75dcd1e5cba1708bcd3967ddb7ce598f8f286",
+        "exit_code": 0,
+        "log": "cpu-offline-signal_nonwarning_16mph-primary.log",
+        "log_sha256": "e61efb71ded510ea05d970a2a22555135a252a6c911011d4bb7b8c64c39ff376"
+      },
+      "physical_preparation": {
+        "receipt": "physical-signal_nonwarning_16mph-receipt.json",
+        "sha256": "43950f15bb97c69392a392a5db398019829d0c11aee758280995bf513f7a6bba"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C410753__LVMC-11-16-030__motor_vehicle_driver/execution-manifest.json --case testing__C410753__LVMC-11-16-030__motor_vehicle_driver__signal_nonwarning_16mph --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$OUTPUT/feedback.json\"",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-signal_nonwarning_16mph.log",
+        "test_log_sha256": "3bb0ae7539f8aa16129aef7dc386247bdd489dabc5581bb9034da01ee18bb5e0"
       }
     },
     {
+      "acquisition": {
+        "four_original_camera_streams": {
+          "entrypoint": "rail_core_projection.py",
+          "evidence": "channels/four_original_camera_streams.jsonl",
+          "method": "four original camera frame identities, source hashes and full decode"
+        },
+        "original_native_frame_history": {
+          "entrypoint": "rail_core_projection.py",
+          "evidence": "channels/original_native_frame_history.jsonl",
+          "method": "source-bound 900-frame Native readback of railway route, speed, sight and exceptions"
+        }
+      },
       "candidate_risk": {
         "reason": "Reviewed original grade-crossing geometry, sight rays and speed may miss the requested condition; actual Native readback determines feasibility.",
         "status": "physical"
       },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "controller speed-gap gain: 0.18 to 0.24",
+            "controller throttle cap: 0.55 to 0.52"
+          ],
+          "compatibility": {
+            "log": "compat-analysis-signal_warning_16mph-fallback1.log",
+            "negative_log": "compat-negative-signal_warning_16mph-fallback1.log",
+            "receipt": "compat-signal_warning_16mph-fallback1.json",
+            "sha256": "f5eb961a27d0e68c3ed72639ab4a22b563792a7cc0b5efe3d6a4efabf3fef313"
+          },
+          "construction": "cases/signal_warning_16mph/fallback1-construction.json",
+          "construction_sha256": "e947fdeae96a8364aa0fec48dba7fa18a41fb010d27219a4d2bdf3b4cd801813",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C410753__LVMC-11-16-030__motor_vehicle_driver/execution-manifest.json --case testing__C410753__LVMC-11-16-030__motor_vehicle_driver__signal_warning_16mph --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c410753-offline-signal_warning_16mph-fallback1",
+            "construction_sha256": "e947fdeae96a8364aa0fec48dba7fa18a41fb010d27219a4d2bdf3b4cd801813",
+            "exit_code": 0,
+            "log": "cpu-offline-signal_warning_16mph-fallback1.log",
+            "log_sha256": "07538e9e8aae6db048bb1435f9f9cecd9cb2b30b4eaf5ffa0bf80af0743ce811"
+          },
+          "trigger": {
+            "failure_condition": "measured traversal speed differs from selected target by over 0.5 mph or crossing interval is incomplete",
+            "metric": "maximum traversal speed mph and complete original frame continuity",
+            "source": "original native-rail-frames.json and original-cameras/approach"
+          }
+        }
+      ],
       "case_id": "testing__C410753__LVMC-11-16-030__motor_vehicle_driver__signal_warning_16mph",
       "compatibility": {
         "log": "compat-analysis-signal_warning_16mph-primary.log",
@@ -153,16 +746,68 @@
       },
       "construction": "cases/signal_warning_16mph/construction.json",
       "construction_sha256": "b1df13fa7397c9e5a18b20d7fd955d274374123d2e6277056f8426b6ef2df277",
+      "delivery_acceptance": {
+        "case_id": "testing__C410753__LVMC-11-16-030__motor_vehicle_driver__signal_warning_16mph",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C410753__LVMC-11-16-030__motor_vehicle_driver/rail_delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c410753-compat-signal_warning_16mph-v8 --case-id testing__C410753__LVMC-11-16-030__motor_vehicle_driver__signal_warning_16mph --diagnostic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c410753-delivery-batch/signal_warning_16mph-positive.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C410753__LVMC-11-16-030__motor_vehicle_driver/rail_delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c410753-compat-signal_warning_16mph-v8 --case-id testing__C410753__LVMC-11-16-030__motor_vehicle_driver__signal_warning_16mph --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c410753-delivery-batch/signal_warning_16mph-negative.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "diagnostic fixture cannot establish Native delivery",
+        "negative_log": "cpu-delivery-signal_warning_16mph-negative.log",
+        "negative_log_sha256": "b23c1c6cda7215f0fd287874d5282958b5112f9ac29177525a95f4e319bb75b6",
+        "script": "rail_delivery_audit.py",
+        "script_sha256": "d548b2010eada6e4862106b3fe47443882cfa753a505556c53b62b4b9753e36c",
+        "sets": [
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-signal_warning_16mph-positive.log",
+        "test_log_sha256": "75ce263ed602898fd0cb239e01bfdc96e07a72a706564396c75fd26ce616823f"
+      },
       "fixture_recipe": "work/testing__C410753__LVMC-11-16-030__motor_vehicle_driver/diagnostic-fixtures/signal_warning_16mph/fixture-recipe.json",
+      "kind": "delivery",
       "measurement_contract": "cases/signal_warning_16mph/measurement-contract.json",
       "measurement_procedure": {
-        "entrypoint": "analysis.py"
+        "entrypoint": "analysis.py",
+        "method": "measure_saved"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
       },
       "negative": {
         "log": "compat-negative-signal_warning_16mph-primary.log"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C410753__LVMC-11-16-030__motor_vehicle_driver/execution-manifest.json --case testing__C410753__LVMC-11-16-030__motor_vehicle_driver__signal_warning_16mph --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c410753-offline-signal_warning_16mph-primary",
+        "construction_sha256": "b1df13fa7397c9e5a18b20d7fd955d274374123d2e6277056f8426b6ef2df277",
+        "exit_code": 0,
+        "log": "cpu-offline-signal_warning_16mph-primary.log",
+        "log_sha256": "07538e9e8aae6db048bb1435f9f9cecd9cb2b30b4eaf5ffa0bf80af0743ce811"
+      },
+      "physical_preparation": {
+        "receipt": "physical-signal_warning_16mph-receipt.json",
+        "sha256": "707cc8a41a973b38c26822a4a8c98f73d4709e1387031c32c905ca528789926f"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C410753__LVMC-11-16-030__motor_vehicle_driver/execution-manifest.json --case testing__C410753__LVMC-11-16-030__motor_vehicle_driver__signal_warning_16mph --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$OUTPUT/feedback.json\"",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-signal_warning_16mph.log",
+        "test_log_sha256": "ff060ba13519d181c4d10f2a680e27e3deadc61c9f06c5a4fbbebf60947323fe"
       }
     }
   ],
+  "format": "worker-execution-manifest",
   "physical_completion_confirmed": false,
   "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
   "status": "partial"

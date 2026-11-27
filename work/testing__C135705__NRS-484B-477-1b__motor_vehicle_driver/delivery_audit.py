@@ -88,6 +88,8 @@ def audit(attempt,case_id,plan):
         raise ValueError('original Native provenance missing')
     if inventory.get('case_id')!=case_id or inventory.get('frame_count')!=count:
         raise ValueError('original width inventory case/frame count differs')
+    if not (source/'width_history.json').is_file():
+        raise ValueError('original width_history packet missing')
     measured=measure_saved(source,case_id,expected_frames=count)
     mapped=rows(attempt/'video_frames.jsonl')
     trace=rows(attempt/'trace.jsonl')

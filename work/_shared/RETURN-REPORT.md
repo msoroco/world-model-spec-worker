@@ -2,6 +2,20 @@
 
 Archived checkpoints: [2026-11-22 through 2026-11-25](RETURN-REPORT-archive-2026-11-22-to-2026-11-25.md).
 
+## 2026-11-27 12:07 UTC: C150078 cycle and scooter parking package published
+
+- `testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator` passed the owner's exact strict gate twice and the lead's independent exact strict gate. The final Native test repairs the source-bound parking act. Its proposal published **8 cases, 3 comparisons, 67 syntax-checked commands**. Shared queue is now **221 ready assignments, 1,525 cases, 1,062 comparisons**, 4,116,110 bytes, SHA256 `8bb6dedb0d62d2ca9fb6d67f6199b1ae0286dbff13682871e1bde96ffb3da592`. The freed owner slot now works `testing__C158190__NRS-484B-257-1__motor_vehicle_driver`. No Git command was run.
+
+## 2026-11-27 12:04 UTC: C135705 alley-width package published; railway source proofs completed
+
+- `testing__C135705__NRS-484B-477-1b__motor_vehicle_driver` passed the owner's exact strict gate and the lead's independent exact strict gate. Its proposal published **6 cases and 4 comparisons**. Shared queue is now **220 ready assignments, 1,517 cases, 1,059 comparisons**, 4,082,708 bytes, SHA256 `ecfe8af931916346799e5bb910024a040c54f2a76beb7a9ad73af1c8f8d57447`. The freed owner began `testing__C177249__NRS-484B-560-7b__motor_vehicle_driver`.
+- Root `testing__C410753__LVMC-11-16-030__motor_vehicle_driver` remains **partial**. All seven primary exact cases passed pinned compatibility and saved-only process-saved proofs. All seven source-backed positive and negative delivery audits, 21 physical-preparation outcomes, and three comparison audits passed on CPU fixtures. Seven distinct fallback constructions passed exact offline checks; their pinned compatibility checks are running. Physical and legal claims remain pending original CARLA capture and owner review.
+
+## 2026-11-27 11:53 UTC: C393262 bus-stop package published; railway CPU proofs advance
+
+- `testing__C393262__LVMC-11-60-030-A5__bus_driver` passed its owner’s exact strict gate and the lead’s independent exact strict gate. Its proposal published **6 cases, 3 comparisons, 45 syntax-checked commands**. Shared queue is now **219 ready assignments, 1,511 cases, 1,055 comparisons**, 4,054,757 bytes, SHA256 `89a6a13eaa5e7ccfb5304e262c3ec82a514f96f24565c212276f74e9071dc083`. The freed owner was replaced by an owner for `testing__C179819__NRS-484B-633-2__motor_vehicle_driver`. No Git command was run.
+- Root `testing__C410753__LVMC-11-16-030__motor_vehicle_driver` remains **partial**. All seven exact cases passed the pinned compatibility pipeline and their positive/negative receipts were bound to the manifest. The first complete and incomplete source-backed physical CPU fixtures passed; all case physical and Native lifecycle checks are running. Saved-only processing exposed a derived-trace collision in a reused compatibility attempt, so the diagnostic saved attempt was cloned under `.runtime-work/` without its derived trace; rerun is underway. No physical or legal acceptance is claimed.
+
 ## 2026-11-27 11:44 UTC: first railway case passes pinned compatibility
 
 - Root `testing__C410753__LVMC-11-16-030__motor_vehicle_driver` remains **partial**. The exact `obscured_14mph` selected case passed pinned `runtime.py compatibility`: actual saved analysis, original-source immutability, four-camera decode/composition, Core conversion, Lean decoder, rendered output decode, selected measurement checks and missing-source rejection. Its receipt and analysis/negative logs are bound under the assignment folder. Six remaining exact cases are running in a bounded two-process compatibility wave. The original Native vector source and full graph observation packet are retained; the camera map is a separate hash-bound fixture source, leaving seven fixture specs under 2 MiB. The scoped partial `--complete` gate passes. Saved-only, independent delivery/comparison and exact strict work remain.

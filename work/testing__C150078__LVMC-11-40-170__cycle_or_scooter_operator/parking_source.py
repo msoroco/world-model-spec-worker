@@ -85,12 +85,18 @@ def load_site(path, case_id):
     if device.get('covered_class')!=CASE_SPEC[label][0] or not device.get('classification_basis') or not device.get('physical_identity') or type(device.get('body_width_m')) not in (int,float) or not .2<=device['body_width_m']<=2:
         raise ValueError('original covered-device classification required')
     person=records['person']
-    if not person.get('responsible_person_identity') or person.get('parking_act_observed') is not True:
-        raise ValueError('original responsible person and parking act required')
+    if not person.get('responsible_person_identity'):
+        raise ValueError('original responsible person identity required')
     if records['rack'].get('supports_device') is not True or not records['rack'].get('rack_extent_polygon_xy'):
         raise ValueError('original supporting rack required')
     target=site.get('target_xy')
     point(target)
+    start=site.get('device_start_xy')
+    point(start)
+    if math.dist(point(start),point(target))<2:
+        raise ValueError('original parking approach must show device movement')
+    if not inside(start,records['street'].get('street_extent_polygon_xy')):
+        raise ValueError('device approach outside original street')
     if not inside(target,records['street'].get('street_extent_polygon_xy')):
         raise ValueError('parking target outside original street')
     if CASE_SPEC[label][1].startswith('sidewalk') and not inside(target,records['sidewalk'].get('extent_polygon_xy')):

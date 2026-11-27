@@ -1,6 +1,33 @@
 {
   "actor": "motor_vehicle_driver",
   "assignment_id": "testing__C410753__LVMC-11-16-030__motor_vehicle_driver",
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "full 45-second source interval",
+        "subject": "municipal at-grade railway crossing, ego and track approach",
+        "view": "overview"
+      },
+      {
+        "interval": "last 100 feet through crossing",
+        "subject": "ego last 100 feet and crossing traversal",
+        "view": "approach"
+      },
+      {
+        "interval": "approach and crossing",
+        "subject": "crossing geometry and rail sight in both directions",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "approach and crossing",
+        "subject": "driver-referenced sight and signal/flagman observations",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 45,
+    "profile": "overview1080-capability"
+  },
   "cases": [
     {
       "branch": "Crossing traversal under the stated sight conditions without either exception.",
@@ -186,29 +213,19 @@
   "law_text": "The prima facie speed limit shall be fifteen miles per hour when traversing a grade crossing of a steam, electric or any other motor railway, if during the last one hundred feet of the approach to such crossing the driver does not have a clear and unobstructed view of such crossing and of any traffic on such railway for a distance of four hundred feet in both directions along such railway. This Section shall not apply in the case of any railway grade crossing where a human flagman is on duty or clearly visible electrical or mechanical railway crossing signal device is installed but does not then indicate the immediate approach of a railway train or car.",
   "observations": [
     {
-      "description": "Source-hashed original map and review establish municipal at-grade railway crossing and 100/400-foot extents.",
+      "description": "Source-bound original frame, speed, route, crossing occupancy, sight rays and exception states.",
       "mandatory": true,
+      "name": "original_native_frame_history"
+    },
+    {
+      "description": "Four synchronized camera frame identities and source hashes.",
+      "mandatory": true,
+      "name": "four_original_camera_streams"
+    },
+    {
+      "description": "Source-hashed original map and municipal railway review packet, joined through the selected analyzer.",
+      "mandatory": false,
       "name": "reviewed_municipal_rail_site"
-    },
-    {
-      "description": "Original-frame source-hashed rays to crossing and 400 feet in both rail directions during last 100 feet of approach.",
-      "mandatory": true,
-      "name": "original_approach_sight_rays"
-    },
-    {
-      "description": "Original body crossing occupancy and measured traversal speed against 15 mph; approach speed is not the governed measure.",
-      "mandatory": true,
-      "name": "original_crossing_speed"
-    },
-    {
-      "description": "Original on-duty flagman and visible signal installation plus contemporaneous immediate-train-approach indication.",
-      "mandatory": true,
-      "name": "flagman_and_signal_state"
-    },
-    {
-      "description": "Four synchronized original views and frame joins show approach, track, crossing and vehicle.",
-      "mandatory": true,
-      "name": "original_four_camera_pixels"
     }
   ],
   "planning_status": "source_bound_case_construction_in_progress",

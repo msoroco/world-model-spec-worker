@@ -44,6 +44,8 @@ def measure(attempt):
     distances=[]
     parked=[]
     observed_relations=[]
+    device_positions=[]
+    person_approach_gaps=[]
     person_id=records['person']['responsible_person_identity']
     device_id=records['device']['physical_identity']
     for e,p,v,t in zip(events,tracks,frames,trace):
@@ -62,7 +64,10 @@ def measure(attempt):
         if e['parked'] and site['requested']['placement']=='sidewalk_rack' and e.get('rack_support_contact') is not True:
             raise ValueError('original rack support contact absent')
         observed_relations.append(e['placement_relation'])
-        point(e.get('device_xy'))
+        device_positions.append(point(e.get('device_xy')))
+        person_xy=point(e.get('person_xy'))
+        if not e['parked']:
+            person_approach_gaps.append(math.dist(person_xy,device_positions[-1]))
         passing=p.get('pedestrian_xy')
         if passing is not None:
             distances.append(math.dist(point(passing),point(e['device_xy'])))
@@ -70,6 +75,12 @@ def measure(attempt):
             raise ValueError('original pedestrian passage state missing')
     if not any(parked):
         raise ValueError('original parking episode absent')
+    first_parked=parked.index(True)
+    if first_parked<2 or any(parked[:first_parked]) or not person_approach_gaps:
+        raise ValueError('original pre-parking person/device approach absent')
+    approach_distance=math.dist(device_positions[0],device_positions[first_parked])
+    if approach_distance<2 or max(person_approach_gaps)>1.5:
+        raise ValueError('original person/device parking movement absent or disconnected')
     if not distances:
         raise ValueError('original pedestrian passage history absent')
     return {'case_id':cfg['selected_case_id'],'device_class':records['device']['covered_class'],
@@ -77,6 +88,7 @@ def measure(attempt):
             'observed_pedestrian_device_min_distance_m':min(distances),
             'pedestrian_passage_states':[p['passage_status'] for p in tracks],
             'available_route_count':len(records['pedestrian_context']['available_passing_routes']),
+            'observed_device_approach_m':approach_distance,'max_person_device_approach_gap_m':max(person_approach_gaps),
             'sources':{name:acquisition[name]['sha256'] for name in names},
             'legal_least_obstruction':'unresolved','diagnostic_fixture':fixture,
             'physical_acceptance':'unreviewed'}

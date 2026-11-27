@@ -5,7 +5,7 @@
     {
       "case_id": "testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__bicycle_rack_clear",
       "construction": "construction.json",
-      "construction_sha256": "41e8d341c8b33341a025877d3005edda5d65327f9036e98499fb4ab547c9427c",
+      "construction_sha256": "9ef624f8c7a90ed380c868d0c498249cac2902840e7d765524af560d3d21cb41",
       "candidate_risk": {
         "status": "physical",
         "reason": "Static device/rack and pedestrian may be too small or occluded in original cameras; exposure of support and passing route needs review."
@@ -14,7 +14,7 @@
         {
           "id": "fallback1",
           "construction": "fallback1-construction.json",
-          "construction_sha256": "4fbbb3f62d2abe00a503fbba8bdb6c0f5eca8866ab88b2eff908c628c883473e",
+          "construction_sha256": "6e8ee4848374f842281190f9c0e5e25f5ca624ca6e9885d593e4cbd15cdea649",
           "trigger": {
             "source": "reference_corner.mkv and original source decode",
             "metric": "actual rack support, device footprint and pedestrian visibility",
@@ -24,11 +24,17 @@
             "engineering_camera_pitch_deg: -40 to -48"
           ],
           "offline": {
-            "construction_sha256": "4fbbb3f62d2abe00a503fbba8bdb6c0f5eca8866ab88b2eff908c628c883473e",
+            "construction_sha256": "6e8ee4848374f842281190f9c0e5e25f5ca624ca6e9885d593e4cbd15cdea649",
             "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator/execution-manifest.json --case testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__bicycle_rack_clear --candidate fallback1 --output .runtime-work/c150078-owner/offline-final-bicycle_rack_clear-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
             "exit_code": 0,
             "log": "cpu-offline-bicycle_rack_clear-fallback1.log",
             "log_sha256": "bff0f174c2fbbf088ad123f3934f79510bc10cf9cf2df7bb94ac5749a98f997e"
+          },
+          "compatibility": {
+            "receipt": "compat-bicycle_rack_clear-fallback1.json",
+            "sha256": "146b3f5b7aa8cd85845d8c17a6ad10ef089ee2b1c9d58300b7fbaab51eaf9eb1",
+            "log": "compat-analysis-bicycle_rack_clear-fallback1.log",
+            "negative_log": "compat-negative-bicycle_rack_clear-fallback1.log"
           }
         }
       ],
@@ -77,17 +83,63 @@
         }
       },
       "offline": {
-        "construction_sha256": "41e8d341c8b33341a025877d3005edda5d65327f9036e98499fb4ab547c9427c",
+        "construction_sha256": "9ef624f8c7a90ed380c868d0c498249cac2902840e7d765524af560d3d21cb41",
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator/execution-manifest.json --case testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__bicycle_rack_clear --candidate primary --output .runtime-work/c150078-owner/offline-final-bicycle_rack_clear-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
         "exit_code": 0,
         "log": "cpu-offline-bicycle_rack_clear-primary.log",
         "log_sha256": "5ad3977026743541f52602627993de99eef6d6d0cf87246bf8a63cb8da1760e7"
+      },
+      "compatibility": {
+        "receipt": "compat-bicycle_rack_clear-primary.json",
+        "sha256": "ace1505fea1f975c724dc8d054e53238a3bc9d12426e121f29d78d28b76f11ad",
+        "log": "compat-analysis-bicycle_rack_clear-primary.log",
+        "negative_log": "compat-negative-bicycle_rack_clear-primary.log"
+      },
+      "negative": {
+        "log": "compat-negative-bicycle_rack_clear-primary.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator/execution-manifest.json --case testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__bicycle_rack_clear --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$OUTPUT/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-bicycle_rack_clear.log",
+        "test_log_sha256": "c4dc6a3ad148719431f669380e70b065e6a6bacb81e8dabbaccdfa0dee640e41"
+      },
+      "physical_preparation": {
+        "receipt": "physical-bicycle_rack_clear-receipt.json",
+        "sha256": "02d0517d813e91057db7c0d46d174caa8c97d335fc9463e92a1db7324f28e791"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__bicycle_rack_clear",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator/delivery_audit.py --attempt .runtime-work/c150078-owner/audit-bicycle_rack_clear --case-id testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__bicycle_rack_clear --diagnostic --output .runtime-work/c150078-owner/delivery-bicycle_rack_clear-positive.json",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator/delivery_audit.py --attempt .runtime-work/c150078-owner/audit-bicycle_rack_clear --case-id testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__bicycle_rack_clear --output .runtime-work/c150078-owner/delivery-bicycle_rack_clear-negative.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "d8e28facedd9aba48e98676c6a06f94459a0e685f5694a402e305ad544b0785c",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "diagnostic fixture cannot establish Native delivery",
+        "test_log": "cpu-delivery-bicycle_rack_clear-positive.log",
+        "test_log_sha256": "89bdad4a07313f6e67b8e21cb028625a70321acdac16ed302d58e31ab6f106f0",
+        "negative_log": "cpu-delivery-bicycle_rack_clear-negative.log",
+        "negative_log_sha256": "40a9880bc69dcb832b7a11782f216e0a611123e91b16dc2f1c481c91fab5f944"
       }
     },
     {
       "case_id": "testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__bicycle_rack_narrow",
       "construction": "cases/bicycle_rack_narrow/construction.json",
-      "construction_sha256": "d0f553b1d0cab160b8e3ee4cc6762f1ac49dcc70d307445a8440631fe2cb3343",
+      "construction_sha256": "e8cb8d5429b1a26bc8e09e9d871ec55113ed80761996f163840c3de0be9d4908",
       "candidate_risk": {
         "status": "physical",
         "reason": "Static device/rack and pedestrian may be too small or occluded in original cameras; exposure of support and passing route needs review."
@@ -96,7 +148,7 @@
         {
           "id": "fallback1",
           "construction": "cases/bicycle_rack_narrow/fallback1-construction.json",
-          "construction_sha256": "768b962a4a24c9a814d96d5217ef0bac8279c5b077410a6208116774c0ba0784",
+          "construction_sha256": "a0b1717ebca32bf293f3de4d23cafc240eda83ab44706821d3bf6fbe6e4c19a5",
           "trigger": {
             "source": "reference_corner.mkv and original source decode",
             "metric": "actual rack support, device footprint and pedestrian visibility",
@@ -106,11 +158,17 @@
             "engineering_camera_pitch_deg: -40 to -48"
           ],
           "offline": {
-            "construction_sha256": "768b962a4a24c9a814d96d5217ef0bac8279c5b077410a6208116774c0ba0784",
+            "construction_sha256": "a0b1717ebca32bf293f3de4d23cafc240eda83ab44706821d3bf6fbe6e4c19a5",
             "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator/execution-manifest.json --case testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__bicycle_rack_narrow --candidate fallback1 --output .runtime-work/c150078-owner/offline-final-bicycle_rack_narrow-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
             "exit_code": 0,
             "log": "cpu-offline-bicycle_rack_narrow-fallback1.log",
             "log_sha256": "ce2dafda44ec676e863e1df4ea8b1b129b3a64158942dba1fb937d045ed103e1"
+          },
+          "compatibility": {
+            "receipt": "compat-bicycle_rack_narrow-fallback1.json",
+            "sha256": "b2ce3f7078dc0d7b2ed1dba18e86b68eef45b3f3c311407b9b33b4aded2d201d",
+            "log": "compat-analysis-bicycle_rack_narrow-fallback1.log",
+            "negative_log": "compat-negative-bicycle_rack_narrow-fallback1.log"
           }
         }
       ],
@@ -159,17 +217,63 @@
         }
       },
       "offline": {
-        "construction_sha256": "d0f553b1d0cab160b8e3ee4cc6762f1ac49dcc70d307445a8440631fe2cb3343",
+        "construction_sha256": "e8cb8d5429b1a26bc8e09e9d871ec55113ed80761996f163840c3de0be9d4908",
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator/execution-manifest.json --case testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__bicycle_rack_narrow --candidate primary --output .runtime-work/c150078-owner/offline-final-bicycle_rack_narrow-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
         "exit_code": 0,
         "log": "cpu-offline-bicycle_rack_narrow-primary.log",
         "log_sha256": "02e9cac3469b3d9f6a462fd5f20bb02b1455ecda1d5e374daff4aaa31b4a458b"
+      },
+      "compatibility": {
+        "receipt": "compat-bicycle_rack_narrow-primary.json",
+        "sha256": "bd04a51ca2ffde3e9ec513b55f4f10490c4efe590f0bec450611be5e82139afa",
+        "log": "compat-analysis-bicycle_rack_narrow-primary.log",
+        "negative_log": "compat-negative-bicycle_rack_narrow-primary.log"
+      },
+      "negative": {
+        "log": "compat-negative-bicycle_rack_narrow-primary.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator/execution-manifest.json --case testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__bicycle_rack_narrow --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$OUTPUT/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-bicycle_rack_narrow.log",
+        "test_log_sha256": "c4a3b58fc21f0e7e37afd4759e7660fb4e4bec308e6612f5b2cfc7360b36a698"
+      },
+      "physical_preparation": {
+        "receipt": "physical-bicycle_rack_narrow-receipt.json",
+        "sha256": "1656990147d77a145b02897b9731a9fb7cd7e85504dfe9b9f5288f8405c1cbff"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__bicycle_rack_narrow",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator/delivery_audit.py --attempt .runtime-work/c150078-owner/audit-bicycle_rack_narrow --case-id testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__bicycle_rack_narrow --diagnostic --output .runtime-work/c150078-owner/delivery-bicycle_rack_narrow-positive.json",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator/delivery_audit.py --attempt .runtime-work/c150078-owner/audit-bicycle_rack_narrow --case-id testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__bicycle_rack_narrow --output .runtime-work/c150078-owner/delivery-bicycle_rack_narrow-negative.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "d8e28facedd9aba48e98676c6a06f94459a0e685f5694a402e305ad544b0785c",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "diagnostic fixture cannot establish Native delivery",
+        "test_log": "cpu-delivery-bicycle_rack_narrow-positive.log",
+        "test_log_sha256": "aebaf642656d5e3987b2744cdc7ff061da90e13f0df4b89bae3b5d9e676219d7",
+        "negative_log": "cpu-delivery-bicycle_rack_narrow-negative.log",
+        "negative_log_sha256": "40a9880bc69dcb832b7a11782f216e0a611123e91b16dc2f1c481c91fab5f944"
       }
     },
     {
       "case_id": "testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__electric_bicycle_rack",
       "construction": "cases/electric_bicycle_rack/construction.json",
-      "construction_sha256": "1eb50bb0c68512c3059fffa722feb3f98c59edb67a776b7eff6b52ce5135f07c",
+      "construction_sha256": "12a9d3b84e91f3252941240c89d5543bfed345a9492b3709b5b2e97df07bd83f",
       "candidate_risk": {
         "status": "physical",
         "reason": "Static device/rack and pedestrian may be too small or occluded in original cameras; exposure of support and passing route needs review."
@@ -178,7 +282,7 @@
         {
           "id": "fallback1",
           "construction": "cases/electric_bicycle_rack/fallback1-construction.json",
-          "construction_sha256": "a3f09593245037efbb0c9555b56297e84e0639059d98cc5104441321b107cee5",
+          "construction_sha256": "2ad83f7e74ac28d6be7079e00fff3275191417a06c48f03f3ba39722a8f9d60a",
           "trigger": {
             "source": "reference_corner.mkv and original source decode",
             "metric": "actual rack support, device footprint and pedestrian visibility",
@@ -188,11 +292,17 @@
             "engineering_camera_pitch_deg: -40 to -48"
           ],
           "offline": {
-            "construction_sha256": "a3f09593245037efbb0c9555b56297e84e0639059d98cc5104441321b107cee5",
+            "construction_sha256": "2ad83f7e74ac28d6be7079e00fff3275191417a06c48f03f3ba39722a8f9d60a",
             "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator/execution-manifest.json --case testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__electric_bicycle_rack --candidate fallback1 --output .runtime-work/c150078-owner/offline-final-electric_bicycle_rack-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
             "exit_code": 0,
             "log": "cpu-offline-electric_bicycle_rack-fallback1.log",
             "log_sha256": "7f4ca2a6ed6f472585664e33584ec6849c5ff2528a6f452ef40245f2e9c32e71"
+          },
+          "compatibility": {
+            "receipt": "compat-electric_bicycle_rack-fallback1.json",
+            "sha256": "9c61c3cf48493c9106fe0e7df2375acfc94099e8a1332a2374bb880849cbbad7",
+            "log": "compat-analysis-electric_bicycle_rack-fallback1.log",
+            "negative_log": "compat-negative-electric_bicycle_rack-fallback1.log"
           }
         }
       ],
@@ -241,17 +351,63 @@
         }
       },
       "offline": {
-        "construction_sha256": "1eb50bb0c68512c3059fffa722feb3f98c59edb67a776b7eff6b52ce5135f07c",
+        "construction_sha256": "12a9d3b84e91f3252941240c89d5543bfed345a9492b3709b5b2e97df07bd83f",
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator/execution-manifest.json --case testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__electric_bicycle_rack --candidate primary --output .runtime-work/c150078-owner/offline-final-electric_bicycle_rack-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
         "exit_code": 0,
         "log": "cpu-offline-electric_bicycle_rack-primary.log",
         "log_sha256": "d979246940e87a14dcd9bd6d3e5b351f1e0ed1142c7e7d1900822063b688f634"
+      },
+      "compatibility": {
+        "receipt": "compat-electric_bicycle_rack-primary.json",
+        "sha256": "e1a818d8d2e2b434f05056d745ee0f1298886e013fbf035466ab296fbf2e8787",
+        "log": "compat-analysis-electric_bicycle_rack-primary.log",
+        "negative_log": "compat-negative-electric_bicycle_rack-primary.log"
+      },
+      "negative": {
+        "log": "compat-negative-electric_bicycle_rack-primary.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator/execution-manifest.json --case testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__electric_bicycle_rack --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$OUTPUT/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-electric_bicycle_rack.log",
+        "test_log_sha256": "73120e1a03f33af5beeaaff6f95cf3ccb73c2b8a3fe4493fd33f63dd3d529176"
+      },
+      "physical_preparation": {
+        "receipt": "physical-electric_bicycle_rack-receipt.json",
+        "sha256": "3550fab4825936b8f78db9b33f63854241c36a1874c32a64f1af02392bff106b"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__electric_bicycle_rack",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator/delivery_audit.py --attempt .runtime-work/c150078-owner/audit-electric_bicycle_rack --case-id testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__electric_bicycle_rack --diagnostic --output .runtime-work/c150078-owner/delivery-electric_bicycle_rack-positive.json",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator/delivery_audit.py --attempt .runtime-work/c150078-owner/audit-electric_bicycle_rack --case-id testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__electric_bicycle_rack --output .runtime-work/c150078-owner/delivery-electric_bicycle_rack-negative.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "d8e28facedd9aba48e98676c6a06f94459a0e685f5694a402e305ad544b0785c",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "diagnostic fixture cannot establish Native delivery",
+        "test_log": "cpu-delivery-electric_bicycle_rack-positive.log",
+        "test_log_sha256": "da8a24a3d87649da1b652994410ac4cd28cd616dbd180568f06c99d116f2e2eb",
+        "negative_log": "cpu-delivery-electric_bicycle_rack-negative.log",
+        "negative_log_sha256": "40a9880bc69dcb832b7a11782f216e0a611123e91b16dc2f1c481c91fab5f944"
       }
     },
     {
       "case_id": "testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__electric_scooter_rack",
       "construction": "cases/electric_scooter_rack/construction.json",
-      "construction_sha256": "d5639c834747362da4cc6e2a8e029f8917530036455d4d1544ceae720153b549",
+      "construction_sha256": "fac0334ef50f397576b278f8718f7f42a62bc4d756a12eb531e3da963a134a2e",
       "candidate_risk": {
         "status": "physical",
         "reason": "Static device/rack and pedestrian may be too small or occluded in original cameras; exposure of support and passing route needs review."
@@ -260,7 +416,7 @@
         {
           "id": "fallback1",
           "construction": "cases/electric_scooter_rack/fallback1-construction.json",
-          "construction_sha256": "8daf914725798568fb405192e7b9dccb65cf8c599f17ada32fb85bc934f7555a",
+          "construction_sha256": "03a2572d69eaf5408d951b1f31249a313e4f3e2978d24a287a02cc11039dd880",
           "trigger": {
             "source": "reference_corner.mkv and original source decode",
             "metric": "actual rack support, device footprint and pedestrian visibility",
@@ -270,11 +426,17 @@
             "engineering_camera_pitch_deg: -40 to -48"
           ],
           "offline": {
-            "construction_sha256": "8daf914725798568fb405192e7b9dccb65cf8c599f17ada32fb85bc934f7555a",
+            "construction_sha256": "03a2572d69eaf5408d951b1f31249a313e4f3e2978d24a287a02cc11039dd880",
             "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator/execution-manifest.json --case testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__electric_scooter_rack --candidate fallback1 --output .runtime-work/c150078-owner/offline-final-electric_scooter_rack-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
             "exit_code": 0,
             "log": "cpu-offline-electric_scooter_rack-fallback1.log",
             "log_sha256": "4dae5a0d08e06d912d24725e17d887323b11c7b1ac2eefa4e4c8675d02fa1997"
+          },
+          "compatibility": {
+            "receipt": "compat-electric_scooter_rack-fallback1.json",
+            "sha256": "4978c2144242c6df61c0d05c01c8eab8f9b09ae120ba7dc7f9300c5ad9f39cdc",
+            "log": "compat-analysis-electric_scooter_rack-fallback1.log",
+            "negative_log": "compat-negative-electric_scooter_rack-fallback1.log"
           }
         }
       ],
@@ -323,17 +485,63 @@
         }
       },
       "offline": {
-        "construction_sha256": "d5639c834747362da4cc6e2a8e029f8917530036455d4d1544ceae720153b549",
+        "construction_sha256": "fac0334ef50f397576b278f8718f7f42a62bc4d756a12eb531e3da963a134a2e",
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator/execution-manifest.json --case testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__electric_scooter_rack --candidate primary --output .runtime-work/c150078-owner/offline-final-electric_scooter_rack-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
         "exit_code": 0,
         "log": "cpu-offline-electric_scooter_rack-primary.log",
         "log_sha256": "b1444521de8ea01f1b16e1beca5457f04f745eb8ef52da0cf49dacd6e79a9d61"
+      },
+      "compatibility": {
+        "receipt": "compat-electric_scooter_rack-primary.json",
+        "sha256": "ea8b48b1790c53d7908c82168fedf17da952bf24727a3c3049303e7861a34ea4",
+        "log": "compat-analysis-electric_scooter_rack-primary.log",
+        "negative_log": "compat-negative-electric_scooter_rack-primary.log"
+      },
+      "negative": {
+        "log": "compat-negative-electric_scooter_rack-primary.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator/execution-manifest.json --case testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__electric_scooter_rack --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$OUTPUT/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-electric_scooter_rack.log",
+        "test_log_sha256": "e38bf408230c0fe77fe7c4fda714d032a30a7ff72da0b63e440fcb7b27f184df"
+      },
+      "physical_preparation": {
+        "receipt": "physical-electric_scooter_rack-receipt.json",
+        "sha256": "dd83904784d89e0721fbf4d983072cf9b893e393a471aba8bf2fddc1cc83716a"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__electric_scooter_rack",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator/delivery_audit.py --attempt .runtime-work/c150078-owner/audit-electric_scooter_rack --case-id testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__electric_scooter_rack --diagnostic --output .runtime-work/c150078-owner/delivery-electric_scooter_rack-positive.json",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator/delivery_audit.py --attempt .runtime-work/c150078-owner/audit-electric_scooter_rack --case-id testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__electric_scooter_rack --output .runtime-work/c150078-owner/delivery-electric_scooter_rack-negative.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "d8e28facedd9aba48e98676c6a06f94459a0e685f5694a402e305ad544b0785c",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "diagnostic fixture cannot establish Native delivery",
+        "test_log": "cpu-delivery-electric_scooter_rack-positive.log",
+        "test_log_sha256": "e3a46ab6ffc925f8a11e45d3d6f2957987e783a9714498d281d160fb4d23ee20",
+        "negative_log": "cpu-delivery-electric_scooter_rack-negative.log",
+        "negative_log_sha256": "40a9880bc69dcb832b7a11782f216e0a611123e91b16dc2f1c481c91fab5f944"
       }
     },
     {
       "case_id": "testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__bicycle_building",
       "construction": "cases/bicycle_building/construction.json",
-      "construction_sha256": "a8ef4c0023a9d95ec08233709895cc5a02c03ea52953c4b17605181721db77ee",
+      "construction_sha256": "44120acb870d3f500c00c69b8bd4ac0e07066cfd837a56af621240b7bac52f31",
       "candidate_risk": {
         "status": "physical",
         "reason": "Static device/rack and pedestrian may be too small or occluded in original cameras; exposure of support and passing route needs review."
@@ -342,7 +550,7 @@
         {
           "id": "fallback1",
           "construction": "cases/bicycle_building/fallback1-construction.json",
-          "construction_sha256": "0df107659f197e626402fe9d360973233df493c166bae49c14d557511c3471ea",
+          "construction_sha256": "363571aae1bb23d35de8ecfb2916a779c179cb515a8cc1fc0ee6eb109bb903d8",
           "trigger": {
             "source": "reference_corner.mkv and original source decode",
             "metric": "actual rack support, device footprint and pedestrian visibility",
@@ -352,11 +560,17 @@
             "engineering_camera_pitch_deg: -40 to -48"
           ],
           "offline": {
-            "construction_sha256": "0df107659f197e626402fe9d360973233df493c166bae49c14d557511c3471ea",
+            "construction_sha256": "363571aae1bb23d35de8ecfb2916a779c179cb515a8cc1fc0ee6eb109bb903d8",
             "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator/execution-manifest.json --case testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__bicycle_building --candidate fallback1 --output .runtime-work/c150078-owner/offline-final-bicycle_building-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
             "exit_code": 0,
             "log": "cpu-offline-bicycle_building-fallback1.log",
             "log_sha256": "9185dde76faedd3b51207d4bb063bc1f8f0fde6f147abb3e6ea0be5c4666422b"
+          },
+          "compatibility": {
+            "receipt": "compat-bicycle_building-fallback1.json",
+            "sha256": "e5cd62ba6c2140696554d495099c311cd1925ee7c71f995554d3d1fe8f98e73a",
+            "log": "compat-analysis-bicycle_building-fallback1.log",
+            "negative_log": "compat-negative-bicycle_building-fallback1.log"
           }
         }
       ],
@@ -405,17 +619,63 @@
         }
       },
       "offline": {
-        "construction_sha256": "a8ef4c0023a9d95ec08233709895cc5a02c03ea52953c4b17605181721db77ee",
+        "construction_sha256": "44120acb870d3f500c00c69b8bd4ac0e07066cfd837a56af621240b7bac52f31",
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator/execution-manifest.json --case testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__bicycle_building --candidate primary --output .runtime-work/c150078-owner/offline-final-bicycle_building-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
         "exit_code": 0,
         "log": "cpu-offline-bicycle_building-primary.log",
         "log_sha256": "00f9b337066753f0217a36dcf457709324ead1ff9dc006a4c3938a6d05076274"
+      },
+      "compatibility": {
+        "receipt": "compat-bicycle_building-primary.json",
+        "sha256": "df7ac4d014c93584b5acca2e259e2d261e35433b50700ff6a8a2bec4c699a63f",
+        "log": "compat-analysis-bicycle_building-primary.log",
+        "negative_log": "compat-negative-bicycle_building-primary.log"
+      },
+      "negative": {
+        "log": "compat-negative-bicycle_building-primary.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator/execution-manifest.json --case testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__bicycle_building --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$OUTPUT/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-bicycle_building.log",
+        "test_log_sha256": "5679009b3e409fb049c246ff846ca10e68da8bbc70100973d4d1032498a11513"
+      },
+      "physical_preparation": {
+        "receipt": "physical-bicycle_building-receipt.json",
+        "sha256": "2d8c0c5e98584fec0d61f7bb8698f9a6e1fce4c0d775ad6fc346ebc0c28490b2"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__bicycle_building",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator/delivery_audit.py --attempt .runtime-work/c150078-owner/audit-bicycle_building --case-id testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__bicycle_building --diagnostic --output .runtime-work/c150078-owner/delivery-bicycle_building-positive.json",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator/delivery_audit.py --attempt .runtime-work/c150078-owner/audit-bicycle_building --case-id testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__bicycle_building --output .runtime-work/c150078-owner/delivery-bicycle_building-negative.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "d8e28facedd9aba48e98676c6a06f94459a0e685f5694a402e305ad544b0785c",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "diagnostic fixture cannot establish Native delivery",
+        "test_log": "cpu-delivery-bicycle_building-positive.log",
+        "test_log_sha256": "fc9895aad18932cdda4c64bdbe4ceb811c0d974c79adba3fa592b8f4dea63117",
+        "negative_log": "cpu-delivery-bicycle_building-negative.log",
+        "negative_log_sha256": "40a9880bc69dcb832b7a11782f216e0a611123e91b16dc2f1c481c91fab5f944"
       }
     },
     {
       "case_id": "testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__bicycle_sidewalk_curb",
       "construction": "cases/bicycle_sidewalk_curb/construction.json",
-      "construction_sha256": "65b05874f262d0c08e01215a6b8c7041bb2ede75a0eb0e07d87f77796ba97383",
+      "construction_sha256": "093727fad33af3806907d9b3bbbe80fb93f1bfa89ac935cfa2d2118c853638b3",
       "candidate_risk": {
         "status": "physical",
         "reason": "Static device/rack and pedestrian may be too small or occluded in original cameras; exposure of support and passing route needs review."
@@ -424,7 +684,7 @@
         {
           "id": "fallback1",
           "construction": "cases/bicycle_sidewalk_curb/fallback1-construction.json",
-          "construction_sha256": "8dc6b311eec5b89b4abacb736169f18d5f4ed55725395dc06604ce50a54c839d",
+          "construction_sha256": "80f220c494a7dc1b516eb44d007efb9450daff764877cfc28d7d936521462d6a",
           "trigger": {
             "source": "reference_corner.mkv and original source decode",
             "metric": "actual rack support, device footprint and pedestrian visibility",
@@ -434,11 +694,17 @@
             "engineering_camera_pitch_deg: -40 to -48"
           ],
           "offline": {
-            "construction_sha256": "8dc6b311eec5b89b4abacb736169f18d5f4ed55725395dc06604ce50a54c839d",
+            "construction_sha256": "80f220c494a7dc1b516eb44d007efb9450daff764877cfc28d7d936521462d6a",
             "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator/execution-manifest.json --case testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__bicycle_sidewalk_curb --candidate fallback1 --output .runtime-work/c150078-owner/offline-final-bicycle_sidewalk_curb-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
             "exit_code": 0,
             "log": "cpu-offline-bicycle_sidewalk_curb-fallback1.log",
             "log_sha256": "459a62cd0b16e5960953415ffe16288b95a8c834f89a58624c4ae714319a8db7"
+          },
+          "compatibility": {
+            "receipt": "compat-bicycle_sidewalk_curb-fallback1.json",
+            "sha256": "2c5c05fa4fff9862a545951174be6ad0130eff5cb4efa8d5af662145e0e204ee",
+            "log": "compat-analysis-bicycle_sidewalk_curb-fallback1.log",
+            "negative_log": "compat-negative-bicycle_sidewalk_curb-fallback1.log"
           }
         }
       ],
@@ -487,17 +753,63 @@
         }
       },
       "offline": {
-        "construction_sha256": "65b05874f262d0c08e01215a6b8c7041bb2ede75a0eb0e07d87f77796ba97383",
+        "construction_sha256": "093727fad33af3806907d9b3bbbe80fb93f1bfa89ac935cfa2d2118c853638b3",
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator/execution-manifest.json --case testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__bicycle_sidewalk_curb --candidate primary --output .runtime-work/c150078-owner/offline-final-bicycle_sidewalk_curb-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
         "exit_code": 0,
         "log": "cpu-offline-bicycle_sidewalk_curb-primary.log",
         "log_sha256": "171d75b414d43aeb41351b4ce33b0f38fb526e2293d3572bc853bc736c56e80a"
+      },
+      "compatibility": {
+        "receipt": "compat-bicycle_sidewalk_curb-primary.json",
+        "sha256": "8edf0dee05c5fa428fb4a0406d54c20375a471474e66c5adca1628fc902cf259",
+        "log": "compat-analysis-bicycle_sidewalk_curb-primary.log",
+        "negative_log": "compat-negative-bicycle_sidewalk_curb-primary.log"
+      },
+      "negative": {
+        "log": "compat-negative-bicycle_sidewalk_curb-primary.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator/execution-manifest.json --case testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__bicycle_sidewalk_curb --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$OUTPUT/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-bicycle_sidewalk_curb.log",
+        "test_log_sha256": "757cbc45cb45a4865fb7931ae8918f44d0bf53c48523aa661f2deaff88140fdd"
+      },
+      "physical_preparation": {
+        "receipt": "physical-bicycle_sidewalk_curb-receipt.json",
+        "sha256": "b1e74eabf98a2248be59579d1fc17c08aad88180b0819784da080dc1a6c6d28e"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__bicycle_sidewalk_curb",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator/delivery_audit.py --attempt .runtime-work/c150078-owner/audit-bicycle_sidewalk_curb --case-id testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__bicycle_sidewalk_curb --diagnostic --output .runtime-work/c150078-owner/delivery-bicycle_sidewalk_curb-positive.json",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator/delivery_audit.py --attempt .runtime-work/c150078-owner/audit-bicycle_sidewalk_curb --case-id testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__bicycle_sidewalk_curb --output .runtime-work/c150078-owner/delivery-bicycle_sidewalk_curb-negative.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "d8e28facedd9aba48e98676c6a06f94459a0e685f5694a402e305ad544b0785c",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "diagnostic fixture cannot establish Native delivery",
+        "test_log": "cpu-delivery-bicycle_sidewalk_curb-positive.log",
+        "test_log_sha256": "76f7c68ea1c70ffcbf7e777d22c5a223545cee35fa367ab92442b59eb8140b28",
+        "negative_log": "cpu-delivery-bicycle_sidewalk_curb-negative.log",
+        "negative_log_sha256": "40a9880bc69dcb832b7a11782f216e0a611123e91b16dc2f1c481c91fab5f944"
       }
     },
     {
       "case_id": "testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__bicycle_roadway_curb",
       "construction": "cases/bicycle_roadway_curb/construction.json",
-      "construction_sha256": "1f406db032dd834865759d62f0304845123ea0e69dce344e2c0de1547d675bf2",
+      "construction_sha256": "17f8238d4fad2951a4e24c3cdeb81eba10d2eeac3d4b9282b9f03904420919ef",
       "candidate_risk": {
         "status": "physical",
         "reason": "Static device/rack and pedestrian may be too small or occluded in original cameras; exposure of support and passing route needs review."
@@ -506,7 +818,7 @@
         {
           "id": "fallback1",
           "construction": "cases/bicycle_roadway_curb/fallback1-construction.json",
-          "construction_sha256": "9e39f4387c75b82b65c01ce285dd27f99777b006e755db3a8361eea21dd98e20",
+          "construction_sha256": "6a9fffd98c2c3bffe2b1652a17b2bbfa4ddaa78f11f3c3a295b897ef77a1b0ff",
           "trigger": {
             "source": "reference_corner.mkv and original source decode",
             "metric": "actual rack support, device footprint and pedestrian visibility",
@@ -516,11 +828,17 @@
             "engineering_camera_pitch_deg: -40 to -48"
           ],
           "offline": {
-            "construction_sha256": "9e39f4387c75b82b65c01ce285dd27f99777b006e755db3a8361eea21dd98e20",
+            "construction_sha256": "6a9fffd98c2c3bffe2b1652a17b2bbfa4ddaa78f11f3c3a295b897ef77a1b0ff",
             "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator/execution-manifest.json --case testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__bicycle_roadway_curb --candidate fallback1 --output .runtime-work/c150078-owner/offline-final-bicycle_roadway_curb-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
             "exit_code": 0,
             "log": "cpu-offline-bicycle_roadway_curb-fallback1.log",
             "log_sha256": "10eb030471493f5fcd22b0c66ba48960e3b06544217e3e95b3e2aeb788af9be3"
+          },
+          "compatibility": {
+            "receipt": "compat-bicycle_roadway_curb-fallback1.json",
+            "sha256": "ca9bba6c269153737553c2ffc921618288e57f8cca5014de36d6f908627f8397",
+            "log": "compat-analysis-bicycle_roadway_curb-fallback1.log",
+            "negative_log": "compat-negative-bicycle_roadway_curb-fallback1.log"
           }
         }
       ],
@@ -569,17 +887,63 @@
         }
       },
       "offline": {
-        "construction_sha256": "1f406db032dd834865759d62f0304845123ea0e69dce344e2c0de1547d675bf2",
+        "construction_sha256": "17f8238d4fad2951a4e24c3cdeb81eba10d2eeac3d4b9282b9f03904420919ef",
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator/execution-manifest.json --case testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__bicycle_roadway_curb --candidate primary --output .runtime-work/c150078-owner/offline-final-bicycle_roadway_curb-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
         "exit_code": 0,
         "log": "cpu-offline-bicycle_roadway_curb-primary.log",
         "log_sha256": "3130d51f6b77bb53382465e0c89a4817670e3860280baaf65a65b513726722f0"
+      },
+      "compatibility": {
+        "receipt": "compat-bicycle_roadway_curb-primary.json",
+        "sha256": "2a6b7983b010dc8fdc861ed9484f801f85ede020ef7f564016f25f8eb0c686aa",
+        "log": "compat-analysis-bicycle_roadway_curb-primary.log",
+        "negative_log": "compat-negative-bicycle_roadway_curb-primary.log"
+      },
+      "negative": {
+        "log": "compat-negative-bicycle_roadway_curb-primary.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator/execution-manifest.json --case testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__bicycle_roadway_curb --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$OUTPUT/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-bicycle_roadway_curb.log",
+        "test_log_sha256": "f594ff188d6bc7cbd98f842d50f8036e988f5aceffa850bfc43ec0971ac3bb9c"
+      },
+      "physical_preparation": {
+        "receipt": "physical-bicycle_roadway_curb-receipt.json",
+        "sha256": "7bdbce408805a9dc37148f006ffca4f1d55bda16a67cbc26d3646cc059ab8593"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__bicycle_roadway_curb",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator/delivery_audit.py --attempt .runtime-work/c150078-owner/audit-bicycle_roadway_curb --case-id testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__bicycle_roadway_curb --diagnostic --output .runtime-work/c150078-owner/delivery-bicycle_roadway_curb-positive.json",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator/delivery_audit.py --attempt .runtime-work/c150078-owner/audit-bicycle_roadway_curb --case-id testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__bicycle_roadway_curb --output .runtime-work/c150078-owner/delivery-bicycle_roadway_curb-negative.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "d8e28facedd9aba48e98676c6a06f94459a0e685f5694a402e305ad544b0785c",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "diagnostic fixture cannot establish Native delivery",
+        "test_log": "cpu-delivery-bicycle_roadway_curb-positive.log",
+        "test_log_sha256": "36a962d418410d993cb940a5570484d7958c91c15c9a5973703050f31742dd24",
+        "negative_log": "cpu-delivery-bicycle_roadway_curb-negative.log",
+        "negative_log_sha256": "40a9880bc69dcb832b7a11782f216e0a611123e91b16dc2f1c481c91fab5f944"
       }
     },
     {
       "case_id": "testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__bicycle_other",
       "construction": "cases/bicycle_other/construction.json",
-      "construction_sha256": "f419be805956d87a355d5dbe980cd77c578eb8406156e4216cef05e80069195e",
+      "construction_sha256": "16e9befcec478616f446007d44797c83a7c136a43af41b272292050a5a683099",
       "candidate_risk": {
         "status": "physical",
         "reason": "Static device/rack and pedestrian may be too small or occluded in original cameras; exposure of support and passing route needs review."
@@ -588,7 +952,7 @@
         {
           "id": "fallback1",
           "construction": "cases/bicycle_other/fallback1-construction.json",
-          "construction_sha256": "8e02c4c852fe58b42e5567b6045d7a50a29831c6e398ec5e90ea679e5e98d4ef",
+          "construction_sha256": "bd29e65ccb1ffb6d76cc6a7b0aed72c9112d3d9be602ec1cc5d26ab8776c8f81",
           "trigger": {
             "source": "reference_corner.mkv and original source decode",
             "metric": "actual rack support, device footprint and pedestrian visibility",
@@ -598,11 +962,17 @@
             "engineering_camera_pitch_deg: -40 to -48"
           ],
           "offline": {
-            "construction_sha256": "8e02c4c852fe58b42e5567b6045d7a50a29831c6e398ec5e90ea679e5e98d4ef",
+            "construction_sha256": "bd29e65ccb1ffb6d76cc6a7b0aed72c9112d3d9be602ec1cc5d26ab8776c8f81",
             "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator/execution-manifest.json --case testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__bicycle_other --candidate fallback1 --output .runtime-work/c150078-owner/offline-final-bicycle_other-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
             "exit_code": 0,
             "log": "cpu-offline-bicycle_other-fallback1.log",
             "log_sha256": "1f53b69304f72e775a0e327317645fad74d441f73b9f22303505ff5aec0191b3"
+          },
+          "compatibility": {
+            "receipt": "compat-bicycle_other-fallback1.json",
+            "sha256": "040837b06a71359f5b394e1ba14659897e3700234d67cee1bcf65c6fd2978cf4",
+            "log": "compat-analysis-bicycle_other-fallback1.log",
+            "negative_log": "compat-negative-bicycle_other-fallback1.log"
           }
         }
       ],
@@ -651,11 +1021,57 @@
         }
       },
       "offline": {
-        "construction_sha256": "f419be805956d87a355d5dbe980cd77c578eb8406156e4216cef05e80069195e",
+        "construction_sha256": "16e9befcec478616f446007d44797c83a7c136a43af41b272292050a5a683099",
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator/execution-manifest.json --case testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__bicycle_other --candidate primary --output .runtime-work/c150078-owner/offline-final-bicycle_other-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
         "exit_code": 0,
         "log": "cpu-offline-bicycle_other-primary.log",
         "log_sha256": "8892a0f4eb1a544a90358ce567c7a500aae27c1ead0d5c0ee43ccbb4cccccfab"
+      },
+      "compatibility": {
+        "receipt": "compat-bicycle_other-primary.json",
+        "sha256": "a4abb0bf826cd076b1aab1dad4114ea405327617b8835898bb6feca2fa856eda",
+        "log": "compat-analysis-bicycle_other-primary.log",
+        "negative_log": "compat-negative-bicycle_other-primary.log"
+      },
+      "negative": {
+        "log": "compat-negative-bicycle_other-primary.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator/execution-manifest.json --case testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__bicycle_other --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$OUTPUT/feedback.json\"",
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-bicycle_other.log",
+        "test_log_sha256": "d4baf49934bfa159ec0c614e0420b8d39d1577370b766254ac33a09db788702b"
+      },
+      "physical_preparation": {
+        "receipt": "physical-bicycle_other-receipt.json",
+        "sha256": "a08242ffe84a92ba5c8a3702aa1a531448977c80952d4b51eec75d0167aed6b1"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__bicycle_other",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator/delivery_audit.py --attempt .runtime-work/c150078-owner/audit-bicycle_other --case-id testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__bicycle_other --diagnostic --output .runtime-work/c150078-owner/delivery-bicycle_other-positive.json",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator/delivery_audit.py --attempt .runtime-work/c150078-owner/audit-bicycle_other --case-id testing__C150078__LVMC-11-40-170__cycle_or_scooter_operator__bicycle_other --output .runtime-work/c150078-owner/delivery-bicycle_other-negative.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "d8e28facedd9aba48e98676c6a06f94459a0e685f5694a402e305ad544b0785c",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "diagnostic fixture cannot establish Native delivery",
+        "test_log": "cpu-delivery-bicycle_other-positive.log",
+        "test_log_sha256": "5a28becc3c9ff344b5fba8757670ada3dae073a16e3d9cd90f93a3ea2e2d63e3",
+        "negative_log": "cpu-delivery-bicycle_other-negative.log",
+        "negative_log_sha256": "40a9880bc69dcb832b7a11782f216e0a611123e91b16dc2f1c481c91fab5f944"
       }
     }
   ],

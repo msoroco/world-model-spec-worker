@@ -9,7 +9,7 @@ ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT))
 from parking_source import ASSIGNMENT,CASE_SPEC,inside,load_site
 from parking_measurement import measure
-from parking_native import classify_observed_placement
+from parking_native import classify_observed_placement,placement_position
 
 
 class SourceGateTests(unittest.TestCase):
@@ -27,6 +27,11 @@ class SourceGateTests(unittest.TestCase):
         self.assertTrue(inside([2,2],p))
         self.assertFalse(inside([5,2],p))
         with self.assertRaises(ValueError): inside([2,float('nan')],p)
+
+    def test_device_parking_motion_reaches_station(self):
+        self.assertAlmostEqual(placement_position([0,0],[3,0],0)[0],.15)
+        self.assertEqual(placement_position([0,0],[3,0],19),[3,0])
+        self.assertEqual(placement_position([0,0],[3,0],20),[3,0])
 
     def test_actual_placement_geometry_not_requested_label(self):
         records={'device':{'body_width_m':.8},'street':{'roadway_polygon_xy':[[0,0],[30,0],[30,5],[0,5]]},

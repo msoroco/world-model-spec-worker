@@ -1,32 +1,308 @@
 {
-  "assignment_id": "testing__C177249__NRS-484B-560-7b__motor_vehicle_driver",
   "actor": "motor_vehicle_driver",
-  "cell_id": "C177249",
-  "law_id": "NRS-484B-560-7b",
-  "selected_branches": [
+  "assignment_id": "testing__C177249__NRS-484B-560-7b__motor_vehicle_driver",
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "entire 45 s",
+        "subject": "crossing, device or officer, and complete vehicle",
+        "view": "overview"
+      },
+      {
+        "interval": "entire 45 s",
+        "subject": "device indication, officer direction and vehicle approach",
+        "view": "approach"
+      },
+      {
+        "interval": "entire 45 s",
+        "subject": "rail crossing entry and exit boundaries",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "entire 45 s",
+        "subject": "driver-view device or officer communication",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 45,
+    "profile": "overview1080-capability"
+  },
+  "cases": [
     {
-      "law_id": "NRS-484B-560-7b",
-      "cell_id": "C177249",
-      "actor": "motor_vehicle_driver",
-      "requirement": "NRS-484B-560-7b",
-      "branch": "Official traffic-control device on a paved-road railway approach.",
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 462,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
-      "coverage_status": "pending_review",
-      "recording_ids": [],
-      "law_partition": "training",
-      "scenario_partition": "testing"
+      "case_id": "testing__C177249__NRS-484B-560-7b__motor_vehicle_driver__device_stop_halt",
+      "gap_ids": [
+        "gap-device"
+      ],
+      "rationale": "Specific source-reviewed crossing device displays a stop instruction; the driver halts before the crossing entry.",
+      "source_packet_required": true,
+      "target_law_id": "NRS-484B-560-7b",
+      "target_type": "delivery"
+    },
+    {
+      "case_id": "testing__C177249__NRS-484B-560-7b__motor_vehicle_driver__device_stop_cross",
+      "gap_ids": [
+        "gap-device"
+      ],
+      "rationale": "The same crossing device displays a stop instruction; the driver enters the crossing during that indication.",
+      "source_packet_required": true,
+      "target_law_id": "NRS-484B-560-7b",
+      "target_type": "delivery"
+    },
+    {
+      "case_id": "testing__C177249__NRS-484B-560-7b__motor_vehicle_driver__device_clear_cross",
+      "gap_ids": [
+        "gap-device"
+      ],
+      "rationale": "The same device displays a permissive clear indication; the driver enters and clears the crossing.",
+      "source_packet_required": true,
+      "target_law_id": "NRS-484B-560-7b",
+      "target_type": "delivery"
+    },
+    {
+      "case_id": "testing__C177249__NRS-484B-560-7b__motor_vehicle_driver__device_clear_halt",
+      "gap_ids": [
+        "gap-device"
+      ],
+      "rationale": "The same device displays a permissive clear indication; the driver independently halts. Clear is not construed as an affirmative command to proceed.",
+      "source_packet_required": true,
+      "target_law_id": "NRS-484B-560-7b",
+      "target_type": "delivery"
+    },
+    {
+      "case_id": "testing__C177249__NRS-484B-560-7b__motor_vehicle_driver__officer_stop_halt",
+      "gap_ids": [
+        "gap-officer"
+      ],
+      "rationale": "An actual sourced police officer directs this driver to stop while the installed device remains present; the driver halts.",
+      "source_packet_required": true,
+      "target_law_id": "NRS-484B-560-7b",
+      "target_type": "delivery"
+    },
+    {
+      "case_id": "testing__C177249__NRS-484B-560-7b__motor_vehicle_driver__officer_stop_cross",
+      "gap_ids": [
+        "gap-officer"
+      ],
+      "rationale": "The same officer directs the driver to stop while the installed device remains present; the driver enters the crossing.",
+      "source_packet_required": true,
+      "target_law_id": "NRS-484B-560-7b",
+      "target_type": "delivery"
     }
   ],
-  "law_text": "It is unlawful for the driver of any vehicle: To fail to obey an official traffic-control device or the directions of a police officer at a railroad crossing.",
-  "law_source": "NRS 484B.560(7)(b)",
-  "topic_inventory": {
-    "exact-text": "It is unlawful for the driver of any vehicle: To fail to obey an official traffic-control device or the directions of a police officer at a railroad crossing."
+  "cell_id": "C177249",
+  "comparisons": [
+    {
+      "case_ids": [
+        "testing__C177249__NRS-484B-560-7b__motor_vehicle_driver__device_stop_halt",
+        "testing__C177249__NRS-484B-560-7b__motor_vehicle_driver__device_stop_cross"
+      ],
+      "comparison_id": "device_stop_response",
+      "deliberate_differences": [
+        "actual body halt versus crossing entry while stop instruction remains active"
+      ],
+      "fixed_conditions": [
+        "C177249 paved road and rail crossing geometry",
+        "ordinary motor vehicle and driver",
+        "road approach and governed movement",
+        "crossing boundaries and route",
+        "45 s at 20 Hz",
+        "four synchronized camera views"
+      ]
+    },
+    {
+      "case_ids": [
+        "testing__C177249__NRS-484B-560-7b__motor_vehicle_driver__device_stop_cross",
+        "testing__C177249__NRS-484B-560-7b__motor_vehicle_driver__device_clear_cross"
+      ],
+      "comparison_id": "device_indication",
+      "deliberate_differences": [
+        "actual source-observed stop versus permissive clear indication"
+      ],
+      "fixed_conditions": [
+        "C177249 paved road and rail crossing geometry",
+        "ordinary motor vehicle and driver",
+        "road approach and governed movement",
+        "crossing boundaries and route",
+        "45 s at 20 Hz",
+        "four synchronized camera views"
+      ]
+    },
+    {
+      "case_ids": [
+        "testing__C177249__NRS-484B-560-7b__motor_vehicle_driver__device_clear_cross",
+        "testing__C177249__NRS-484B-560-7b__motor_vehicle_driver__device_clear_halt"
+      ],
+      "comparison_id": "clear_response",
+      "deliberate_differences": [
+        "actual crossing entry versus independent halt under permissive indication"
+      ],
+      "fixed_conditions": [
+        "C177249 paved road and rail crossing geometry",
+        "ordinary motor vehicle and driver",
+        "road approach and governed movement",
+        "crossing boundaries and route",
+        "45 s at 20 Hz",
+        "four synchronized camera views"
+      ]
+    },
+    {
+      "case_ids": [
+        "testing__C177249__NRS-484B-560-7b__motor_vehicle_driver__officer_stop_halt",
+        "testing__C177249__NRS-484B-560-7b__motor_vehicle_driver__officer_stop_cross"
+      ],
+      "comparison_id": "officer_stop_response",
+      "deliberate_differences": [
+        "actual body halt versus crossing entry during the same officer stop direction"
+      ],
+      "fixed_conditions": [
+        "C177249 paved road and rail crossing geometry",
+        "ordinary motor vehicle and driver",
+        "road approach and governed movement",
+        "crossing boundaries and route",
+        "45 s at 20 Hz",
+        "four synchronized camera views"
+      ]
+    },
+    {
+      "case_ids": [
+        "testing__C177249__NRS-484B-560-7b__motor_vehicle_driver__device_stop_halt",
+        "testing__C177249__NRS-484B-560-7b__motor_vehicle_driver__officer_stop_halt"
+      ],
+      "comparison_id": "governing_channel",
+      "deliberate_differences": [
+        "source-reviewed device versus actual officer stop channel"
+      ],
+      "fixed_conditions": [
+        "C177249 paved road and rail crossing geometry",
+        "ordinary motor vehicle and driver",
+        "road approach and governed movement",
+        "crossing boundaries and route",
+        "45 s at 20 Hz",
+        "four synchronized camera views"
+      ]
+    }
+  ],
+  "evidence_review": {
+    "facts": [],
+    "gaps": [
+      {
+        "id": "gap-device",
+        "requirement": "official device provenance, actual crossing instruction and actual driver response",
+        "source": "NRS 484B.560(7)(b); conditional frozen witness index 462",
+        "why_existing_insufficient": "Frozen evidence inventory has zero accepted recordings."
+      },
+      {
+        "id": "gap-officer",
+        "requirement": "actual police officer direction at the railroad crossing and driver response",
+        "source": "NRS 484B.560(7)(b)",
+        "why_existing_insufficient": "Frozen evidence inventory has zero accepted recordings."
+      }
+    ],
+    "method": "Reviewed the frozen evidence inventory (zero accepted recordings), exact law text and conditional witness. No prior recording establishes either instruction channel or physical response.",
+    "reviewer": "CPU worker"
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "existing_evidence": [],
+  "judgment_range_inventory": [],
+  "law_id": "NRS-484B-560-7b",
+  "law_source": "NRS 484B.560(7)(b)",
+  "law_text": "It is unlawful for the driver of any vehicle: To fail to obey an official traffic-control device or the directions of a police officer at a railroad crossing.",
+  "observations": [
+    {
+      "mandatory": true,
+      "name": "rail_crossing_geometry",
+      "source": "reviewed original site packet and frame-joined Native capture; officer source required for officer cases"
+    },
+    {
+      "mandatory": true,
+      "name": "device_identity_and_officiality",
+      "source": "reviewed original site packet and frame-joined Native capture; officer source required for officer cases"
+    },
+    {
+      "mandatory": true,
+      "name": "device_indication_history",
+      "source": "reviewed original site packet and frame-joined Native capture; officer source required for officer cases"
+    },
+    {
+      "mandatory": true,
+      "name": "governed_movement",
+      "source": "reviewed original site packet and frame-joined Native capture; officer source required for officer cases"
+    },
+    {
+      "mandatory": true,
+      "name": "officer_identity_and_direction_history",
+      "source": "reviewed original site packet and frame-joined Native capture; officer source required for officer cases"
+    },
+    {
+      "mandatory": true,
+      "name": "driver_identity",
+      "source": "reviewed original site packet and frame-joined Native capture; officer source required for officer cases"
+    },
+    {
+      "mandatory": true,
+      "name": "original_body_entry_exit",
+      "source": "reviewed original site packet and frame-joined Native capture; officer source required for officer cases"
+    },
+    {
+      "mandatory": true,
+      "name": "actual_speed_and_brake",
+      "source": "reviewed original site packet and frame-joined Native capture; officer source required for officer cases"
+    },
+    {
+      "mandatory": true,
+      "name": "four_camera_frame_join",
+      "source": "reviewed original site packet and frame-joined Native capture; officer source required for officer cases"
+    }
+  ],
+  "planning_status": "construction_in_progress",
+  "requirement_dispositions": [
+    {
+      "case_ids": [
+        "testing__C177249__NRS-484B-560-7b__motor_vehicle_driver__device_stop_halt",
+        "testing__C177249__NRS-484B-560-7b__motor_vehicle_driver__device_stop_cross",
+        "testing__C177249__NRS-484B-560-7b__motor_vehicle_driver__device_clear_cross",
+        "testing__C177249__NRS-484B-560-7b__motor_vehicle_driver__device_clear_halt"
+      ],
+      "disposition_index": 0,
+      "evidence_or_gap": "gap-device",
+      "requirement": "obey an official traffic-control device at a railroad crossing",
+      "source": "NRS 484B.560(7)(b)",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C177249__NRS-484B-560-7b__motor_vehicle_driver__officer_stop_halt",
+        "testing__C177249__NRS-484B-560-7b__motor_vehicle_driver__officer_stop_cross"
+      ],
+      "disposition_index": 1,
+      "evidence_or_gap": "gap-officer",
+      "requirement": "obey the directions of a police officer at a railroad crossing",
+      "source": "NRS 484B.560(7)(b)",
+      "status": "selected_required"
+    }
+  ],
+  "runtime_uncertainties": [
+    "Official placement, governing instruction and actual officer identity require independent original source review.",
+    "Actual CARLA body motion, realized device indication, officer direction and four-view pixels remain physical checks.",
+    "A permissive clear indication is not treated as a legal duty to proceed; no legal verdict is generated."
+  ],
+  "selected_branches": [
+    {
+      "actor": "motor_vehicle_driver",
+      "branch": "Official traffic-control device on a paved-road railway approach.",
+      "cell_id": "C177249",
+      "coverage_status": "pending_review",
+      "law_id": "NRS-484B-560-7b",
+      "law_partition": "training",
+      "recording_ids": [],
+      "requirement": "NRS-484B-560-7b",
+      "scenario_partition": "testing",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 462,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
+    }
+  ],
+  "source_observation_mapping": {},
   "sources": [
     {
       "path": "inputs/testing__C177249__NRS-484B-560-7b__motor_vehicle_driver/assignment.json",
@@ -49,27 +325,17 @@
       "sha256": "426d50e77b5e8cd59aeee570eb89c9c9df7942474b93a91cb4e239dbd307bbb5"
     }
   ],
-  "existing_evidence": [],
-  "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
-  ],
-  "evidence_review": {
-    "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
-    "facts": [],
-    "gaps": []
+  "topic_inventory": {
+    "device": "obey an official traffic-control device at a railroad crossing",
+    "exact-text": "It is unlawful for the driver of any vehicle: To fail to obey an official traffic-control device or the directions of a police officer at a railroad crossing.",
+    "officer": "obey the directions of a police officer at a railroad crossing"
   },
-  "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
   "witness_review": [
     {
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 462,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
       "branch": "Official traffic-control device on a paved-road railway approach.",
-      "decision": "conditional",
       "confidence": "low",
+      "decision": "conditional",
+      "reason": "The paved-road crossing can include a specific official device governing the intended crossing, subject to provenance and instruction evidence.",
       "required_context": [
         "Device identity, instruction and governed crossing movement; generic device presence does not establish a railway warning, gate or stop sign.",
         "Do not presume a gate, railway warning, stop sign, train presence or unconditional stopping duty.",
@@ -80,7 +346,9 @@
         "Record visibility or communication history and vehicle response without making observability an additional statutory prerequisite.",
         "Supported crossing, vehicle clearances and exit space."
       ],
-      "reason": "The paved-road crossing can include a specific official device governing the intended crossing, subject to provenance and instruction evidence."
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 462,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
     }
   ]
 }

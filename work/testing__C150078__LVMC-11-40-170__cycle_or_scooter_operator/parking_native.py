@@ -16,6 +16,11 @@ def write(path,payload):
     Path(path).write_text(json.dumps(payload,indent=2,allow_nan=False)+'\n')
 
 
+def placement_position(start,target,index,move_frames=20):
+    if move_frames<2:raise ValueError('parking movement window too short')
+    alpha=min(1.0,max(0.0,(index+1)/move_frames))
+    return [start[0]+(target[0]-start[0])*alpha,start[1]+(target[1]-start[1])*alpha]
+
 def line_distance(position,vertices):
     x,y=position
     closest=float('inf')
@@ -114,7 +119,7 @@ def run_native(cfg,site,records,site_path,output,host,port):
             if actor.type_id!=bp_name:raise ValueError('Native actor blueprint readback mismatch')
             return actor
         rack=spawn(site['rack_blueprint_id'],site['rack_xy'],site.get('rack_yaw_deg',0))
-        device=spawn(site['device_blueprint_id'],target,site.get('device_yaw_deg',0))
+        device=spawn(site['device_blueprint_id'],site['device_start_xy'],site.get('device_yaw_deg',0))
         person=spawn(site['person_blueprint_id'],site['person_xy'],site.get('person_yaw_deg',0))
         pedestrian=spawn(site['pedestrian_blueprint_id'],site['pedestrian_start_xy'],site.get('pedestrian_yaw_deg',0))
         walker_controller=world.spawn_actor(library.find('controller.ai.walker'),carla.Transform(),attach_to=pedestrian)
@@ -134,7 +139,12 @@ def run_native(cfg,site,records,site_path,output,host,port):
         phase='capturing'
         start_time=None
         with (output/'parking-events.jsonl').open('x',buffering=1) as event_file,(output/'pedestrian-tracks.jsonl').open('x',buffering=1) as track_file:
+            previous_device_position=None
             for index in range(round(cfg['duration_s']*cfg['rate_hz'])):
+                desired=placement_position(site['device_start_xy'],target,index,cfg.get('parking_move_frames',20))
+                device.set_transform(carla.Transform(carla.Location(x=desired[0],y=desired[1],z=wp.transform.location.z+.3),carla.Rotation(yaw=site.get('device_yaw_deg',0))))
+                person_desired=[desired[0]-.7,desired[1]]
+                person.set_transform(carla.Transform(carla.Location(x=person_desired[0],y=person_desired[1],z=wp.transform.location.z+.3),carla.Rotation(yaw=site.get('person_yaw_deg',0))))
                 frame=world.tick();snap=world.get_snapshot()
                 if snap.frame!=frame:raise RuntimeError('Native world frame mismatch')
                 time_s=snap.timestamp.elapsed_seconds
@@ -142,13 +152,15 @@ def run_native(cfg,site,records,site_path,output,host,port):
                 capture.capture(frame,time_s);cameras.append(frame);frame_map.append(frame,time_s)
                 d=device.get_transform().location;p=pedestrian.get_transform().location
                 position=[d.x,d.y];person_position=person.get_transform().location
-                if math.dist((d.x,d.y),target)>site.get('engineering_position_tolerance_m',.4):
-                    raise RuntimeError('parked device drifted from reviewed target')
+                if math.dist((d.x,d.y),desired)>site.get('engineering_position_tolerance_m',.4):
+                    raise RuntimeError('moving device drifted from reviewed parking trajectory')
+                speed=0.0 if previous_device_position is None else math.dist(position,previous_device_position)*cfg['rate_hz']
+                previous_device_position=position
                 relation=classify_observed_placement(position,records,site)
-                parked=(index>=cfg.get('parking_observation_start_frame',20))
+                parked=bool(index>=cfg.get('parking_move_frames',20) and speed<=.15 and math.dist((d.x,d.y),target)<=.4)
                 event={'frame':frame,'time_s':time_s,'device_xy':position,'person_xy':[person_position.x,person_position.y],
                        'person_id':records['person']['responsible_person_identity'],'device_id':records['device']['physical_identity'],
-                       'device_actor_id':device.id,'rack_actor_id':rack.id,'parked':parked,'placement_relation':relation,
+                       'device_actor_id':device.id,'rack_actor_id':rack.id,'observed_device_speed_mps':speed,'parked':parked,'placement_relation':relation,
                        'rack_support_contact':relation=='sidewalk_rack' and records['rack']['supports_device'] is True,
                        'requested_placement':site['requested']['placement']}
                 passage='passing' if math.dist((p.x,p.y),target)<site.get('pedestrian_passing_radius_m',4) else 'absent'

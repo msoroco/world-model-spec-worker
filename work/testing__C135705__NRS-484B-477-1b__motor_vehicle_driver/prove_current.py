@@ -28,7 +28,8 @@ def call(command):
 
 def save(name,source):
     path=HERE/name
-    path.write_text(Path(source).read_text().rstrip()+'\n')
+    content=Path(source).read_text().rstrip()
+    path.write_text(content+'\n' if content else '')
     return path
 
 
