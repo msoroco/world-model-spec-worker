@@ -1,15 +1,16 @@
 {
   "applied_update": 16,
   "assignment_id": "training__C230289__NRS-484B-633-2__motor_vehicle_driver",
-  "candidate_count": 0,
+  "candidate_count": 2,
+  "first_gpu_delivery_command": "python runtime.py execute-delivery --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT --case training__C230289__NRS-484B-633-2__motor_vehicle_driver__probe_01 --job $JOB_ID --db $DB --run $RUN --assignment training__C230289__NRS-484B-633-2__motor_vehicle_driver",
   "input_sha256": "aa1e318e420035325d18be17b81c4ec44c4c568995e143f1e1aa2f92bbf4a1fb",
   "planned_case_count": 2,
-  "readiness_kind": "implementation_checkpoint",
-  "reason": "Two selected exact source-gated Native bridge cases pass current-runtime offline; synthetic saved-source positive/negative and independent speed comparison CPU diagnostics pass. Public compatibility, recorded-only pipeline, semantic, physical/lifecycle, delivery and strict remain pending; original bridge/DOT authority remains unobserved.",
+  "readiness_kind": "delivery_prepared",
+  "reason": "CPU delivery preparation passed; original source, physical capture and legal acceptance remain operator reviewed.",
   "reuse_count": 0,
   "selected_delivery_case_count": 2,
   "source_law_review": "Exact text requires speed over a qualifying signposted highway bridge/elevated structure greater than its declared safe structural maximum. Witness is conditional and low confidence; no accepted memberships are listed.",
-  "status": "partial",
+  "status": "ready",
   "tests": [
     {
       "command": ".venv-cpu/bin/python -B work/training__C230289__NRS-484B-633-2__motor_vehicle_driver/prove_bridge_speed.py",
@@ -28,6 +29,24 @@
       "exit_code": 0,
       "log": "native/proofs/cpu-root-tests.log",
       "sha256": "e606beaf5a1891c682cf7b1f9f27650980bcfa735c12b42f544c416fd21bf06f"
+    },
+    {
+      "command": ".venv-cpu/bin/python -B work/training__C230289__NRS-484B-633-2__motor_vehicle_driver/native/audit_delivery.py --case training__C230289__NRS-484B-633-2__motor_vehicle_driver__probe_01 --attempt .runtime-work/c230289/compat-probe01f",
+      "exit_code": 0,
+      "log": "native/proofs/cpu-probe_01-delivery-positive.log",
+      "sha256": "74762f51c47090eda3db71e3c06cd33af8392e69a218cdd65c3069755409cd31"
+    },
+    {
+      "command": ".venv-cpu/bin/python -B work/training__C230289__NRS-484B-633-2__motor_vehicle_driver/native/audit_delivery.py --case training__C230289__NRS-484B-633-2__motor_vehicle_driver__probe_02 --attempt .runtime-work/c230289/compat-probe02a",
+      "exit_code": 0,
+      "log": "native/proofs/cpu-probe_02-delivery-positive.log",
+      "sha256": "842e92f2bc3f537b3af9731357a7c8fe33939fd1f301a0a7d2f5f46382525c27"
+    },
+    {
+      "command": ".venv-cpu/bin/python -B work/training__C230289__NRS-484B-633-2__motor_vehicle_driver/native/audit_comparison.py --low .runtime-work/c230289/compat-probe01f --high .runtime-work/c230289/compat-probe02a",
+      "exit_code": 0,
+      "log": "native/proofs/cpu-bridge-exact-comparison-positive.log",
+      "sha256": "02c5f6f64022bceb7fdfdf02d12275860e2bdecea28070c3a8870dec56e0a0ad"
     }
   ]
 }

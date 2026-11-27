@@ -1,0 +1,301 @@
+{
+  "cell_id": "C229398",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweep_specs": [
+    {
+      "sweep_id": "training__C229398__NRS-484B-600-1e__motor_vehicle_driver__speed_boundary",
+      "target_law_id": "NRS-484B-600-1e",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "a rate of speed greater than 80 miles per hour",
+          "note": "Use original Native velocity during reviewed driving or operating frames; controller request and parked frames are not the measured speed."
+        }
+      ],
+      "rationale": "Original approach velocity, actor, road, phase and curb completion must be reviewed; request is not measurement.",
+      "missing_inputs": [
+        "Original Native velocity and same-cell route/phase/camera review."
+      ]
+    }
+  ],
+  "sweeps_expanded": true,
+  "cases": [
+    {
+      "case_id": "training__C229398__NRS-484B-600-1e__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Unselected neutral road/park/curb context.",
+      "variable_assignments": {
+        "requested_approach_speed_mph": {
+          "kind": "controller",
+          "value": null,
+          "unit": "categorical"
+        },
+        "road_curb_route": {
+          "kind": "world_setup",
+          "value": null,
+          "unit": "categorical"
+        },
+        "source_phase": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "categorical"
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor, velocity and lane frames joined with hashed route, phase, subject and four-view visibility sources",
+            "time_window": "600 frames; statute measured only in reviewed driving approach frames",
+            "reference_frame": "authored C229398 road with Native readback",
+            "uncertainty": "Requested speed does not establish achieved velocity; original same-cell phase and curb completion require independent review"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor, velocity and lane frames joined with hashed route, phase, subject and four-view visibility sources",
+            "time_window": "600 frames; statute measured only in reviewed driving approach frames",
+            "reference_frame": "authored C229398 road with Native readback",
+            "uncertainty": "Requested speed does not establish achieved velocity; original same-cell phase and curb completion require independent review"
+          },
+          {
+            "name": "ru.subject",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor, velocity and lane frames joined with hashed route, phase, subject and four-view visibility sources",
+            "time_window": "600 frames; statute measured only in reviewed driving approach frames",
+            "reference_frame": "authored C229398 road with Native readback",
+            "uncertainty": "Requested speed does not establish achieved velocity; original same-cell phase and curb completion require independent review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Parked frames are excluded from the speed-limit measurement",
+          "Synthetic diagnostic sources do not establish physical or legal acceptance"
+        ]
+      }
+    },
+    {
+      "case_id": "training__C229398__NRS-484B-600-1e__motor_vehicle_driver__probe_01",
+      "target_law_id": "NRS-484B-600-1e",
+      "target_type": "judgment_sweep",
+      "rationale": "Controlled speed request on one source-reviewed approach-to-curb recording; original achieved speed and same-cell scope remain for independent review.",
+      "variable_assignments": {
+        "requested_approach_speed_mph": {
+          "kind": "controller",
+          "value": 75.0,
+          "unit": "miles/hour"
+        },
+        "road_curb_route": {
+          "kind": "world_setup",
+          "value": "same original C229398 road and curb",
+          "unit": "categorical"
+        },
+        "source_phase": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "categorical"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "a rate of speed greater than 80 miles per hour"
+      ],
+      "paired_probe_id": "training__C229398__NRS-484B-600-1e__motor_vehicle_driver__speed_boundary",
+      "deliberate_differences": [
+        "requested_approach_speed_mph"
+      ],
+      "probe": {
+        "primary_variable": "requested_approach_speed_mph",
+        "comparison_or_standard": "Original Native driving-phase speed around strict greater-than-80 mph source clause",
+        "target_value_or_branch": 75.0
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor, velocity and lane frames joined with hashed route, phase, subject and four-view visibility sources",
+            "time_window": "600 frames; statute measured only in reviewed driving approach frames",
+            "reference_frame": "authored C229398 road with Native readback",
+            "uncertainty": "Requested speed does not establish achieved velocity; original same-cell phase and curb completion require independent review"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor, velocity and lane frames joined with hashed route, phase, subject and four-view visibility sources",
+            "time_window": "600 frames; statute measured only in reviewed driving approach frames",
+            "reference_frame": "authored C229398 road with Native readback",
+            "uncertainty": "Requested speed does not establish achieved velocity; original same-cell phase and curb completion require independent review"
+          },
+          {
+            "name": "ru.subject",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor, velocity and lane frames joined with hashed route, phase, subject and four-view visibility sources",
+            "time_window": "600 frames; statute measured only in reviewed driving approach frames",
+            "reference_frame": "authored C229398 road with Native readback",
+            "uncertainty": "Requested speed does not establish achieved velocity; original same-cell phase and curb completion require independent review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Parked frames are excluded from the speed-limit measurement",
+          "Synthetic diagnostic sources do not establish physical or legal acceptance"
+        ]
+      },
+      "selection_rank": 1
+    },
+    {
+      "case_id": "training__C229398__NRS-484B-600-1e__motor_vehicle_driver__probe_02",
+      "target_law_id": "NRS-484B-600-1e",
+      "target_type": "judgment_sweep",
+      "rationale": "Controlled speed request on one source-reviewed approach-to-curb recording; original achieved speed and same-cell scope remain for independent review.",
+      "variable_assignments": {
+        "requested_approach_speed_mph": {
+          "kind": "controller",
+          "value": 79.5,
+          "unit": "miles/hour"
+        },
+        "road_curb_route": {
+          "kind": "world_setup",
+          "value": "same original C229398 road and curb",
+          "unit": "categorical"
+        },
+        "source_phase": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "categorical"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "a rate of speed greater than 80 miles per hour"
+      ],
+      "paired_probe_id": "training__C229398__NRS-484B-600-1e__motor_vehicle_driver__speed_boundary",
+      "deliberate_differences": [
+        "requested_approach_speed_mph"
+      ],
+      "probe": {
+        "primary_variable": "requested_approach_speed_mph",
+        "comparison_or_standard": "Original Native driving-phase speed around strict greater-than-80 mph source clause",
+        "target_value_or_branch": 79.5
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor, velocity and lane frames joined with hashed route, phase, subject and four-view visibility sources",
+            "time_window": "600 frames; statute measured only in reviewed driving approach frames",
+            "reference_frame": "authored C229398 road with Native readback",
+            "uncertainty": "Requested speed does not establish achieved velocity; original same-cell phase and curb completion require independent review"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor, velocity and lane frames joined with hashed route, phase, subject and four-view visibility sources",
+            "time_window": "600 frames; statute measured only in reviewed driving approach frames",
+            "reference_frame": "authored C229398 road with Native readback",
+            "uncertainty": "Requested speed does not establish achieved velocity; original same-cell phase and curb completion require independent review"
+          },
+          {
+            "name": "ru.subject",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor, velocity and lane frames joined with hashed route, phase, subject and four-view visibility sources",
+            "time_window": "600 frames; statute measured only in reviewed driving approach frames",
+            "reference_frame": "authored C229398 road with Native readback",
+            "uncertainty": "Requested speed does not establish achieved velocity; original same-cell phase and curb completion require independent review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Parked frames are excluded from the speed-limit measurement",
+          "Synthetic diagnostic sources do not establish physical or legal acceptance"
+        ]
+      },
+      "selection_rank": 2
+    },
+    {
+      "case_id": "training__C229398__NRS-484B-600-1e__motor_vehicle_driver__probe_03",
+      "target_law_id": "NRS-484B-600-1e",
+      "target_type": "judgment_sweep",
+      "rationale": "Controlled speed request on one source-reviewed approach-to-curb recording; original achieved speed and same-cell scope remain for independent review.",
+      "variable_assignments": {
+        "requested_approach_speed_mph": {
+          "kind": "controller",
+          "value": 85.0,
+          "unit": "miles/hour"
+        },
+        "road_curb_route": {
+          "kind": "world_setup",
+          "value": "same original C229398 road and curb",
+          "unit": "categorical"
+        },
+        "source_phase": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "categorical"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "a rate of speed greater than 80 miles per hour"
+      ],
+      "paired_probe_id": "training__C229398__NRS-484B-600-1e__motor_vehicle_driver__speed_boundary",
+      "deliberate_differences": [
+        "requested_approach_speed_mph"
+      ],
+      "probe": {
+        "primary_variable": "requested_approach_speed_mph",
+        "comparison_or_standard": "Original Native driving-phase speed around strict greater-than-80 mph source clause",
+        "target_value_or_branch": 85.0
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.speed",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor, velocity and lane frames joined with hashed route, phase, subject and four-view visibility sources",
+            "time_window": "600 frames; statute measured only in reviewed driving approach frames",
+            "reference_frame": "authored C229398 road with Native readback",
+            "uncertainty": "Requested speed does not establish achieved velocity; original same-cell phase and curb completion require independent review"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor, velocity and lane frames joined with hashed route, phase, subject and four-view visibility sources",
+            "time_window": "600 frames; statute measured only in reviewed driving approach frames",
+            "reference_frame": "authored C229398 road with Native readback",
+            "uncertainty": "Requested speed does not establish achieved velocity; original same-cell phase and curb completion require independent review"
+          },
+          {
+            "name": "ru.subject",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor, velocity and lane frames joined with hashed route, phase, subject and four-view visibility sources",
+            "time_window": "600 frames; statute measured only in reviewed driving approach frames",
+            "reference_frame": "authored C229398 road with Native readback",
+            "uncertainty": "Requested speed does not establish achieved velocity; original same-cell phase and curb completion require independent review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Parked frames are excluded from the speed-limit measurement",
+          "Synthetic diagnostic sources do not establish physical or legal acceptance"
+        ]
+      },
+      "selection_rank": 3
+    }
+  ]
+}

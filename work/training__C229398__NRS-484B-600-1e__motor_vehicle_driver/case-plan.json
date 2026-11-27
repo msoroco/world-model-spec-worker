@@ -69,7 +69,10 @@
       "comparison_variable": "speed while driving",
       "selection_status": "not_selected",
       "expected_label": null,
-      "construction_status": "unproven"
+      "construction_status": "unproven",
+      "gap_ids": [
+        "missing-original-above"
+      ]
     },
     {
       "case_id": "training__C229398__NRS-484B-600-1e__motor_vehicle_driver__probe_02",
@@ -80,7 +83,10 @@
       "comparison_variable": "speed while driving",
       "selection_status": "not_selected",
       "expected_label": null,
-      "construction_status": "unproven"
+      "construction_status": "unproven",
+      "gap_ids": [
+        "missing-original-at"
+      ]
     },
     {
       "case_id": "training__C229398__NRS-484B-600-1e__motor_vehicle_driver__probe_03",
@@ -93,7 +99,10 @@
       "expected_label": null,
       "construction_status": "unselected_native_feasibility_draft_offline_passed",
       "construction_path": "native/construction.json",
-      "offline_log": "pinned-offline.log"
+      "offline_log": "pinned-offline.log",
+      "gap_ids": [
+        "missing-original-below"
+      ]
     }
   ],
   "comparisons": [
@@ -220,5 +229,105 @@
       ],
       "evidence_or_gap": "Unselected Native draft for probe_03 passes CPU offline; no source-hashed measured approach or same-cell equivalence, selected-case compatibility, saved audit, or physical realization."
     }
-  ]
+  ],
+  "evidence_review": {
+    "reviewer": "C229398 independent source/phase review",
+    "method": "Compared three membership records and review-context requested approach speeds with their receipt inventory. The export has no versioned original velocity traces, frame maps or scope receipts; requested speeds are not achieved speed and cannot establish current-requirement equivalence. Each new case targets the unresolved measured driving approach in one road/park/curb recording and preserves the parked phase as a separate interval.",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "missing-original-above",
+        "requirement": "Measured original above-80-mph driving approach in same fixed park/curb recording",
+        "source": {
+          "path": "inputs/training__C229398__NRS-484B-600-1e__motor_vehicle_driver/review-context/review.json",
+          "sha256": "d02d08457019e02e85a3af4dc096d47400ee2fc9b190e38009809747dbbccac5"
+        },
+        "why_existing_insufficient": "Accepted recording 486b81be7de26657162ed7fc3fe2094fa921e159ae96a1a1a49dc34b00442862 has membership and requested speed only; no source-hashed velocity/frame/scope receipt is exported."
+      },
+      {
+        "id": "missing-original-at",
+        "requirement": "Measured original at-80-mph driving approach in same fixed park/curb recording",
+        "source": {
+          "path": "inputs/training__C229398__NRS-484B-600-1e__motor_vehicle_driver/review-context/review.json",
+          "sha256": "d02d08457019e02e85a3af4dc096d47400ee2fc9b190e38009809747dbbccac5"
+        },
+        "why_existing_insufficient": "Accepted recording 5498634e975085d3aff0ddffa8bd40d5ae01542ed76cbe1edff098478b07c1ab has membership and requested speed only; no source-hashed velocity/frame/scope receipt is exported."
+      },
+      {
+        "id": "missing-original-below",
+        "requirement": "Measured original below-80-mph driving approach in same fixed park/curb recording",
+        "source": {
+          "path": "inputs/training__C229398__NRS-484B-600-1e__motor_vehicle_driver/review-context/review.json",
+          "sha256": "d02d08457019e02e85a3af4dc096d47400ee2fc9b190e38009809747dbbccac5"
+        },
+        "why_existing_insufficient": "Accepted recording ba185a50391ed37db8729da3b1cebe1d719e98f6a3ed766d9b7a2d67a5a48797 has membership and requested speed only; no source-hashed velocity/frame/scope receipt is exported."
+      }
+    ]
+  },
+  "source_phase_review": {
+    "law_activation": "Only original driving or operation frames can be compared with the strict greater-than-80-mph boundary.",
+    "fixed_cell_sequence": "One continuous road/park/curb recording may contain a driving approach followed by curb parking and a parked interval; the original route, vehicle identity and phase boundary must be source-hashed and independently reviewed.",
+    "parked_phase": "Excluded from speed-limit judgment.",
+    "existing_memberships": "No achieved speed or same-cell phase equivalence established by the frozen export.",
+    "selection_criterion": "Select only after a constructed single-recording approach-to-curb route with source-gated phase and enough road for the requested speed passes CPU proofs."
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "entire road approach, vehicle and curb parking completion",
+        "interval": "all 600 frames"
+      },
+      {
+        "view": "approach",
+        "subject": "vehicle motion and road reference during the driving phase",
+        "interval": "all 600 frames"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "curb entry and parked end state",
+        "interval": "all 600 frames"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "driver-side original road and approach context",
+        "interval": "all 600 frames"
+      }
+    ]
+  },
+  "source_observation_mapping": {
+    "kin.speed": {
+      "evidence": "Original Native velocity, actor identity and reviewed approach-to-curb phase joined by native frame; no requested-speed inference",
+      "channels": [
+        "kin.speed"
+      ],
+      "source_refs": [
+        "source_context/approach_scope.txt",
+        "source_context/road_curb_route.txt"
+      ]
+    },
+    "kin.velocity": {
+      "evidence": "Original Native velocity, actor identity and reviewed approach-to-curb phase joined by native frame; no requested-speed inference",
+      "channels": [
+        "kin.velocity"
+      ],
+      "source_refs": [
+        "source_context/approach_scope.txt",
+        "source_context/road_curb_route.txt"
+      ]
+    },
+    "ru.subject": {
+      "evidence": "Original Native velocity, actor identity and reviewed approach-to-curb phase joined by native frame; no requested-speed inference",
+      "channels": [
+        "ru.subject"
+      ],
+      "source_refs": [
+        "source_context/approach_scope.txt",
+        "source_context/road_curb_route.txt"
+      ]
+    }
+  }
 }
