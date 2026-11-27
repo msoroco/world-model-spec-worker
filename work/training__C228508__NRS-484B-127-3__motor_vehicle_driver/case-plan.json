@@ -14,35 +14,27 @@
         "training__C228508__NRS-484B-127-3__motor_vehicle_driver__probe_a",
         "training__C228508__NRS-484B-127-3__motor_vehicle_driver__probe_b"
       ],
-      "evidence_or_gap": "Four source-bound primary/fallback construction drafts and original-row saved meters are CPU checked. Selected public/saved/semantic/delivery proofs and physical/legal review remain unfinished."
-    },
-    {
-      "requirement": "NRS-484B-127-3",
-      "source": "NRS 484B.127(3)",
-      "branch": "Accepted membership requires exact source review",
-      "status": "alternative_pending",
-      "case_ids": [],
-      "evidence_or_gap": "Two controlled planning probes identify the physical distinction; no executable construction, measurement contract or saved audit is proven."
+      "evidence_or_gap": "Two exact primary/fallback deliveries have offline, public positive/negative and saved-only CPU proofs. Original Native capture, physically coupled tow and legal authority review remain delivery tasks."
     }
   ],
   "cases": [
     {
       "case_id": "training__C228508__NRS-484B-127-3__motor_vehicle_driver__probe_a",
       "target_law_id": "NRS-484B-127-3",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "compliant_attempt",
       "physical_target": "leave entry gap in caravan",
       "comparison_variable": "caravan_entry_gap",
-      "construction_status": "four_candidate_paths_offline_cpu_passed_unselected"
+      "construction_status": "selected_cpu_proofs_passed_original_native_pending"
     },
     {
       "case_id": "training__C228508__NRS-484B-127-3__motor_vehicle_driver__probe_b",
       "target_law_id": "NRS-484B-127-3",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "violating_attempt",
       "physical_target": "leave insufficient gap in same caravan geometry",
       "comparison_variable": "caravan_entry_gap",
-      "construction_status": "four_candidate_paths_offline_cpu_passed_unselected"
+      "construction_status": "selected_cpu_proofs_passed_original_native_pending"
     }
   ],
   "comparisons": [
@@ -160,8 +152,7 @@
     "drv.following": {
       "evidence": "Original Native body order and same-lane identity across 600 joined frames measure following; caravan membership remains independently unverified.",
       "channels": [
-        "native_samples.jsonl.actors",
-        "video_frames.jsonl"
+        "drv.following"
       ],
       "source_refs": [
         "work/training__C228508__NRS-484B-127-3__motor_vehicle_driver/native/runner.py",
@@ -171,8 +162,7 @@
     "rel.surface_gap": {
       "evidence": "Both consecutive clear spaces derive from original four-corner body extents; tractor and trailer proxy extents are combined before measuring.",
       "channels": [
-        "native_samples.jsonl.actors.*.native_body_xy_m",
-        "minimum_clear_space_m"
+        "rel.surface_gap"
       ],
       "source_refs": [
         "work/training__C228508__NRS-484B-127-3__motor_vehicle_driver/native/runner.py",
@@ -182,8 +172,7 @@
     "drv.queue_behind": {
       "evidence": "Original lead, subject combination and rear order is checked on every frame; organized caravan purpose is not inferred from proximity.",
       "channels": [
-        "native_samples.jsonl.actors",
-        "authored-context.json"
+        "drv.queue_behind"
       ],
       "source_refs": [
         "work/training__C228508__NRS-484B-127-3__motor_vehicle_driver/native/runner.py",
@@ -193,8 +182,7 @@
     "rel.same_direction": {
       "evidence": "All three original caravan actor velocities and same-direction lane identity are sampled per frame; any observed reversal requires independent review.",
       "channels": [
-        "native_samples.jsonl.actors.*.speed_mps",
-        "native_samples.jsonl.actors.*.native_lane_id"
+        "rel.same_direction"
       ],
       "source_refs": [
         "work/training__C228508__NRS-484B-127-3__motor_vehicle_driver/native/runner.py",
@@ -204,9 +192,7 @@
     "ru.trailer_or_combination": {
       "evidence": "Complete tractor and trailer-proxy body extents are measured separately, then combined; physical coupling and legal combination identity remain unverified.",
       "channels": [
-        "native_samples.jsonl.actors.ego_combination",
-        "native_samples.jsonl.actors.trailer_proxy",
-        "trailer_coupling_verified"
+        "ru.trailer_or_combination"
       ],
       "source_refs": [
         "work/training__C228508__NRS-484B-127-3__motor_vehicle_driver/native/runner.py",
@@ -216,8 +202,7 @@
     "drv.lane_change_feasible": {
       "evidence": "Potential entrant body length and adjacent-lane position are joined to both available caravan spaces; static length surplus is not entry without danger.",
       "channels": [
-        "native_samples.jsonl.actors.potential_entrant",
-        "minimum_static_length_surplus_m"
+        "drv.lane_change_feasible"
       ],
       "source_refs": [
         "work/training__C228508__NRS-484B-127-3__motor_vehicle_driver/native/runner.py",
@@ -227,8 +212,7 @@
     "kin.speed": {
       "evidence": "Original Native velocities are sampled for every caravan actor and entrant at 20 Hz; commanded speed is retained separately and cannot substitute for observation.",
       "channels": [
-        "native_samples.jsonl.actors.*.speed_mps",
-        "native_samples.jsonl.requested_group_speed_mps"
+        "kin.speed"
       ],
       "source_refs": [
         "work/training__C228508__NRS-484B-127-3__motor_vehicle_driver/native/runner.py",

@@ -12,8 +12,11 @@ from engineering import CANDIDATES, commanded_centers
 from geometry import open_drive
 
 AID = 'training__C228508__NRS-484B-127-3__motor_vehicle_driver'
-CASE = AID + '__probe_a'
-SOURCE = ROOT / 'compat-source' / 'probe_a'
+SUFFIX = sys.argv[1] if len(sys.argv) == 2 else 'probe_a'
+if SUFFIX not in ('probe_a', 'probe_b'):
+    raise ValueError('Select one exact caravan probe')
+CASE = AID + '__' + SUFFIX
+SOURCE = ROOT / 'compat-source' / SUFFIX
 SOURCE.mkdir(parents=True, exist_ok=True)
 
 
@@ -45,7 +48,7 @@ samples, mapping, history, trace, evidence, frame_rows, graphs = [], [], [], [],
 for index in range(600):
     frame = 70000 + index
     time_s = index / 20
-    centers = commanded_centers('probe_a', 'primary', index)
+    centers = commanded_centers(SUFFIX, 'primary', index)
     actors = {}
     for name in ('lead', 'ego_combination', 'trailer_proxy', 'rear', 'potential_entrant'):
         x = (centers['ego_combination'] + 2.25 if name == 'ego_combination' else
@@ -62,6 +65,8 @@ for index in range(600):
     mapping.append({'video_frame': index, 'carla_frame': frame,
                     'native_frame': frame, 'time_s': time_s})
     subject = actors['ego_combination']
+    x = subject['native_center_xy_m'][0]
+    box = [[a,b,c] for a in (x-2.25,x+2.25) for b in (-2.75,-.75) for c in (0,1.5)]
     trace.append({'frame': frame, 'time_s': time_s,
                   'position': {'x': subject['native_center_xy_m'][0],
                                'y': -1.75, 'z': .5},
@@ -77,14 +82,14 @@ for index in range(600):
                      'recording_time_s': time_s, 'replay_simulation_time_s': time_s,
                      'ego': {'position_m': [subject['native_center_xy_m'][0],-1.75,.5],
                              'speed_mps': 6, 'speed_provenance': 'synthetic_native_sample',
-                             'heading_deg': 0}, 'synthetic_diagnostic': True})
+                             'heading_deg': 0, 'body_vertices_m': box},
+                     'world': {'weather': {'sun_altitude_angle':70,'precipitation':0,'wetness':0}},
+                     'synthetic_diagnostic': True})
     relative = f'capture/native/graphs/base/{frame:08d}.adapter.json'
     frame_rows.append({'frame': frame, 'simulation_time': time_s,
                        'adapter_graph': f'graphs/base/{frame:08d}.adapter.json',
                        'base': f'graphs/base/{frame:08d}.adapter.json',
                        'nodes': 1, 'edges': 0})
-    x = subject['native_center_xy_m'][0]
-    box = [[a,b,c] for a in (x-2.25,x+2.25) for b in (-2.75,-.75) for c in (0,1.5)]
     graphs.append({'path': relative,
                    'attributes': {'frame': frame, 'simulation_time_s': time_s,
                                   'source': 'C228508 caravan CPU diagnostic',
@@ -103,15 +108,16 @@ write(SOURCE / 'native-source-inventory.json', {'format':'c228508-original-nativ
 (SOURCE / 'capture').mkdir(exist_ok=True)
 write(SOURCE / 'capture/manifest.json', {'source_kind':'synthetic_diagnostic','frames':600,
     'rate_hz':20,'extraction_confirmed':True,'original_native_observed':False,
-    'sources':{'trace.jsonl':sha(SOURCE/'trace.jsonl')}})
+    'sources':{'road.xodr':hashlib.sha256(open_drive().encode()).hexdigest(),
+               'trace.jsonl':sha(SOURCE/'trace.jsonl')}})
 spec = {'files': {'road.xodr':open_drive(),
                   'capture/native/frames.jsonl': ''.join(json.dumps(row,separators=(',',':'))+'\n' for row in frame_rows),
-                  'capture/recorder_info.txt':'C228508 synthetic CPU diagnostic; no Native observation.\n'},
+                  'capture/recorder_info.txt':'Create 101: vehicle.lincoln.mkz_2020\nC228508 synthetic CPU diagnostic; no Native observation.\n'},
         'graphs':graphs,
         'videos':[{'path':name+'.mkv','frames':600,'width':w,'height':h,'fps':20,'color':'black'}
                   for name,w,h in (('overview',1920,1080),('approach',1280,720),
                                    ('reference_corner',1280,720),('driver_reference',1280,720))]}
-spec_path=ROOT/'selected-probe_a-fixture-spec.json'
+spec_path=ROOT/f'selected-{SUFFIX}-fixture-spec.json'
 write(spec_path,spec)
 sources=[]
 for file in sorted(f for f in SOURCE.rglob('*') if f.is_file()):
@@ -120,7 +126,7 @@ for file in sorted(f for f in SOURCE.rglob('*') if f.is_file()):
 recipe={'format':'worker-fixture-recipe',
         'generator':{'source':str(spec_path.relative_to(REPO)),'sha256':sha(spec_path)},
         'sources':sources}
-recipe_path=ROOT/'selected-probe_a-fixture-recipe.json'
+recipe_path=ROOT/f'selected-{SUFFIX}-fixture-recipe.json'
 write(recipe_path,recipe)
 print(json.dumps({'source_count':len(sources),'spec_sha256':sha(spec_path),
                   'recipe_sha256':sha(recipe_path)}))

@@ -25,7 +25,20 @@
           },
           "changed_knobs": [
             "approach_speed_cap_mps: 4.0 to 3.0"
-          ]
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "961c5119756338e7422a4edfb3b7e0bf4b1c586d7fa902ae9a1f3091376cd759",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C135709__NRS-484B-510__motor_vehicle_driver/execution-manifest.json --case training__C135709__NRS-484B-510__motor_vehicle_driver__witness_1 --output $OFFLINE_OUTPUT --candidate fallback1",
+            "log": "offline/witness_1-fallback1.log",
+            "log_sha256": "0fcd933bc2f267f7b3a302f5b6e557e48081dd217a8515a5ebae3cf9fe716b70"
+          },
+          "compatibility": {
+            "receipt": "compatibility/witness_1-fallback1-compatibility.json",
+            "sha256": "a7c6183a9b7705a61145f707ca29763c053942f7a6cc5f0674aa1f632daaf77c",
+            "log": "compatibility/witness_1-fallback1-analysis.log",
+            "negative_log": "compatibility/witness_1-fallback1-negative.log"
+          }
         }
       ],
       "delivery_readiness": "incomplete",
@@ -39,6 +52,326 @@
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "compatibility/witness_1-primary-compatibility.json",
+        "sha256": "e9fb8f0593bae0c76f3817a7c7717eec2650c2757effc6e575f50a0ddb95767b",
+        "log": "compatibility/witness_1-primary-analysis.log",
+        "negative_log": "compatibility/witness_1-primary-negative.log"
+      },
+      "negative": {
+        "log": "compatibility/witness_1-primary-negative.log"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C135709__NRS-484B-510__motor_vehicle_driver/execution-manifest.json --case training__C135709__NRS-484B-510__motor_vehicle_driver__witness_1 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C135709__NRS-484B-510__motor_vehicle_driver/execution-manifest.json --case training__C135709__NRS-484B-510__motor_vehicle_driver__witness_1 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/witness_1-processing.log",
+        "test_log_sha256": "25c0e7f9521523829d23d7cc834308bb77d9f4167770e68ac3ad06db068c887d",
+        "processing_receipt": "saved/witness_1-processing.json",
+        "processing_receipt_sha256": "e3e2c4b27104dc8aa61bc0b637f62a62d563e23a77170b90918c44009662f6be"
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "ff39096f486a131249e4346aea64e91a23aa3606a4fa70cc3a9cb3ce13774fe1",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C135709__NRS-484B-510__motor_vehicle_driver/execution-manifest.json --case training__C135709__NRS-484B-510__motor_vehicle_driver__witness_1 --output $OFFLINE_OUTPUT",
+        "log": "offline/witness_1-primary.log",
+        "log_sha256": "e61c2fd42a80ae420e1f5b8b95aad0d33ecc79cdeeb88d6d8961f33aa069f044"
+      }
+    },
+    {
+      "case_id": "training__C135709__NRS-484B-510__motor_vehicle_driver__witness_2",
+      "kind": "delivery",
+      "construction": "cases/witness_2/construction.json",
+      "construction_sha256": "6b0447e9742bd755be60b48ca93a5ad338d95e1e675378cd9c6ad9e5649db3b3",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "At 4 m/s the full ego footprint may overshoot the narrow restricted zone"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/witness_2/fallback1/construction.json",
+          "construction_sha256": "cb2f9b2c0dbcdf9229c4c2d3cf5512544d62da721975f133c3a82aa4b134554e",
+          "trigger": {
+            "source": "original ego body and zone survey",
+            "metric": "full footprint inside surveyed zone at rest",
+            "failure_condition": "primary footprint overshoots zone"
+          },
+          "changed_knobs": [
+            "approach_speed_cap_mps: 4.0 to 3.0"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "cb2f9b2c0dbcdf9229c4c2d3cf5512544d62da721975f133c3a82aa4b134554e",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C135709__NRS-484B-510__motor_vehicle_driver/execution-manifest.json --case training__C135709__NRS-484B-510__motor_vehicle_driver__witness_2 --output $OFFLINE_OUTPUT --candidate fallback1",
+            "log": "offline/witness_2-fallback1.log",
+            "log_sha256": "44c82cf0775bdd1fccfbc0f1e70adc71b31dd8ef0f7912e5c536aa836013ddee"
+          },
+          "compatibility": {
+            "receipt": "compatibility/witness_2-fallback1-compatibility.json",
+            "sha256": "6ad38c3a1cb49e9bd3719b087c6e4b2d06c1862f350ae902df27bcdcc7ad6c20",
+            "log": "compatibility/witness_2-fallback1-analysis.log",
+            "negative_log": "compatibility/witness_2-fallback1-negative.log"
+          }
+        }
+      ],
+      "delivery_readiness": "incomplete",
+      "measurement_contract": "measurement-witness_2.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-analysis-report"
+      },
+      "fixture_recipe": "work/training__C135709__NRS-484B-510__motor_vehicle_driver/selected-recipe-witness_2.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "6b0447e9742bd755be60b48ca93a5ad338d95e1e675378cd9c6ad9e5649db3b3",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C135709__NRS-484B-510__motor_vehicle_driver/execution-manifest.json --case training__C135709__NRS-484B-510__motor_vehicle_driver__witness_2 --output $OFFLINE_OUTPUT",
+        "log": "offline/witness_2-primary.log",
+        "log_sha256": "7b458aa35f55c95f6f77204fa69b6f792f9e995e09c2ea3288f62150d0f606ae"
+      },
+      "compatibility": {
+        "receipt": "compatibility/witness_2-primary-compatibility.json",
+        "sha256": "f6d5e9b32596c3a4df992b48996c30b8e9f91688051bf866df45761df799015d",
+        "log": "compatibility/witness_2-primary-analysis.log",
+        "negative_log": "compatibility/witness_2-primary-negative.log"
+      },
+      "negative": {
+        "log": "compatibility/witness_2-primary-negative.log"
+      }
+    },
+    {
+      "case_id": "training__C135709__NRS-484B-510__motor_vehicle_driver__exception_1_1",
+      "kind": "delivery",
+      "construction": "cases/exception_1_1/construction.json",
+      "construction_sha256": "eb8148b1093fd73679814b664e7da19939f366d3bcf69b2529b5d94a777c9e02",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "At 4 m/s the full ego footprint may overshoot the narrow restricted zone"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/exception_1_1/fallback1/construction.json",
+          "construction_sha256": "d85c58f625ef71decff4dc8e1186ed616a332dbf59d304276ea83fdf4850bfb2",
+          "trigger": {
+            "source": "original ego body and zone survey",
+            "metric": "full footprint inside surveyed zone at rest",
+            "failure_condition": "primary footprint overshoots zone"
+          },
+          "changed_knobs": [
+            "approach_speed_cap_mps: 4.0 to 3.0"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "d85c58f625ef71decff4dc8e1186ed616a332dbf59d304276ea83fdf4850bfb2",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C135709__NRS-484B-510__motor_vehicle_driver/execution-manifest.json --case training__C135709__NRS-484B-510__motor_vehicle_driver__exception_1_1 --output $OFFLINE_OUTPUT --candidate fallback1",
+            "log": "offline/exception_1_1-fallback1.log",
+            "log_sha256": "898cb70ed73e0a2efa7521095a2cb139e25a7619e056362e3c37cc7c72154a79"
+          },
+          "compatibility": {
+            "receipt": "compatibility/exception_1_1-fallback1-compatibility.json",
+            "sha256": "49bfb6fd0d1dc39b6b65b415c8b934beae940d49207f37b98498c2d91a4e7984",
+            "log": "compatibility/exception_1_1-fallback1-analysis.log",
+            "negative_log": "compatibility/exception_1_1-fallback1-negative.log"
+          }
+        }
+      ],
+      "delivery_readiness": "incomplete",
+      "measurement_contract": "measurement-exception_1_1.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-analysis-report"
+      },
+      "fixture_recipe": "work/training__C135709__NRS-484B-510__motor_vehicle_driver/selected-recipe-exception_1_1.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "eb8148b1093fd73679814b664e7da19939f366d3bcf69b2529b5d94a777c9e02",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C135709__NRS-484B-510__motor_vehicle_driver/execution-manifest.json --case training__C135709__NRS-484B-510__motor_vehicle_driver__exception_1_1 --output $OFFLINE_OUTPUT",
+        "log": "offline/exception_1_1-primary.log",
+        "log_sha256": "731ecaa4330310e41cbcbde8d1d3cbe0e2ffcac23f914d62988918adf2822072"
+      },
+      "compatibility": {
+        "receipt": "compatibility/exception_1_1-primary-compatibility.json",
+        "sha256": "7bb65e7f284460a2c12317a3b146b762126cffe4667e13079e84c6b3acad23e9",
+        "log": "compatibility/exception_1_1-primary-analysis.log",
+        "negative_log": "compatibility/exception_1_1-primary-negative.log"
+      },
+      "negative": {
+        "log": "compatibility/exception_1_1-primary-negative.log"
+      }
+    },
+    {
+      "case_id": "training__C135709__NRS-484B-510__motor_vehicle_driver__exception_1_2",
+      "kind": "delivery",
+      "construction": "cases/exception_1_2/construction.json",
+      "construction_sha256": "326fb535402f7a16619034775544765684ace71cf85d0af011ecb413e285c342",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "At 4 m/s the full ego footprint may overshoot the narrow restricted zone"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/exception_1_2/fallback1/construction.json",
+          "construction_sha256": "8edad8bac88d4aca94d50382cc262f15919933826969fb1c5c3b95eac6e1c962",
+          "trigger": {
+            "source": "original ego body and zone survey",
+            "metric": "full footprint inside surveyed zone at rest",
+            "failure_condition": "primary footprint overshoots zone"
+          },
+          "changed_knobs": [
+            "approach_speed_cap_mps: 4.0 to 3.0"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "8edad8bac88d4aca94d50382cc262f15919933826969fb1c5c3b95eac6e1c962",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C135709__NRS-484B-510__motor_vehicle_driver/execution-manifest.json --case training__C135709__NRS-484B-510__motor_vehicle_driver__exception_1_2 --output $OFFLINE_OUTPUT --candidate fallback1",
+            "log": "offline/exception_1_2-fallback1.log",
+            "log_sha256": "e1a94a7a03fbb0fda86126661fbb50ad391a3d71abaae4c388fedda89e8fe1c2"
+          }
+        }
+      ],
+      "delivery_readiness": "incomplete",
+      "measurement_contract": "measurement-exception_1_2.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-analysis-report"
+      },
+      "fixture_recipe": "work/training__C135709__NRS-484B-510__motor_vehicle_driver/selected-recipe-exception_1_2.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "326fb535402f7a16619034775544765684ace71cf85d0af011ecb413e285c342",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C135709__NRS-484B-510__motor_vehicle_driver/execution-manifest.json --case training__C135709__NRS-484B-510__motor_vehicle_driver__exception_1_2 --output $OFFLINE_OUTPUT",
+        "log": "offline/exception_1_2-primary.log",
+        "log_sha256": "5e887d9df0ec8123a49401f99a1683c27ef4469ee183e4fc3e56caa8513a910a"
+      },
+      "compatibility": {
+        "receipt": "compatibility/exception_1_2-primary-compatibility.json",
+        "sha256": "61bb019e501e83195abeea7f1dede4e13a0afc09749a6c73e4fb9e5bb9933a18",
+        "log": "compatibility/exception_1_2-primary-analysis.log",
+        "negative_log": "compatibility/exception_1_2-primary-negative.log"
+      },
+      "negative": {
+        "log": "compatibility/exception_1_2-primary-negative.log"
+      }
+    },
+    {
+      "case_id": "training__C135709__NRS-484B-510__motor_vehicle_driver__stop_only",
+      "kind": "delivery",
+      "construction": "cases/stop_only/construction.json",
+      "construction_sha256": "40fca14e3000ea9e7d1ca711ac3020832a234ddbd8d247c4006d05cc28607ef9",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "At 4 m/s the full ego footprint may overshoot the narrow restricted zone"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/stop_only/fallback1/construction.json",
+          "construction_sha256": "2c96df158c023c4580730661a8375a1d7917298ddc0b7ef8b1f99aba1a0c424a",
+          "trigger": {
+            "source": "original ego body and zone survey",
+            "metric": "full footprint inside surveyed zone at rest",
+            "failure_condition": "primary footprint overshoots zone"
+          },
+          "changed_knobs": [
+            "approach_speed_cap_mps: 4.0 to 3.0"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "2c96df158c023c4580730661a8375a1d7917298ddc0b7ef8b1f99aba1a0c424a",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C135709__NRS-484B-510__motor_vehicle_driver/execution-manifest.json --case training__C135709__NRS-484B-510__motor_vehicle_driver__stop_only --output $OFFLINE_OUTPUT --candidate fallback1",
+            "log": "offline/stop_only-fallback1.log",
+            "log_sha256": "df8ee50d27f4bfae772901f6255c5ac7157fc4fc7f4b9d721b4709e42135e619"
+          }
+        }
+      ],
+      "delivery_readiness": "incomplete",
+      "measurement_contract": "measurement-stop_only.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-analysis-report"
+      },
+      "fixture_recipe": "work/training__C135709__NRS-484B-510__motor_vehicle_driver/selected-recipe-stop_only.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "40fca14e3000ea9e7d1ca711ac3020832a234ddbd8d247c4006d05cc28607ef9",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C135709__NRS-484B-510__motor_vehicle_driver/execution-manifest.json --case training__C135709__NRS-484B-510__motor_vehicle_driver__stop_only --output $OFFLINE_OUTPUT",
+        "log": "offline/stop_only-primary.log",
+        "log_sha256": "9b374f573d1f37d25c7aed04746eaa2ca957faddcbda5ac68c13fec7ba9284b5"
+      }
+    },
+    {
+      "case_id": "training__C135709__NRS-484B-510__motor_vehicle_driver__stand_only",
+      "kind": "delivery",
+      "construction": "cases/stand_only/construction.json",
+      "construction_sha256": "307ae63e9bdf32f6497983ca63f158d1a70625a68f33948ecbcd87f678f77802",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "At 4 m/s the full ego footprint may overshoot the narrow restricted zone"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/stand_only/fallback1/construction.json",
+          "construction_sha256": "c5b0dfe693990ca37392fe348b577e89f58bc9f34f1aa8e7626a01a48111f69e",
+          "trigger": {
+            "source": "original ego body and zone survey",
+            "metric": "full footprint inside surveyed zone at rest",
+            "failure_condition": "primary footprint overshoots zone"
+          },
+          "changed_knobs": [
+            "approach_speed_cap_mps: 4.0 to 3.0"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "c5b0dfe693990ca37392fe348b577e89f58bc9f34f1aa8e7626a01a48111f69e",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C135709__NRS-484B-510__motor_vehicle_driver/execution-manifest.json --case training__C135709__NRS-484B-510__motor_vehicle_driver__stand_only --output $OFFLINE_OUTPUT --candidate fallback1",
+            "log": "offline/stand_only-fallback1.log",
+            "log_sha256": "0e67784032e24e4bbab9cf2ed27817a2b64cd3a0b0987a2c2b79dd045e7f367c"
+          }
+        }
+      ],
+      "delivery_readiness": "incomplete",
+      "measurement_contract": "measurement-stand_only.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-analysis-report"
+      },
+      "fixture_recipe": "work/training__C135709__NRS-484B-510__motor_vehicle_driver/selected-recipe-stand_only.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "307ae63e9bdf32f6497983ca63f158d1a70625a68f33948ecbcd87f678f77802",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C135709__NRS-484B-510__motor_vehicle_driver/execution-manifest.json --case training__C135709__NRS-484B-510__motor_vehicle_driver__stand_only --output $OFFLINE_OUTPUT",
+        "log": "offline/stand_only-primary.log",
+        "log_sha256": "b3991b5cf5126e4ba21697a90209686df618a0b2a7775739be688311162c5687"
       }
     }
   ]

@@ -12,7 +12,7 @@ from case_specs import CASES
 ROOT = Path(__file__).resolve().parents[3]
 FOLDER = Path(__file__).resolve().parents[1]
 PYTHON = ROOT / ".venv-cpu/bin/python"
-SCRATCH = ROOT / ".runtime-work/c150660-compat-v2"
+SCRATCH = ROOT / ".runtime-work/c150660-compat-v3"
 TMP = ROOT / ".runtime-work/c150660-tmp"
 VALIDATOR = ROOT / ".runtime-work/c150660-decoder/.lake/build/bin/adapterCheck"
 

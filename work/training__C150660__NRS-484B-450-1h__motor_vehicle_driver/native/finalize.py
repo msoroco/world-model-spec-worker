@@ -31,7 +31,8 @@ def verify_original_review(attempt, survey, case):
                 sources, sort_keys=True, separators=(",", ":"),
                 ensure_ascii=False).encode()).hexdigest()):
         raise ValueError("Original Native capture seal is invalid")
-    sealed_names = (*SOURCES, *VIDEOS, "construction.json", "runner.py")
+    sealed_names = (*(name for name in SOURCES if name != "context-survey.json"),
+                    *VIDEOS, "construction.json", "runner.py")
     for name in sealed_names:
         if sources.get(name) != sha(attempt / name):
             raise ValueError("Original source differs from sealed capture: " + name)
@@ -167,8 +168,11 @@ def finalize(attempt_path, output_path):
     maneuver = rest >= 80 and matched
     physical_sources = {name: source_hashes[name] for name in
                         ("zone_raw.json", "trace.jsonl", "video_frames.jsonl", "road.xodr")}
+    setup_met = (not diagnostic and survey.get("safety_zone_official_status") is True and
+                 bool(survey.get("adjacent_curb_readback")) and
+                 bool(survey.get("zone_marker_readback")))
     physical_checks = {
-        "setup": {"status": "met" if not diagnostic else "unverified",
+        "setup": {"status": ("met" if setup_met else "not_met") if not diagnostic else "unverified",
                   "method": "full 600-frame zone, curb, footprint and camera join",
                   "sources": physical_sources},
         "maneuver": {"status": ("met" if maneuver else "not_met") if not diagnostic else "unverified",
@@ -183,11 +187,13 @@ def finalize(attempt_path, output_path):
                                  "matched": matched,
                                  "physical_cause_confirmed": False,
                                  "cause_evidence": list(SOURCES)}],
-              "setup_confirmed": not diagnostic, "behavior_attempted": not diagnostic,
+              "setup_confirmed": setup_met, "behavior_attempted": not diagnostic,
               "maneuver_completed": not diagnostic and maneuver,
               "physical_checks": physical_checks,
               "termination_reason": "Saved geometry measured; official zone, curb and exceptions require independent original-source review",
-              "physical_failure_flags": ["Original zone designation, halt cause and actual pixels unverified"],
+              "physical_failure_flags": (["Diagnostic zone designation, halt cause and actual pixels unverified"]
+                                         if diagnostic else
+                                         ([] if setup_met else ["Official zone or adjacent curb not confirmed"])),
               "trace_reference": "trace.jsonl", "video_references": list(VIDEOS),
               "video_frame_map_reference": "video_frames.jsonl",
               "recording_description": construction["recording_description"],
