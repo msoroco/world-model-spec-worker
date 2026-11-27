@@ -9,7 +9,7 @@ from types import SimpleNamespace
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from native_capture import Recorder, inspect_crosswalk
+from native_capture import Recorder, inspect_crosswalk, pedestrian_destination
 
 
 class Carla:
@@ -65,6 +65,17 @@ class NativeCrosswalkReadbackTests(unittest.TestCase):
         return {'case_id': ROOT.name + '__' + kind + '_crosswalk', 'crosswalk_kind': kind,
                 'ego_start_xy_m': [-30,0], 'ego_end_xy_m': [20,0],
                 'pedestrian_start_xy_m': [0,-5], 'pedestrian_end_xy_m': [0,5]}
+
+    def test_pedestrian_motion_uses_actual_route_length(self):
+        scene = dict(self.scene('marked'), rate_hz=20,
+                     pedestrian_target_speed_mps=0.3)
+        first = pedestrian_destination(scene, 0)
+        after_one_second = pedestrian_destination(scene, 19)
+        self.assertAlmostEqual(first[1], -4.985)
+        self.assertAlmostEqual(after_one_second[1], -4.7)
+        self.assertAlmostEqual(pedestrian_destination(scene, 599)[1], 4.0)
+        with self.assertRaisesRegex(ValueError, 'invalid original pedestrian route'):
+            pedestrian_destination(dict(scene, pedestrian_end_xy_m=[0, -5]), 0)
 
     def test_both_crossing_kinds_construct_from_original_map(self):
         for kind in ('marked','unmarked'):

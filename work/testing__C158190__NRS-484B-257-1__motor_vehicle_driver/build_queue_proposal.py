@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from yield_view_measurement import ASSIGNMENT
+from stop_sign_branch import ASSIGNMENT
 
 
 def build() -> dict:
@@ -37,26 +37,26 @@ def build() -> dict:
                                        "--validator \"$LEAN_VALIDATOR\" "
                                        "--owner-release-receipt \"$OWNER_RELEASE_RECEIPT\""),
             "additional_source_audit_command": (f"CASE_ID='{case_id}' .venv-cpu/bin/python work/{ASSIGNMENT}/"
-                                                "through_motion_measurement.py --original "
+                                                f"stop_source_audit.py --case {case_id} --original "
                                                 "\"$ORIGINAL_PACKET\" --output \"$SOURCE_AUDIT_RECEIPT\""),
             "accept_command": (common + "accept-delivery " + dispatch +
                                " --run \"$RUN\" --job \"$JOB_ID\" --attempt \"$ATTEMPT\" "
                                "--audit \"$AUDIT\" --review-archive /external/archive"),
-            "candidate_commands": {}
+            "candidate_commands": {
+                "fallback1": common + "prepare-delivery " + dispatch + " --candidate fallback1"}
         })
     comparison_rows = []
-    variables = {"slow_vs_stop": "ego_response", "through_hazard": "through_traffic_phase"}
     for comparison in plan["comparisons"]:
         name = comparison["comparison_id"]
         comparison_rows.append({
             "assignment_id": ASSIGNMENT, "comparison_id": name,
             "case_ids": comparison["case_ids"],
             "command": (f"COMPARISON_ID='{name}' .venv-cpu/bin/python work/{ASSIGNMENT}/"
-                        "through_motion_measurement.py --left \"$LEFT_ORIGINAL_PACKET\" "
+                        "stop_source_audit.py --left \"$LEFT_ORIGINAL_PACKET\" "
                         "--right \"$RIGHT_ORIGINAL_PACKET\" "
-                        f"--variable {variables[name]} --output \"$COMPARISON_AUDIT_RECEIPT\"")})
+                        "--output \"$COMPARISON_AUDIT_RECEIPT\"")})
     return {"format": "worker-ordered-gpu-queue-proposal", "assignment_id": ASSIGNMENT,
-            "status": "partial_unbound_source_and_manifest", "source": "case-plan.json",
+            "status": "source_pending_cpu_bound", "source": "case-plan.json",
             "cases": rows, "comparison_audit_commands": comparison_rows,
             "dispatch_limit": "Do not run until selected manifest and source-bound CPU proofs pass."}
 

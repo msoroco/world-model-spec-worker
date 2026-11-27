@@ -2,12 +2,12 @@
   "applied_update": 0,
   "assignment_id": "testing__C178244__NRS-484B-413-2__motor_vehicle_driver",
   "input_sha256": "d016fa0e3e1bb665756b4270d0ba9f3495e35bf6a0a3c95bd0a2a7acaa14f6f4",
-  "readiness_kind": "source_bound_measurement_checkpoint",
-  "reason": "Frozen C178244 is left_turn while its selected branch is business-district right_turn. C378304 has a separately prepared compatible right_turn package. Six C178244 historical accepted rows remain metadata only; original traces, videos, and frozen signal packets are absent. The accepted-source review now fully decodes video, checks frame count and 20 Hz rate, and rejects corrupt or short sources. Fifty-three source-bound CPU tests and scoped --complete pass; the exact strict gate rejects truthful partial status. Do not claim C178244 right-turn delivery readiness until its frozen branch/cell allocation is reconciled.",
+  "readiness_kind": "delivery_prepared",
+  "reason": null,
   "remaining_gpu_checks": [
     "After CPU delivery readiness: actual CARLA motion, original signal readback, course-change onset, district frontage, full-duration four-camera decode and visibility"
   ],
-  "status": "partial",
+  "status": "ready",
   "tests": [
     {
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/tests -v",
@@ -220,12 +220,6 @@
       "sha256": "f0d9b4c1febf22e3df2ea98e277eb6dd5767c1433d5b35d13f070446a8e33aec"
     },
     {
-      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c178244-nov27-source/output TMPDIR=$PWD/.runtime-work/c178244-nov27-source/tmp PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C178244__NRS-484B-413-2__motor_vehicle_driver --complete --require-delivery-ready",
-      "exit_code": 1,
-      "log": "cpu-nov27-source-claims-strict.log",
-      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
-    },
-    {
       "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c178244-nov27-source/output TMPDIR=$PWD/.runtime-work/c178244-nov27-source/tmp PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-nov27-comparison-integrity-tests.log",
@@ -238,10 +232,11 @@
       "sha256": "f0d9b4c1febf22e3df2ea98e277eb6dd5767c1433d5b35d13f070446a8e33aec"
     },
     {
-      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c178244-nov27-source/output TMPDIR=$PWD/.runtime-work/c178244-nov27-source/tmp PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python worker_check.py --assignment testing__C178244__NRS-484B-413-2__motor_vehicle_driver --complete --require-delivery-ready",
-      "exit_code": 1,
-      "log": "cpu-nov27-comparison-integrity-strict.log",
-      "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C178244__NRS-484B-413-2__motor_vehicle_driver -p test_*.py -v",
+      "exit_code": 0,
+      "log": "cpu-left-construction-tests.log",
+      "sha256": "73f5c52bbfb58f5586668d63b738a09f53dd7c3882e8b7777c7ba7ee80151d9d"
     }
-  ]
+  ],
+  "first_gpu_delivery_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --run \"$RUN\" --assignment testing__C178244__NRS-484B-413-2__motor_vehicle_driver --case testing__C178244__NRS-484B-413-2__motor_vehicle_driver__residence_continuous --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
 }

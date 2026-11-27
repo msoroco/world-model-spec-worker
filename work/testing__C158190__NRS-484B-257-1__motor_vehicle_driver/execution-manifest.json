@@ -2,6 +2,38 @@
   "assignment_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver",
   "cases": [
     {
+      "acquisition": {
+        "ego_motion_and_crossing": {
+          "entrypoint": "stop_native_capture.py",
+          "evidence": "source-sealed Native readback and four synchronized camera records",
+          "method": "capture_original_attempt"
+        },
+        "governing_control": {
+          "entrypoint": "stop_native_capture.py",
+          "evidence": "source-sealed Native readback and four synchronized camera records",
+          "method": "capture_original_attempt"
+        },
+        "nearest_view_stations": {
+          "entrypoint": "stop_native_capture.py",
+          "evidence": "source-sealed Native readback and four synchronized camera records",
+          "method": "capture_original_attempt"
+        },
+        "original_four_camera_pixels": {
+          "entrypoint": "stop_native_capture.py",
+          "evidence": "source-sealed Native readback and four synchronized camera records",
+          "method": "capture_original_attempt"
+        },
+        "stop_sign_and_marking": {
+          "entrypoint": "stop_native_capture.py",
+          "evidence": "source-sealed Native readback and four synchronized camera records",
+          "method": "capture_original_attempt"
+        },
+        "through_vehicle_motion": {
+          "entrypoint": "stop_native_capture.py",
+          "evidence": "source-sealed Native readback and four synchronized camera records",
+          "method": "capture_original_attempt"
+        }
+      },
       "candidate_risk": {
         "reason": "Native braking may overshoot the sampled nearest-view station; original body and ray readback must decide.",
         "status": "physical"
@@ -11,9 +43,22 @@
           "changed_knobs": [
             "stop_brake_distance_multiplier: 1.0 to 1.5"
           ],
+          "compatibility": {
+            "log": "cases/stop_nearest_view_response/fallback1/analysis-proof.log",
+            "negative_log": "cases/stop_nearest_view_response/fallback1/negative-analysis.log",
+            "receipt": "cases/stop_nearest_view_response/fallback1/compatibility.json",
+            "sha256": "da9bd4be81b81ae557e0d10123c1f744114ada10ad51d5a4f5fb0bd25fe321ed"
+          },
           "construction": "cases/stop_nearest_view_response/fallback1-construction.json",
           "construction_sha256": "5d285bddc8ddef6bc9b628a6ea25665ce647e83104bc9ddb69db287247debea1",
           "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__stop_nearest_view_response --candidate fallback1 --output .runtime-work/c158190-stop-owner/offline-response-fallback1-3 --python $PWD/.venv-cpu/bin/python",
+            "construction_sha256": "5d285bddc8ddef6bc9b628a6ea25665ce647e83104bc9ddb69db287247debea1",
+            "exit_code": 0,
+            "log": "cases/stop_nearest_view_response/fallback1/preflight-proof.log",
+            "log_sha256": "345b0cd1661b8bfbbee599215e7cd5dc996c7d0a649fdbaf9b261e8da1d6c7e2"
+          },
           "trigger": {
             "failure_condition": "primary stop overshoots the reviewed station by more than 0.5 m",
             "metric": "distance of complete stop from nearest visible station",
@@ -22,8 +67,41 @@
         }
       ],
       "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__stop_nearest_view_response",
+      "compatibility": {
+        "log": "cases/stop_nearest_view_response/primary/analysis-proof.log",
+        "negative_log": "cases/stop_nearest_view_response/primary/negative-analysis.log",
+        "receipt": "cases/stop_nearest_view_response/primary/compatibility.json",
+        "sha256": "4df75020a94d5b70f6682ceb530efe5aa2b87555a245194730dcbccdbbd0f532"
+      },
       "construction": "construction.json",
       "construction_sha256": "ad1357e46831bc4232c358b143f817cf9cf82bc952b78cfe4e50397fab016bb6",
+      "delivery_acceptance": {
+        "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__stop_nearest_view_response",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/prove_stop_delivery_audit.py testing__C158190__NRS-484B-257-1__motor_vehicle_driver__stop_nearest_view_response",
+        "negative_command": ".venv-cpu/bin/python work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/prove_stop_delivery_audit.py testing__C158190__NRS-484B-257-1__motor_vehicle_driver__stop_nearest_view_response --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original saved acquisition required for physical review",
+        "negative_log": "cases/stop_nearest_view_response/proof-delivery-negative.log",
+        "negative_log_sha256": "a11fe3d548ac9cb790976a3cd1debf38b7b8035d77d3633b8de4d0461e4a6379",
+        "scope": "Synthetic CPU source-review contract only; no original source or physical acceptance asserted",
+        "script": "prove_stop_delivery_audit.py",
+        "script_sha256": "353b6b9d8edc1984dfef5194d9fb9474b5afe48829ae3a31c0722298bc3dbffb",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cases/stop_nearest_view_response/proof-delivery-positive.log",
+        "test_log_sha256": "ced31dd08f2b139fe2ffde611ef19ce5013906b2c6824f15310d173badf837a2"
+      },
       "fixture_recipe": "work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/cases/stop_nearest_view_response/fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "cases/stop_nearest_view_response/measurement-contract.json",
@@ -33,15 +111,75 @@
       },
       "missing_proofs": [
         "reviewed_stop_site",
-        "offline",
-        "positive_negative_compatibility",
-        "saved_only_original",
-        "original_delivery_acceptance",
         "original_comparison_audit"
       ],
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "cases/stop_nearest_view_response/primary/negative-analysis.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__stop_nearest_view_response --candidate primary --output .runtime-work/c158190-stop-owner/offline-response-primary-3 --python $PWD/.venv-cpu/bin/python",
+        "construction_sha256": "ad1357e46831bc4232c358b143f817cf9cf82bc952b78cfe4e50397fab016bb6",
+        "exit_code": 0,
+        "log": "cases/stop_nearest_view_response/primary/preflight-proof.log",
+        "log_sha256": "fc021de87ee671492a81e2d420ec01dee7a285d90e06e09a2d4d1462d3c17f04"
+      },
+      "physical_preparation": {
+        "receipt": "cases/stop_nearest_view_response/physical-preparation.json",
+        "sha256": "bf276d585c02adfe8b6df810a3a236b97f3df339626a1e90f09665d3d3c9820e"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__stop_nearest_view_response --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__stop_nearest_view_response --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "proof_scope": "Selected synthetic diagnostic saved-only processing; original Native source pending",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cases/stop_nearest_view_response/proof-selected-saved.log",
+        "test_log_sha256": "eaacdb2d14d5ce2a185a43c578098a0e71a1333739cdd71b97fc057658b70461"
+      },
+      "saved_processing_diagnostic": {
+        "receipt": "cases/stop_nearest_view_response/saved-processing-proof.json",
+        "sha256": "b7dd6953dfe8a82671756efef6bb0cb9c1a3d2834cb62bd404b5744e586356f4"
+      },
       "status": "source_pending"
     },
     {
+      "acquisition": {
+        "ego_motion_and_crossing": {
+          "entrypoint": "stop_native_capture.py",
+          "evidence": "source-sealed Native readback and four synchronized camera records",
+          "method": "capture_original_attempt"
+        },
+        "governing_control": {
+          "entrypoint": "stop_native_capture.py",
+          "evidence": "source-sealed Native readback and four synchronized camera records",
+          "method": "capture_original_attempt"
+        },
+        "nearest_view_stations": {
+          "entrypoint": "stop_native_capture.py",
+          "evidence": "source-sealed Native readback and four synchronized camera records",
+          "method": "capture_original_attempt"
+        },
+        "original_four_camera_pixels": {
+          "entrypoint": "stop_native_capture.py",
+          "evidence": "source-sealed Native readback and four synchronized camera records",
+          "method": "capture_original_attempt"
+        },
+        "stop_sign_and_marking": {
+          "entrypoint": "stop_native_capture.py",
+          "evidence": "source-sealed Native readback and four synchronized camera records",
+          "method": "capture_original_attempt"
+        },
+        "through_vehicle_motion": {
+          "entrypoint": "stop_native_capture.py",
+          "evidence": "source-sealed Native readback and four synchronized camera records",
+          "method": "capture_original_attempt"
+        }
+      },
       "candidate_risk": {
         "reason": "Native braking may overshoot the sampled nearest-view station; original body and ray readback must decide.",
         "status": "physical"
@@ -51,9 +189,22 @@
           "changed_knobs": [
             "stop_brake_distance_multiplier: 1.0 to 1.5"
           ],
+          "compatibility": {
+            "log": "cases/stop_nearest_view_uninterrupted/fallback1/analysis-proof.log",
+            "negative_log": "cases/stop_nearest_view_uninterrupted/fallback1/negative-analysis.log",
+            "receipt": "cases/stop_nearest_view_uninterrupted/fallback1/compatibility.json",
+            "sha256": "9af3ed57d345bc9ca7c2f11444652df33347187aca0684ea3c01a5556105a45e"
+          },
           "construction": "cases/stop_nearest_view_uninterrupted/fallback1-construction.json",
           "construction_sha256": "69d4ba51c37312113956ab53359de5b96495fb40316e63665a6b5ac7fddb1f92",
           "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__stop_nearest_view_uninterrupted --candidate fallback1 --output .runtime-work/c158190-stop-owner/offline-uninterrupted-fallback1-3 --python $PWD/.venv-cpu/bin/python",
+            "construction_sha256": "69d4ba51c37312113956ab53359de5b96495fb40316e63665a6b5ac7fddb1f92",
+            "exit_code": 0,
+            "log": "cases/stop_nearest_view_uninterrupted/fallback1/preflight-proof.log",
+            "log_sha256": "084a75d5afce5e532d139d0016021b6fa5651910e079b4fbb56c12fba2e45093"
+          },
           "trigger": {
             "failure_condition": "primary stop overshoots the reviewed station by more than 0.5 m",
             "metric": "distance of complete stop from nearest visible station",
@@ -62,8 +213,41 @@
         }
       ],
       "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__stop_nearest_view_uninterrupted",
+      "compatibility": {
+        "log": "cases/stop_nearest_view_uninterrupted/primary/analysis-proof.log",
+        "negative_log": "cases/stop_nearest_view_uninterrupted/primary/negative-analysis.log",
+        "receipt": "cases/stop_nearest_view_uninterrupted/primary/compatibility.json",
+        "sha256": "a6f98562d308161b0fad5bd093f4a2f41f0737bd874c6e61e5c2dc1e2a89282c"
+      },
       "construction": "cases/stop_nearest_view_uninterrupted/construction.json",
       "construction_sha256": "d599c57ac0d10188e221bc56e37ae65ef74b164ba9676de744dae96619161b10",
+      "delivery_acceptance": {
+        "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__stop_nearest_view_uninterrupted",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/prove_stop_delivery_audit.py testing__C158190__NRS-484B-257-1__motor_vehicle_driver__stop_nearest_view_uninterrupted",
+        "negative_command": ".venv-cpu/bin/python work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/prove_stop_delivery_audit.py testing__C158190__NRS-484B-257-1__motor_vehicle_driver__stop_nearest_view_uninterrupted --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original saved acquisition required for physical review",
+        "negative_log": "cases/stop_nearest_view_uninterrupted/proof-delivery-negative.log",
+        "negative_log_sha256": "b1b69d484e8a2cc06d98208e9cedc3cbb08d6790653b8f6d159653bcb6a99445",
+        "scope": "Synthetic CPU source-review contract only; no original source or physical acceptance asserted",
+        "script": "prove_stop_delivery_audit.py",
+        "script_sha256": "353b6b9d8edc1984dfef5194d9fb9474b5afe48829ae3a31c0722298bc3dbffb",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cases/stop_nearest_view_uninterrupted/proof-delivery-positive.log",
+        "test_log_sha256": "b4c692da43909368b380a80a55c9d77a63c0b53d95148f1e834f62cbd9d7dd89"
+      },
       "fixture_recipe": "work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/cases/stop_nearest_view_uninterrupted/fixture-recipe.json",
       "kind": "delivery",
       "measurement_contract": "cases/stop_nearest_view_uninterrupted/measurement-contract.json",
@@ -73,12 +257,40 @@
       },
       "missing_proofs": [
         "reviewed_stop_site",
-        "offline",
-        "positive_negative_compatibility",
-        "saved_only_original",
-        "original_delivery_acceptance",
         "original_comparison_audit"
       ],
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "log": "cases/stop_nearest_view_uninterrupted/primary/negative-analysis.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__stop_nearest_view_uninterrupted --candidate primary --output .runtime-work/c158190-stop-owner/offline-uninterrupted-primary-3 --python $PWD/.venv-cpu/bin/python",
+        "construction_sha256": "d599c57ac0d10188e221bc56e37ae65ef74b164ba9676de744dae96619161b10",
+        "exit_code": 0,
+        "log": "cases/stop_nearest_view_uninterrupted/primary/preflight-proof.log",
+        "log_sha256": "d4c0f497f3a32b5b4bc57f83fbbd1ef828fc0ad7af5a3e6b6b2907e6cd0f5835"
+      },
+      "physical_preparation": {
+        "receipt": "cases/stop_nearest_view_uninterrupted/physical-preparation.json",
+        "sha256": "c70babab34c54a89cded0a1acf9844617f1e26c1a725a9b284a981f76bfbe502"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__stop_nearest_view_uninterrupted --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/execution-manifest.json --case testing__C158190__NRS-484B-257-1__motor_vehicle_driver__stop_nearest_view_uninterrupted --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "proof_scope": "Selected synthetic diagnostic saved-only processing; original Native source pending",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cases/stop_nearest_view_uninterrupted/proof-selected-saved.log",
+        "test_log_sha256": "0871d2233b5dd5725461132df0be79b6e9fc51077aabe91e5c9fdc110850daab"
+      },
+      "saved_processing_diagnostic": {
+        "receipt": "cases/stop_nearest_view_uninterrupted/saved-processing-proof.json",
+        "sha256": "e6c5d79c71bf96c3240a7b9b5e1ea6d35a577164377474dcb11b2972ae2bb3b1"
+      },
       "status": "source_pending"
     }
   ],

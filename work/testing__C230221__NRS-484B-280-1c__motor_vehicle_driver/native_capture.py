@@ -30,6 +30,20 @@ def speed(actor):
     return math.sqrt(velocity.x ** 2 + velocity.y ** 2 + velocity.z ** 2)
 
 
+def pedestrian_destination(scene, index):
+    """Advance along the reviewed straight route at the declared speed."""
+    start, end = scene["pedestrian_start_xy_m"], scene["pedestrian_end_xy_m"]
+    route_length = math.hypot(end[0] - start[0], end[1] - start[1])
+    rate, target_speed = scene["rate_hz"], scene["pedestrian_target_speed_mps"]
+    if (not math.isfinite(route_length) or route_length <= 0 or
+            type(rate) not in (int, float) or not math.isfinite(rate) or rate <= 0 or
+            type(target_speed) not in (int, float) or not math.isfinite(target_speed) or target_speed <= 0 or
+            type(index) is not int or index < 0):
+        raise ValueError("invalid original pedestrian route or speed")
+    fraction = min(1.0, (index + 1) * target_speed / rate / route_length)
+    return [start[axis] + fraction * (end[axis] - start[axis]) for axis in (0, 1)]
+
+
 class Recorder:
     """Own the original CARLA recorder from the first tick through the last tick."""
 
@@ -271,10 +285,7 @@ def run_native(scene, output, host, port):
                 command = controller(measured, scene["response_policy"])
                 ego.apply_control(carla.VehicleControl(throttle=command["throttle"],
                                                        brake=command["brake"], steer=command["steer"]))
-                fraction = min(1.0, (index + 1) * scene["pedestrian_target_speed_mps"]
-                               / scene["rate_hz"] / 2.0)
-                start, end = scene["pedestrian_start_xy_m"], scene["pedestrian_end_xy_m"]
-                destination = [start[axis] + fraction * (end[axis] - start[axis]) for axis in (0, 1)]
+                destination = pedestrian_destination(scene, index)
                 pedestrian.set_transform(spawn_at(destination, 0, False))
                 frame = world.tick()
                 snapshot = world.get_snapshot()
