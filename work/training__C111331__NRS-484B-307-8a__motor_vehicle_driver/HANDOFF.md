@@ -1,17 +1,29 @@
-# NRS-484B-307-8a at C111331
+# C111331 NRS-484B-307-8a handoff
 
-Actor: `motor_vehicle_driver`. Frozen cell: `intersection` / `travel` / `traffic_light`.
+Assignment: `training__C111331__NRS-484B-307-8a__motor_vehicle_driver`. Frozen cell: intersection / straight travel / traffic light. Actor: motor vehicle driver.
 
-Witness branch: Accepted membership requires exact source review.
+## Canonical delivery
 
-Comparison variable: `steady_red_stop`. Proposed physical probes: stop before applicable boundary and remain stopped; cross applicable boundary during steady red. These are proposed controller and scene targets, not observed behavior or legal verdicts.
+Probe A is the full stop before the sourced applicable reference, red hold and green departure. Probe B continues through that reference while red. The two cases share one comparison; the 24-case statutory review is separate planning analysis. Four synchronized views at 20 Hz for 24 seconds provide 480 frames per case.
 
-Source: `inputs/training__C111331__NRS-484B-307-8a__motor_vehicle_driver/assignment.json`, SHA-256 `134e96f69bb403ce1df473d4c339687105bba8491d5c4a8e13bf32befa9b3105`. Summary status: `recovered_requires_source_review`; exact law text and witness take precedence.
+Law topics text-0 and text-1 are selected here. Text-2 and reviewed-scope-0 are mapped in case-plan.json to the separate right-turn C110919 assignment where applicable; left-turn and paragraph (d) are not claimed by this frozen straight-travel pair. The stop reference follows the sourced crosswalk/sign/marking hierarchy and falls back to intersection entry only when those references are absent.
 
-Accepted membership IDs: 52ce818c60c1b18997fa77208b98fdb61ea779bddfc8ec2e20a8f16800233d5b, 62bbe3d6b4203ea4d8bc573e3e2c6f37699dcd6ca108e1d16eabc7125a52392a, 7c258538b0b04482399966d84bf4cc880f0efce0b3e33ec3c64b66ec382a25fd, c927dbeb68c5ae018792e0d8eb9e107e6e82464176a87be00f2fcc514c2064ac. No source-hashed equivalence receipt or accepted recording contents are available locally, so no reuse is claimed.
+## CPU evidence
 
-Incomplete CPU work: Delivery package incomplete: two controlled branches are planning definitions only; no four distinct CARLA constructions, offline and compatibility proofs, saved measurement fixtures, or independent audit. Accepted recording IDs are membership context only and lack an equivalence receipt. Physical realization and legal outcome remain unverified.
+Exact constructions: probe A `07d9a14072a3574ca265dde883e2f285286bfaf11cb06910418f5e476d01fb07`; probe B `d40dd4b1aaceea06d12ba49db0b32c71f0e8127ea0855ce8a75800f2c55a9f0c`.
 
-Resume by resolving every statutory branch and exception against the law text; construct physical Native routes and controllers in the frozen cell; define measured channels and four distinct plans per selected case; run offline, compatibility, saved-only, comparison and independent audit proofs; set ready only after those proofs pass.
+Each case passed runtime.py offline, runtime.py compatibility with positive and missing-source negative fixtures, and runtime.py process-saved on 480-frame/four-camera diagnostic sources. Both saved-only receipts preserve source hashes and make no original capture claim. Synthetic physical fixtures distinguish met/not-met/unverified; lifecycle rejects owner release before Native exit. Independent delivery-audit selftests pass positive and reject missing original Native negative. Semantic stage validation passed seven stages with two selected cases. Comparison/unit tests passed nine tests.
 
-Update 016 status correction: missing case construction, candidate proofs and audits are actionable CPU work under START_HERE.md. This package is partial, with the frozen scope and listed resume actions preserved.
+Original Native signal state, governing head, stop reference, physical motion, actual pixels and legal outcome remain pending capture and independent review. Existing four membership IDs lack source-hashed original receipts and are not reused.
+
+## Reproduce
+
+`.venv-cpu/bin/python worker_check.py --assignment training__C111331__NRS-484B-307-8a__motor_vehicle_driver --complete --require-delivery-ready`
+
+First GPU command: `PYTHONPATH=runtime:runtime/scenario_pipeline .venv-cpu/bin/python -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C111331__NRS-484B-307-8a__motor_vehicle_driver --case training__C111331__NRS-484B-307-8a__motor_vehicle_driver__probe_a --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT`
+
+The case-plan, execution-manifest, proof logs, physical receipts and delivery audit scripts are under this assignment directory.
+
+## Strict gate
+
+The assignment-scoped `.venv-cpu/bin/python worker_check.py --assignment training__C111331__NRS-484B-307-8a__motor_vehicle_driver --complete --require-delivery-ready` completed with exit code 0 on 2026-11-27 after all bound CPU proofs. Batch-wide delivery readiness is separate and still depends on the remaining assignments.

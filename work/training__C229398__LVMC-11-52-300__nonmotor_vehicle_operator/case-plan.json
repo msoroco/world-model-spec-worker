@@ -6,48 +6,89 @@
   "selected_branch": "Qualifying nonmotor vehicle parked within the nighttime window",
   "requirement_dispositions": [
     {
-      "requirement": "LVMC-11-52-300",
+      "disposition_index": 0,
+      "requirement": "LVMC-11-52-300 duration within night window",
       "source": "LVMC 11.52.300",
-      "branch": "Qualifying nonmotor vehicle parked within the nighttime window",
+      "branch": "qualifying nonmotor vehicle parked on street, 01:00-06:00, below/at/above 30 minutes",
       "status": "selected_required",
       "case_ids": [
-        "training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__probe_a",
-        "training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__probe_b"
+        "training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__below_30",
+        "training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__at_30",
+        "training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__above_30"
       ],
-      "evidence_or_gap": "Two controlled planning probes identify the physical distinction; no executable construction, measurement contract or saved audit is proven."
+      "evidence_or_gap": "Three exact 20 Hz construction requests and pinned offline proofs exist. Source-bound compatibility, saved processing and independent delivery/comparison proofs remain."
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "motor vehicle exception, 01:00 and 06:00 endpoints, any-day span",
+      "source": "LVMC 11.52.300",
+      "branch": "exception and civil-time boundary review",
+      "status": "exception_pending",
+      "case_ids": [
+        "training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__below_30",
+        "training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__at_30",
+        "training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__above_30"
+      ],
+      "evidence_or_gap": "This frozen actor is nonmotor. The source review gate rejects motor/device-class substitution; civil-time endpoint cases and source-hashed original review remain to be implemented."
     }
   ],
   "cases": [
     {
-      "case_id": "training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__probe_a",
+      "case_id": "training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__below_30",
       "target_law_id": "LVMC-11-52-300",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "compliant_attempt",
-      "physical_target": "park nonmotor vehicle less than thirty minutes",
-      "comparison_variable": "night_parking_duration"
+      "physical_target": "request 1799.0 seconds of qualifying stationary street parking inside 01:00-06:00 civil time",
+      "comparison_variable": "night_parking_duration",
+      "gap_ids": [
+        "no_accepted_original"
+      ],
+      "construction": "construction.json",
+      "physical_or_legal_acceptance": false
     },
     {
-      "case_id": "training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__probe_b",
+      "case_id": "training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__at_30",
       "target_law_id": "LVMC-11-52-300",
-      "kind": "planned_only",
+      "kind": "delivery",
+      "target_type": "compliant_attempt",
+      "physical_target": "request 1800.0 seconds of qualifying stationary street parking inside 01:00-06:00 civil time",
+      "comparison_variable": "night_parking_duration",
+      "gap_ids": [
+        "no_accepted_original"
+      ],
+      "construction": "cases/at_30/construction.json",
+      "physical_or_legal_acceptance": false
+    },
+    {
+      "case_id": "training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__above_30",
+      "target_law_id": "LVMC-11-52-300",
+      "kind": "delivery",
       "target_type": "violating_attempt",
-      "physical_target": "park same vehicle more than thirty minutes",
-      "comparison_variable": "night_parking_duration"
+      "physical_target": "request 1801.0 seconds of qualifying stationary street parking inside 01:00-06:00 civil time",
+      "comparison_variable": "night_parking_duration",
+      "gap_ids": [
+        "no_accepted_original"
+      ],
+      "construction": "cases/above_30/construction.json",
+      "physical_or_legal_acceptance": false
     }
   ],
   "comparisons": [
     {
-      "comparison_id": "training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__comparison",
+      "comparison_id": "training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__duration_boundary",
       "case_ids": [
-        "training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__probe_a",
-        "training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__probe_b"
+        "training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__below_30",
+        "training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__at_30",
+        "training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__above_30"
       ],
       "deliberate_differences": [
-        "night_parking_duration"
+        "requested parking stop frame and resulting measured continuous stationary duration only"
       ],
       "fixed_conditions": [
-        "frozen cell, actor, law, route topology, participant roles, camera policy, and physical control identity"
-      ]
+        "same exact road geometry, curb target, nonmotor prototype, responsible person review, weather, clock start, 20 Hz 36063-frame capture, four camera poses and encoding policy"
+      ],
+      "source_statutory_threshold": "strictly longer than thirty minutes",
+      "physical_or_legal_acceptance": false
     }
   ],
   "observations": [
@@ -59,7 +100,7 @@
     {
       "name": "ru.motor_vehicle",
       "mandatory": true,
-      "reason": "the class excepted — the rule binds non-motor vehicles"
+      "reason": "the class excepted \u2014 the rule binds non-motor vehicles"
     },
     {
       "name": "ru.trailer_or_combination",
@@ -88,13 +129,69 @@
     }
   ],
   "source_observation_mapping": {
-    "drv.standing_or_parked": "source-hashed parking-activity annotation and retained actor velocity",
-    "ru.motor_vehicle": "source-hashed device-class packet; diagnostic classification is invented and cannot certify a real vehicle",
-    "ru.trailer_or_combination": "device-class packet requires real trailer/combination identity evidence",
-    "kin.time": "contiguous 20 Hz raw frame map with UTC epoch milliseconds",
-    "env.civil_time": "source-hashed IANA timezone packet and UTC-to-local conversion",
-    "drv.condition_in_effect": "local civil hour 01:00 inclusive to 06:00 exclusive for each frame",
-    "st.roadway": "source-hashed street geometry and retained actor center; jurisdiction/public access separate"
+    "drv.standing_or_parked": {
+      "evidence": "reviewed parking purpose and original Native rest frames; loading activity reviewed separately",
+      "channels": [
+        "drv.standing_or_parked"
+      ],
+      "source_refs": [
+        "inputs/training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator/assignment.json"
+      ]
+    },
+    "ru.motor_vehicle": {
+      "evidence": "reviewed device transport/exclusion/self-propulsion sources; blueprint alone insufficient",
+      "channels": [
+        "ru.motor_vehicle"
+      ],
+      "source_refs": [
+        "inputs/training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator/assignment.json"
+      ]
+    },
+    "ru.trailer_or_combination": {
+      "evidence": "reviewed original device identity and load source, with nonmotor status independently reviewed",
+      "channels": [
+        "ru.trailer_or_combination"
+      ],
+      "source_refs": [
+        "inputs/training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator/assignment.json"
+      ]
+    },
+    "kin.time": {
+      "evidence": "original complete 20 Hz frame map and UTC milliseconds",
+      "channels": [
+        "kin.time"
+      ],
+      "source_refs": [
+        "inputs/training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator/assignment.json"
+      ]
+    },
+    "env.civil_time": {
+      "evidence": "source-hashed IANA zone, original clock origin and UTC-to-local conversion",
+      "channels": [
+        "env.civil_time"
+      ],
+      "source_refs": [
+        "inputs/training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator/assignment.json"
+      ]
+    },
+    "drv.condition_in_effect": {
+      "evidence": "every original frame evaluated within local [01:00,06:00) interval",
+      "channels": [
+        "drv.condition_in_effect"
+      ],
+      "source_refs": [
+        "inputs/training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator/assignment.json"
+      ]
+    },
+    "st.roadway": {
+      "evidence": "Native map curb/street readback plus reviewed public access/city jurisdiction",
+      "channels": [
+        "st.roadway"
+      ],
+      "source_refs": [
+        "inputs/training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator/assignment.json"
+      ]
+    }
   },
   "diagnostic_measurement_contract": "native/measurement-contract.json",
   "diagnostic_measurement_proof": "native/night-parking-proof.json",
@@ -113,8 +210,9 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "No pinned-runtime Native construction, route and footprint proof, four distinct candidates, compatibility recipes, saved processing, or independent acceptance audit exists for these planning probes.",
-    "Recovered summary is unreviewed; exact statutory text and witness context control all later case definitions."
+    "Three selected CPU draft duration requests have exact offline proofs, but no compatibility, saved-only, semantic, physical lifecycle or independent delivery/comparison proofs yet.",
+    "Bicycle prototype is not itself proof of legal nonmotor vehicle class; original source review remains required.",
+    "Nighttime boundary interpretation and original physical capture remain unresolved."
   ],
   "statutory_text": "Except for a motor vehicle, no person shall park any vehicle on any street for a period of time longer than thirty minutes between the hours of one a.m. and six a.m. of any day.",
   "activation_conditions_from_unreviewed_summary": [
@@ -134,5 +232,47 @@
     "env.civil_time",
     "drv.condition_in_effect",
     "st.roadway"
-  ]
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 1803.15,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "road, curb, and complete parking episode",
+        "interval": "all 36063 original 20 Hz frames"
+      },
+      {
+        "view": "approach",
+        "subject": "nonmotor vehicle approach and stop",
+        "interval": "all 36063 original 20 Hz frames"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "curb boundary and vehicle footprint",
+        "interval": "all 36063 original 20 Hz frames"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "device, operator, and loading activity",
+        "interval": "all 36063 original 20 Hz frames"
+      }
+    ]
+  },
+  "evidence_review": {
+    "reviewer": "assignment owner",
+    "method": "Frozen assignment has no accepted recording IDs or evidence.json; witness and exact law reviewed, so no equivalence claimed.",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "no_accepted_original",
+        "requirement": "source-proven qualifying nonmotor street parking and entire 30-minute night episode",
+        "source": "inputs/training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator/assignment.json",
+        "why_existing_insufficient": "No accepted recording is supplied for this assignment."
+      }
+    ]
+  },
+  "duration_construction_draft": "duration-construction-draft.json",
+  "duration_offline_proof": "native/duration-offline-proof.json"
 }

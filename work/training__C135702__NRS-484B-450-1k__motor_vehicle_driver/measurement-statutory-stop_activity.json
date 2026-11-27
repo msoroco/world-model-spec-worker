@@ -1,0 +1,57 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_stop_activity",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "text-0",
+      "source": "NRS 484B.450(1)(k)",
+      "output_key": "source_exceptions",
+      "method": "exception_context_measurement",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "exception-context.json",
+        "native_samples.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "text-1",
+      "source": "NRS 484B.450(1)(k)",
+      "output_key": "source_obstruction",
+      "method": "obstruction_measurement",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native_samples.jsonl",
+        "obstruction-inventory.json",
+        "video_frames.jsonl",
+        "camera-frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "output_key": "source_traffic_response",
+      "method": "traffic_comparison_measurement",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native_samples.jsonl",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "obstruction-inventory.json"
+    ],
+    "error_contains": "Missing required source: obstruction-inventory.json"
+  },
+  "limitations": [
+    "No statutory transverse-width or delay cutoff is asserted.",
+    "Physical cause and exception applicability need original review."
+  ]
+}

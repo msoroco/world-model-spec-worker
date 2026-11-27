@@ -41,7 +41,9 @@ def edit_rows(folder, edit, rehash=True):
 
 
 def reject(folder, edit, expected, rehash=True):
-    with tempfile.TemporaryDirectory() as scratch:
+    scratch_root = ROOT.parent.parent / '.runtime-work' / 'c179776-temporary'
+    scratch_root.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(dir=scratch_root) as scratch:
         trial = Path(scratch)
         for name in ('geometry.json', 'ego.jsonl', 'sources.json'):
             (trial / name).write_bytes((folder / name).read_bytes())

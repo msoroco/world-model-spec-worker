@@ -1,0 +1,143 @@
+{
+  "actor": "nonmotor_vehicle_operator",
+  "case_id": "training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__at_30",
+  "cell_id": "C229398",
+  "entrypoint": "runner.py",
+  "files": [
+    {
+      "content": "\"\"\"Exact C229398 Native parking request; CPU --check never imports CARLA.\n\nThe operator must establish a qualifying nonmotor device from reviewed sources.\nThe CARLA bicycle blueprint is a motion/camera stand-in, not a legal finding.\n\"\"\"\n\nimport argparse\nimport hashlib\nimport json\nimport os\nfrom pathlib import Path\n\nfrom duration_policy import TOTAL_FRAMES, request as duration_request, stop_frame\nfrom source_gate import audit as audit_source\n\n\nROOT = Path(__file__).resolve().parent\nVIEWS = (\"overview\", \"approach\", \"reference_corner\", \"driver_reference\")\n\n\ndef sha(path):\n    return hashlib.sha256(Path(path).read_bytes()).hexdigest()\n\n\ndef request(frame, config):\n    target = duration_request(config[\"case_id\"], frame)\n    if config[\"parking_stop_frame\"] != stop_frame(config[\"case_id\"]):\n        raise ValueError(\"Exact duration request differs\")\n    return dict(target, handbrake_request=target[\"brake_request\"],\n                observed_native_motion=False)\n\n\ndef check():\n    cfg = json.loads((ROOT / \"config.json\").read_text())\n    assert cfg[\"status\"] == \"selected_cpu_draft\"\n    assert cfg[\"rate_hz\"] == 20 and cfg[\"capture_frames\"] == TOTAL_FRAMES\n    assert cfg[\"parking_stop_frame\"] == stop_frame(cfg[\"case_id\"])\n    assert cfg[\"duration_s\"] == TOTAL_FRAMES / 20\n    assert [row[\"name\"] for row in cfg[\"cameras\"]] == list(VIEWS)\n    assert cfg[\"device_classification\"] == \"unresolved\"\n    assert cfg[\"road_sha256\"] == sha(ROOT / \"parking-road.xodr\")\n    assert request(cfg[\"parking_stop_frame\"] - 1, cfg)[\"phase\"] == \"approach\"\n    assert request(cfg[\"parking_stop_frame\"], cfg)[\"phase\"] == \"parking_request\"\n    assert request(TOTAL_FRAMES - 1, cfg)[\"handbrake_request\"] is True\n    return {\"passed\": True, \"case_id\": cfg[\"case_id\"], \"frames\": cfg[\"capture_frames\"],\n            \"four_cameras\": list(VIEWS), \"physical_or_legal_acceptance\": False}\n\n\ndef run_native(host, port, output):\n    \"\"\"Capture original Native pose and four camera streams if explicitly launched.\n\n    Its blueprint alone cannot establish nonmotor classification, city\n    jurisdiction, or parking activity. An original source review is mandatory.\n    \"\"\"\n    import carla\n    import queue\n\n    cfg = json.loads((ROOT / \"config.json\").read_text())\n    check()\n    context = os.environ.get(\"C229398_CONTEXT_PACKET\")\n    if not context:\n        raise ValueError(\"Original qualifying source review packet required\")\n    source_result = audit_source(context, require_original=True)\n    if source_result[\"case_id\"] != cfg[\"case_id\"] or not source_result[\n            \"qualifying_context_supported\"]:\n        raise ValueError(\"Original qualifying source review did not match case\")\n    client = carla.Client(host, port)\n    client.set_timeout(30)\n    world = client.generate_opendrive_world((ROOT / \"parking-road.xodr\").read_text())\n    settings = world.get_settings()\n    previous_sync, previous_step = settings.synchronous_mode, settings.fixed_delta_seconds\n    actor = None\n    cameras = []\n    incoming = queue.Queue()\n    output = Path(output)\n    output.mkdir(parents=True, exist_ok=True)\n    try:\n        settings.synchronous_mode = True\n        settings.fixed_delta_seconds = 0.05\n        world.apply_settings(settings)\n        library = world.get_blueprint_library()\n        blueprint = library.find(cfg[\"prototype_blueprint\"])\n        actor = world.try_spawn_actor(blueprint, carla.Transform(carla.Location(x=5, y=-1.75, z=1), carla.Rotation(yaw=0)))\n        if actor is None:\n            raise RuntimeError(\"Crossbike prototype actor spawn failed\")\n        for view in cfg[\"cameras\"]:\n            bp = library.find(\"sensor.camera.rgb\")\n            bp.set_attribute(\"image_size_x\", str(view[\"width\"]))\n            bp.set_attribute(\"image_size_y\", str(view[\"height\"]))\n            bp.set_attribute(\"fov\", str(view[\"fov_deg\"]))\n            pose = carla.Transform(carla.Location(*view[\"location_xyz_m\"]), carla.Rotation(pitch=view[\"pitch_deg\"]))\n            sensor = world.spawn_actor(bp, pose, attach_to=actor)\n            sensor.listen(lambda image, name=view[\"name\"]: incoming.put((name, image)))\n            cameras.append(sensor)\n            (output / view[\"name\"]).mkdir()\n        with (output / \"native-actor-frames.jsonl\").open(\"x\") as trace:\n            for frame in range(cfg[\"capture_frames\"]):\n                target = request(frame, cfg)\n                actor.apply_control(carla.VehicleControl(throttle=0.2 if target[\"phase\"] == \"approach\" else 0.0,\n                                                         brake=1.0 if target[\"handbrake_request\"] else 0.0,\n                                                         hand_brake=target[\"handbrake_request\"]))\n                native_frame = world.tick()\n                pose = actor.get_transform()\n                velocity = actor.get_velocity()\n                trace.write(json.dumps({\"frame\": frame, \"native_frame\": native_frame,\n                    \"center_xyz_m\": [pose.location.x, pose.location.y, pose.location.z],\n                    \"velocity_xyz_mps\": [velocity.x, velocity.y, velocity.z],\n                    \"source_kind\": \"original_native_actor\"}) + \"\\n\")\n                received = {}\n                while len(received) < len(VIEWS):\n                    name, image = incoming.get(timeout=30)\n                    if image.frame == native_frame:\n                        if name in received:\n                            raise RuntimeError(\"Duplicate source camera frame\")\n                        image.save_to_disk(str(output / name / f\"{frame:06d}.png\"))\n                        received[name] = image.frame\n                if set(received) != set(VIEWS):\n                    raise RuntimeError(\"Missing original camera frame\")\n    finally:\n        for sensor in cameras:\n            sensor.stop()\n            sensor.destroy()\n        if actor is not None:\n            actor.destroy()\n        settings.synchronous_mode, settings.fixed_delta_seconds = previous_sync, previous_step\n        world.apply_settings(settings)\n\n\ndef main():\n    parser = argparse.ArgumentParser()\n    parser.add_argument(\"--check\", action=\"store_true\")\n    parser.add_argument(\"--host\", default=\"localhost\")\n    parser.add_argument(\"--port\", type=int, default=2000)\n    parser.add_argument(\"--output-dir\")\n    args = parser.parse_args()\n    if args.check:\n        print(json.dumps(check()))\n    elif args.output_dir:\n        run_native(args.host, args.port, args.output_dir)\n    else:\n        parser.error(\"Use --check or --output-dir\")\n\n\nif __name__ == \"__main__\":\n    main()\n",
+      "path": "runner.py"
+    },
+    {
+      "content": "\"\"\"Exact 20 Hz duration requests for controlled nighttime parking probes.\n\nThese are requested stop frames. Only original motion and clock sources can\nestablish a measured continuous parking episode.\n\"\"\"\n\nRATE_HZ = 20\nTOTAL_FRAMES = 36063\nTARGETS = {\n    \"below_30\": 1799.0,\n    \"at_30\": 1800.0,\n    \"above_30\": 1801.0,\n}\n\n\ndef stop_frame(case_id):\n    suffix = case_id.rsplit(\"__\", 1)[-1]\n    if suffix not in TARGETS:\n        raise ValueError(\"Unknown exact duration case\")\n    return TOTAL_FRAMES - 1 - round(TARGETS[suffix] * RATE_HZ)\n\n\ndef request(case_id, frame):\n    if not isinstance(frame, int) or frame < 0 or frame >= TOTAL_FRAMES:\n        raise ValueError(\"Frame outside synchronized duration contract\")\n    stopping = stop_frame(case_id)\n    return {\"frame\": frame,\n            \"phase\": \"approach\" if frame < stopping else \"parking_request\",\n            \"target_speed_mps\": 1.5 if frame < stopping else 0.0,\n            \"brake_request\": frame >= stopping,\n            \"requested_stationary_duration_s\": (TOTAL_FRAMES - 1 - stopping) / RATE_HZ,\n            \"physical_or_legal_acceptance\": False}\n\n\ndef comparison_invariants(configs):\n    if set(configs) != set(TARGETS):\n        raise ValueError(\"Exact below/at/above duration triple required\")\n    fixed = (\"law_id\", \"cell_id\", \"actor\", \"rate_hz\", \"capture_frames\",\n             \"duration_s\", \"road_sha256\", \"prototype_blueprint\", \"cameras\",\n             \"weather\", \"parking_target_xy_m\", \"source_context_policy\")\n    reference = configs[\"below_30\"]\n    for suffix, config in configs.items():\n        if any(config.get(key) != reference.get(key) for key in fixed):\n            raise ValueError(\"Duration comparison changed a held condition\")\n        if config.get(\"parking_stop_frame\") != stop_frame(config[\"case_id\"]):\n            raise ValueError(\"Duration stop frame differs: \" + suffix)\n        if config.get(\"capture_frames\") != TOTAL_FRAMES or config.get(\"rate_hz\") != RATE_HZ:\n            raise ValueError(\"Capture does not cover full threshold bracket\")\n    return {\"passed\": True, \"held_fields\": list(fixed),\n            \"duration_targets_s\": TARGETS,\n            \"physical_or_legal_acceptance\": False}\n",
+      "path": "duration_policy.py"
+    },
+    {
+      "content": "\"\"\"Review packet gate for the exact nighttime nonmotor parking branch.\n\nThe packet records review findings and hashes of the original supporting files.\nIt does not infer legal classification from a CARLA blueprint or a case label.\n\"\"\"\n\nimport argparse\nimport hashlib\nimport json\nfrom pathlib import Path\n\n\nFIELDS = (\n    \"transport_capability\",\n    \"excluded_device\",\n    \"self_propulsion\",\n    \"responsible_person\",\n    \"parking_purpose\",\n    \"active_loading_or_unloading\",\n    \"street_public_access\",\n    \"city_limits\",\n    \"civil_clock\",\n)\n\n\ndef digest(path):\n    return hashlib.sha256(Path(path).read_bytes()).hexdigest()\n\n\ndef audit(path, *, require_original=False):\n    path = Path(path).resolve()\n    packet = json.loads(path.read_text())\n    if packet.get(\"format\") != \"c229398-source-review-v1\":\n        raise ValueError(\"Wrong review packet format\")\n    if packet.get(\"case_id\") is None or not packet[\"case_id\"].endswith(\n            (\"__below_30\", \"__at_30\", \"__above_30\")):\n        raise ValueError(\"Wrong exact case identity\")\n    kind = packet.get(\"source_kind\")\n    if kind not in (\"synthetic_cpu\", \"original_review\"):\n        raise ValueError(\"Missing review provenance\")\n    if require_original and kind != \"original_review\":\n        raise ValueError(\"Original review required before Native acceptance\")\n    findings = packet.get(\"findings\")\n    if not isinstance(findings, dict) or set(findings) != set(FIELDS):\n        raise ValueError(\"Incomplete qualifying context review\")\n    sources = packet.get(\"sources\")\n    if not isinstance(sources, dict) or set(sources) != set(FIELDS):\n        raise ValueError(\"Each finding needs its own source binding\")\n    root = path.parent\n    for field in FIELDS:\n        item = sources[field]\n        if not isinstance(item, dict) or not all(item.get(k) for k in\n                                                  (\"path\", \"sha256\", \"citation\")):\n            raise ValueError(\"Missing cited source: \" + field)\n        relative = Path(item[\"path\"])\n        if relative.is_absolute() or \"..\" in relative.parts:\n            raise ValueError(\"Unsafe cited source path: \" + field)\n        source_path = (root / relative).resolve()\n        if root not in source_path.parents or not source_path.is_file():\n            raise ValueError(\"Cited source missing: \" + field)\n        if digest(source_path) != item[\"sha256\"]:\n            raise ValueError(\"Cited source hash differs: \" + field)\n        if kind == \"original_review\" and item.get(\"source_kind\") != \"original\":\n            raise ValueError(\"Original source required: \" + field)\n    if not isinstance(findings[\"transport_capability\"], bool) or not isinstance(\n            findings[\"excluded_device\"], bool) or not isinstance(\n            findings[\"self_propulsion\"], bool):\n        raise ValueError(\"Device classification must be reviewed\")\n    if not isinstance(findings[\"responsible_person\"], str) or not findings[\n            \"responsible_person\"].strip():\n        raise ValueError(\"Responsible person not established\")\n    if findings[\"parking_purpose\"] not in (\"park\", \"stop\", \"stand\", \"unknown\"):\n        raise ValueError(\"Parking activity unresolved\")\n    for field in (\"active_loading_or_unloading\", \"street_public_access\",\n                  \"city_limits\"):\n        if not isinstance(findings[field], bool):\n            raise ValueError(\"Source finding unresolved: \" + field)\n    clock = findings[\"civil_clock\"]\n    if not isinstance(clock, dict) or not clock.get(\"iana_timezone\") or not clock.get(\n            \"utc_start_ms\") or not isinstance(clock.get(\"utc_start_ms\"), int):\n        raise ValueError(\"Civil clock source unresolved\")\n    eligible = (findings[\"transport_capability\"] and not findings[\"excluded_device\"]\n                and not findings[\"self_propulsion\"] and findings[\"parking_purpose\"] == \"park\"\n                and not findings[\"active_loading_or_unloading\"]\n                and findings[\"street_public_access\"] and findings[\"city_limits\"])\n    return {\"format\": \"c229398-source-gate-v1\", \"case_id\": packet[\"case_id\"],\n            \"packet_sha256\": digest(path), \"source_kind\": kind,\n            \"qualifying_context_supported\": eligible,\n            \"physical_or_legal_acceptance\": False}\n\n\ndef main():\n    parser = argparse.ArgumentParser()\n    parser.add_argument(\"--packet\", required=True)\n    parser.add_argument(\"--require-original\", action=\"store_true\")\n    arguments = parser.parse_args()\n    print(json.dumps(audit(arguments.packet, require_original=arguments.require_original)))\n\n\nif __name__ == \"__main__\":\n    main()\n",
+      "path": "source_gate.py"
+    },
+    {
+      "content": "<?xml version=\"1.0\" standalone=\"yes\"?>\n<OpenDRIVE>\n  <header revMajor=\"1\" revMinor=\"4\" name=\"C229398 parking prototype\" version=\"1.00\" date=\"2026-11-23\" north=\"10\" south=\"-10\" east=\"100\" west=\"0\"/>\n  <road name=\"street\" length=\"100\" id=\"1\" junction=\"-1\">\n    <link/>\n    <planView><geometry s=\"0\" x=\"0\" y=\"0\" hdg=\"0\" length=\"100\"><line/></geometry></planView>\n    <elevationProfile><elevation s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\"/></elevationProfile>\n    <lanes>\n      <laneSection s=\"0\">\n        <left><lane id=\"1\" type=\"driving\" level=\"false\"><link/><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\"/></lane></left>\n        <center><lane id=\"0\" type=\"none\" level=\"false\"><roadMark sOffset=\"0\" type=\"solid\" color=\"white\" width=\"0.15\"/></lane></center>\n        <right><lane id=\"-1\" type=\"driving\" level=\"false\"><link/><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\"/></lane></right>\n      </laneSection>\n    </lanes>\n  </road>\n</OpenDRIVE>\n",
+      "path": "parking-road.xodr"
+    },
+    {
+      "content": "{\n  \"actor\": \"nonmotor_vehicle_operator\",\n  \"assignment_id\": \"training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator\",\n  \"cameras\": [\n    {\n      \"fov_deg\": 85,\n      \"height\": 1080,\n      \"location_xyz_m\": [\n        -8,\n        -4,\n        18\n      ],\n      \"name\": \"overview\",\n      \"pitch_deg\": -55,\n      \"pose_strategy\": \"same fixed whole curb and approach\",\n      \"width\": 1920\n    },\n    {\n      \"fov_deg\": 90,\n      \"height\": 720,\n      \"location_xyz_m\": [\n        3,\n        0,\n        2\n      ],\n      \"name\": \"approach\",\n      \"pitch_deg\": -5,\n      \"pose_strategy\": \"same near curb approach\",\n      \"width\": 1280\n    },\n    {\n      \"fov_deg\": 75,\n      \"height\": 720,\n      \"location_xyz_m\": [\n        0,\n        -4,\n        3\n      ],\n      \"name\": \"reference_corner\",\n      \"pitch_deg\": -25,\n      \"pose_strategy\": \"same curb reference\",\n      \"width\": 1280\n    },\n    {\n      \"fov_deg\": 90,\n      \"height\": 720,\n      \"location_xyz_m\": [\n        0,\n        0,\n        2\n      ],\n      \"name\": \"driver_reference\",\n      \"pitch_deg\": -10,\n      \"pose_strategy\": \"same subject and operator view\",\n      \"width\": 1280\n    }\n  ],\n  \"capture_frames\": 36063,\n  \"case\": {\n    \"case_id\": \"training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__at_30\"\n  },\n  \"case_id\": \"training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__at_30\",\n  \"cell_id\": \"C229398\",\n  \"device_classification\": \"unresolved\",\n  \"duration_s\": 1803.15,\n  \"format\": \"c229398-night-parking-duration-request-v2\",\n  \"law_id\": \"LVMC-11-52-300\",\n  \"original_native_observed\": false,\n  \"parking_stop_frame\": 62,\n  \"parking_target_xy_m\": [\n    40.0,\n    -1.75\n  ],\n  \"physical_or_legal_acceptance\": false,\n  \"prototype_blueprint\": \"vehicle.diamondback.century\",\n  \"rate_hz\": 20,\n  \"requested_stationary_duration_s\": 1800.0,\n  \"required_atoms\": [],\n  \"road_sha256\": \"51c2e6c89b841c30db78fcd9fab9352cab13dbb29d798a6415c218eed69e76eb\",\n  \"selected_case_id\": \"training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__at_30\",\n  \"source_context_policy\": \"original hash-bound nonmotor and street review before Native\",\n  \"source_packets\": [],\n  \"status\": \"selected_cpu_draft\",\n  \"weather\": \"fixed default night clear\"\n}\n",
+      "path": "config.json"
+    },
+    {
+      "content": "import json\nimport sys\nimport unittest\nfrom pathlib import Path\nsys.path.insert(0, str(Path(__file__).resolve().parents[1]))\nfrom runner import check, request\n\nclass TestDuration(unittest.TestCase):\n    def test_exact_request(self):\n        cfg = json.loads((Path(__file__).resolve().parents[1] / 'config.json').read_text())\n        self.assertTrue(check()['passed'])\n        self.assertEqual(request(cfg['parking_stop_frame'] - 1, cfg)['phase'], 'approach')\n        self.assertEqual(request(cfg['parking_stop_frame'], cfg)['phase'], 'parking_request')\n        self.assertEqual(request(cfg['capture_frames'] - 1, cfg)['requested_stationary_duration_s'], cfg['requested_stationary_duration_s'])\n",
+      "path": "tests/test_duration.py"
+    }
+  ],
+  "law_id": "LVMC-11-52-300",
+  "measurement_plan": {
+    "entrypoint": "night_parking.py",
+    "required_sources": [
+      "native-actor-frames.jsonl",
+      "qualifying-source-review.json",
+      "video_frames.jsonl"
+    ],
+    "source_review_required": true
+  },
+  "mechanisms": [
+    "config-driven parking stop frame",
+    "bicycle prototype motion request",
+    "original pose and camera frame join"
+  ],
+  "recording_description": {
+    "camera_views": [
+      "overview",
+      "approach",
+      "reference_corner",
+      "driver_reference"
+    ],
+    "channels": [
+      {
+        "method": "original Native pose/velocity plus reviewed source context",
+        "name": "drv.standing_or_parked",
+        "reference_frame": "Native world and civil clock",
+        "sampling_rate_hz": 20,
+        "time_window": "all 36063 original frames",
+        "uncertainty": "50 ms frame spacing; legal activity and device class need independent review",
+        "unit": "structured"
+      },
+      {
+        "method": "original Native pose/velocity plus reviewed source context",
+        "name": "ru.motor_vehicle",
+        "reference_frame": "Native world and civil clock",
+        "sampling_rate_hz": 20,
+        "time_window": "all 36063 original frames",
+        "uncertainty": "50 ms frame spacing; legal activity and device class need independent review",
+        "unit": "structured"
+      },
+      {
+        "method": "original Native pose/velocity plus reviewed source context",
+        "name": "ru.trailer_or_combination",
+        "reference_frame": "Native world and civil clock",
+        "sampling_rate_hz": 20,
+        "time_window": "all 36063 original frames",
+        "uncertainty": "50 ms frame spacing; legal activity and device class need independent review",
+        "unit": "structured"
+      },
+      {
+        "method": "original Native pose/velocity plus reviewed source context",
+        "name": "kin.time",
+        "reference_frame": "Native world and civil clock",
+        "sampling_rate_hz": 20,
+        "time_window": "all 36063 original frames",
+        "uncertainty": "50 ms frame spacing; legal activity and device class need independent review",
+        "unit": "structured"
+      },
+      {
+        "method": "original Native pose/velocity plus reviewed source context",
+        "name": "env.civil_time",
+        "reference_frame": "Native world and civil clock",
+        "sampling_rate_hz": 20,
+        "time_window": "all 36063 original frames",
+        "uncertainty": "50 ms frame spacing; legal activity and device class need independent review",
+        "unit": "structured"
+      },
+      {
+        "method": "original Native pose/velocity plus reviewed source context",
+        "name": "drv.condition_in_effect",
+        "reference_frame": "Native world and civil clock",
+        "sampling_rate_hz": 20,
+        "time_window": "all 36063 original frames",
+        "uncertainty": "50 ms frame spacing; legal activity and device class need independent review",
+        "unit": "structured"
+      },
+      {
+        "method": "original Native pose/velocity plus reviewed source context",
+        "name": "st.roadway",
+        "reference_frame": "Native world and civil clock",
+        "sampling_rate_hz": 20,
+        "time_window": "all 36063 original frames",
+        "uncertainty": "50 ms frame spacing; legal activity and device class need independent review",
+        "unit": "structured"
+      }
+    ],
+    "context_inputs": [
+      {
+        "method": "original hash-bound source packet",
+        "name": "qualifying_source_review",
+        "unit": "structured"
+      }
+    ],
+    "duration_s": 1803.15,
+    "limitations": [
+      "Bicycle blueprint alone does not certify a qualifying legal vehicle",
+      "No Native execution or real source media captured"
+    ],
+    "rate_hz": 20
+  },
+  "static_checks": [
+    "exact 20 Hz duration bracket",
+    "identical road and four cameras",
+    "original source review required before Native"
+  ],
+  "status": "selected_cpu_draft_original_capture_pending",
+  "termination_rules": [
+    "36063 synchronized frames",
+    "restore Native world"
+  ]
+}

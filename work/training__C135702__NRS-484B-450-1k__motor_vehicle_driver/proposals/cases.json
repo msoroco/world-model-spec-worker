@@ -402,6 +402,282 @@
         "comparison_or_standard": "same road and physical obstruction with two parked positions",
         "target_value_or_branch": "wider"
       }
+    },
+    {
+      "case_id": "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_police_source__police_absent",
+      "target_law_id": "NRS-484B-450-1k",
+      "target_type": "boundary_probe",
+      "cell_id": "C135702",
+      "actor": "motor_vehicle_driver",
+      "rationale": "Source-gated police-direction request contrast with fixed physical scene; applicability unverified.",
+      "variable_assignments": {
+        "obstruction_kind": {
+          "kind": "world_setup",
+          "value": "physical_obstruction",
+          "unit": "category"
+        },
+        "park_y_m": {
+          "kind": "controller",
+          "value": -1.1,
+          "unit": "m"
+        },
+        "police_direction_source_request": {
+          "kind": "controller",
+          "value": 0,
+          "unit": "category"
+        },
+        "observed_open_width_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "observed_passing_response": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame ego rest and operator activity source",
+            "time_window": "600 original frames",
+            "reference_frame": "Native world and reviewed source context",
+            "uncertainty": "Original realization and legal applicability require review"
+          },
+          {
+            "name": "st.obstruction",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original barrier bodies and road XY",
+            "time_window": "600 original frames",
+            "reference_frame": "Native world and reviewed source context",
+            "uncertainty": "Original realization and legal applicability require review"
+          },
+          {
+            "name": "rel.bearing",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "ego to physical-obstruction center bearing",
+            "time_window": "600 original frames",
+            "reference_frame": "Native world and reviewed source context",
+            "uncertainty": "Original realization and legal applicability require review"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "ego to physical-obstruction center distance",
+            "time_window": "600 original frames",
+            "reference_frame": "Native world and reviewed source context",
+            "uncertainty": "Original realization and legal applicability require review"
+          },
+          {
+            "name": "st.lane_width",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original highway width and sampled free opening",
+            "time_window": "600 original frames",
+            "reference_frame": "Native world and reviewed source context",
+            "uncertainty": "Original realization and legal applicability require review"
+          },
+          {
+            "name": "drv.hard_deceleration",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "passing vehicle speed difference, engineering only",
+            "time_window": "600 original frames",
+            "reference_frame": "Native world and reviewed source context",
+            "uncertainty": "Original realization and legal applicability require review"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame ego and passing vehicle velocity",
+            "time_window": "600 original frames",
+            "reference_frame": "Native world and reviewed source context",
+            "uncertainty": "Original realization and legal applicability require review"
+          },
+          {
+            "name": "drv.forced_halt",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original traffic-conflict source review",
+            "time_window": "600 original frames",
+            "reference_frame": "Native world and reviewed source context",
+            "uncertainty": "Original realization and legal applicability require review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "exception_authority",
+            "unit": "structured",
+            "method": "original source records and copied SHA256 bindings"
+          }
+        ],
+        "limitations": [
+          "Barrier bodies represent a physical obstruction, not a source-proven excavation.",
+          "Fixtures do not establish actual traffic response or legal obstruction."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "when stopping, standing or parking would obstruct traffic",
+        "except when necessary to avoid conflict with other traffic",
+        "in compliance with law",
+        "the directions of a police officer",
+        "official traffic-control device"
+      ],
+      "paired_probe_id": "police_source_branch",
+      "deliberate_differences": [
+        "police_direction_source_request"
+      ],
+      "probe": {
+        "primary_variable": "police_direction_source_request",
+        "comparison_or_standard": "same physical road, obstruction and parked body with original police source request varied",
+        "target_value_or_branch": "absent"
+      }
+    },
+    {
+      "case_id": "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_police_source__police_present",
+      "target_law_id": "NRS-484B-450-1k",
+      "target_type": "boundary_probe",
+      "cell_id": "C135702",
+      "actor": "motor_vehicle_driver",
+      "rationale": "Source-gated police-direction request contrast with fixed physical scene; applicability unverified.",
+      "variable_assignments": {
+        "obstruction_kind": {
+          "kind": "world_setup",
+          "value": "physical_obstruction",
+          "unit": "category"
+        },
+        "park_y_m": {
+          "kind": "controller",
+          "value": -1.1,
+          "unit": "m"
+        },
+        "police_direction_source_request": {
+          "kind": "controller",
+          "value": 1,
+          "unit": "category"
+        },
+        "observed_open_width_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "observed_passing_response": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame ego rest and operator activity source",
+            "time_window": "600 original frames",
+            "reference_frame": "Native world and reviewed source context",
+            "uncertainty": "Original realization and legal applicability require review"
+          },
+          {
+            "name": "st.obstruction",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original barrier bodies and road XY",
+            "time_window": "600 original frames",
+            "reference_frame": "Native world and reviewed source context",
+            "uncertainty": "Original realization and legal applicability require review"
+          },
+          {
+            "name": "rel.bearing",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "ego to physical-obstruction center bearing",
+            "time_window": "600 original frames",
+            "reference_frame": "Native world and reviewed source context",
+            "uncertainty": "Original realization and legal applicability require review"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "ego to physical-obstruction center distance",
+            "time_window": "600 original frames",
+            "reference_frame": "Native world and reviewed source context",
+            "uncertainty": "Original realization and legal applicability require review"
+          },
+          {
+            "name": "st.lane_width",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original highway width and sampled free opening",
+            "time_window": "600 original frames",
+            "reference_frame": "Native world and reviewed source context",
+            "uncertainty": "Original realization and legal applicability require review"
+          },
+          {
+            "name": "drv.hard_deceleration",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "passing vehicle speed difference, engineering only",
+            "time_window": "600 original frames",
+            "reference_frame": "Native world and reviewed source context",
+            "uncertainty": "Original realization and legal applicability require review"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame ego and passing vehicle velocity",
+            "time_window": "600 original frames",
+            "reference_frame": "Native world and reviewed source context",
+            "uncertainty": "Original realization and legal applicability require review"
+          },
+          {
+            "name": "drv.forced_halt",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original traffic-conflict source review",
+            "time_window": "600 original frames",
+            "reference_frame": "Native world and reviewed source context",
+            "uncertainty": "Original realization and legal applicability require review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "exception_authority",
+            "unit": "structured",
+            "method": "original source records and copied SHA256 bindings"
+          }
+        ],
+        "limitations": [
+          "Barrier bodies represent a physical obstruction, not a source-proven excavation.",
+          "Fixtures do not establish actual traffic response or legal obstruction."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "when stopping, standing or parking would obstruct traffic",
+        "except when necessary to avoid conflict with other traffic",
+        "in compliance with law",
+        "the directions of a police officer",
+        "official traffic-control device"
+      ],
+      "paired_probe_id": "police_source_branch",
+      "deliberate_differences": [
+        "police_direction_source_request"
+      ],
+      "probe": {
+        "primary_variable": "police_direction_source_request",
+        "comparison_or_standard": "same physical road, obstruction and parked body with original police source request varied",
+        "target_value_or_branch": "present"
+      }
     }
   ],
   "sweep_specs": [
