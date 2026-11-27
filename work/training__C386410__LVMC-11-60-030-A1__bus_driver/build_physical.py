@@ -26,8 +26,10 @@ def main():
     manifest = json.loads(MANIFEST.read_text())
     env = dict(os.environ, SCENARIO_PIPELINE_OUTPUT_ROOT=str(SCRATCH), TMPDIR=str(SCRATCH))
     for entry in manifest['cases']:
+        if entry.get('physical_preparation'):
+            continue
         suffix = entry['case_id'].rsplit('__', 1)[-1]
-        attempt = REPO / '.runtime-work/c386410-saved' / ('designated-attempt-r2' if suffix == 'designated_terminus' else 'undesignated-attempt-r1')
+        attempt = REPO / '.runtime-work/c386410-variant-saved' / suffix / 'attempt'
         construction = json.loads((ROOT / entry['construction']).read_text())
         config = SCRATCH / (suffix + '-config.json')
         config.write_text(next(item['content'] for item in construction['files'] if item['path'] == 'config.json'))
@@ -64,7 +66,7 @@ def main():
         entry['physical_preparation'] = {'receipt': str(receipt_path.relative_to(ROOT)),
                                          'sha256': sha(receipt_path)}
     write(MANIFEST, manifest)
-    print('Two exact bus physical and lifecycle receipts generated')
+    print('Remaining exact bus physical and lifecycle receipts generated')
 
 
 if __name__ == '__main__':

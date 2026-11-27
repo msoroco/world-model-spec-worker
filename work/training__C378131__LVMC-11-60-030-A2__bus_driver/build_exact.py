@@ -56,7 +56,15 @@ def build():
                   "vehicle_class_requested": case["vehicle_class_requested"],
                   "emergency_requested": case["emergency_requested"],
                   "rate_hz": 20, "duration_s": 30,
-                  "cameras": ["overview", "approach", "reference_corner", "driver_reference"],
+                  "cameras": [
+                      {"name": "overview", "width": 1920, "height": 1080,
+                       "pose_strategy": "fixed street overhead", "fov_deg": 90},
+                      {"name": "approach", "width": 1280, "height": 720,
+                       "pose_strategy": "fixed curb approach", "fov_deg": 90},
+                      {"name": "reference_corner", "width": 1280, "height": 720,
+                       "pose_strategy": "fixed loading place", "fov_deg": 90},
+                      {"name": "driver_reference", "width": 1280, "height": 720,
+                       "pose_strategy": "attached bus interior", "fov_deg": 90}],
                   "required_atoms": [], "source_packets": [],
                   "recording_description": description}
         files = [{"path": target, "source": str((ROOT / source).relative_to(REPO)),

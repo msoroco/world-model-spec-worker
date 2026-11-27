@@ -18,9 +18,7 @@ def bind():
     manifest = json.loads(path.read_text())
     for entry in manifest["cases"]:
         slug = entry["case_id"].removeprefix(AID + "__")
-        source = REPO / ".runtime-work/bus-c378131" / (
-            "compat-designated-terminus-v2" if slug == "designated_terminus" else
-            "compat-" + slug + "-v2")
+        source = REPO / ".runtime-work/bus-c378131" / ("compat-" + slug + "-v3")
         receipt_path = source / "compatibility.json"
         if not receipt_path.is_file():
             raise ValueError("exact compatibility receipt missing: " + slug)

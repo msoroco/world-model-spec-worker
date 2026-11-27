@@ -13,7 +13,35 @@
         "status": "physical",
         "reason": "Bus parking-lane spawn and brake position may fail in Native CARLA."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/designated_terminus/fallback1/construction.json",
+          "construction_sha256": "9fdc51708b483f26884dc3a985791e04ff4ca556ef6a87f99805ee2901f40734",
+          "trigger": {
+            "source": "bus-history.jsonl",
+            "metric": "final source-joined occupied_zone_id and target distance_m",
+            "failure_condition": "Primary bus overshoots surveyed target by more than 5 m or never occupies target zone"
+          },
+          "changed_knobs": [
+            "approach throttle 0.30 to 0.23",
+            "braking onset 4 m to 6 m before target"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "9fdc51708b483f26884dc3a985791e04ff4ca556ef6a87f99805ee2901f40734",
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C386410__LVMC-11-60-030-A1__bus_driver/execution-manifest.json --case training__C386410__LVMC-11-60-030-A1__bus_driver__designated_terminus --candidate fallback1 --output .runtime-work/c386410-fallback-offline/designated_terminus",
+            "log": "proofs/designated_terminus/fallback1/offline.log",
+            "log_sha256": "364105e62aac00f1f2b63582d8b71ed9dc27b1cdbdc40f1c8c064c4094d143fc"
+          },
+          "compatibility": {
+            "receipt": "proofs/designated_terminus/fallback1/compatibility.json",
+            "sha256": "9c97f9d722cd5b86f4973b29aad13e4af228f3bc9fb88e21593ef4e257840e49",
+            "log": "proofs/designated_terminus/fallback1/positive.log",
+            "negative_log": "proofs/designated_terminus/fallback1/negative.log"
+          }
+        }
+      ],
       "delivery_readiness": "incomplete",
       "measurement_procedure": {
         "entrypoint": "finalize.py"
@@ -55,6 +83,31 @@
       "physical_preparation": {
         "receipt": "proofs/designated_terminus/physical/proof.json",
         "sha256": "a2db26bbf7c0975d0b202ea871b1c8e0f628c0210b7f26804ea0fc2fcc45ec9e"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C386410__LVMC-11-60-030-A1__bus_driver__designated_terminus",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "853d5d40733185bc2be9c582e6af2a37d8a4c74754a6cff22cbca1065c582a62",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C386410__LVMC-11-60-030-A1__bus_driver/delivery_audit.py --case training__C386410__LVMC-11-60-030-A1__bus_driver__designated_terminus --selftest",
+        "test_exit_code": 0,
+        "test_log": "proofs/designated_terminus/delivery-positive.log",
+        "test_log_sha256": "8df2d23f0d374db0fde7185ab7a6f1359cfb617f75e5c9c54ce462ba694105a5",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C386410__LVMC-11-60-030-A1__bus_driver/delivery_audit.py --case training__C386410__LVMC-11-60-030-A1__bus_driver__designated_terminus --selftest --negative-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Synthetic fixture cannot establish original Native delivery",
+        "negative_log": "proofs/designated_terminus/delivery-negative.log",
+        "negative_log_sha256": "0dda3cb6fc42ba3db8ab4719425289bd78dc454fa3b62fce0e386c2387bbbc75"
       }
     },
     {
@@ -66,7 +119,35 @@
         "status": "physical",
         "reason": "Bus parking-lane spawn and brake position may fail in Native CARLA."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/undesignated_street/fallback1/construction.json",
+          "construction_sha256": "f47c0530640a4acd4293d4a1925518df2560f7436a0ce41f4729241f92b39ebb",
+          "trigger": {
+            "source": "bus-history.jsonl",
+            "metric": "final source-joined occupied_zone_id and target distance_m",
+            "failure_condition": "Primary bus overshoots surveyed target by more than 5 m or never occupies target zone"
+          },
+          "changed_knobs": [
+            "approach throttle 0.30 to 0.23",
+            "braking onset 4 m to 6 m before target"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "f47c0530640a4acd4293d4a1925518df2560f7436a0ce41f4729241f92b39ebb",
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C386410__LVMC-11-60-030-A1__bus_driver/execution-manifest.json --case training__C386410__LVMC-11-60-030-A1__bus_driver__undesignated_street --candidate fallback1 --output .runtime-work/c386410-fallback-offline/undesignated_street",
+            "log": "proofs/undesignated_street/fallback1/offline.log",
+            "log_sha256": "364105e62aac00f1f2b63582d8b71ed9dc27b1cdbdc40f1c8c064c4094d143fc"
+          },
+          "compatibility": {
+            "receipt": "proofs/undesignated_street/fallback1/compatibility.json",
+            "sha256": "ec65c23ba06df0216c55494e29b68bd7e2ed6ab8327fdcb29ac14969d4be23ab",
+            "log": "proofs/undesignated_street/fallback1/positive.log",
+            "negative_log": "proofs/undesignated_street/fallback1/negative.log"
+          }
+        }
+      ],
       "delivery_readiness": "incomplete",
       "measurement_procedure": {
         "entrypoint": "finalize.py"
@@ -108,6 +189,31 @@
       "physical_preparation": {
         "receipt": "proofs/undesignated_street/physical/proof.json",
         "sha256": "99706d52ae991c300dd81ec5c401fea20896f74e91b11f7f48df069f93206caa"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C386410__LVMC-11-60-030-A1__bus_driver__undesignated_street",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "853d5d40733185bc2be9c582e6af2a37d8a4c74754a6cff22cbca1065c582a62",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C386410__LVMC-11-60-030-A1__bus_driver/delivery_audit.py --case training__C386410__LVMC-11-60-030-A1__bus_driver__undesignated_street --selftest",
+        "test_exit_code": 0,
+        "test_log": "proofs/undesignated_street/delivery-positive.log",
+        "test_log_sha256": "8df2d23f0d374db0fde7185ab7a6f1359cfb617f75e5c9c54ce462ba694105a5",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C386410__LVMC-11-60-030-A1__bus_driver/delivery_audit.py --case training__C386410__LVMC-11-60-030-A1__bus_driver__undesignated_street --selftest --negative-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Synthetic fixture cannot establish original Native delivery",
+        "negative_log": "proofs/undesignated_street/delivery-negative.log",
+        "negative_log_sha256": "0dda3cb6fc42ba3db8ab4719425289bd78dc454fa3b62fce0e386c2387bbbc75"
       }
     },
     {
@@ -119,7 +225,35 @@
         "status": "physical",
         "reason": "Bus parking-lane spawn or brake position may fail in Native CARLA."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/bus_stop/fallback1/construction.json",
+          "construction_sha256": "31af3dd51f6eea3e511285b08bd9d3d91412f29359de3972c49851d506d4c9ac",
+          "trigger": {
+            "source": "bus-history.jsonl",
+            "metric": "final source-joined occupied_zone_id and target distance_m",
+            "failure_condition": "Primary bus overshoots surveyed target by more than 5 m or never occupies target zone"
+          },
+          "changed_knobs": [
+            "approach throttle 0.30 to 0.23",
+            "braking onset 4 m to 6 m before target"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "31af3dd51f6eea3e511285b08bd9d3d91412f29359de3972c49851d506d4c9ac",
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C386410__LVMC-11-60-030-A1__bus_driver/execution-manifest.json --case training__C386410__LVMC-11-60-030-A1__bus_driver__bus_stop --candidate fallback1 --output .runtime-work/c386410-fallback-offline/bus_stop",
+            "log": "proofs/bus_stop/fallback1/offline.log",
+            "log_sha256": "ab3ef4b818813ed34a782ed08ffdbdd31e4e302eff8e92692eff9da09456fafc"
+          },
+          "compatibility": {
+            "receipt": "proofs/bus_stop/fallback1/compatibility.json",
+            "sha256": "ead4a62f92ac3d1956645be6822e0f26e90b4497386558b53e789633db8cd4fb",
+            "log": "proofs/bus_stop/fallback1/positive.log",
+            "negative_log": "proofs/bus_stop/fallback1/negative.log"
+          }
+        }
+      ],
       "delivery_readiness": "incomplete",
       "measurement_procedure": {
         "entrypoint": "finalize.py"
@@ -130,7 +264,63 @@
         "port_env_var": "CARLA_PORT"
       },
       "measurement_contract": "cases/bus_stop/measurement-contract.json",
-      "fixture_recipe": "work/training__C386410__LVMC-11-60-030-A1__bus_driver/cases/bus_stop/recipe.json"
+      "fixture_recipe": "work/training__C386410__LVMC-11-60-030-A1__bus_driver/cases/bus_stop/recipe.json",
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "db665b9c3eab9d09a9cd086d32bfcdb1f604375748395a0210b799c2b354d9b8",
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C386410__LVMC-11-60-030-A1__bus_driver/execution-manifest.json --case training__C386410__LVMC-11-60-030-A1__bus_driver__bus_stop --output .runtime-work/c386410-variant-offline/bus_stop",
+        "log": "proofs/bus_stop/offline.log",
+        "log_sha256": "ab3ef4b818813ed34a782ed08ffdbdd31e4e302eff8e92692eff9da09456fafc"
+      },
+      "compatibility": {
+        "receipt": "proofs/bus_stop/compatibility.json",
+        "sha256": "d410ebd769226d434d9fc2d9dff7ff60eff23eeb5bd06e51bc3b3a73ebd2be2e",
+        "log": "proofs/bus_stop/positive.log",
+        "negative_log": "proofs/bus_stop/negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/bus_stop/negative-analysis.log",
+        "log_sha256": "3c1fd132290aef793e8ce097db4d40a1b2a11dd078a1c33c292be2af005750ed"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C386410__LVMC-11-60-030-A1__bus_driver/execution-manifest.json --case training__C386410__LVMC-11-60-030-A1__bus_driver__bus_stop --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/v0001/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "proofs/bus_stop/saved.log",
+        "test_log_sha256": "f8820a921a908a146050b9c5678e1ce290306611e13748b7f83feedf86c17f3d",
+        "processing_receipt": "proofs/bus_stop/processing.json",
+        "processing_receipt_sha256": "f8820a921a908a146050b9c5678e1ce290306611e13748b7f83feedf86c17f3d"
+      },
+      "physical_preparation": {
+        "receipt": "proofs/bus_stop/physical/proof.json",
+        "sha256": "94a0147756d46c37bf0f812d1c2702faac3c080e5c7de49e9dd4ae75e42241b1"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C386410__LVMC-11-60-030-A1__bus_driver__bus_stop",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "853d5d40733185bc2be9c582e6af2a37d8a4c74754a6cff22cbca1065c582a62",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C386410__LVMC-11-60-030-A1__bus_driver/delivery_audit.py --case training__C386410__LVMC-11-60-030-A1__bus_driver__bus_stop --selftest",
+        "test_exit_code": 0,
+        "test_log": "proofs/bus_stop/delivery-positive.log",
+        "test_log_sha256": "8df2d23f0d374db0fde7185ab7a6f1359cfb617f75e5c9c54ce462ba694105a5",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C386410__LVMC-11-60-030-A1__bus_driver/delivery_audit.py --case training__C386410__LVMC-11-60-030-A1__bus_driver__bus_stop --selftest --negative-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Synthetic fixture cannot establish original Native delivery",
+        "negative_log": "proofs/bus_stop/delivery-negative.log",
+        "negative_log_sha256": "0dda3cb6fc42ba3db8ab4719425289bd78dc454fa3b62fce0e386c2387bbbc75"
+      }
     },
     {
       "case_id": "training__C386410__LVMC-11-60-030-A1__bus_driver__bus_stand",
@@ -141,7 +331,35 @@
         "status": "physical",
         "reason": "Bus parking-lane spawn or brake position may fail in Native CARLA."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/bus_stand/fallback1/construction.json",
+          "construction_sha256": "89588a01060d5854b929442b6a15ed699304338161386ff240265700f9c75dc7",
+          "trigger": {
+            "source": "bus-history.jsonl",
+            "metric": "final source-joined occupied_zone_id and target distance_m",
+            "failure_condition": "Primary bus overshoots surveyed target by more than 5 m or never occupies target zone"
+          },
+          "changed_knobs": [
+            "approach throttle 0.30 to 0.23",
+            "braking onset 4 m to 6 m before target"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "89588a01060d5854b929442b6a15ed699304338161386ff240265700f9c75dc7",
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C386410__LVMC-11-60-030-A1__bus_driver/execution-manifest.json --case training__C386410__LVMC-11-60-030-A1__bus_driver__bus_stand --candidate fallback1 --output .runtime-work/c386410-fallback-offline/bus_stand",
+            "log": "proofs/bus_stand/fallback1/offline.log",
+            "log_sha256": "ab3ef4b818813ed34a782ed08ffdbdd31e4e302eff8e92692eff9da09456fafc"
+          },
+          "compatibility": {
+            "receipt": "proofs/bus_stand/fallback1/compatibility.json",
+            "sha256": "94788669d673436d439eb1a15bb1aaf59c2df5dd15470a46f98b4abf20f225fa",
+            "log": "proofs/bus_stand/fallback1/positive.log",
+            "negative_log": "proofs/bus_stand/fallback1/negative.log"
+          }
+        }
+      ],
       "delivery_readiness": "incomplete",
       "measurement_procedure": {
         "entrypoint": "finalize.py"
@@ -152,7 +370,63 @@
         "port_env_var": "CARLA_PORT"
       },
       "measurement_contract": "cases/bus_stand/measurement-contract.json",
-      "fixture_recipe": "work/training__C386410__LVMC-11-60-030-A1__bus_driver/cases/bus_stand/recipe.json"
+      "fixture_recipe": "work/training__C386410__LVMC-11-60-030-A1__bus_driver/cases/bus_stand/recipe.json",
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "faa509c5b82004e9f7dc89f253eda184f8f567fd3b420a30953ccd941b5c1daa",
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C386410__LVMC-11-60-030-A1__bus_driver/execution-manifest.json --case training__C386410__LVMC-11-60-030-A1__bus_driver__bus_stand --output .runtime-work/c386410-variant-offline/bus_stand",
+        "log": "proofs/bus_stand/offline.log",
+        "log_sha256": "ab3ef4b818813ed34a782ed08ffdbdd31e4e302eff8e92692eff9da09456fafc"
+      },
+      "compatibility": {
+        "receipt": "proofs/bus_stand/compatibility.json",
+        "sha256": "fb13d2f2d0cf6becd471db919e7d4efaca05a083142b5b9cd4bd171abd9b10f7",
+        "log": "proofs/bus_stand/positive.log",
+        "negative_log": "proofs/bus_stand/negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/bus_stand/negative-analysis.log",
+        "log_sha256": "394af335aa841817ed74f8af79597cb183b695b766d8f21eb14b38d251b3e470"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C386410__LVMC-11-60-030-A1__bus_driver/execution-manifest.json --case training__C386410__LVMC-11-60-030-A1__bus_driver__bus_stand --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/v0001/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "proofs/bus_stand/saved.log",
+        "test_log_sha256": "50cc0291a34af863c432738bee62d59fd5cfbd44fad8c5acb229a0d231df72ff",
+        "processing_receipt": "proofs/bus_stand/processing.json",
+        "processing_receipt_sha256": "50cc0291a34af863c432738bee62d59fd5cfbd44fad8c5acb229a0d231df72ff"
+      },
+      "physical_preparation": {
+        "receipt": "proofs/bus_stand/physical/proof.json",
+        "sha256": "80201680dd078191276784d48d6b70f16b12ef23572a65841a8759eefe74cd2e"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C386410__LVMC-11-60-030-A1__bus_driver__bus_stand",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "853d5d40733185bc2be9c582e6af2a37d8a4c74754a6cff22cbca1065c582a62",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C386410__LVMC-11-60-030-A1__bus_driver/delivery_audit.py --case training__C386410__LVMC-11-60-030-A1__bus_driver__bus_stand --selftest",
+        "test_exit_code": 0,
+        "test_log": "proofs/bus_stand/delivery-positive.log",
+        "test_log_sha256": "8df2d23f0d374db0fde7185ab7a6f1359cfb617f75e5c9c54ce462ba694105a5",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C386410__LVMC-11-60-030-A1__bus_driver/delivery_audit.py --case training__C386410__LVMC-11-60-030-A1__bus_driver__bus_stand --selftest --negative-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Synthetic fixture cannot establish original Native delivery",
+        "negative_log": "proofs/bus_stand/delivery-negative.log",
+        "negative_log_sha256": "0dda3cb6fc42ba3db8ab4719425289bd78dc454fa3b62fce0e386c2387bbbc75"
+      }
     },
     {
       "case_id": "training__C386410__LVMC-11-60-030-A1__bus_driver__route_origin",
@@ -163,7 +437,35 @@
         "status": "physical",
         "reason": "Bus parking-lane spawn or brake position may fail in Native CARLA."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/route_origin/fallback1/construction.json",
+          "construction_sha256": "45a33fcfa8898997fb0513fe5cc8fcef89cb2ec6e54a513797a86f30bc52fe34",
+          "trigger": {
+            "source": "bus-history.jsonl",
+            "metric": "final source-joined occupied_zone_id and target distance_m",
+            "failure_condition": "Primary bus overshoots surveyed target by more than 5 m or never occupies target zone"
+          },
+          "changed_knobs": [
+            "approach throttle 0.30 to 0.23",
+            "braking onset 4 m to 6 m before target"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "45a33fcfa8898997fb0513fe5cc8fcef89cb2ec6e54a513797a86f30bc52fe34",
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C386410__LVMC-11-60-030-A1__bus_driver/execution-manifest.json --case training__C386410__LVMC-11-60-030-A1__bus_driver__route_origin --candidate fallback1 --output .runtime-work/c386410-fallback-offline/route_origin",
+            "log": "proofs/route_origin/fallback1/offline.log",
+            "log_sha256": "ab3ef4b818813ed34a782ed08ffdbdd31e4e302eff8e92692eff9da09456fafc"
+          },
+          "compatibility": {
+            "receipt": "proofs/route_origin/fallback1/compatibility.json",
+            "sha256": "8deb0de932fb3d57231c8a54e083a4e919ec81a17442f53cb7c45a6ca5b2289f",
+            "log": "proofs/route_origin/fallback1/positive.log",
+            "negative_log": "proofs/route_origin/fallback1/negative.log"
+          }
+        }
+      ],
       "delivery_readiness": "incomplete",
       "measurement_procedure": {
         "entrypoint": "finalize.py"
@@ -174,7 +476,63 @@
         "port_env_var": "CARLA_PORT"
       },
       "measurement_contract": "cases/route_origin/measurement-contract.json",
-      "fixture_recipe": "work/training__C386410__LVMC-11-60-030-A1__bus_driver/cases/route_origin/recipe.json"
+      "fixture_recipe": "work/training__C386410__LVMC-11-60-030-A1__bus_driver/cases/route_origin/recipe.json",
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "04758b88828aa49c94b2fe3e45145c71c90ccfa83a9cc9fa325829a4e6382bdd",
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C386410__LVMC-11-60-030-A1__bus_driver/execution-manifest.json --case training__C386410__LVMC-11-60-030-A1__bus_driver__route_origin --output .runtime-work/c386410-variant-offline/route_origin",
+        "log": "proofs/route_origin/offline.log",
+        "log_sha256": "ab3ef4b818813ed34a782ed08ffdbdd31e4e302eff8e92692eff9da09456fafc"
+      },
+      "compatibility": {
+        "receipt": "proofs/route_origin/compatibility.json",
+        "sha256": "aee334f27b89718d7c50686c220e730ad55eef1af245c578065b2cc9ddc06e89",
+        "log": "proofs/route_origin/positive.log",
+        "negative_log": "proofs/route_origin/negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/route_origin/negative-analysis.log",
+        "log_sha256": "01fe65ba86d3a0877df0018e250ddc452df2f338a59eceec85bdf44bfe0d338a"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C386410__LVMC-11-60-030-A1__bus_driver/execution-manifest.json --case training__C386410__LVMC-11-60-030-A1__bus_driver__route_origin --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/v0001/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "proofs/route_origin/saved.log",
+        "test_log_sha256": "6bb883e764a12807d2873487370d12ac2559ff8e59e17c3945759784b2b06caf",
+        "processing_receipt": "proofs/route_origin/processing.json",
+        "processing_receipt_sha256": "6bb883e764a12807d2873487370d12ac2559ff8e59e17c3945759784b2b06caf"
+      },
+      "physical_preparation": {
+        "receipt": "proofs/route_origin/physical/proof.json",
+        "sha256": "79abd0a8bd29cb340e47dcef74ff512a4b6265c7f483c3828e0db06995e14dd9"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C386410__LVMC-11-60-030-A1__bus_driver__route_origin",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "853d5d40733185bc2be9c582e6af2a37d8a4c74754a6cff22cbca1065c582a62",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C386410__LVMC-11-60-030-A1__bus_driver/delivery_audit.py --case training__C386410__LVMC-11-60-030-A1__bus_driver__route_origin --selftest",
+        "test_exit_code": 0,
+        "test_log": "proofs/route_origin/delivery-positive.log",
+        "test_log_sha256": "8df2d23f0d374db0fde7185ab7a6f1359cfb617f75e5c9c54ce462ba694105a5",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C386410__LVMC-11-60-030-A1__bus_driver/delivery_audit.py --case training__C386410__LVMC-11-60-030-A1__bus_driver__route_origin --selftest --negative-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Synthetic fixture cannot establish original Native delivery",
+        "negative_log": "proofs/route_origin/delivery-negative.log",
+        "negative_log_sha256": "0dda3cb6fc42ba3db8ab4719425289bd78dc454fa3b62fce0e386c2387bbbc75"
+      }
     },
     {
       "case_id": "training__C386410__LVMC-11-60-030-A1__bus_driver__transient_stop",
@@ -185,7 +543,35 @@
         "status": "physical",
         "reason": "Bus parking-lane spawn or brake position may fail in Native CARLA."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/transient_stop/fallback1/construction.json",
+          "construction_sha256": "43a0c7271ed3c82689c8a04353a6b91d8ef2e5813fd75388b7597a227ad37e7c",
+          "trigger": {
+            "source": "bus-history.jsonl",
+            "metric": "final source-joined occupied_zone_id and target distance_m",
+            "failure_condition": "Primary bus overshoots surveyed target by more than 5 m or never occupies target zone"
+          },
+          "changed_knobs": [
+            "approach throttle 0.30 to 0.23",
+            "braking onset 4 m to 6 m before target"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "43a0c7271ed3c82689c8a04353a6b91d8ef2e5813fd75388b7597a227ad37e7c",
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C386410__LVMC-11-60-030-A1__bus_driver/execution-manifest.json --case training__C386410__LVMC-11-60-030-A1__bus_driver__transient_stop --candidate fallback1 --output .runtime-work/c386410-fallback-offline/transient_stop",
+            "log": "proofs/transient_stop/fallback1/offline.log",
+            "log_sha256": "ab3ef4b818813ed34a782ed08ffdbdd31e4e302eff8e92692eff9da09456fafc"
+          },
+          "compatibility": {
+            "receipt": "proofs/transient_stop/fallback1/compatibility.json",
+            "sha256": "c7a01ecf3103697f1a7ebb8737debcc0385021cedefd15d91bfaac4d086799c6",
+            "log": "proofs/transient_stop/fallback1/positive.log",
+            "negative_log": "proofs/transient_stop/fallback1/negative.log"
+          }
+        }
+      ],
       "delivery_readiness": "incomplete",
       "measurement_procedure": {
         "entrypoint": "finalize.py"
@@ -196,7 +582,63 @@
         "port_env_var": "CARLA_PORT"
       },
       "measurement_contract": "cases/transient_stop/measurement-contract.json",
-      "fixture_recipe": "work/training__C386410__LVMC-11-60-030-A1__bus_driver/cases/transient_stop/recipe.json"
+      "fixture_recipe": "work/training__C386410__LVMC-11-60-030-A1__bus_driver/cases/transient_stop/recipe.json",
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "edd3cf63ac35a3894c2cf1c924a9efacb754195e805eca67a447fd436e4d922e",
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C386410__LVMC-11-60-030-A1__bus_driver/execution-manifest.json --case training__C386410__LVMC-11-60-030-A1__bus_driver__transient_stop --output .runtime-work/c386410-variant-offline/transient_stop",
+        "log": "proofs/transient_stop/offline.log",
+        "log_sha256": "ab3ef4b818813ed34a782ed08ffdbdd31e4e302eff8e92692eff9da09456fafc"
+      },
+      "compatibility": {
+        "receipt": "proofs/transient_stop/compatibility.json",
+        "sha256": "237907d789d0b09617f6a4d2c9bc034c5df62f2eadd5df8f4a9ff89d01fb8617",
+        "log": "proofs/transient_stop/positive.log",
+        "negative_log": "proofs/transient_stop/negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/transient_stop/negative-analysis.log",
+        "log_sha256": "a87fd0f2326ec5532338c6d6025a01ce9711a12d093408118f68ef35254e050d"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C386410__LVMC-11-60-030-A1__bus_driver/execution-manifest.json --case training__C386410__LVMC-11-60-030-A1__bus_driver__transient_stop --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/v0001/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "proofs/transient_stop/saved.log",
+        "test_log_sha256": "e5d6026b48a97cad4fd7c66888893069c20051a39181d58c0d901cdf29f6932e",
+        "processing_receipt": "proofs/transient_stop/processing.json",
+        "processing_receipt_sha256": "e5d6026b48a97cad4fd7c66888893069c20051a39181d58c0d901cdf29f6932e"
+      },
+      "physical_preparation": {
+        "receipt": "proofs/transient_stop/physical/proof.json",
+        "sha256": "e24232c618d0e0386c6e763dbcc993a686a90c86599a33918dd62cfc1f0e523a"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C386410__LVMC-11-60-030-A1__bus_driver__transient_stop",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "853d5d40733185bc2be9c582e6af2a37d8a4c74754a6cff22cbca1065c582a62",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C386410__LVMC-11-60-030-A1__bus_driver/delivery_audit.py --case training__C386410__LVMC-11-60-030-A1__bus_driver__transient_stop --selftest",
+        "test_exit_code": 0,
+        "test_log": "proofs/transient_stop/delivery-positive.log",
+        "test_log_sha256": "8df2d23f0d374db0fde7185ab7a6f1359cfb617f75e5c9c54ce462ba694105a5",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C386410__LVMC-11-60-030-A1__bus_driver/delivery_audit.py --case training__C386410__LVMC-11-60-030-A1__bus_driver__transient_stop --selftest --negative-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Synthetic fixture cannot establish original Native delivery",
+        "negative_log": "proofs/transient_stop/delivery-negative.log",
+        "negative_log_sha256": "0dda3cb6fc42ba3db8ab4719425289bd78dc454fa3b62fce0e386c2387bbbc75"
+      }
     },
     {
       "case_id": "training__C386410__LVMC-11-60-030-A1__bus_driver__parking_other_street",
@@ -207,7 +649,35 @@
         "status": "physical",
         "reason": "Bus parking-lane spawn or brake position may fail in Native CARLA."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/parking_other_street/fallback1/construction.json",
+          "construction_sha256": "e7cb5c3ec345547aec1bde6ae93e0a64d04e132e683343fc7de77b9ab0faa3b4",
+          "trigger": {
+            "source": "bus-history.jsonl",
+            "metric": "final source-joined occupied_zone_id and target distance_m",
+            "failure_condition": "Primary bus overshoots surveyed target by more than 5 m or never occupies target zone"
+          },
+          "changed_knobs": [
+            "approach throttle 0.30 to 0.23",
+            "braking onset 4 m to 6 m before target"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "e7cb5c3ec345547aec1bde6ae93e0a64d04e132e683343fc7de77b9ab0faa3b4",
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C386410__LVMC-11-60-030-A1__bus_driver/execution-manifest.json --case training__C386410__LVMC-11-60-030-A1__bus_driver__parking_other_street --candidate fallback1 --output .runtime-work/c386410-fallback-offline/parking_other_street",
+            "log": "proofs/parking_other_street/fallback1/offline.log",
+            "log_sha256": "ab3ef4b818813ed34a782ed08ffdbdd31e4e302eff8e92692eff9da09456fafc"
+          },
+          "compatibility": {
+            "receipt": "proofs/parking_other_street/fallback1/compatibility.json",
+            "sha256": "886e5399589bec50790c047debf86a7cb74f9ef3062241b0270baa0083ffe8be",
+            "log": "proofs/parking_other_street/fallback1/positive.log",
+            "negative_log": "proofs/parking_other_street/fallback1/negative.log"
+          }
+        }
+      ],
       "delivery_readiness": "incomplete",
       "measurement_procedure": {
         "entrypoint": "finalize.py"
@@ -218,7 +688,63 @@
         "port_env_var": "CARLA_PORT"
       },
       "measurement_contract": "cases/parking_other_street/measurement-contract.json",
-      "fixture_recipe": "work/training__C386410__LVMC-11-60-030-A1__bus_driver/cases/parking_other_street/recipe.json"
+      "fixture_recipe": "work/training__C386410__LVMC-11-60-030-A1__bus_driver/cases/parking_other_street/recipe.json",
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "d5163b43b758cd5e767f070085e368cc42da46728ff6bc2e1c3f8d36d81791f4",
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C386410__LVMC-11-60-030-A1__bus_driver/execution-manifest.json --case training__C386410__LVMC-11-60-030-A1__bus_driver__parking_other_street --output .runtime-work/c386410-variant-offline/parking_other_street",
+        "log": "proofs/parking_other_street/offline.log",
+        "log_sha256": "ab3ef4b818813ed34a782ed08ffdbdd31e4e302eff8e92692eff9da09456fafc"
+      },
+      "compatibility": {
+        "receipt": "proofs/parking_other_street/compatibility.json",
+        "sha256": "87f5a782b0da765a28b6aec0275b7fbca176bb5310e1d6a27fbffa959ccc5ef0",
+        "log": "proofs/parking_other_street/positive.log",
+        "negative_log": "proofs/parking_other_street/negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/parking_other_street/negative-analysis.log",
+        "log_sha256": "c67ead9fa5f3d18c8e966b76109f437c829065d146c3547508f1e1785528a39a"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C386410__LVMC-11-60-030-A1__bus_driver/execution-manifest.json --case training__C386410__LVMC-11-60-030-A1__bus_driver__parking_other_street --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/v0001/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "proofs/parking_other_street/saved.log",
+        "test_log_sha256": "cedcd0eea9e54c577cbfe9c74f633c237e3e82414c313fdb35417209066404f9",
+        "processing_receipt": "proofs/parking_other_street/processing.json",
+        "processing_receipt_sha256": "cedcd0eea9e54c577cbfe9c74f633c237e3e82414c313fdb35417209066404f9"
+      },
+      "physical_preparation": {
+        "receipt": "proofs/parking_other_street/physical/proof.json",
+        "sha256": "8680d8c51ccd57be1d59709ee28c6baa94732bbc32d0d96b12fe6f0b5db5dedb"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C386410__LVMC-11-60-030-A1__bus_driver__parking_other_street",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "853d5d40733185bc2be9c582e6af2a37d8a4c74754a6cff22cbca1065c582a62",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C386410__LVMC-11-60-030-A1__bus_driver/delivery_audit.py --case training__C386410__LVMC-11-60-030-A1__bus_driver__parking_other_street --selftest",
+        "test_exit_code": 0,
+        "test_log": "proofs/parking_other_street/delivery-positive.log",
+        "test_log_sha256": "8df2d23f0d374db0fde7185ab7a6f1359cfb617f75e5c9c54ce462ba694105a5",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C386410__LVMC-11-60-030-A1__bus_driver/delivery_audit.py --case training__C386410__LVMC-11-60-030-A1__bus_driver__parking_other_street --selftest --negative-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Synthetic fixture cannot establish original Native delivery",
+        "negative_log": "proofs/parking_other_street/delivery-negative.log",
+        "negative_log_sha256": "0dda3cb6fc42ba3db8ab4719425289bd78dc454fa3b62fce0e386c2387bbbc75"
+      }
     },
     {
       "case_id": "training__C386410__LVMC-11-60-030-A1__bus_driver__tour_bus_other_street",
@@ -229,7 +755,35 @@
         "status": "physical",
         "reason": "Bus parking-lane spawn or brake position may fail in Native CARLA."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/tour_bus_other_street/fallback1/construction.json",
+          "construction_sha256": "e1f980056f55ac1a68e5eaf01c880ba57d49bf13b6367438271ddc9a438b5609",
+          "trigger": {
+            "source": "bus-history.jsonl",
+            "metric": "final source-joined occupied_zone_id and target distance_m",
+            "failure_condition": "Primary bus overshoots surveyed target by more than 5 m or never occupies target zone"
+          },
+          "changed_knobs": [
+            "approach throttle 0.30 to 0.23",
+            "braking onset 4 m to 6 m before target"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "e1f980056f55ac1a68e5eaf01c880ba57d49bf13b6367438271ddc9a438b5609",
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C386410__LVMC-11-60-030-A1__bus_driver/execution-manifest.json --case training__C386410__LVMC-11-60-030-A1__bus_driver__tour_bus_other_street --candidate fallback1 --output .runtime-work/c386410-fallback-offline/tour_bus_other_street",
+            "log": "proofs/tour_bus_other_street/fallback1/offline.log",
+            "log_sha256": "ab3ef4b818813ed34a782ed08ffdbdd31e4e302eff8e92692eff9da09456fafc"
+          },
+          "compatibility": {
+            "receipt": "proofs/tour_bus_other_street/fallback1/compatibility.json",
+            "sha256": "63ee4e7adf7c62acf39312e8dced954e0833a4e6bf10da3a0a8395860714f33b",
+            "log": "proofs/tour_bus_other_street/fallback1/positive.log",
+            "negative_log": "proofs/tour_bus_other_street/fallback1/negative.log"
+          }
+        }
+      ],
       "delivery_readiness": "incomplete",
       "measurement_procedure": {
         "entrypoint": "finalize.py"
@@ -240,7 +794,63 @@
         "port_env_var": "CARLA_PORT"
       },
       "measurement_contract": "cases/tour_bus_other_street/measurement-contract.json",
-      "fixture_recipe": "work/training__C386410__LVMC-11-60-030-A1__bus_driver/cases/tour_bus_other_street/recipe.json"
+      "fixture_recipe": "work/training__C386410__LVMC-11-60-030-A1__bus_driver/cases/tour_bus_other_street/recipe.json",
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "4f05791869e45ab2bb3d7d17ad017b52ee9e8fe4c6f65eb65d992291cc4ed9c6",
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C386410__LVMC-11-60-030-A1__bus_driver/execution-manifest.json --case training__C386410__LVMC-11-60-030-A1__bus_driver__tour_bus_other_street --output .runtime-work/c386410-variant-offline/tour_bus_other_street",
+        "log": "proofs/tour_bus_other_street/offline.log",
+        "log_sha256": "ab3ef4b818813ed34a782ed08ffdbdd31e4e302eff8e92692eff9da09456fafc"
+      },
+      "compatibility": {
+        "receipt": "proofs/tour_bus_other_street/compatibility.json",
+        "sha256": "f0c39ef09659bad09a370a3f17ce3c49e975686c48b58c16def0abce64165989",
+        "log": "proofs/tour_bus_other_street/positive.log",
+        "negative_log": "proofs/tour_bus_other_street/negative-analysis.log"
+      },
+      "negative": {
+        "log": "proofs/tour_bus_other_street/negative-analysis.log",
+        "log_sha256": "bd07bbaac8db1e86468670c590adc87d990c40828e4a4634b4e1d8fc5327f732"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C386410__LVMC-11-60-030-A1__bus_driver/execution-manifest.json --case training__C386410__LVMC-11-60-030-A1__bus_driver__tour_bus_other_street --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/v0001/feedback.json",
+        "test_exit_code": 0,
+        "test_log": "proofs/tour_bus_other_street/saved.log",
+        "test_log_sha256": "88d50552b9d1991a40701d9dd3d83420bb67148482cd746b2d23386519baecde",
+        "processing_receipt": "proofs/tour_bus_other_street/processing.json",
+        "processing_receipt_sha256": "88d50552b9d1991a40701d9dd3d83420bb67148482cd746b2d23386519baecde"
+      },
+      "physical_preparation": {
+        "receipt": "proofs/tour_bus_other_street/physical/proof.json",
+        "sha256": "bcc02f2300bc888ffed85712fb417d728771744328b8a60c1f9b56cd6a78b92d"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C386410__LVMC-11-60-030-A1__bus_driver__tour_bus_other_street",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "853d5d40733185bc2be9c582e6af2a37d8a4c74754a6cff22cbca1065c582a62",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C386410__LVMC-11-60-030-A1__bus_driver/delivery_audit.py --case training__C386410__LVMC-11-60-030-A1__bus_driver__tour_bus_other_street --selftest",
+        "test_exit_code": 0,
+        "test_log": "proofs/tour_bus_other_street/delivery-positive.log",
+        "test_log_sha256": "8df2d23f0d374db0fde7185ab7a6f1359cfb617f75e5c9c54ce462ba694105a5",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C386410__LVMC-11-60-030-A1__bus_driver/delivery_audit.py --case training__C386410__LVMC-11-60-030-A1__bus_driver__tour_bus_other_street --selftest --negative-fixture",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Synthetic fixture cannot establish original Native delivery",
+        "negative_log": "proofs/tour_bus_other_street/delivery-negative.log",
+        "negative_log_sha256": "0dda3cb6fc42ba3db8ab4719425289bd78dc454fa3b62fce0e386c2387bbbc75"
+      }
     }
   ]
 }

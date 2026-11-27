@@ -1,0 +1,851 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C405647__NRS-484B-267-2c__motor_vehicle_driver",
+  "status": "draft_six_case_cpu_delivery",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "physical_acceptance_claimed": false,
+  "cases": [
+    {
+      "case_id": "training__C405647__NRS-484B-267-2c__motor_vehicle_driver__braking_capacity_available",
+      "kind": "delivery",
+      "construction": "native/construction-braking_capacity_available.json",
+      "construction_sha256": "87d25ef12480b6226be1a290c57d860a1e76dcb983dd97c9b040946ffb7a0c0b",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_motion",
+            "unit": "structured",
+            "method": "Original Native ego pose, body and velocity",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 405647",
+            "uncertainty": "Original physical and statutory qualification pending"
+          },
+          {
+            "name": "emergency_motion",
+            "unit": "structured",
+            "method": "Original Native subject pose, body and velocity",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 405647",
+            "uncertainty": "Original physical and statutory qualification pending"
+          },
+          {
+            "name": "flashing_lights",
+            "unit": "structured",
+            "method": "Original Native lamp readback and independent pixel/source review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 405647",
+            "uncertainty": "Original physical and statutory qualification pending"
+          },
+          {
+            "name": "visible_indication",
+            "unit": "structured",
+            "method": "Independent frame-bound motion or hand-signal review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 405647",
+            "uncertainty": "Original physical and statutory qualification pending"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "structured",
+            "method": "Independent original officer-direction source review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 405647",
+            "uncertainty": "Original physical and statutory qualification pending"
+          },
+          {
+            "name": "braking_response",
+            "unit": "structured",
+            "method": "Original ego brake readback and saved source-bound approach meter",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 405647",
+            "uncertainty": "Original physical and statutory qualification pending"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Original CARLA motion, pixels and statutory qualification remain unverified",
+          "Brake response is an engineering observation, not a legal readiness threshold"
+        ]
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original primary approach view may fail independent lamp-state pixel review at the emergency vehicle",
+        "trigger_source": "original approach camera pixel audit"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/construction-braking_capacity_available-fallback1.json",
+          "construction_sha256": "07fb0be22597d21bcc8343e4c005b6745015fcb617dea9e0937ce5b3fd7d06b2",
+          "trigger": {
+            "source": "independent original approach-camera pixel review",
+            "metric": "flashing lamp visibility over the source-bound trigger window",
+            "failure_condition": "primary approach view cannot resolve the requested flashing lamps"
+          },
+          "changed_knobs": [
+            "approach camera authored x from -25 m to 5 m and height from 6 m to 5 m while preserving four camera names, dimensions, duration and legal comparison"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "07fb0be22597d21bcc8343e4c005b6745015fcb617dea9e0937ce5b3fd7d06b2",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/draft-native-manifest.json --case training__C405647__NRS-484B-267-2c__motor_vehicle_driver__braking_capacity_available --output .runtime-work/c405647-available-fallback1-v12 --python $PWD/.venv-cpu/bin/python --candidate fallback1",
+            "log": "native/fallback1-available-offline.log",
+            "log_sha256": "1d607cae4ceeb0a4323f21d17ff3f644cf7c3edacb48f2cdd3d3cb91fcc9bc50"
+          },
+          "compatibility": {
+            "receipt": "selected-fixtures/braking_capacity_available/fallback1-compatibility.json",
+            "sha256": "67fff6f8ac00b7dd17b7e43395fac811d8e4d49061d052e9380f8e00dd829e94",
+            "log": "selected-fixtures/braking_capacity_available/fallback1-compatibility-analysis.log",
+            "negative_log": "selected-fixtures/braking_capacity_available/fallback1-negative-analysis.log"
+          }
+        }
+      ],
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "87d25ef12480b6226be1a290c57d860a1e76dcb983dd97c9b040946ffb7a0c0b",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/draft-native-manifest.json --case training__C405647__NRS-484B-267-2c__motor_vehicle_driver__braking_capacity_available --output .runtime-work/c405647-available-primary-v12 --python $PWD/.venv-cpu/bin/python --candidate primary",
+        "log": "native/primary-available-offline.log",
+        "log_sha256": "d22ee05c99a1abff43e4a1194e96de1469b0110130fa0aab6570efc9b5b9a7f5"
+      },
+      "measurement_contract": "selected-measurements/braking_capacity_available/measurement-contract.json",
+      "fixture_recipe": "work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/selected-fixtures/braking_capacity_available/fixture-recipe.json",
+      "compatibility": {
+        "receipt": "selected-fixtures/braking_capacity_available/primary-compatibility.json",
+        "sha256": "fa911a2c9c36801ac506eb8e721106666be83b89e2b49e90603e9131e0b7370f",
+        "log": "selected-fixtures/braking_capacity_available/primary-compatibility-analysis.log",
+        "negative_log": "selected-fixtures/braking_capacity_available/primary-negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "python3.11 runtime.py process-saved --manifest work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/execution-manifest.json --case training__C405647__NRS-484B-267-2c__motor_vehicle_driver__braking_capacity_available --attempt ${ATTEMPT_DIR} --output ${PROCESSED_DIR} --library ${DECODER_LIBRARY} --validator ${VALIDATOR}",
+        "feedback_command": "python3.11 runtime.py process-saved --manifest work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/execution-manifest.json --case training__C405647__NRS-484B-267-2c__motor_vehicle_driver__braking_capacity_available --attempt ${ATTEMPT_DIR} --output ${PROCESSED_DIR} --library ${DECODER_LIBRARY} --validator ${VALIDATOR}",
+        "test_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c405647-saved-test TMPDIR=$PWD/.runtime-work/c405647-tmp PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/native/prove_saved_processing.py",
+        "test_exit_code": 0,
+        "test_log": "native/saved-selected-proof.log",
+        "test_log_sha256": "995b4f84b7ff34b2c27fa475b1a34b61855badabbceaccfd13e36fcf15b02a41"
+      },
+      "physical_preparation": {
+        "receipt": "native/physical-preparation/braking_capacity_available.json",
+        "sha256": "0490e566440cbe7ef82d27557f44acf93cf07c5d26b4ff362d8578541fa60fe1"
+      },
+      "negative": {
+        "log": "selected-fixtures/braking_capacity_available/primary-negative-analysis.log"
+      }
+    },
+    {
+      "case_id": "training__C405647__NRS-484B-267-2c__motor_vehicle_driver__not_available",
+      "kind": "delivery",
+      "construction": "native/construction-not_available.json",
+      "construction_sha256": "0ee6c3e8027226b7fe1e950307bd1bc4a7e9eebdba7712d09c15d3c33763f77b",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_motion",
+            "unit": "structured",
+            "method": "Original Native ego pose, body and velocity",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 405647",
+            "uncertainty": "Original physical and statutory qualification pending"
+          },
+          {
+            "name": "emergency_motion",
+            "unit": "structured",
+            "method": "Original Native subject pose, body and velocity",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 405647",
+            "uncertainty": "Original physical and statutory qualification pending"
+          },
+          {
+            "name": "flashing_lights",
+            "unit": "structured",
+            "method": "Original Native lamp readback and independent pixel/source review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 405647",
+            "uncertainty": "Original physical and statutory qualification pending"
+          },
+          {
+            "name": "visible_indication",
+            "unit": "structured",
+            "method": "Independent frame-bound motion or hand-signal review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 405647",
+            "uncertainty": "Original physical and statutory qualification pending"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "structured",
+            "method": "Independent original officer-direction source review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 405647",
+            "uncertainty": "Original physical and statutory qualification pending"
+          },
+          {
+            "name": "braking_response",
+            "unit": "structured",
+            "method": "Original ego brake readback and saved source-bound approach meter",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 405647",
+            "uncertainty": "Original physical and statutory qualification pending"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Original CARLA motion, pixels and statutory qualification remain unverified",
+          "Brake response is an engineering observation, not a legal readiness threshold"
+        ]
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original primary approach view may fail independent lamp-state pixel review at the emergency vehicle",
+        "trigger_source": "original approach camera pixel audit"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/construction-not_available-fallback1.json",
+          "construction_sha256": "a3ecd04269e387be9be893532a616dbb00bb1dc51cd587e0daee109e2b6cdca9",
+          "trigger": {
+            "source": "independent original approach-camera pixel review",
+            "metric": "flashing lamp visibility over the source-bound trigger window",
+            "failure_condition": "primary approach view cannot resolve the requested flashing lamps"
+          },
+          "changed_knobs": [
+            "approach camera authored x from -25 m to 5 m and height from 6 m to 5 m while preserving four camera names, dimensions, duration and legal comparison"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "a3ecd04269e387be9be893532a616dbb00bb1dc51cd587e0daee109e2b6cdca9",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/draft-native-manifest.json --case training__C405647__NRS-484B-267-2c__motor_vehicle_driver__not_available --output .runtime-work/c405647-unavailable-fallback1-v12 --python $PWD/.venv-cpu/bin/python --candidate fallback1",
+            "log": "native/fallback1-unavailable-offline.log",
+            "log_sha256": "ed861c46f9d115b0fc1655ba5d2b4d62b25801c02727296a2a2644b362796ec1"
+          },
+          "compatibility": {
+            "receipt": "selected-fixtures/not_available/fallback1-compatibility.json",
+            "sha256": "7e797ac5b564f9921eb4e9202874746b68dd0525680639c873fd78100403a799",
+            "log": "selected-fixtures/not_available/fallback1-compatibility-analysis.log",
+            "negative_log": "selected-fixtures/not_available/fallback1-negative-analysis.log"
+          }
+        }
+      ],
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "0ee6c3e8027226b7fe1e950307bd1bc4a7e9eebdba7712d09c15d3c33763f77b",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/draft-native-manifest.json --case training__C405647__NRS-484B-267-2c__motor_vehicle_driver__not_available --output .runtime-work/c405647-unavailable-primary-v12 --python $PWD/.venv-cpu/bin/python --candidate primary",
+        "log": "native/primary-unavailable-offline.log",
+        "log_sha256": "2b03ad14ac8fcae90f68c261b2af250909575adf1f8af9bf1bf7baf0328762f1"
+      },
+      "measurement_contract": "selected-measurements/not_available/measurement-contract.json",
+      "fixture_recipe": "work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/selected-fixtures/not_available/fixture-recipe.json",
+      "compatibility": {
+        "receipt": "selected-fixtures/not_available/primary-compatibility.json",
+        "sha256": "d6552e44f8ee52e9c5e306317433c46054ffc7ae41ff43631f76762aaa884932",
+        "log": "selected-fixtures/not_available/primary-compatibility-analysis.log",
+        "negative_log": "selected-fixtures/not_available/primary-negative-analysis.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "python3.11 runtime.py process-saved --manifest work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/execution-manifest.json --case training__C405647__NRS-484B-267-2c__motor_vehicle_driver__not_available --attempt ${ATTEMPT_DIR} --output ${PROCESSED_DIR} --library ${DECODER_LIBRARY} --validator ${VALIDATOR}",
+        "feedback_command": "python3.11 runtime.py process-saved --manifest work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/execution-manifest.json --case training__C405647__NRS-484B-267-2c__motor_vehicle_driver__not_available --attempt ${ATTEMPT_DIR} --output ${PROCESSED_DIR} --library ${DECODER_LIBRARY} --validator ${VALIDATOR}",
+        "test_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c405647-saved-test TMPDIR=$PWD/.runtime-work/c405647-tmp PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/native/prove_saved_processing.py",
+        "test_exit_code": 0,
+        "test_log": "native/saved-selected-proof.log",
+        "test_log_sha256": "995b4f84b7ff34b2c27fa475b1a34b61855badabbceaccfd13e36fcf15b02a41"
+      },
+      "physical_preparation": {
+        "receipt": "native/physical-preparation/not_available.json",
+        "sha256": "6dcb5704a8d6282f2707c9593cd4e7baea6d6162e1743e8290ddc3510c6476fa"
+      },
+      "negative": {
+        "log": "selected-fixtures/not_available/primary-negative-analysis.log"
+      }
+    },
+    {
+      "case_id": "training__C405647__NRS-484B-267-2c__motor_vehicle_driver__visible_driver_hand_signal__braking_capacity_available",
+      "kind": "delivery",
+      "construction": "native/branch-constructions/visible_driver_hand_signal__braking_capacity_available.json",
+      "construction_sha256": "1ee2def258e8599bb6231890c9277dd01a1f5e1be0a29c837700f3bfc5e7fe79",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_motion",
+            "unit": "structured",
+            "method": "Original Native ego pose, body and velocity",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 405647",
+            "uncertainty": "Original physical and statutory qualification pending"
+          },
+          {
+            "name": "emergency_motion",
+            "unit": "structured",
+            "method": "Original Native subject pose, body and velocity",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 405647",
+            "uncertainty": "Original physical and statutory qualification pending"
+          },
+          {
+            "name": "flashing_lights",
+            "unit": "structured",
+            "method": "Original Native lamp readback and independent pixel/source review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 405647",
+            "uncertainty": "Original physical and statutory qualification pending"
+          },
+          {
+            "name": "visible_indication",
+            "unit": "structured",
+            "method": "Independent frame-bound motion or hand-signal review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 405647",
+            "uncertainty": "Original physical and statutory qualification pending"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "structured",
+            "method": "Independent original officer-direction source review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 405647",
+            "uncertainty": "Original physical and statutory qualification pending"
+          },
+          {
+            "name": "braking_response",
+            "unit": "structured",
+            "method": "Original ego brake readback and saved source-bound approach meter",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 405647",
+            "uncertainty": "Original physical and statutory qualification pending"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Original CARLA motion, pixels and statutory qualification remain unverified",
+          "Brake response is an engineering observation, not a legal readiness threshold"
+        ]
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "measurement_contract": "branch-measurements/visible_driver_hand_signal__braking_capacity_available.json",
+      "fixture_recipe": "work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/branch-fixtures/visible_driver_hand_signal__braking_capacity_available/fixture-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original actor identity and camera visibility need independent review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "trigger": {
+            "source": "independent original approach-camera pixel review",
+            "metric": "flashing lamp visibility over the source-bound trigger window",
+            "failure_condition": "primary approach view cannot resolve the requested flashing lamps"
+          },
+          "changed_knobs": [
+            "approach camera authored x from -25 m to 5 m and height from 6 m to 5 m while preserving four camera names, dimensions, duration and legal comparison"
+          ],
+          "construction": "native/branch-constructions/visible_driver_hand_signal__braking_capacity_available-fallback1.json",
+          "construction_sha256": "4405a09c80fd57f87eb7689df51021e461b33eae5ac8bde4e061e2b5855592fa",
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "4405a09c80fd57f87eb7689df51021e461b33eae5ac8bde4e061e2b5855592fa",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/branch-native-manifest.json --case training__C405647__NRS-484B-267-2c__motor_vehicle_driver__visible_driver_hand_signal__braking_capacity_available --output .runtime-work/c405647-branch-fallback-offline-v2/visible_driver_hand_signal__braking_capacity_available --python $PWD/.venv-cpu/bin/python --candidate fallback1",
+            "log": "branch-fixtures/visible_driver_hand_signal__braking_capacity_available/fallback-offline.log",
+            "log_sha256": "9ddcad8435c3375d5adf9c32a8c26ae145ef47ea7ccdfb715bbbc45712ba98a9"
+          },
+          "compatibility": {
+            "receipt": "branch-fixtures/visible_driver_hand_signal__braking_capacity_available/fallback-public-receipt.json",
+            "sha256": "52de3150fc828fe5a6db03e6af6853df319c0faa34396b9e91ef0726f3ca6aeb",
+            "log": "branch-fixtures/visible_driver_hand_signal__braking_capacity_available/fallback-public-analysis.log",
+            "negative_log": "branch-fixtures/visible_driver_hand_signal__braking_capacity_available/fallback-public-missing-source.log"
+          }
+        }
+      ],
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "1ee2def258e8599bb6231890c9277dd01a1f5e1be0a29c837700f3bfc5e7fe79",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/branch-native-manifest.json --case training__C405647__NRS-484B-267-2c__motor_vehicle_driver__visible_driver_hand_signal__braking_capacity_available --output .runtime-work/c405647-offline-refresh/visible_driver_hand_signal__braking_capacity_available --python $PWD/.venv-cpu/bin/python",
+        "log": "branch-fixtures/visible_driver_hand_signal__braking_capacity_available/offline.log",
+        "log_sha256": "b193d04ff8c1a14a9d43494342d9483875e8b31dea675c15bec52e228e83f51f"
+      },
+      "compatibility": {
+        "receipt": "branch-fixtures/visible_driver_hand_signal__braking_capacity_available/compatibility.json",
+        "sha256": "013911c0052577003a80b38a09e8f814fbc6e96700044b0e309b057874ba3e1f",
+        "log": "branch-fixtures/visible_driver_hand_signal__braking_capacity_available/public-analysis.log",
+        "negative_log": "branch-fixtures/visible_driver_hand_signal__braking_capacity_available/public-missing-source.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "python3.11 runtime.py process-saved --manifest work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/execution-manifest.json --case training__C405647__NRS-484B-267-2c__motor_vehicle_driver__visible_driver_hand_signal__braking_capacity_available --attempt ${ATTEMPT_DIR} --output ${PROCESSED_DIR} --library ${DECODER_LIBRARY} --validator ${VALIDATOR}",
+        "feedback_command": "python3.11 runtime.py process-saved --manifest work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/execution-manifest.json --case training__C405647__NRS-484B-267-2c__motor_vehicle_driver__visible_driver_hand_signal__braking_capacity_available --attempt ${ATTEMPT_DIR} --output ${PROCESSED_DIR} --library ${DECODER_LIBRARY} --validator ${VALIDATOR}",
+        "test_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c405647-branch-saved-env TMPDIR=$PWD/.runtime-work/c405647-branch-saved-tmp PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/native/prove_branch_saved_processing.py",
+        "test_exit_code": 0,
+        "test_log": "native/branch-saved-proof.log",
+        "test_log_sha256": "df2e065116d308ef61ce88a21ddef7de32dac791a8295b077ca84f05fb411798"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "native/physical-preparation/visible_driver_hand_signal__braking_capacity_available.json",
+        "sha256": "43360d3ad606e369145b7bf4d5cd262d92b3e1d7a6a1a3366ab7e901ed5c938e"
+      },
+      "negative": {
+        "log": "branch-fixtures/visible_driver_hand_signal__braking_capacity_available/public-missing-source.log"
+      }
+    },
+    {
+      "case_id": "training__C405647__NRS-484B-267-2c__motor_vehicle_driver__visible_driver_hand_signal__not_available",
+      "kind": "delivery",
+      "construction": "native/branch-constructions/visible_driver_hand_signal__not_available.json",
+      "construction_sha256": "99d38df0508a225b59e8742164e120ae18161ea2c1e7a4b852e6ab4863cad54d",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_motion",
+            "unit": "structured",
+            "method": "Original Native ego pose, body and velocity",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 405647",
+            "uncertainty": "Original physical and statutory qualification pending"
+          },
+          {
+            "name": "emergency_motion",
+            "unit": "structured",
+            "method": "Original Native subject pose, body and velocity",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 405647",
+            "uncertainty": "Original physical and statutory qualification pending"
+          },
+          {
+            "name": "flashing_lights",
+            "unit": "structured",
+            "method": "Original Native lamp readback and independent pixel/source review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 405647",
+            "uncertainty": "Original physical and statutory qualification pending"
+          },
+          {
+            "name": "visible_indication",
+            "unit": "structured",
+            "method": "Independent frame-bound motion or hand-signal review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 405647",
+            "uncertainty": "Original physical and statutory qualification pending"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "structured",
+            "method": "Independent original officer-direction source review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 405647",
+            "uncertainty": "Original physical and statutory qualification pending"
+          },
+          {
+            "name": "braking_response",
+            "unit": "structured",
+            "method": "Original ego brake readback and saved source-bound approach meter",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 405647",
+            "uncertainty": "Original physical and statutory qualification pending"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Original CARLA motion, pixels and statutory qualification remain unverified",
+          "Brake response is an engineering observation, not a legal readiness threshold"
+        ]
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "measurement_contract": "branch-measurements/visible_driver_hand_signal__not_available.json",
+      "fixture_recipe": "work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/branch-fixtures/visible_driver_hand_signal__not_available/fixture-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original actor identity and camera visibility need independent review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "trigger": {
+            "source": "independent original approach-camera pixel review",
+            "metric": "flashing lamp visibility over the source-bound trigger window",
+            "failure_condition": "primary approach view cannot resolve the requested flashing lamps"
+          },
+          "changed_knobs": [
+            "approach camera authored x from -25 m to 5 m and height from 6 m to 5 m while preserving four camera names, dimensions, duration and legal comparison"
+          ],
+          "construction": "native/branch-constructions/visible_driver_hand_signal__not_available-fallback1.json",
+          "construction_sha256": "219e9ba0324a72a1a09d1f4925f958e529f959b7e4c1e82b1f4e1359c8141a90",
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "219e9ba0324a72a1a09d1f4925f958e529f959b7e4c1e82b1f4e1359c8141a90",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/branch-native-manifest.json --case training__C405647__NRS-484B-267-2c__motor_vehicle_driver__visible_driver_hand_signal__not_available --output .runtime-work/c405647-branch-fallback-offline-v2/visible_driver_hand_signal__not_available --python $PWD/.venv-cpu/bin/python --candidate fallback1",
+            "log": "branch-fixtures/visible_driver_hand_signal__not_available/fallback-offline.log",
+            "log_sha256": "08b69aafceda8201335b1a1e80f5c681acb57dbfc14a4ff8f8ffacaac4836cde"
+          },
+          "compatibility": {
+            "receipt": "branch-fixtures/visible_driver_hand_signal__not_available/fallback-public-receipt.json",
+            "sha256": "1636e953064858ef6f6d6606af5a8396956cfe7f1a7f6cf45bb496bf4d3ce625",
+            "log": "branch-fixtures/visible_driver_hand_signal__not_available/fallback-public-analysis.log",
+            "negative_log": "branch-fixtures/visible_driver_hand_signal__not_available/fallback-public-missing-source.log"
+          }
+        }
+      ],
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "99d38df0508a225b59e8742164e120ae18161ea2c1e7a4b852e6ab4863cad54d",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/branch-native-manifest.json --case training__C405647__NRS-484B-267-2c__motor_vehicle_driver__visible_driver_hand_signal__not_available --output .runtime-work/c405647-offline-refresh/visible_driver_hand_signal__not_available --python $PWD/.venv-cpu/bin/python",
+        "log": "branch-fixtures/visible_driver_hand_signal__not_available/offline.log",
+        "log_sha256": "57560f5b25d860bb8728c96370070576318dc75bd0ff9f53cb8c3786beaf4b97"
+      },
+      "compatibility": {
+        "receipt": "branch-fixtures/visible_driver_hand_signal__not_available/compatibility.json",
+        "sha256": "6500d66096e4afd11309a79a6ea4ca4dcf990460b2c97cbfd6ecd7414a55d050",
+        "log": "branch-fixtures/visible_driver_hand_signal__not_available/public-analysis.log",
+        "negative_log": "branch-fixtures/visible_driver_hand_signal__not_available/public-missing-source.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "python3.11 runtime.py process-saved --manifest work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/execution-manifest.json --case training__C405647__NRS-484B-267-2c__motor_vehicle_driver__visible_driver_hand_signal__not_available --attempt ${ATTEMPT_DIR} --output ${PROCESSED_DIR} --library ${DECODER_LIBRARY} --validator ${VALIDATOR}",
+        "feedback_command": "python3.11 runtime.py process-saved --manifest work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/execution-manifest.json --case training__C405647__NRS-484B-267-2c__motor_vehicle_driver__visible_driver_hand_signal__not_available --attempt ${ATTEMPT_DIR} --output ${PROCESSED_DIR} --library ${DECODER_LIBRARY} --validator ${VALIDATOR}",
+        "test_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c405647-branch-saved-env TMPDIR=$PWD/.runtime-work/c405647-branch-saved-tmp PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/native/prove_branch_saved_processing.py",
+        "test_exit_code": 0,
+        "test_log": "native/branch-saved-proof.log",
+        "test_log_sha256": "df2e065116d308ef61ce88a21ddef7de32dac791a8295b077ca84f05fb411798"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "native/physical-preparation/visible_driver_hand_signal__not_available.json",
+        "sha256": "976c42c4e1e22d1db926ef01508af7d9a458c4e921986d2b58fead94dfb81c7b"
+      },
+      "negative": {
+        "log": "branch-fixtures/visible_driver_hand_signal__not_available/public-missing-source.log"
+      }
+    },
+    {
+      "case_id": "training__C405647__NRS-484B-267-2c__motor_vehicle_driver__officer_directed_otherwise__braking_capacity_available",
+      "kind": "delivery",
+      "construction": "native/branch-constructions/officer_directed_otherwise__braking_capacity_available.json",
+      "construction_sha256": "166be7c4b67db903c5556828d025465ae4d4ec4f9bb8b0d3195e775797740d82",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_motion",
+            "unit": "structured",
+            "method": "Original Native ego pose, body and velocity",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 405647",
+            "uncertainty": "Original physical and statutory qualification pending"
+          },
+          {
+            "name": "emergency_motion",
+            "unit": "structured",
+            "method": "Original Native subject pose, body and velocity",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 405647",
+            "uncertainty": "Original physical and statutory qualification pending"
+          },
+          {
+            "name": "flashing_lights",
+            "unit": "structured",
+            "method": "Original Native lamp readback and independent pixel/source review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 405647",
+            "uncertainty": "Original physical and statutory qualification pending"
+          },
+          {
+            "name": "visible_indication",
+            "unit": "structured",
+            "method": "Independent frame-bound motion or hand-signal review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 405647",
+            "uncertainty": "Original physical and statutory qualification pending"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "structured",
+            "method": "Independent original officer-direction source review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 405647",
+            "uncertainty": "Original physical and statutory qualification pending"
+          },
+          {
+            "name": "braking_response",
+            "unit": "structured",
+            "method": "Original ego brake readback and saved source-bound approach meter",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 405647",
+            "uncertainty": "Original physical and statutory qualification pending"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Original CARLA motion, pixels and statutory qualification remain unverified",
+          "Brake response is an engineering observation, not a legal readiness threshold"
+        ]
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "measurement_contract": "branch-measurements/officer_directed_otherwise__braking_capacity_available.json",
+      "fixture_recipe": "work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/branch-fixtures/officer_directed_otherwise__braking_capacity_available/fixture-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original actor identity and camera visibility need independent review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "trigger": {
+            "source": "independent original approach-camera pixel review",
+            "metric": "flashing lamp visibility over the source-bound trigger window",
+            "failure_condition": "primary approach view cannot resolve the requested flashing lamps"
+          },
+          "changed_knobs": [
+            "approach camera authored x from -25 m to 5 m and height from 6 m to 5 m while preserving four camera names, dimensions, duration and legal comparison"
+          ],
+          "construction": "native/branch-constructions/officer_directed_otherwise__braking_capacity_available-fallback1.json",
+          "construction_sha256": "a576d8c6118abe1e68c879f991f040011b46b64104ef198f9358650e3f5ad8f0",
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "a576d8c6118abe1e68c879f991f040011b46b64104ef198f9358650e3f5ad8f0",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/branch-native-manifest.json --case training__C405647__NRS-484B-267-2c__motor_vehicle_driver__officer_directed_otherwise__braking_capacity_available --output .runtime-work/c405647-branch-fallback-offline-v2/officer_directed_otherwise__braking_capacity_available --python $PWD/.venv-cpu/bin/python --candidate fallback1",
+            "log": "branch-fixtures/officer_directed_otherwise__braking_capacity_available/fallback-offline.log",
+            "log_sha256": "faa589b637438e7cd8123cfd83c4004091f6a34ec7786dfd3c8da9a0a57912d6"
+          },
+          "compatibility": {
+            "receipt": "branch-fixtures/officer_directed_otherwise__braking_capacity_available/fallback-public-receipt.json",
+            "sha256": "699c7be8e7c95911fd5ba6aad28ea894c7e8f6ce5a37845560f26f8de27ae2cb",
+            "log": "branch-fixtures/officer_directed_otherwise__braking_capacity_available/fallback-public-analysis.log",
+            "negative_log": "branch-fixtures/officer_directed_otherwise__braking_capacity_available/fallback-public-missing-source.log"
+          }
+        }
+      ],
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "166be7c4b67db903c5556828d025465ae4d4ec4f9bb8b0d3195e775797740d82",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/branch-native-manifest.json --case training__C405647__NRS-484B-267-2c__motor_vehicle_driver__officer_directed_otherwise__braking_capacity_available --output .runtime-work/c405647-offline-refresh/officer_directed_otherwise__braking_capacity_available --python $PWD/.venv-cpu/bin/python",
+        "log": "branch-fixtures/officer_directed_otherwise__braking_capacity_available/offline.log",
+        "log_sha256": "a0f29503a47b707bd350473795e1608f69652831c4e4c363122106459aafc0d8"
+      },
+      "compatibility": {
+        "receipt": "branch-fixtures/officer_directed_otherwise__braking_capacity_available/compatibility.json",
+        "sha256": "7a16929eea79a38f6d74625d55a8eb1dba44f430e24326e45827910974d75200",
+        "log": "branch-fixtures/officer_directed_otherwise__braking_capacity_available/public-analysis.log",
+        "negative_log": "branch-fixtures/officer_directed_otherwise__braking_capacity_available/public-missing-source.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "python3.11 runtime.py process-saved --manifest work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/execution-manifest.json --case training__C405647__NRS-484B-267-2c__motor_vehicle_driver__officer_directed_otherwise__braking_capacity_available --attempt ${ATTEMPT_DIR} --output ${PROCESSED_DIR} --library ${DECODER_LIBRARY} --validator ${VALIDATOR}",
+        "feedback_command": "python3.11 runtime.py process-saved --manifest work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/execution-manifest.json --case training__C405647__NRS-484B-267-2c__motor_vehicle_driver__officer_directed_otherwise__braking_capacity_available --attempt ${ATTEMPT_DIR} --output ${PROCESSED_DIR} --library ${DECODER_LIBRARY} --validator ${VALIDATOR}",
+        "test_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c405647-branch-saved-env TMPDIR=$PWD/.runtime-work/c405647-branch-saved-tmp PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/native/prove_branch_saved_processing.py",
+        "test_exit_code": 0,
+        "test_log": "native/branch-saved-proof.log",
+        "test_log_sha256": "df2e065116d308ef61ce88a21ddef7de32dac791a8295b077ca84f05fb411798"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "native/physical-preparation/officer_directed_otherwise__braking_capacity_available.json",
+        "sha256": "9d894a911ef9efc85cef1210a83d81044b6b708b4eec91063b7e2ad11b581ada"
+      },
+      "negative": {
+        "log": "branch-fixtures/officer_directed_otherwise__braking_capacity_available/public-missing-source.log"
+      }
+    },
+    {
+      "case_id": "training__C405647__NRS-484B-267-2c__motor_vehicle_driver__officer_directed_otherwise__not_available",
+      "kind": "delivery",
+      "construction": "native/branch-constructions/officer_directed_otherwise__not_available.json",
+      "construction_sha256": "27076f3e2ce7b284329224cd230b7e0231cf80c2c4adb9c46cc9aeb7b6bdf26b",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_motion",
+            "unit": "structured",
+            "method": "Original Native ego pose, body and velocity",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 405647",
+            "uncertainty": "Original physical and statutory qualification pending"
+          },
+          {
+            "name": "emergency_motion",
+            "unit": "structured",
+            "method": "Original Native subject pose, body and velocity",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 405647",
+            "uncertainty": "Original physical and statutory qualification pending"
+          },
+          {
+            "name": "flashing_lights",
+            "unit": "structured",
+            "method": "Original Native lamp readback and independent pixel/source review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 405647",
+            "uncertainty": "Original physical and statutory qualification pending"
+          },
+          {
+            "name": "visible_indication",
+            "unit": "structured",
+            "method": "Independent frame-bound motion or hand-signal review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 405647",
+            "uncertainty": "Original physical and statutory qualification pending"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "structured",
+            "method": "Independent original officer-direction source review",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 405647",
+            "uncertainty": "Original physical and statutory qualification pending"
+          },
+          {
+            "name": "braking_response",
+            "unit": "structured",
+            "method": "Original ego brake readback and saved source-bound approach meter",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native road 405647",
+            "uncertainty": "Original physical and statutory qualification pending"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Original CARLA motion, pixels and statutory qualification remain unverified",
+          "Brake response is an engineering observation, not a legal readiness threshold"
+        ]
+      },
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "measurement_contract": "branch-measurements/officer_directed_otherwise__not_available.json",
+      "fixture_recipe": "work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/branch-fixtures/officer_directed_otherwise__not_available/fixture-recipe.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original actor identity and camera visibility need independent review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "trigger": {
+            "source": "independent original approach-camera pixel review",
+            "metric": "flashing lamp visibility over the source-bound trigger window",
+            "failure_condition": "primary approach view cannot resolve the requested flashing lamps"
+          },
+          "changed_knobs": [
+            "approach camera authored x from -25 m to 5 m and height from 6 m to 5 m while preserving four camera names, dimensions, duration and legal comparison"
+          ],
+          "construction": "native/branch-constructions/officer_directed_otherwise__not_available-fallback1.json",
+          "construction_sha256": "d86c2addb2cd4dbd1a313b39b8db4cbea72c02c70b4f03d2ac7e1896dff14e74",
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "d86c2addb2cd4dbd1a313b39b8db4cbea72c02c70b4f03d2ac7e1896dff14e74",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/branch-native-manifest.json --case training__C405647__NRS-484B-267-2c__motor_vehicle_driver__officer_directed_otherwise__not_available --output .runtime-work/c405647-branch-fallback-offline-v2/officer_directed_otherwise__not_available --python $PWD/.venv-cpu/bin/python --candidate fallback1",
+            "log": "branch-fixtures/officer_directed_otherwise__not_available/fallback-offline.log",
+            "log_sha256": "03d2474e537be3cdaac7ee1d966dbf71ca331c201eb716c0349e9363e8872f78"
+          },
+          "compatibility": {
+            "receipt": "branch-fixtures/officer_directed_otherwise__not_available/fallback-public-receipt.json",
+            "sha256": "5dea401e30767c517ed7fd6ab4e082a21f1b57fc2c916a55b86ae54f08816d4d",
+            "log": "branch-fixtures/officer_directed_otherwise__not_available/fallback-public-analysis.log",
+            "negative_log": "branch-fixtures/officer_directed_otherwise__not_available/fallback-public-missing-source.log"
+          }
+        }
+      ],
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "27076f3e2ce7b284329224cd230b7e0231cf80c2c4adb9c46cc9aeb7b6bdf26b",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/branch-native-manifest.json --case training__C405647__NRS-484B-267-2c__motor_vehicle_driver__officer_directed_otherwise__not_available --output .runtime-work/c405647-offline-refresh/officer_directed_otherwise__not_available --python $PWD/.venv-cpu/bin/python",
+        "log": "branch-fixtures/officer_directed_otherwise__not_available/offline.log",
+        "log_sha256": "1e0cf35286e2068d5a43f4a552871b3d0c6bbcac6515e771770f880de655d434"
+      },
+      "compatibility": {
+        "receipt": "branch-fixtures/officer_directed_otherwise__not_available/compatibility.json",
+        "sha256": "44325b678bbcbb2618cdf9a01d9fb292a478e580137300dcdf60ec0be7d10a05",
+        "log": "branch-fixtures/officer_directed_otherwise__not_available/public-analysis.log",
+        "negative_log": "branch-fixtures/officer_directed_otherwise__not_available/public-missing-source.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "python3.11 runtime.py process-saved --manifest work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/execution-manifest.json --case training__C405647__NRS-484B-267-2c__motor_vehicle_driver__officer_directed_otherwise__not_available --attempt ${ATTEMPT_DIR} --output ${PROCESSED_DIR} --library ${DECODER_LIBRARY} --validator ${VALIDATOR}",
+        "feedback_command": "python3.11 runtime.py process-saved --manifest work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/execution-manifest.json --case training__C405647__NRS-484B-267-2c__motor_vehicle_driver__officer_directed_otherwise__not_available --attempt ${ATTEMPT_DIR} --output ${PROCESSED_DIR} --library ${DECODER_LIBRARY} --validator ${VALIDATOR}",
+        "test_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c405647-branch-saved-env TMPDIR=$PWD/.runtime-work/c405647-branch-saved-tmp PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C405647__NRS-484B-267-2c__motor_vehicle_driver/native/prove_branch_saved_processing.py",
+        "test_exit_code": 0,
+        "test_log": "native/branch-saved-proof.log",
+        "test_log_sha256": "df2e065116d308ef61ce88a21ddef7de32dac791a8295b077ca84f05fb411798"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "native/physical-preparation/officer_directed_otherwise__not_available.json",
+        "sha256": "754388daede0d4d58f2baec5b449ffbeeea7c27f4293d0e77c33f4baa50beae7"
+      },
+      "negative": {
+        "log": "branch-fixtures/officer_directed_otherwise__not_available/public-missing-source.log"
+      }
+    }
+  ]
+}

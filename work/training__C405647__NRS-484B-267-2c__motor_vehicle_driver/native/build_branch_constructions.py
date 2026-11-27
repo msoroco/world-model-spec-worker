@@ -31,10 +31,11 @@ def replace_case(value, old, new):
     return value
 
 
-def build(variant, response):
+def build(variant, response, candidate="primary"):
     exact = variant_request(variant, response)
     old_id = exact["assignment_id"] + "__" + response
-    base = json.loads((HERE / ("construction-" + response + ".json")).read_text())
+    suffix = "" if candidate == "primary" else "-" + candidate
+    base = json.loads((HERE / ("construction-" + response + suffix + ".json")).read_text())
     construction = replace_case(base, old_id, exact["case_id"])
     construction["case_id"] = exact["case_id"]
     construction["status"] = "draft_branch_cpu_construction"
@@ -46,6 +47,12 @@ def build(variant, response):
     files["branch-requests/" + variant + "__" + response + ".json"] = request_text
     for name in SOURCE_FILES:
         files[name] = (HERE / name).read_text()
+    if candidate == "fallback1":
+        original_camera = '"approach": (-25, -8, 6)'
+        if files["runner.py"].count(original_camera) != 1:
+            raise ValueError("Fallback approach camera source changed")
+        files["runner.py"] = files["runner.py"].replace(
+            original_camera, '"approach": (5, -8, 5)')
     config = json.loads(files["config.json"])
     config["case_id"] = exact["case_id"]
     config["selected_case_id"] = exact["case_id"]
@@ -56,7 +63,7 @@ def build(variant, response):
     files["config.json"] = canonical(config)
     construction["files"] = [{"path": path, "content": content}
                              for path, content in sorted(files.items())]
-    target = HERE / "branch-constructions" / (variant + "__" + response + ".json")
+    target = HERE / "branch-constructions" / (variant + "__" + response + suffix + ".json")
     target.parent.mkdir(exist_ok=True)
     target.write_text(canonical(construction))
     return {"case_id": exact["case_id"], "path": str(target),

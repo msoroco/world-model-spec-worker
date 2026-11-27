@@ -12,7 +12,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parent / 'analysis'))
 from bus_standing import CAMERAS, measure_saved
 
 AID = 'training__C386410__LVMC-11-60-030-A1__bus_driver'
-CASES = {AID + '__designated_terminus', AID + '__undesignated_street'}
+CASES = {AID + '__' + suffix for suffix in (
+    'designated_terminus', 'undesignated_street', 'bus_stop', 'bus_stand',
+    'route_origin', 'transient_stop', 'parking_other_street', 'tour_bus_other_street')}
 CHECKS = ('native_source', 'all_participants', 'time_join',
           'full_video_decode', 'actual_pixels', 'physical_completion')
 
@@ -75,7 +77,7 @@ def audit(case, attempt, saved, output):
     review = read(attempt / 'bus-original-review.json')
     require(review.get('case_id') == case and review.get('reviewer') and
             all(review.get(key) is True for key in
-                ('non_tour_bus_classification_reviewed', 'route_assignment_reviewed',
+                ('vehicle_class_reviewed', 'route_assignment_reviewed',
                  'street_status_reviewed', 'standing_or_parking_reviewed',
                  'all_participants_reviewed', 'actual_pixels_reviewed')),
             'Independent original bus identity, place or activity review missing')
