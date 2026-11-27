@@ -16,7 +16,7 @@ def scene(case):
              municipal_jurisdiction=True, red_curb_paint=True,
              vehicle_kind=case.vehicle_kind, sign=case.sign,
              activity=case.activity, purpose=case.purpose,
-             mail_dropbox_adjacent=True, curb_segment_id='curb-1',
+             mail_dropbox_adjacent=case.mail_adjacent, curb_segment_id='curb-1',
              parking_route_xy=[[0, 0], [3, 0]])
     for field in ('jurisdiction', 'red_curb', 'governed_location',
                   'parking_position', 'vehicle_classification', 'sign',
@@ -77,13 +77,13 @@ class RedCurbTests(unittest.TestCase):
             red.measure_activity(source, s, case)
 
     def test_boundary_and_exception_source_rejected(self):
-        case = red.CASES[4]
+        case = next(item for item in red.CASES if item.name == 'tour_bus_1801')
         s = scene(case)
         source = events(case, s)
         source[-1]['original_time_s'] = 1800
         with self.assertRaisesRegex(ValueError, 'boundary duration'):
             red.measure_activity(source, s, case)
-        mail = red.CASES[-1]
+        mail = next(item for item in red.CASES if item.name == 'mail_stop')
         s = scene(mail)
         del s['mail_activity_source_sha256']
         with self.assertRaisesRegex(ValueError, 'mail box/activity'):

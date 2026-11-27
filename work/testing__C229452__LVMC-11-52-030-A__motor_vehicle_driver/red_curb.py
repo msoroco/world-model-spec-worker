@@ -12,20 +12,30 @@ class Case:
     activity: str
     duration_s: int
     purpose: str
+    mail_adjacent: bool = False
 
 
 CASES = (
     Case('ordinary_park', 'ordinary', 'none', 'park', 60, 'ordinary'),
     Case('ordinary_stop_unattended', 'ordinary', 'none', 'stop', 30, 'ordinary'),
+    Case('ordinary_stand', 'ordinary', 'none', 'stand', 45, 'ordinary'),
+    Case('ordinary_park_signed', 'ordinary', 'tour_shuttle_limo', 'park', 60, 'ordinary'),
     Case('tour_bus_1799', 'tour_bus', 'tour_shuttle_limo', 'park', 1799, 'passenger_loading'),
     Case('tour_bus_1800', 'tour_bus', 'tour_shuttle_limo', 'park', 1800, 'passenger_loading'),
     Case('tour_bus_1801', 'tour_bus', 'tour_shuttle_limo', 'park', 1801, 'passenger_loading'),
+    Case('tour_bus_wrong_sign', 'tour_bus', 'none', 'park', 1800, 'passenger_loading'),
+    Case('tour_bus_nonloading', 'tour_bus', 'tour_shuttle_limo', 'park', 1800, 'ordinary'),
     Case('shuttle_bus_1800', 'shuttle_bus', 'tour_shuttle_limo', 'park', 1800, 'passenger_unloading'),
     Case('limo_1800', 'limo', 'tour_shuttle_limo', 'park', 1800, 'passenger_loading'),
     Case('rtc_bus_1800', 'rtc_bus', 'rtc_bus', 'park', 1800, 'passenger_loading'),
+    Case('rtc_bus_1799', 'rtc_bus', 'rtc_bus', 'park', 1799, 'passenger_loading'),
+    Case('rtc_bus_1801', 'rtc_bus', 'rtc_bus', 'park', 1801, 'passenger_loading'),
     Case('armored_business', 'armored_car', 'none', 'park', 120, 'business'),
+    Case('armored_nonbusiness', 'armored_car', 'none', 'park', 120, 'ordinary'),
     Case('emergency_business', 'emergency_vehicle', 'none', 'park', 120, 'business'),
-    Case('mail_stop', 'ordinary', 'none', 'stop', 20, 'mail_deposit'),
+    Case('emergency_nonbusiness', 'emergency_vehicle', 'none', 'park', 120, 'ordinary'),
+    Case('mail_stop', 'ordinary', 'none', 'stop', 20, 'mail_deposit', True),
+    Case('mail_stop_no_deposit', 'ordinary', 'none', 'stop', 20, 'ordinary', True),
 )
 
 
@@ -60,7 +70,9 @@ def validate_scene(scene: Mapping, case: Case):
                              'armored_car', 'emergency_vehicle'):
         require(scene.get('vehicle_status_source_sha256'),
                 'special vehicle status source missing')
-    if case.purpose == 'mail_deposit':
+    require(scene.get('mail_dropbox_adjacent') is case.mail_adjacent,
+            'mail dropbox adjacency differs from selected case')
+    if case.mail_adjacent:
         require(scene.get('mail_dropbox_adjacent') is True and
                 scene.get('mail_dropbox_source_sha256') and
                 scene.get('mail_activity_source_sha256'),

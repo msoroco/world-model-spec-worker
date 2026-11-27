@@ -1,0 +1,26 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Every motorcycle or moped when being driven on the highway is entitled to full use of the traffic lane it is occupying, and a person shall not drive another motor vehicle in a manner which would deprive any such motorcycle or moped of such use.",
+      "source": "inputs/testing__C147339__NRS-486-341__motor_vehicle_driver/assignment.json",
+      "output_key": "protected_lane_use",
+      "method": "analyze",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "protected-lane-history.jsonl",
+        "protected-lane-scene.json",
+        "trace.jsonl",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "protected-lane-scene.json"
+    ],
+    "error_contains": "Missing required source: protected-lane-scene.json"
+  }
+}

@@ -23,7 +23,7 @@ class ReviewedPacketTests(unittest.TestCase):
                      municipal_jurisdiction=True, red_curb_paint=True,
                      vehicle_kind=case.vehicle_kind, sign=case.sign,
                      activity=case.activity, purpose=case.purpose,
-                     mail_dropbox_adjacent=True, curb_segment_id='curb-1',
+                     mail_dropbox_adjacent=case.mail_adjacent, curb_segment_id='curb-1',
                      parking_route_xy=[[0, 0], [3, 0]])
         sources = {}
         for field in source_packet.SOURCE_FIELDS:

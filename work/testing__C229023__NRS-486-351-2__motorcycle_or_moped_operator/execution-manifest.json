@@ -29,14 +29,14 @@
             "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator/execution-manifest.json --case testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator__same_lane_pass --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229023-owner-nov26/offline-same_lane_pass-fallback1-proof --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
             "exit_code": 0,
             "construction_sha256": "a650442c54aa4b431c599be99c020f72b243239b30f5f29241ff86690873c86c",
-            "log": "cases/same_lane_pass/offline-fallback1.log",
+            "log": "cases/same_lane_pass/proof-offline-fallback1.log",
             "log_sha256": "9ea385133c5384ad3cb277c953c793fb7eda5ecd0424781b894430e203eea4f9"
           },
           "compatibility": {
-            "receipt": "cases/same_lane_pass/compatibility-fallback1.json",
+            "receipt": "cases/same_lane_pass/proof-compatibility-fallback1.json",
             "sha256": "ce318f089325395a85ef52775e918fb8ca247df2a2b13127bcf12949c6702c75",
-            "log": "cases/same_lane_pass/compatibility-fallback1-analysis.log",
-            "negative_log": "cases/same_lane_pass/compatibility-fallback1-negative.log"
+            "log": "cases/same_lane_pass/proof-compatibility-fallback1-analysis.log",
+            "negative_log": "cases/same_lane_pass/proof-compatibility-fallback1-negative.log"
           }
         }
       ],
@@ -49,24 +49,57 @@
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator/execution-manifest.json --case testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator__same_lane_pass --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229023-owner-nov26/offline-same_lane_pass-primary-proof --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
         "exit_code": 0,
         "construction_sha256": "a863dac98d2230432fbd242a0c1a9492bbd316a6f8bdad82361a76365a0849df",
-        "log": "cases/same_lane_pass/offline-primary.log",
+        "log": "cases/same_lane_pass/proof-offline-primary.log",
         "log_sha256": "47fd9a63af45a3edf7ffbccb5e8b1738a110825384706c18f40973a788e36347"
       },
       "compatibility": {
-        "receipt": "cases/same_lane_pass/compatibility-primary.json",
+        "receipt": "cases/same_lane_pass/proof-compatibility-primary.json",
         "sha256": "aed3492f442fb7d84f1ca8094f0b186bfe7e54ad3fb2dac97677e6e8a2d7e68f",
-        "log": "cases/same_lane_pass/compatibility-primary-analysis.log",
-        "negative_log": "cases/same_lane_pass/compatibility-primary-negative.log"
+        "log": "cases/same_lane_pass/proof-compatibility-primary-analysis.log",
+        "negative_log": "cases/same_lane_pass/proof-compatibility-primary-negative.log"
       },
       "negative": {
-        "log": "cases/same_lane_pass/compatibility-primary-negative.log"
+        "log": "cases/same_lane_pass/proof-compatibility-primary-negative.log"
       },
       "physical_preparation": {
         "receipt": "cases/same_lane_pass/physical-preparation.json",
         "sha256": "f294181fc2b9f574bb243e115d522f5aeff0ca9f25b2d607a3abd2f98f34a504"
       },
-      "post_capture": {},
-      "delivery_acceptance": {},
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator/execution-manifest.json --case testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator__same_lane_pass --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator/execution-manifest.json --case testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator__same_lane_pass --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_log": "cases/same_lane_pass/proof-saved-process.log",
+        "test_log_sha256": "9a1d6de25cb8b1bfd01df59618cf246a08c15f3a74381523af7c81e1d266aabc",
+        "test_exit_code": 0,
+        "scope": "Synthetic recorded-only CPU replay; original Native pixel and physical review pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator__same_lane_pass",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "3fd07f5aa288ee58a4254ba4417285ec21a7a9fe24bce7ce06eb5bbe4fbf9d93",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229023-owner-nov26/compat-same-lane-primary-v4 --case testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator__same_lane_pass",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229023-owner-nov26/compat-same-lane-primary-v4 --case testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator__same_lane_pass --require-original",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Diagnostic source cannot satisfy original Native delivery",
+        "test_log": "cases/same_lane_pass/delivery-positive.log",
+        "test_log_sha256": "6030f61fb6b04462eda4b624eb2c9fa75d1129a1144cc73756e48ad2e6eea6b0",
+        "negative_log": "cases/same_lane_pass/delivery-negative.log",
+        "negative_log_sha256": "9f4bebce72305aa1a27e90ed40235d90db6d6f9b9b24394c6bc1b4099c1b9276",
+        "scope": "Diagnostic integrity and original-only rejection; original visual and physical review pending"
+      },
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
@@ -171,14 +204,14 @@
             "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator/execution-manifest.json --case testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator__different_lane_pass --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229023-owner-nov26/offline-different_lane_pass-fallback1-proof --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
             "exit_code": 0,
             "construction_sha256": "5c9fe4f338140a7765b7909ca2bfa562b5b07cefd8c8821df183296ca5f23779",
-            "log": "cases/different_lane_pass/offline-fallback1.log",
+            "log": "cases/different_lane_pass/proof-offline-fallback1.log",
             "log_sha256": "e5a37de520c3792c98fb511a923291212b1afc5a851a2c740c66e632f2a097ce"
           },
           "compatibility": {
-            "receipt": "cases/different_lane_pass/compatibility-fallback1.json",
+            "receipt": "cases/different_lane_pass/proof-compatibility-fallback1.json",
             "sha256": "7ba9ffb4ae4241681f7113196b06949ce13fea1e81549da6f82387ada6393839",
-            "log": "cases/different_lane_pass/compatibility-fallback1-analysis.log",
-            "negative_log": "cases/different_lane_pass/compatibility-fallback1-negative.log"
+            "log": "cases/different_lane_pass/proof-compatibility-fallback1-analysis.log",
+            "negative_log": "cases/different_lane_pass/proof-compatibility-fallback1-negative.log"
           }
         }
       ],
@@ -191,24 +224,57 @@
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator/execution-manifest.json --case testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator__different_lane_pass --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229023-owner-nov26/offline-different_lane_pass-primary-proof --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
         "exit_code": 0,
         "construction_sha256": "751bb834e757295aeaab32486000147faa932c8a1de154b1d4fd3814c83d8862",
-        "log": "cases/different_lane_pass/offline-primary.log",
+        "log": "cases/different_lane_pass/proof-offline-primary.log",
         "log_sha256": "cdca6b855187c4d6cff926b0e1b7548f3b6113f41e94915dcbe3642e13ec1a9c"
       },
       "compatibility": {
-        "receipt": "cases/different_lane_pass/compatibility-primary.json",
+        "receipt": "cases/different_lane_pass/proof-compatibility-primary.json",
         "sha256": "37e5be3a60a85cb200906455f0430b6cd249070a1b2dd97fb0df9e540549a394",
-        "log": "cases/different_lane_pass/compatibility-primary-analysis.log",
-        "negative_log": "cases/different_lane_pass/compatibility-primary-negative.log"
+        "log": "cases/different_lane_pass/proof-compatibility-primary-analysis.log",
+        "negative_log": "cases/different_lane_pass/proof-compatibility-primary-negative.log"
       },
       "negative": {
-        "log": "cases/different_lane_pass/compatibility-primary-negative.log"
+        "log": "cases/different_lane_pass/proof-compatibility-primary-negative.log"
       },
       "physical_preparation": {
         "receipt": "cases/different_lane_pass/physical-preparation.json",
         "sha256": "cf5fa0a914b8dd281b9aeb4461bc3e4a8787a7f75923f978b01832ad26b6cdf7"
       },
-      "post_capture": {},
-      "delivery_acceptance": {},
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator/execution-manifest.json --case testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator__different_lane_pass --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator/execution-manifest.json --case testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator__different_lane_pass --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_log": "cases/different_lane_pass/proof-saved-process.log",
+        "test_log_sha256": "0cb563c104ce6eb1ae5a9734c69ab22750b1b4befd4636523730ff2b1e6b65a2",
+        "test_exit_code": 0,
+        "scope": "Synthetic recorded-only CPU replay; original Native pixel and physical review pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator__different_lane_pass",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "3fd07f5aa288ee58a4254ba4417285ec21a7a9fe24bce7ce06eb5bbe4fbf9d93",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229023-owner-nov26/compat-different_lane_pass-primary-proof --case testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator__different_lane_pass",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229023-owner-nov26/compat-different_lane_pass-primary-proof --case testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator__different_lane_pass --require-original",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Diagnostic source cannot satisfy original Native delivery",
+        "test_log": "cases/different_lane_pass/delivery-positive.log",
+        "test_log_sha256": "41e5f5c785eb2d73328796cc7e2463102177011a82c0722cf2237689e9e0a699",
+        "negative_log": "cases/different_lane_pass/delivery-negative.log",
+        "negative_log_sha256": "9f4bebce72305aa1a27e90ed40235d90db6d6f9b9b24394c6bc1b4099c1b9276",
+        "scope": "Diagnostic integrity and original-only rejection; original visual and physical review pending"
+      },
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
@@ -313,14 +379,14 @@
             "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator/execution-manifest.json --case testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator__consented_two_abreast --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229023-owner-nov26/offline-consented_two_abreast-fallback1-proof --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
             "exit_code": 0,
             "construction_sha256": "bcc59d5dbeba659a7107a70a20862071d793714a013801b89ff44552435e2bd6",
-            "log": "cases/consented_two_abreast/offline-fallback1.log",
+            "log": "cases/consented_two_abreast/proof-offline-fallback1.log",
             "log_sha256": "1ceb757512bdcb2844bf3dfce03349ef412efe5adecae6f3c9c4658165e98b94"
           },
           "compatibility": {
-            "receipt": "cases/consented_two_abreast/compatibility-fallback1.json",
+            "receipt": "cases/consented_two_abreast/proof-compatibility-fallback1.json",
             "sha256": "f35b214b582e91c6152893f4c7a7412e852dc3c0a58a24bca69eecdc692481c2",
-            "log": "cases/consented_two_abreast/compatibility-fallback1-analysis.log",
-            "negative_log": "cases/consented_two_abreast/compatibility-fallback1-negative.log"
+            "log": "cases/consented_two_abreast/proof-compatibility-fallback1-analysis.log",
+            "negative_log": "cases/consented_two_abreast/proof-compatibility-fallback1-negative.log"
           }
         }
       ],
@@ -333,24 +399,57 @@
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator/execution-manifest.json --case testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator__consented_two_abreast --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229023-owner-nov26/offline-consented_two_abreast-primary-proof --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
         "exit_code": 0,
         "construction_sha256": "5180a8e0be10e3bfbcbaf996473dc0e0b121e513414cfd9bd969aa050db3235a",
-        "log": "cases/consented_two_abreast/offline-primary.log",
+        "log": "cases/consented_two_abreast/proof-offline-primary.log",
         "log_sha256": "fa303e9c0909c9c2b830f3ae44c04266c777f7cf3b6a47d24892ad6a9e26297f"
       },
       "compatibility": {
-        "receipt": "cases/consented_two_abreast/compatibility-primary.json",
+        "receipt": "cases/consented_two_abreast/proof-compatibility-primary.json",
         "sha256": "080eb123c4a247cc8b0dc5f44a6cada10945aa63cd035658ca435c1c7f0c30ce",
-        "log": "cases/consented_two_abreast/compatibility-primary-analysis.log",
-        "negative_log": "cases/consented_two_abreast/compatibility-primary-negative.log"
+        "log": "cases/consented_two_abreast/proof-compatibility-primary-analysis.log",
+        "negative_log": "cases/consented_two_abreast/proof-compatibility-primary-negative.log"
       },
       "negative": {
-        "log": "cases/consented_two_abreast/compatibility-primary-negative.log"
+        "log": "cases/consented_two_abreast/proof-compatibility-primary-negative.log"
       },
       "physical_preparation": {
         "receipt": "cases/consented_two_abreast/physical-preparation.json",
         "sha256": "0dc71a611500dec84a2254cc5443be01754900d290c282103f3b8e2bb8249486"
       },
-      "post_capture": {},
-      "delivery_acceptance": {},
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator/execution-manifest.json --case testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator__consented_two_abreast --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator/execution-manifest.json --case testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator__consented_two_abreast --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_log": "cases/consented_two_abreast/proof-saved-process.log",
+        "test_log_sha256": "5492111414a20b973256ce93fce47b64efde79575c4e4d119f8b4a15757475d5",
+        "test_exit_code": 0,
+        "scope": "Synthetic recorded-only CPU replay; original Native pixel and physical review pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator__consented_two_abreast",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "3fd07f5aa288ee58a4254ba4417285ec21a7a9fe24bce7ce06eb5bbe4fbf9d93",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229023-owner-nov26/compat-consented_two_abreast-primary-proof --case testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator__consented_two_abreast",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229023-owner-nov26/compat-consented_two_abreast-primary-proof --case testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator__consented_two_abreast --require-original",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Diagnostic source cannot satisfy original Native delivery",
+        "test_log": "cases/consented_two_abreast/delivery-positive.log",
+        "test_log_sha256": "cf49f5a147d2d473f26d7b3d487e999e44f7d67f8a264327523492ee39b5c0d8",
+        "negative_log": "cases/consented_two_abreast/delivery-negative.log",
+        "negative_log_sha256": "9f4bebce72305aa1a27e90ed40235d90db6d6f9b9b24394c6bc1b4099c1b9276",
+        "scope": "Diagnostic integrity and original-only rejection; original visual and physical review pending"
+      },
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
@@ -455,10 +554,15 @@
             "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator/execution-manifest.json --case testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator__unconsented_two_abreast --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229023-owner-nov26/offline-unconsented_two_abreast-fallback1-proof --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
             "exit_code": 0,
             "construction_sha256": "93b663f0f43e4a70cb6ce66d8f90c06b54e58e6f70e6fa824997240d10635bfb",
-            "log": "cases/unconsented_two_abreast/offline-fallback1.log",
+            "log": "cases/unconsented_two_abreast/proof-offline-fallback1.log",
             "log_sha256": "914f57e0f71a6de33b6bbbedeaacc8b01e15d9c14a43faffebf9f229a154b25e"
           },
-          "compatibility": {}
+          "compatibility": {
+            "receipt": "cases/unconsented_two_abreast/proof-compatibility-fallback1.json",
+            "sha256": "3861cd77e903dc06dc349699c742ad6acba605164d13ae322c2c1210ca35eba4",
+            "log": "cases/unconsented_two_abreast/proof-compatibility-fallback1-analysis.log",
+            "negative_log": "cases/unconsented_two_abreast/proof-compatibility-fallback1-negative.log"
+          }
         }
       ],
       "measurement_contract": "cases/unconsented_two_abreast/measurement-contract.json",
@@ -470,24 +574,49 @@
         "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator/execution-manifest.json --case testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator__unconsented_two_abreast --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229023-owner-nov26/offline-unconsented_two_abreast-primary-proof --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
         "exit_code": 0,
         "construction_sha256": "23d1106c251c6d3245fccccfce70558e469e35f5362eb174bb6a9c9dcfc70e0f",
-        "log": "cases/unconsented_two_abreast/offline-primary.log",
+        "log": "cases/unconsented_two_abreast/proof-offline-primary.log",
         "log_sha256": "2b6076c8ed038e418189060d305cbb366dc02d2101c511b9f6a2fcca1049a0a8"
       },
       "compatibility": {
-        "receipt": "cases/unconsented_two_abreast/compatibility-primary.json",
+        "receipt": "cases/unconsented_two_abreast/proof-compatibility-primary.json",
         "sha256": "9a5fcee12e35d23bb8f783d3d1647be62a5d57c6563afd3a1825446b76bcf644",
-        "log": "cases/unconsented_two_abreast/compatibility-primary-analysis.log",
-        "negative_log": "cases/unconsented_two_abreast/compatibility-primary-negative.log"
+        "log": "cases/unconsented_two_abreast/proof-compatibility-primary-analysis.log",
+        "negative_log": "cases/unconsented_two_abreast/proof-compatibility-primary-negative.log"
       },
       "negative": {
-        "log": "cases/unconsented_two_abreast/compatibility-primary-negative.log"
+        "log": "cases/unconsented_two_abreast/proof-compatibility-primary-negative.log"
       },
       "physical_preparation": {
         "receipt": "cases/unconsented_two_abreast/physical-preparation.json",
         "sha256": "e368bbc199643b52ee2a6a308306842990401886335f6780dcb61b41373415d8"
       },
       "post_capture": {},
-      "delivery_acceptance": {},
+      "delivery_acceptance": {
+        "case_id": "testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator__unconsented_two_abreast",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "3fd07f5aa288ee58a4254ba4417285ec21a7a9fe24bce7ce06eb5bbe4fbf9d93",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229023-owner-nov26/compat-unconsented_two_abreast-primary-proof --case testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator__unconsented_two_abreast",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229023-owner-nov26/compat-unconsented_two_abreast-primary-proof --case testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator__unconsented_two_abreast --require-original",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Diagnostic source cannot satisfy original Native delivery",
+        "test_log": "cases/unconsented_two_abreast/delivery-positive.log",
+        "test_log_sha256": "0e0938abe58b8665e010014caa9e5c1ff564e2e55aa060ca06b3364501b0f3dd",
+        "negative_log": "cases/unconsented_two_abreast/delivery-negative.log",
+        "negative_log_sha256": "9f4bebce72305aa1a27e90ed40235d90db6d6f9b9b24394c6bc1b4099c1b9276",
+        "scope": "Diagnostic integrity and original-only rejection; original visual and physical review pending"
+      },
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
@@ -588,8 +717,19 @@
           "changed_knobs": [
             "all participants start 3 m earlier along the same surveyed route"
           ],
-          "offline": {},
-          "compatibility": {}
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator/execution-manifest.json --case testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator__three_abreast --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229023-owner-nov26/offline-three_abreast-fallback1-proof --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "0a9bb49da090016f16a53894e9fbbcdd21c7fce9bcb67422585162e77d6d8bc4",
+            "log": "cases/three_abreast/proof-offline-fallback1.log",
+            "log_sha256": "e4a5539260209596212006aecf52ee594728b9797c61ed77eabeece4aee5aa0b"
+          },
+          "compatibility": {
+            "receipt": "cases/three_abreast/proof-compatibility-fallback1.json",
+            "sha256": "b5c40d56183653183bd7dd1e25cdfb976169956a9d6cb2e17dc69bfb89f4b2d3",
+            "log": "cases/three_abreast/proof-compatibility-fallback1-analysis.log",
+            "negative_log": "cases/three_abreast/proof-compatibility-fallback1-negative.log"
+          }
         }
       ],
       "measurement_contract": "cases/three_abreast/measurement-contract.json",
@@ -597,15 +737,53 @@
         "entrypoint": "analysis.py"
       },
       "fixture_recipe": "work/testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator/diagnostic-three_abreast-recipe.json",
-      "offline": {},
-      "compatibility": {},
-      "negative": {},
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator/execution-manifest.json --case testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator__three_abreast --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229023-owner-nov26/offline-three_abreast-primary-proof --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "b1f974baaf38cf338e4c46ffc7762c4e90a51e7c8b3825fb8ad4077d451187fb",
+        "log": "cases/three_abreast/proof-offline-primary.log",
+        "log_sha256": "280c222aa707ed32991a8320f274c6446ad18e7a35b4d2f3ee394b4d884a4446"
+      },
+      "compatibility": {
+        "receipt": "cases/three_abreast/proof-compatibility-primary.json",
+        "sha256": "794fadcd0c532ec6738b048b7f89ff595c8e09436a0cd764e834932971dec180",
+        "log": "cases/three_abreast/proof-compatibility-primary-analysis.log",
+        "negative_log": "cases/three_abreast/proof-compatibility-primary-negative.log"
+      },
+      "negative": {
+        "log": "cases/three_abreast/proof-compatibility-primary-negative.log"
+      },
       "physical_preparation": {
         "receipt": "cases/three_abreast/physical-preparation.json",
         "sha256": "7f39e2f3f16b3f1fff79a7dbac0cca15b6f02df7b35f3c7db066169524d68045"
       },
       "post_capture": {},
-      "delivery_acceptance": {},
+      "delivery_acceptance": {
+        "case_id": "testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator__three_abreast",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "3fd07f5aa288ee58a4254ba4417285ec21a7a9fe24bce7ce06eb5bbe4fbf9d93",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229023-owner-nov26/compat-three_abreast-primary-proof --case testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator__three_abreast",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229023-owner-nov26/compat-three_abreast-primary-proof --case testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator__three_abreast --require-original",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Diagnostic source cannot satisfy original Native delivery",
+        "test_log": "cases/three_abreast/delivery-positive.log",
+        "test_log_sha256": "fc3d93a97dfa3fdc9a731a1911a321a74a12ca47006c14a24b9306e9d0834507",
+        "negative_log": "cases/three_abreast/delivery-negative.log",
+        "negative_log_sha256": "9f4bebce72305aa1a27e90ed40235d90db6d6f9b9b24394c6bc1b4099c1b9276",
+        "scope": "Diagnostic integrity and original-only rejection; original visual and physical review pending"
+      },
       "native_handoff": {
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",

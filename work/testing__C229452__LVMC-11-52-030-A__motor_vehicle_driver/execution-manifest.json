@@ -1,0 +1,2067 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "case_id": "testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__ordinary_park",
+      "kind": "delivery",
+      "construction": "construction.json",
+      "construction_sha256": "37e0856c725e0fd3deb8b30f6d38988d19dfbef078b7b98bc67e0bb157b7d9a3",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original red paint, sign face or mail-box activity can be hidden by parked vehicle from the primary camera pose."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/ordinary_park/fallback1-construction.json",
+          "construction_sha256": "71bbb7169f37d2d7bdc6e5e8468fad42bc908e046e95d4668227cecfe7e53370",
+          "trigger": {
+            "source": "original four-camera video and Native camera readback",
+            "metric": "governed red edge and relevant sign or mail box visible with vehicle halt",
+            "failure_condition": "primary curb or relevant device/activity is occluded during the original halt interval"
+          },
+          "changed_knobs": [
+            "reviewed alternate camera placement around the same curb and vehicle"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__ordinary_park --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/ordinary_park-fallback1/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "71bbb7169f37d2d7bdc6e5e8468fad42bc908e046e95d4668227cecfe7e53370",
+            "log": "cpu-offline-detail-ordinary_park-fallback1.log",
+            "log_sha256": "edbf3f0d193b178c006f61714028bf7f62936f9268ba3f6d489e2f346b78916a"
+          },
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__ordinary_park --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/ordinary_park-fallback1/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "receipt": "cpu-compatibility-ordinary_park-fallback1.json",
+            "sha256": "0ec951968c2f143eeb1c156844efe0b8be836317ecb7e5e7a1ccf21fa4dbe5cc",
+            "log": "cpu-compatibility-analysis-ordinary_park-fallback1.log",
+            "negative_log": "cpu-compatibility-negative-ordinary_park-fallback1.log"
+          }
+        }
+      ],
+      "measurement_contract": "measurement-contract.json",
+      "fixture_recipe": "work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/diagnostics/ordinary_park/fixture-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "acquisition": {
+        "red_curb_location": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-red_curb_location.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "sign_and_vehicle_status": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-sign_and_vehicle_status.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "original_halt_activity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-original_halt_activity.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "exception_purpose": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-exception_purpose.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "attendance_and_engine": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-attendance_and_engine.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "governing_context": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-governing_context.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-camera_frame_identity.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__ordinary_park --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/ordinary_park-primary/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "37e0856c725e0fd3deb8b30f6d38988d19dfbef078b7b98bc67e0bb157b7d9a3",
+        "log": "cpu-offline-detail-ordinary_park-primary.log",
+        "log_sha256": "3623f20b56c0bb65380d40bbb3fff3909a27cac19ca830dfb9e13cb0c87fb770"
+      },
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__ordinary_park --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/ordinary_park-primary/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "receipt": "cpu-compatibility-ordinary_park-primary.json",
+        "sha256": "528a67f2334267caa466e739dc698630fc83d2b8bea6b9b5b1e7e7935afdc41d",
+        "log": "cpu-compatibility-analysis-ordinary_park-primary.log",
+        "negative_log": "cpu-compatibility-negative-ordinary_park-primary.log"
+      },
+      "negative": {
+        "log": "cpu-compatibility-negative-ordinary_park-primary.log"
+      }
+    },
+    {
+      "case_id": "testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__ordinary_stop_unattended",
+      "kind": "delivery",
+      "construction": "cases/ordinary_stop_unattended/construction.json",
+      "construction_sha256": "d1f980c26c418162ba5e7ea023051a8216c17c3583369171186c9cbfeb6e7252",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original red paint, sign face or mail-box activity can be hidden by parked vehicle from the primary camera pose."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/ordinary_stop_unattended/fallback1-construction.json",
+          "construction_sha256": "6fdf95c2cbd7370e9aa8ec635cce4293d3ad24e44e028d5b86566e22633e0014",
+          "trigger": {
+            "source": "original four-camera video and Native camera readback",
+            "metric": "governed red edge and relevant sign or mail box visible with vehicle halt",
+            "failure_condition": "primary curb or relevant device/activity is occluded during the original halt interval"
+          },
+          "changed_knobs": [
+            "reviewed alternate camera placement around the same curb and vehicle"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__ordinary_stop_unattended --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/ordinary_stop_unattended-fallback1/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "6fdf95c2cbd7370e9aa8ec635cce4293d3ad24e44e028d5b86566e22633e0014",
+            "log": "cpu-offline-detail-ordinary_stop_unattended-fallback1.log",
+            "log_sha256": "31165b46a4f49e7c917300bf04888be5dd88bb68476731a60f229fecb07c9e73"
+          },
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__ordinary_stop_unattended --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/ordinary_stop_unattended-fallback1/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "receipt": "cpu-compatibility-ordinary_stop_unattended-fallback1.json",
+            "sha256": "1e87344705fbb8fbdd0a8e3c459dcd69cbba2c2bc966bf8fe1c3381da509d1f0",
+            "log": "cpu-compatibility-analysis-ordinary_stop_unattended-fallback1.log",
+            "negative_log": "cpu-compatibility-negative-ordinary_stop_unattended-fallback1.log"
+          }
+        }
+      ],
+      "measurement_contract": "cases/ordinary_stop_unattended/measurement-contract.json",
+      "fixture_recipe": "work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/diagnostics/ordinary_stop_unattended/fixture-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "acquisition": {
+        "red_curb_location": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-red_curb_location.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "sign_and_vehicle_status": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-sign_and_vehicle_status.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "original_halt_activity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-original_halt_activity.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "exception_purpose": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-exception_purpose.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "attendance_and_engine": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-attendance_and_engine.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "governing_context": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-governing_context.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-camera_frame_identity.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__ordinary_stop_unattended --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/ordinary_stop_unattended-primary/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "d1f980c26c418162ba5e7ea023051a8216c17c3583369171186c9cbfeb6e7252",
+        "log": "cpu-offline-detail-ordinary_stop_unattended-primary.log",
+        "log_sha256": "903a5f0c8d1def40bf30cbd107a74ff8177927fa5db21958f559fef719d1dcd4"
+      },
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__ordinary_stop_unattended --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/ordinary_stop_unattended-primary/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "receipt": "cpu-compatibility-ordinary_stop_unattended-primary.json",
+        "sha256": "4a4ebbcb296574af36de682778f235247df0c03d74d8ee1b54223e8b41c2f43c",
+        "log": "cpu-compatibility-analysis-ordinary_stop_unattended-primary.log",
+        "negative_log": "cpu-compatibility-negative-ordinary_stop_unattended-primary.log"
+      },
+      "negative": {
+        "log": "cpu-compatibility-negative-ordinary_stop_unattended-primary.log"
+      }
+    },
+    {
+      "case_id": "testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__ordinary_stand",
+      "kind": "delivery",
+      "construction": "cases/ordinary_stand/construction.json",
+      "construction_sha256": "9823fa5cf9064c6bb3067e2af290366ceba41f0766b4c4c8279144d3e4da34f2",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original red paint, sign face or mail-box activity can be hidden by parked vehicle from the primary camera pose."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/ordinary_stand/fallback1-construction.json",
+          "construction_sha256": "f0fbcb3ccba2db07121d6b53c96cbd44e87dc2376470f26a515d93916d65fd49",
+          "trigger": {
+            "source": "original four-camera video and Native camera readback",
+            "metric": "governed red edge and relevant sign or mail box visible with vehicle halt",
+            "failure_condition": "primary curb or relevant device/activity is occluded during the original halt interval"
+          },
+          "changed_knobs": [
+            "reviewed alternate camera placement around the same curb and vehicle"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__ordinary_stand --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/ordinary_stand-fallback1/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "f0fbcb3ccba2db07121d6b53c96cbd44e87dc2376470f26a515d93916d65fd49",
+            "log": "cpu-offline-detail-ordinary_stand-fallback1.log",
+            "log_sha256": "2a6994f267d93bb3a0d11f11927fed78742cd2ef20a981f9018e7e9a36852d2f"
+          },
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__ordinary_stand --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/ordinary_stand-fallback1/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "receipt": "cpu-compatibility-ordinary_stand-fallback1.json",
+            "sha256": "c53e8e6f503145a6a2990f175ffc63ea933be837c39db495a3cbf59a75b3fb5d",
+            "log": "cpu-compatibility-analysis-ordinary_stand-fallback1.log",
+            "negative_log": "cpu-compatibility-negative-ordinary_stand-fallback1.log"
+          }
+        }
+      ],
+      "measurement_contract": "cases/ordinary_stand/measurement-contract.json",
+      "fixture_recipe": "work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/diagnostics/ordinary_stand/fixture-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "acquisition": {
+        "red_curb_location": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-red_curb_location.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "sign_and_vehicle_status": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-sign_and_vehicle_status.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "original_halt_activity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-original_halt_activity.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "exception_purpose": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-exception_purpose.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "attendance_and_engine": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-attendance_and_engine.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "governing_context": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-governing_context.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-camera_frame_identity.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__ordinary_stand --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/ordinary_stand-primary/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "9823fa5cf9064c6bb3067e2af290366ceba41f0766b4c4c8279144d3e4da34f2",
+        "log": "cpu-offline-detail-ordinary_stand-primary.log",
+        "log_sha256": "3838a7b16ed5e56bef104e6ebe8000dc6f10cfd1fbeff346ce7ab9ffeeac6b14"
+      },
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__ordinary_stand --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/ordinary_stand-primary/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "receipt": "cpu-compatibility-ordinary_stand-primary.json",
+        "sha256": "baf0c75a5fe153cca050df0e3cec10cac2b57627219b2dc703ecb02161994374",
+        "log": "cpu-compatibility-analysis-ordinary_stand-primary.log",
+        "negative_log": "cpu-compatibility-negative-ordinary_stand-primary.log"
+      },
+      "negative": {
+        "log": "cpu-compatibility-negative-ordinary_stand-primary.log"
+      }
+    },
+    {
+      "case_id": "testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__ordinary_park_signed",
+      "kind": "delivery",
+      "construction": "cases/ordinary_park_signed/construction.json",
+      "construction_sha256": "8c623d8f18cf879e6a4c46d79363c5546d715ac1a3b9a10e9300c7deb581fb0d",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original red paint, sign face or mail-box activity can be hidden by parked vehicle from the primary camera pose."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/ordinary_park_signed/fallback1-construction.json",
+          "construction_sha256": "fd5391986ce47717cce2372afa882679a9f1edc4868886be7963d9ea4c1766e9",
+          "trigger": {
+            "source": "original four-camera video and Native camera readback",
+            "metric": "governed red edge and relevant sign or mail box visible with vehicle halt",
+            "failure_condition": "primary curb or relevant device/activity is occluded during the original halt interval"
+          },
+          "changed_knobs": [
+            "reviewed alternate camera placement around the same curb and vehicle"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__ordinary_park_signed --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/ordinary_park_signed-fallback1/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "fd5391986ce47717cce2372afa882679a9f1edc4868886be7963d9ea4c1766e9",
+            "log": "cpu-offline-detail-ordinary_park_signed-fallback1.log",
+            "log_sha256": "6b3c0a6e22a8d2fffee3863f48ffcef1079f8db486d66312635feef4f008b1ac"
+          },
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__ordinary_park_signed --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/ordinary_park_signed-fallback1/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "receipt": "cpu-compatibility-ordinary_park_signed-fallback1.json",
+            "sha256": "1a2a598c83bd75221d75a510dbc7d90ccdc4202b007205968794c9ea89688577",
+            "log": "cpu-compatibility-analysis-ordinary_park_signed-fallback1.log",
+            "negative_log": "cpu-compatibility-negative-ordinary_park_signed-fallback1.log"
+          }
+        }
+      ],
+      "measurement_contract": "cases/ordinary_park_signed/measurement-contract.json",
+      "fixture_recipe": "work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/diagnostics/ordinary_park_signed/fixture-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "acquisition": {
+        "red_curb_location": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-red_curb_location.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "sign_and_vehicle_status": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-sign_and_vehicle_status.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "original_halt_activity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-original_halt_activity.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "exception_purpose": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-exception_purpose.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "attendance_and_engine": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-attendance_and_engine.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "governing_context": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-governing_context.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-camera_frame_identity.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__ordinary_park_signed --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/ordinary_park_signed-primary/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "8c623d8f18cf879e6a4c46d79363c5546d715ac1a3b9a10e9300c7deb581fb0d",
+        "log": "cpu-offline-detail-ordinary_park_signed-primary.log",
+        "log_sha256": "f1cdd966e61dc46863c6e945297c1588fc0911e5c5f8c9b29c1095858619dff4"
+      },
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__ordinary_park_signed --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/ordinary_park_signed-primary/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "receipt": "cpu-compatibility-ordinary_park_signed-primary.json",
+        "sha256": "13135ea27df84c5d614dc88c650feebaffdc17a0af84590c23c551fef19ec389",
+        "log": "cpu-compatibility-analysis-ordinary_park_signed-primary.log",
+        "negative_log": "cpu-compatibility-negative-ordinary_park_signed-primary.log"
+      },
+      "negative": {
+        "log": "cpu-compatibility-negative-ordinary_park_signed-primary.log"
+      }
+    },
+    {
+      "case_id": "testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_1799",
+      "kind": "delivery",
+      "construction": "cases/tour_bus_1799/construction.json",
+      "construction_sha256": "b82472e250aa302afb554fa480e576ee6d9fef01720e2d214d7d98f37c0b1a67",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original red paint, sign face or mail-box activity can be hidden by parked vehicle from the primary camera pose."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/tour_bus_1799/fallback1-construction.json",
+          "construction_sha256": "2161b03dc04f2114385014aa2acb24f3ea4dd415cf0c7d48ae62e4f7341d09c8",
+          "trigger": {
+            "source": "original four-camera video and Native camera readback",
+            "metric": "governed red edge and relevant sign or mail box visible with vehicle halt",
+            "failure_condition": "primary curb or relevant device/activity is occluded during the original halt interval"
+          },
+          "changed_knobs": [
+            "reviewed alternate camera placement around the same curb and vehicle"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_1799 --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/tour_bus_1799-fallback1/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "2161b03dc04f2114385014aa2acb24f3ea4dd415cf0c7d48ae62e4f7341d09c8",
+            "log": "cpu-offline-detail-tour_bus_1799-fallback1.log",
+            "log_sha256": "a12b3887dcc43681bb2ebfaf4df4213cdb74471c3549e32087a9e72f1cfd62ce"
+          },
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_1799 --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/tour_bus_1799-fallback1/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "receipt": "cpu-compatibility-tour_bus_1799-fallback1.json",
+            "sha256": "60523edcd1b5a868d919c4c36a8c61e03c636d4126c81ef9e6ec877b8f2370d9",
+            "log": "cpu-compatibility-analysis-tour_bus_1799-fallback1.log",
+            "negative_log": "cpu-compatibility-negative-tour_bus_1799-fallback1.log"
+          }
+        }
+      ],
+      "measurement_contract": "cases/tour_bus_1799/measurement-contract.json",
+      "fixture_recipe": "work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/diagnostics/tour_bus_1799/fixture-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "acquisition": {
+        "red_curb_location": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-red_curb_location.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "sign_and_vehicle_status": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-sign_and_vehicle_status.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "original_halt_activity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-original_halt_activity.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "exception_purpose": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-exception_purpose.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "attendance_and_engine": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-attendance_and_engine.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "governing_context": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-governing_context.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-camera_frame_identity.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_1799 --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/tour_bus_1799-primary/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "b82472e250aa302afb554fa480e576ee6d9fef01720e2d214d7d98f37c0b1a67",
+        "log": "cpu-offline-detail-tour_bus_1799-primary.log",
+        "log_sha256": "ffdc6de204998d91270a86762a9801a13347eb97d446539f90cef508226a438c"
+      },
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_1799 --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/tour_bus_1799-primary/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "receipt": "cpu-compatibility-tour_bus_1799-primary.json",
+        "sha256": "b50f9d178f82ff7c3aeb284d57ff2dc693050cbbc8ecdf28294d2fd91a916143",
+        "log": "cpu-compatibility-analysis-tour_bus_1799-primary.log",
+        "negative_log": "cpu-compatibility-negative-tour_bus_1799-primary.log"
+      },
+      "negative": {
+        "log": "cpu-compatibility-negative-tour_bus_1799-primary.log"
+      }
+    },
+    {
+      "case_id": "testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_1800",
+      "kind": "delivery",
+      "construction": "cases/tour_bus_1800/construction.json",
+      "construction_sha256": "179b3c28d531d69f6ce26c9cd0221369a2e888755aaf4955eb85b7f5a2d48366",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original red paint, sign face or mail-box activity can be hidden by parked vehicle from the primary camera pose."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/tour_bus_1800/fallback1-construction.json",
+          "construction_sha256": "6b720d2fcd1adb3c92b3a49f753a8d24bde1cad8ffd6147bb8ac92a7d6c03b1e",
+          "trigger": {
+            "source": "original four-camera video and Native camera readback",
+            "metric": "governed red edge and relevant sign or mail box visible with vehicle halt",
+            "failure_condition": "primary curb or relevant device/activity is occluded during the original halt interval"
+          },
+          "changed_knobs": [
+            "reviewed alternate camera placement around the same curb and vehicle"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_1800 --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/tour_bus_1800-fallback1/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "6b720d2fcd1adb3c92b3a49f753a8d24bde1cad8ffd6147bb8ac92a7d6c03b1e",
+            "log": "cpu-offline-detail-tour_bus_1800-fallback1.log",
+            "log_sha256": "6a5380d22b15d8c2dd978b918ef120032eba79ad8feb42777b18b579648c06ef"
+          },
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_1800 --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/tour_bus_1800-fallback1/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "receipt": "cpu-compatibility-tour_bus_1800-fallback1.json",
+            "sha256": "840b270803e7af9f244189206450482a21ac66c1d4c8c9bcb334b849f352e630",
+            "log": "cpu-compatibility-analysis-tour_bus_1800-fallback1.log",
+            "negative_log": "cpu-compatibility-negative-tour_bus_1800-fallback1.log"
+          }
+        }
+      ],
+      "measurement_contract": "cases/tour_bus_1800/measurement-contract.json",
+      "fixture_recipe": "work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/diagnostics/tour_bus_1800/fixture-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "acquisition": {
+        "red_curb_location": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-red_curb_location.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "sign_and_vehicle_status": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-sign_and_vehicle_status.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "original_halt_activity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-original_halt_activity.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "exception_purpose": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-exception_purpose.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "attendance_and_engine": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-attendance_and_engine.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "governing_context": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-governing_context.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-camera_frame_identity.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_1800 --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/tour_bus_1800-primary/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "179b3c28d531d69f6ce26c9cd0221369a2e888755aaf4955eb85b7f5a2d48366",
+        "log": "cpu-offline-detail-tour_bus_1800-primary.log",
+        "log_sha256": "d675dee2d8ed8211ec3edc935b1371868b87b79639b6fc2b3946de459b968290"
+      },
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_1800 --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/tour_bus_1800-primary/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "receipt": "cpu-compatibility-tour_bus_1800-primary.json",
+        "sha256": "f7c6d7c1caa7b62cf4df8cc881b4dc19ebf59601e7842b09197665ba7a9fdcdc",
+        "log": "cpu-compatibility-analysis-tour_bus_1800-primary.log",
+        "negative_log": "cpu-compatibility-negative-tour_bus_1800-primary.log"
+      },
+      "negative": {
+        "log": "cpu-compatibility-negative-tour_bus_1800-primary.log"
+      }
+    },
+    {
+      "case_id": "testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_1801",
+      "kind": "delivery",
+      "construction": "cases/tour_bus_1801/construction.json",
+      "construction_sha256": "23bbb4f69f08b6ad3ec5e91bbf3e780dbd6e98ce79935e6f180540e616f0e670",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original red paint, sign face or mail-box activity can be hidden by parked vehicle from the primary camera pose."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/tour_bus_1801/fallback1-construction.json",
+          "construction_sha256": "33c08853c95ed11d696a4c3eed7a66fb5a5d850c0e1678422659589a5e512a4a",
+          "trigger": {
+            "source": "original four-camera video and Native camera readback",
+            "metric": "governed red edge and relevant sign or mail box visible with vehicle halt",
+            "failure_condition": "primary curb or relevant device/activity is occluded during the original halt interval"
+          },
+          "changed_knobs": [
+            "reviewed alternate camera placement around the same curb and vehicle"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_1801 --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/tour_bus_1801-fallback1/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "33c08853c95ed11d696a4c3eed7a66fb5a5d850c0e1678422659589a5e512a4a",
+            "log": "cpu-offline-detail-tour_bus_1801-fallback1.log",
+            "log_sha256": "c8b1c4525df12f0f9b8b1c3c6c2a928d87e831d0bbe4138371aac592ddff10ae"
+          },
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_1801 --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/tour_bus_1801-fallback1/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "receipt": "cpu-compatibility-tour_bus_1801-fallback1.json",
+            "sha256": "8bdbc73ce6d197e1b6ea570f88b32e5484805da3ecc37a1fb297b24c0f58cc33",
+            "log": "cpu-compatibility-analysis-tour_bus_1801-fallback1.log",
+            "negative_log": "cpu-compatibility-negative-tour_bus_1801-fallback1.log"
+          }
+        }
+      ],
+      "measurement_contract": "cases/tour_bus_1801/measurement-contract.json",
+      "fixture_recipe": "work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/diagnostics/tour_bus_1801/fixture-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "acquisition": {
+        "red_curb_location": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-red_curb_location.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "sign_and_vehicle_status": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-sign_and_vehicle_status.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "original_halt_activity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-original_halt_activity.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "exception_purpose": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-exception_purpose.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "attendance_and_engine": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-attendance_and_engine.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "governing_context": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-governing_context.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-camera_frame_identity.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_1801 --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/tour_bus_1801-primary/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "23bbb4f69f08b6ad3ec5e91bbf3e780dbd6e98ce79935e6f180540e616f0e670",
+        "log": "cpu-offline-detail-tour_bus_1801-primary.log",
+        "log_sha256": "983a6972e3417641c6eb289cb2698e69200ca3f394f64b3c6a63605597b206ae"
+      },
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_1801 --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/tour_bus_1801-primary/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "receipt": "cpu-compatibility-tour_bus_1801-primary.json",
+        "sha256": "4b6cf97598ee0b923d1411a5421aee6ca51894592808f164fd47fe293136d52c",
+        "log": "cpu-compatibility-analysis-tour_bus_1801-primary.log",
+        "negative_log": "cpu-compatibility-negative-tour_bus_1801-primary.log"
+      },
+      "negative": {
+        "log": "cpu-compatibility-negative-tour_bus_1801-primary.log"
+      }
+    },
+    {
+      "case_id": "testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_wrong_sign",
+      "kind": "delivery",
+      "construction": "cases/tour_bus_wrong_sign/construction.json",
+      "construction_sha256": "80cd93a921959aaf6d9863c90e2f932d17ced626fff649b2f332858877eca28d",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original red paint, sign face or mail-box activity can be hidden by parked vehicle from the primary camera pose."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/tour_bus_wrong_sign/fallback1-construction.json",
+          "construction_sha256": "5ed25fbe839fe66af220303280dacb7138dd54fe2798dfaad6fe1925eaa24ea3",
+          "trigger": {
+            "source": "original four-camera video and Native camera readback",
+            "metric": "governed red edge and relevant sign or mail box visible with vehicle halt",
+            "failure_condition": "primary curb or relevant device/activity is occluded during the original halt interval"
+          },
+          "changed_knobs": [
+            "reviewed alternate camera placement around the same curb and vehicle"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_wrong_sign --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/tour_bus_wrong_sign-fallback1/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "5ed25fbe839fe66af220303280dacb7138dd54fe2798dfaad6fe1925eaa24ea3",
+            "log": "cpu-offline-detail-tour_bus_wrong_sign-fallback1.log",
+            "log_sha256": "6f2d27952cbf4e81a41868201fa065a1f3a22023de84f071dcdea64469c625da"
+          },
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_wrong_sign --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/tour_bus_wrong_sign-fallback1/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "receipt": "cpu-compatibility-tour_bus_wrong_sign-fallback1.json",
+            "sha256": "1ba50939731fbb1d0bfe8e3446e4d86bf19d874fb24a16a95cb8ec15ef9a90c7",
+            "log": "cpu-compatibility-analysis-tour_bus_wrong_sign-fallback1.log",
+            "negative_log": "cpu-compatibility-negative-tour_bus_wrong_sign-fallback1.log"
+          }
+        }
+      ],
+      "measurement_contract": "cases/tour_bus_wrong_sign/measurement-contract.json",
+      "fixture_recipe": "work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/diagnostics/tour_bus_wrong_sign/fixture-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "acquisition": {
+        "red_curb_location": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-red_curb_location.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "sign_and_vehicle_status": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-sign_and_vehicle_status.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "original_halt_activity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-original_halt_activity.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "exception_purpose": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-exception_purpose.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "attendance_and_engine": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-attendance_and_engine.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "governing_context": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-governing_context.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-camera_frame_identity.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_wrong_sign --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/tour_bus_wrong_sign-primary/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "80cd93a921959aaf6d9863c90e2f932d17ced626fff649b2f332858877eca28d",
+        "log": "cpu-offline-detail-tour_bus_wrong_sign-primary.log",
+        "log_sha256": "29ab5f389bc59a929ee5bd85cde7f48c3264967158c20aa41a8ec5be60dc510f"
+      },
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_wrong_sign --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/tour_bus_wrong_sign-primary/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "receipt": "cpu-compatibility-tour_bus_wrong_sign-primary.json",
+        "sha256": "70ebe8d7b05e0a31745584eced5f121ed0a1c83b26d2d9702669f5b68d7a5229",
+        "log": "cpu-compatibility-analysis-tour_bus_wrong_sign-primary.log",
+        "negative_log": "cpu-compatibility-negative-tour_bus_wrong_sign-primary.log"
+      },
+      "negative": {
+        "log": "cpu-compatibility-negative-tour_bus_wrong_sign-primary.log"
+      }
+    },
+    {
+      "case_id": "testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_nonloading",
+      "kind": "delivery",
+      "construction": "cases/tour_bus_nonloading/construction.json",
+      "construction_sha256": "787fe38ae6815e6f2a3dcc5c3d49ddb8d9be8021f79bab3e7e6e3f74b2e01225",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original red paint, sign face or mail-box activity can be hidden by parked vehicle from the primary camera pose."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/tour_bus_nonloading/fallback1-construction.json",
+          "construction_sha256": "3efe62a05c2a6b4b0e68fab8b31e7ed52b280f2abbc47b4f13d7b2818e02a96f",
+          "trigger": {
+            "source": "original four-camera video and Native camera readback",
+            "metric": "governed red edge and relevant sign or mail box visible with vehicle halt",
+            "failure_condition": "primary curb or relevant device/activity is occluded during the original halt interval"
+          },
+          "changed_knobs": [
+            "reviewed alternate camera placement around the same curb and vehicle"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_nonloading --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/tour_bus_nonloading-fallback1/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "3efe62a05c2a6b4b0e68fab8b31e7ed52b280f2abbc47b4f13d7b2818e02a96f",
+            "log": "cpu-offline-detail-tour_bus_nonloading-fallback1.log",
+            "log_sha256": "e4fc10d4af72ba9426f8a5d198e8d9e75c0846c2a0557571fcef532f02824567"
+          },
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_nonloading --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/tour_bus_nonloading-fallback1/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "receipt": "cpu-compatibility-tour_bus_nonloading-fallback1.json",
+            "sha256": "682e23625dda3f957bb89013370fb902534933b7645985fb96d30b30bd3523a2",
+            "log": "cpu-compatibility-analysis-tour_bus_nonloading-fallback1.log",
+            "negative_log": "cpu-compatibility-negative-tour_bus_nonloading-fallback1.log"
+          }
+        }
+      ],
+      "measurement_contract": "cases/tour_bus_nonloading/measurement-contract.json",
+      "fixture_recipe": "work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/diagnostics/tour_bus_nonloading/fixture-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "acquisition": {
+        "red_curb_location": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-red_curb_location.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "sign_and_vehicle_status": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-sign_and_vehicle_status.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "original_halt_activity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-original_halt_activity.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "exception_purpose": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-exception_purpose.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "attendance_and_engine": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-attendance_and_engine.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "governing_context": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-governing_context.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-camera_frame_identity.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_nonloading --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/tour_bus_nonloading-primary/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "787fe38ae6815e6f2a3dcc5c3d49ddb8d9be8021f79bab3e7e6e3f74b2e01225",
+        "log": "cpu-offline-detail-tour_bus_nonloading-primary.log",
+        "log_sha256": "9cd671b36137617a41f5b7fa9c337e614d3b0a0f2383d24d49ef5df40bad1da4"
+      },
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__tour_bus_nonloading --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/tour_bus_nonloading-primary/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "receipt": "cpu-compatibility-tour_bus_nonloading-primary.json",
+        "sha256": "81e512571a99a9111c41763df6ecf8704819b063ce1cf2917c1f7ff8f5de4e73",
+        "log": "cpu-compatibility-analysis-tour_bus_nonloading-primary.log",
+        "negative_log": "cpu-compatibility-negative-tour_bus_nonloading-primary.log"
+      },
+      "negative": {
+        "log": "cpu-compatibility-negative-tour_bus_nonloading-primary.log"
+      }
+    },
+    {
+      "case_id": "testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__shuttle_bus_1800",
+      "kind": "delivery",
+      "construction": "cases/shuttle_bus_1800/construction.json",
+      "construction_sha256": "6e4b2b9742b27450bbeb80a51c0698e68d5953430d5f2073616f0f845897c71e",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original red paint, sign face or mail-box activity can be hidden by parked vehicle from the primary camera pose."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/shuttle_bus_1800/fallback1-construction.json",
+          "construction_sha256": "2c8be8f7a6a449b6b905357a30702f69d0791b60c535e65a9e26086fad156cae",
+          "trigger": {
+            "source": "original four-camera video and Native camera readback",
+            "metric": "governed red edge and relevant sign or mail box visible with vehicle halt",
+            "failure_condition": "primary curb or relevant device/activity is occluded during the original halt interval"
+          },
+          "changed_knobs": [
+            "reviewed alternate camera placement around the same curb and vehicle"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__shuttle_bus_1800 --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/shuttle_bus_1800-fallback1/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "2c8be8f7a6a449b6b905357a30702f69d0791b60c535e65a9e26086fad156cae",
+            "log": "cpu-offline-detail-shuttle_bus_1800-fallback1.log",
+            "log_sha256": "ab1e6e6e2788f2e879997b429c7b1f215786b32d6b649a02576685e6151eed95"
+          },
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__shuttle_bus_1800 --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/shuttle_bus_1800-fallback1/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "receipt": "cpu-compatibility-shuttle_bus_1800-fallback1.json",
+            "sha256": "f81904d2ef7ab88f2bce0ade71ac1e52c940242bbf240dbd55b091ce4c7ea6f9",
+            "log": "cpu-compatibility-analysis-shuttle_bus_1800-fallback1.log",
+            "negative_log": "cpu-compatibility-negative-shuttle_bus_1800-fallback1.log"
+          }
+        }
+      ],
+      "measurement_contract": "cases/shuttle_bus_1800/measurement-contract.json",
+      "fixture_recipe": "work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/diagnostics/shuttle_bus_1800/fixture-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "acquisition": {
+        "red_curb_location": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-red_curb_location.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "sign_and_vehicle_status": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-sign_and_vehicle_status.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "original_halt_activity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-original_halt_activity.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "exception_purpose": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-exception_purpose.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "attendance_and_engine": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-attendance_and_engine.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "governing_context": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-governing_context.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-camera_frame_identity.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__shuttle_bus_1800 --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/shuttle_bus_1800-primary/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "6e4b2b9742b27450bbeb80a51c0698e68d5953430d5f2073616f0f845897c71e",
+        "log": "cpu-offline-detail-shuttle_bus_1800-primary.log",
+        "log_sha256": "8436d53aeb21f3d097775861122ebbe8a06e59a4cc15ca69a6d71ab254ceb354"
+      },
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__shuttle_bus_1800 --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/shuttle_bus_1800-primary/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "receipt": "cpu-compatibility-shuttle_bus_1800-primary.json",
+        "sha256": "fbc10dbdeaa9108b4fecff767341956681c688c66c3f12c6c99be576ccbe0edd",
+        "log": "cpu-compatibility-analysis-shuttle_bus_1800-primary.log",
+        "negative_log": "cpu-compatibility-negative-shuttle_bus_1800-primary.log"
+      },
+      "negative": {
+        "log": "cpu-compatibility-negative-shuttle_bus_1800-primary.log"
+      }
+    },
+    {
+      "case_id": "testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__limo_1800",
+      "kind": "delivery",
+      "construction": "cases/limo_1800/construction.json",
+      "construction_sha256": "85c15f6f86e2605df61eee8316205c292edb40ce286c616e84617d4ce61f08a8",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original red paint, sign face or mail-box activity can be hidden by parked vehicle from the primary camera pose."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/limo_1800/fallback1-construction.json",
+          "construction_sha256": "4063eee270e938dfe9d22f9dcb66c7e38500c4bcafcd30474ec6c4425db4ef69",
+          "trigger": {
+            "source": "original four-camera video and Native camera readback",
+            "metric": "governed red edge and relevant sign or mail box visible with vehicle halt",
+            "failure_condition": "primary curb or relevant device/activity is occluded during the original halt interval"
+          },
+          "changed_knobs": [
+            "reviewed alternate camera placement around the same curb and vehicle"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__limo_1800 --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/limo_1800-fallback1/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "4063eee270e938dfe9d22f9dcb66c7e38500c4bcafcd30474ec6c4425db4ef69",
+            "log": "cpu-offline-detail-limo_1800-fallback1.log",
+            "log_sha256": "73daa184bf70ae22d0c413ac3ab076f1dd3a8548f3fb073a37c8f099ba8590ad"
+          },
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__limo_1800 --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/limo_1800-fallback1/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "receipt": "cpu-compatibility-limo_1800-fallback1.json",
+            "sha256": "139b8a2b41fd6e3cf268969983f7298844f4a933c08fa9d226a6f88b2a305a8b",
+            "log": "cpu-compatibility-analysis-limo_1800-fallback1.log",
+            "negative_log": "cpu-compatibility-negative-limo_1800-fallback1.log"
+          }
+        }
+      ],
+      "measurement_contract": "cases/limo_1800/measurement-contract.json",
+      "fixture_recipe": "work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/diagnostics/limo_1800/fixture-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "acquisition": {
+        "red_curb_location": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-red_curb_location.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "sign_and_vehicle_status": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-sign_and_vehicle_status.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "original_halt_activity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-original_halt_activity.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "exception_purpose": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-exception_purpose.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "attendance_and_engine": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-attendance_and_engine.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "governing_context": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-governing_context.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-camera_frame_identity.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__limo_1800 --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/limo_1800-primary/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "85c15f6f86e2605df61eee8316205c292edb40ce286c616e84617d4ce61f08a8",
+        "log": "cpu-offline-detail-limo_1800-primary.log",
+        "log_sha256": "e1688741e8305b642bd2d56e240026eeaa5b895e5ebd1f0be6da48b3df42cf6d"
+      },
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__limo_1800 --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/limo_1800-primary/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "receipt": "cpu-compatibility-limo_1800-primary.json",
+        "sha256": "8e49e7274a54c4c91f7164a265b26bf4168cfdb462c4f6d671238cbd6793a720",
+        "log": "cpu-compatibility-analysis-limo_1800-primary.log",
+        "negative_log": "cpu-compatibility-negative-limo_1800-primary.log"
+      },
+      "negative": {
+        "log": "cpu-compatibility-negative-limo_1800-primary.log"
+      }
+    },
+    {
+      "case_id": "testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__rtc_bus_1800",
+      "kind": "delivery",
+      "construction": "cases/rtc_bus_1800/construction.json",
+      "construction_sha256": "d7d139b0c68be45210b21c013ade88c7278449a69a26a5f8fb28c3e3764676a1",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original red paint, sign face or mail-box activity can be hidden by parked vehicle from the primary camera pose."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/rtc_bus_1800/fallback1-construction.json",
+          "construction_sha256": "cfbc595dfe3d9674071eb334206304721a2b76d9e1e90ddfde42d1f468442c51",
+          "trigger": {
+            "source": "original four-camera video and Native camera readback",
+            "metric": "governed red edge and relevant sign or mail box visible with vehicle halt",
+            "failure_condition": "primary curb or relevant device/activity is occluded during the original halt interval"
+          },
+          "changed_knobs": [
+            "reviewed alternate camera placement around the same curb and vehicle"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__rtc_bus_1800 --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/rtc_bus_1800-fallback1/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "cfbc595dfe3d9674071eb334206304721a2b76d9e1e90ddfde42d1f468442c51",
+            "log": "cpu-offline-detail-rtc_bus_1800-fallback1.log",
+            "log_sha256": "f3df37ec0e9503ffb76ef6b88c097d9bad003d8e42a94c2e9aa4a1715cf9e505"
+          },
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__rtc_bus_1800 --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/rtc_bus_1800-fallback1/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "receipt": "cpu-compatibility-rtc_bus_1800-fallback1.json",
+            "sha256": "0ab379b246fbd11261a45b2bd6ef25f92b3068eb5217437d9dcb2733268e1a3d",
+            "log": "cpu-compatibility-analysis-rtc_bus_1800-fallback1.log",
+            "negative_log": "cpu-compatibility-negative-rtc_bus_1800-fallback1.log"
+          }
+        }
+      ],
+      "measurement_contract": "cases/rtc_bus_1800/measurement-contract.json",
+      "fixture_recipe": "work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/diagnostics/rtc_bus_1800/fixture-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "acquisition": {
+        "red_curb_location": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-red_curb_location.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "sign_and_vehicle_status": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-sign_and_vehicle_status.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "original_halt_activity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-original_halt_activity.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "exception_purpose": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-exception_purpose.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "attendance_and_engine": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-attendance_and_engine.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "governing_context": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-governing_context.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-camera_frame_identity.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__rtc_bus_1800 --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/rtc_bus_1800-primary/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "d7d139b0c68be45210b21c013ade88c7278449a69a26a5f8fb28c3e3764676a1",
+        "log": "cpu-offline-detail-rtc_bus_1800-primary.log",
+        "log_sha256": "8fcfea88f551197f9c15bcd2cd9523eaaa51eab1abe1ab046cfc5dfb25956ea1"
+      },
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__rtc_bus_1800 --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/rtc_bus_1800-primary/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "receipt": "cpu-compatibility-rtc_bus_1800-primary.json",
+        "sha256": "1d415007939f5186b77861ac42e7d9e8a57f3c1a08d28da58e9ca5b38b327c9c",
+        "log": "cpu-compatibility-analysis-rtc_bus_1800-primary.log",
+        "negative_log": "cpu-compatibility-negative-rtc_bus_1800-primary.log"
+      },
+      "negative": {
+        "log": "cpu-compatibility-negative-rtc_bus_1800-primary.log"
+      }
+    },
+    {
+      "case_id": "testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__rtc_bus_1799",
+      "kind": "delivery",
+      "construction": "cases/rtc_bus_1799/construction.json",
+      "construction_sha256": "ca2dafb5798ed3361e517bb9a1674092492cd7e8a673fcf06c45cfc53f93a17c",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original red paint, sign face or mail-box activity can be hidden by parked vehicle from the primary camera pose."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/rtc_bus_1799/fallback1-construction.json",
+          "construction_sha256": "c7cb0e3b2db12c32c7b02c7291599d66d0ff841b7cc8e1787c080c6f35ed779a",
+          "trigger": {
+            "source": "original four-camera video and Native camera readback",
+            "metric": "governed red edge and relevant sign or mail box visible with vehicle halt",
+            "failure_condition": "primary curb or relevant device/activity is occluded during the original halt interval"
+          },
+          "changed_knobs": [
+            "reviewed alternate camera placement around the same curb and vehicle"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__rtc_bus_1799 --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/rtc_bus_1799-fallback1/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "c7cb0e3b2db12c32c7b02c7291599d66d0ff841b7cc8e1787c080c6f35ed779a",
+            "log": "cpu-offline-detail-rtc_bus_1799-fallback1.log",
+            "log_sha256": "2d1b6fdf8c24ae0274d8c57a85f4e674f75abe9b823913094d11baa514a7ae2c"
+          },
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__rtc_bus_1799 --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/rtc_bus_1799-fallback1/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "receipt": "cpu-compatibility-rtc_bus_1799-fallback1.json",
+            "sha256": "42b72d4c82d4b5cbc6d58a2817a52885c1f4d46d9a9fa1c0cd8d25a0dff3cb84",
+            "log": "cpu-compatibility-analysis-rtc_bus_1799-fallback1.log",
+            "negative_log": "cpu-compatibility-negative-rtc_bus_1799-fallback1.log"
+          }
+        }
+      ],
+      "measurement_contract": "cases/rtc_bus_1799/measurement-contract.json",
+      "fixture_recipe": "work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/diagnostics/rtc_bus_1799/fixture-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "acquisition": {
+        "red_curb_location": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-red_curb_location.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "sign_and_vehicle_status": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-sign_and_vehicle_status.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "original_halt_activity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-original_halt_activity.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "exception_purpose": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-exception_purpose.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "attendance_and_engine": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-attendance_and_engine.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "governing_context": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-governing_context.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-camera_frame_identity.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__rtc_bus_1799 --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/rtc_bus_1799-primary/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "ca2dafb5798ed3361e517bb9a1674092492cd7e8a673fcf06c45cfc53f93a17c",
+        "log": "cpu-offline-detail-rtc_bus_1799-primary.log",
+        "log_sha256": "580b82eabb39d0c7b04303d4678a0bf249e4e74f276c368302daae63b95f7974"
+      },
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__rtc_bus_1799 --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/rtc_bus_1799-primary/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "receipt": "cpu-compatibility-rtc_bus_1799-primary.json",
+        "sha256": "41cba1bb726abf14bfe01eb89c31ff5ad592364277f268ba9162639eb28308c7",
+        "log": "cpu-compatibility-analysis-rtc_bus_1799-primary.log",
+        "negative_log": "cpu-compatibility-negative-rtc_bus_1799-primary.log"
+      },
+      "negative": {
+        "log": "cpu-compatibility-negative-rtc_bus_1799-primary.log"
+      }
+    },
+    {
+      "case_id": "testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__rtc_bus_1801",
+      "kind": "delivery",
+      "construction": "cases/rtc_bus_1801/construction.json",
+      "construction_sha256": "c8ef388ff46a1d63a204f93254ee22d2d535f2161e585a101091eb2916d46c03",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original red paint, sign face or mail-box activity can be hidden by parked vehicle from the primary camera pose."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/rtc_bus_1801/fallback1-construction.json",
+          "construction_sha256": "6520ee51969904642c7605f729d6a73c673a6a0f1900e39b9b344732d2208ec6",
+          "trigger": {
+            "source": "original four-camera video and Native camera readback",
+            "metric": "governed red edge and relevant sign or mail box visible with vehicle halt",
+            "failure_condition": "primary curb or relevant device/activity is occluded during the original halt interval"
+          },
+          "changed_knobs": [
+            "reviewed alternate camera placement around the same curb and vehicle"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__rtc_bus_1801 --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/rtc_bus_1801-fallback1/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "6520ee51969904642c7605f729d6a73c673a6a0f1900e39b9b344732d2208ec6",
+            "log": "cpu-offline-detail-rtc_bus_1801-fallback1.log",
+            "log_sha256": "8d6075c2b06da5e32e53197a29090f1e60e5b06efd39d2057df5f1383b518203"
+          },
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__rtc_bus_1801 --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/rtc_bus_1801-fallback1/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "receipt": "cpu-compatibility-rtc_bus_1801-fallback1.json",
+            "sha256": "5552fe8d97d499c9b5d810a1e57b943c7007576d8c0de6872c94c1a344cfce8c",
+            "log": "cpu-compatibility-analysis-rtc_bus_1801-fallback1.log",
+            "negative_log": "cpu-compatibility-negative-rtc_bus_1801-fallback1.log"
+          }
+        }
+      ],
+      "measurement_contract": "cases/rtc_bus_1801/measurement-contract.json",
+      "fixture_recipe": "work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/diagnostics/rtc_bus_1801/fixture-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "acquisition": {
+        "red_curb_location": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-red_curb_location.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "sign_and_vehicle_status": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-sign_and_vehicle_status.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "original_halt_activity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-original_halt_activity.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "exception_purpose": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-exception_purpose.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "attendance_and_engine": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-attendance_and_engine.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "governing_context": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-governing_context.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-camera_frame_identity.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__rtc_bus_1801 --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/rtc_bus_1801-primary/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "c8ef388ff46a1d63a204f93254ee22d2d535f2161e585a101091eb2916d46c03",
+        "log": "cpu-offline-detail-rtc_bus_1801-primary.log",
+        "log_sha256": "aad6ffdaceb88588fd2ede9b0ece972da66701a29d5d8b6c8a13447ecadc8ac8"
+      },
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__rtc_bus_1801 --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/rtc_bus_1801-primary/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "receipt": "cpu-compatibility-rtc_bus_1801-primary.json",
+        "sha256": "eda7894b7cf14af16b24891f71ca18b104b5ae6532d96727bf9c2e12511077ef",
+        "log": "cpu-compatibility-analysis-rtc_bus_1801-primary.log",
+        "negative_log": "cpu-compatibility-negative-rtc_bus_1801-primary.log"
+      },
+      "negative": {
+        "log": "cpu-compatibility-negative-rtc_bus_1801-primary.log"
+      }
+    },
+    {
+      "case_id": "testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__armored_business",
+      "kind": "delivery",
+      "construction": "cases/armored_business/construction.json",
+      "construction_sha256": "9068e99821384a7abbcb6121187696034f375bb74999021ed8548d20a7e3d8f4",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original red paint, sign face or mail-box activity can be hidden by parked vehicle from the primary camera pose."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/armored_business/fallback1-construction.json",
+          "construction_sha256": "ac69259b1a6961000520aaeaf29967e45b6896e43a2129613548e54522829340",
+          "trigger": {
+            "source": "original four-camera video and Native camera readback",
+            "metric": "governed red edge and relevant sign or mail box visible with vehicle halt",
+            "failure_condition": "primary curb or relevant device/activity is occluded during the original halt interval"
+          },
+          "changed_knobs": [
+            "reviewed alternate camera placement around the same curb and vehicle"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__armored_business --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/armored_business-fallback1/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "ac69259b1a6961000520aaeaf29967e45b6896e43a2129613548e54522829340",
+            "log": "cpu-offline-detail-armored_business-fallback1.log",
+            "log_sha256": "5ea5af80db2066274f4efd9bd16369638eeb5898e84f5379bac86b9c3d64d3dd"
+          },
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__armored_business --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/armored_business-fallback1/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "receipt": "cpu-compatibility-armored_business-fallback1.json",
+            "sha256": "e9d7c5935cd9a7ae8d0869566687681392534b2b39b5fc0cc067d71aa913adba",
+            "log": "cpu-compatibility-analysis-armored_business-fallback1.log",
+            "negative_log": "cpu-compatibility-negative-armored_business-fallback1.log"
+          }
+        }
+      ],
+      "measurement_contract": "cases/armored_business/measurement-contract.json",
+      "fixture_recipe": "work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/diagnostics/armored_business/fixture-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "acquisition": {
+        "red_curb_location": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-red_curb_location.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "sign_and_vehicle_status": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-sign_and_vehicle_status.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "original_halt_activity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-original_halt_activity.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "exception_purpose": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-exception_purpose.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "attendance_and_engine": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-attendance_and_engine.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "governing_context": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-governing_context.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-camera_frame_identity.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__armored_business --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/armored_business-primary/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "9068e99821384a7abbcb6121187696034f375bb74999021ed8548d20a7e3d8f4",
+        "log": "cpu-offline-detail-armored_business-primary.log",
+        "log_sha256": "df1081004e79f40d3ece6170a76832cac5f2900ceb97a62519c6a9fb94cdc040"
+      },
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__armored_business --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/armored_business-primary/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "receipt": "cpu-compatibility-armored_business-primary.json",
+        "sha256": "f7eb5e2467c9e0f957e5ddac7a06fb632a58dd322505ad4a9e8e744fde14e731",
+        "log": "cpu-compatibility-analysis-armored_business-primary.log",
+        "negative_log": "cpu-compatibility-negative-armored_business-primary.log"
+      },
+      "negative": {
+        "log": "cpu-compatibility-negative-armored_business-primary.log"
+      }
+    },
+    {
+      "case_id": "testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__armored_nonbusiness",
+      "kind": "delivery",
+      "construction": "cases/armored_nonbusiness/construction.json",
+      "construction_sha256": "1f8e3bc0e2f9e1e0ebc5be5145bbb3bd721d0bf1832e9812463097133576754f",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original red paint, sign face or mail-box activity can be hidden by parked vehicle from the primary camera pose."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/armored_nonbusiness/fallback1-construction.json",
+          "construction_sha256": "616501f7f67449485152411c5595b14555d2383d6d79bbfc3b1bbfa93b96a228",
+          "trigger": {
+            "source": "original four-camera video and Native camera readback",
+            "metric": "governed red edge and relevant sign or mail box visible with vehicle halt",
+            "failure_condition": "primary curb or relevant device/activity is occluded during the original halt interval"
+          },
+          "changed_knobs": [
+            "reviewed alternate camera placement around the same curb and vehicle"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__armored_nonbusiness --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/armored_nonbusiness-fallback1/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "616501f7f67449485152411c5595b14555d2383d6d79bbfc3b1bbfa93b96a228",
+            "log": "cpu-offline-detail-armored_nonbusiness-fallback1.log",
+            "log_sha256": "4b23005aba525236b4f1444a7e153ed4e150d23ccdeecf384d2e139b2c0551bb"
+          },
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__armored_nonbusiness --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/armored_nonbusiness-fallback1/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "receipt": "cpu-compatibility-armored_nonbusiness-fallback1.json",
+            "sha256": "81d76944a44b59a7ac168fd379f5436e632611bca21fd0cd61619181d15c45b8",
+            "log": "cpu-compatibility-analysis-armored_nonbusiness-fallback1.log",
+            "negative_log": "cpu-compatibility-negative-armored_nonbusiness-fallback1.log"
+          }
+        }
+      ],
+      "measurement_contract": "cases/armored_nonbusiness/measurement-contract.json",
+      "fixture_recipe": "work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/diagnostics/armored_nonbusiness/fixture-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "acquisition": {
+        "red_curb_location": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-red_curb_location.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "sign_and_vehicle_status": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-sign_and_vehicle_status.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "original_halt_activity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-original_halt_activity.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "exception_purpose": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-exception_purpose.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "attendance_and_engine": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-attendance_and_engine.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "governing_context": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-governing_context.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-camera_frame_identity.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__armored_nonbusiness --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/armored_nonbusiness-primary/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "1f8e3bc0e2f9e1e0ebc5be5145bbb3bd721d0bf1832e9812463097133576754f",
+        "log": "cpu-offline-detail-armored_nonbusiness-primary.log",
+        "log_sha256": "372b397000aaeb440b5d04574124330d5a2ae7419b4eddfbacbcc385d76a8b79"
+      },
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__armored_nonbusiness --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/armored_nonbusiness-primary/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "receipt": "cpu-compatibility-armored_nonbusiness-primary.json",
+        "sha256": "fc5b8313a94bcf174931b75850b4edfb524b79c0fb8f329d13de0f7a38ff4c1c",
+        "log": "cpu-compatibility-analysis-armored_nonbusiness-primary.log",
+        "negative_log": "cpu-compatibility-negative-armored_nonbusiness-primary.log"
+      },
+      "negative": {
+        "log": "cpu-compatibility-negative-armored_nonbusiness-primary.log"
+      }
+    },
+    {
+      "case_id": "testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__emergency_business",
+      "kind": "delivery",
+      "construction": "cases/emergency_business/construction.json",
+      "construction_sha256": "a0e9ef8d19d08aaf443a1ea227b451c9a1ea3eec6e9eaf8eb45902d568d07929",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original red paint, sign face or mail-box activity can be hidden by parked vehicle from the primary camera pose."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/emergency_business/fallback1-construction.json",
+          "construction_sha256": "5bafc772efdd28169891366646a5d96716bdcf48c6228dee4b93227f7db5252b",
+          "trigger": {
+            "source": "original four-camera video and Native camera readback",
+            "metric": "governed red edge and relevant sign or mail box visible with vehicle halt",
+            "failure_condition": "primary curb or relevant device/activity is occluded during the original halt interval"
+          },
+          "changed_knobs": [
+            "reviewed alternate camera placement around the same curb and vehicle"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__emergency_business --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/emergency_business-fallback1/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "5bafc772efdd28169891366646a5d96716bdcf48c6228dee4b93227f7db5252b",
+            "log": "cpu-offline-detail-emergency_business-fallback1.log",
+            "log_sha256": "9cbd21db39d8b51c7bb2b40b2051f3967b298910fd93b22d9430a510e3de266a"
+          },
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__emergency_business --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/emergency_business-fallback1/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "receipt": "cpu-compatibility-emergency_business-fallback1.json",
+            "sha256": "d20ef1781cc267df16fe6310f6600629b237b4954ffb1556d08197c5c5dfaa1a",
+            "log": "cpu-compatibility-analysis-emergency_business-fallback1.log",
+            "negative_log": "cpu-compatibility-negative-emergency_business-fallback1.log"
+          }
+        }
+      ],
+      "measurement_contract": "cases/emergency_business/measurement-contract.json",
+      "fixture_recipe": "work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/diagnostics/emergency_business/fixture-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "acquisition": {
+        "red_curb_location": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-red_curb_location.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "sign_and_vehicle_status": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-sign_and_vehicle_status.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "original_halt_activity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-original_halt_activity.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "exception_purpose": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-exception_purpose.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "attendance_and_engine": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-attendance_and_engine.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "governing_context": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-governing_context.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-camera_frame_identity.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__emergency_business --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/emergency_business-primary/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "a0e9ef8d19d08aaf443a1ea227b451c9a1ea3eec6e9eaf8eb45902d568d07929",
+        "log": "cpu-offline-detail-emergency_business-primary.log",
+        "log_sha256": "b7256148f570ec01be2241e14c0bef9324cfce206449208d17d356324febb9a0"
+      },
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__emergency_business --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/emergency_business-primary/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "receipt": "cpu-compatibility-emergency_business-primary.json",
+        "sha256": "63edfbdd441fae21c5a91073523d21e12a42375979a4fb632b3c1546115d8947",
+        "log": "cpu-compatibility-analysis-emergency_business-primary.log",
+        "negative_log": "cpu-compatibility-negative-emergency_business-primary.log"
+      },
+      "negative": {
+        "log": "cpu-compatibility-negative-emergency_business-primary.log"
+      }
+    },
+    {
+      "case_id": "testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__emergency_nonbusiness",
+      "kind": "delivery",
+      "construction": "cases/emergency_nonbusiness/construction.json",
+      "construction_sha256": "16876a0d371bd9251248d13069aa9011af2ed4fe11e6686f0a1f0c3400a2a9dd",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original red paint, sign face or mail-box activity can be hidden by parked vehicle from the primary camera pose."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/emergency_nonbusiness/fallback1-construction.json",
+          "construction_sha256": "03a57d5cd99ef7ae5733271eda7712df73523464f2fbbd37bd603d762b3c4ed8",
+          "trigger": {
+            "source": "original four-camera video and Native camera readback",
+            "metric": "governed red edge and relevant sign or mail box visible with vehicle halt",
+            "failure_condition": "primary curb or relevant device/activity is occluded during the original halt interval"
+          },
+          "changed_knobs": [
+            "reviewed alternate camera placement around the same curb and vehicle"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__emergency_nonbusiness --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/emergency_nonbusiness-fallback1/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "03a57d5cd99ef7ae5733271eda7712df73523464f2fbbd37bd603d762b3c4ed8",
+            "log": "cpu-offline-detail-emergency_nonbusiness-fallback1.log",
+            "log_sha256": "0743be86017f2423c47297b9bba1ea508ee8ab9d3f256a3481270db722b90de5"
+          },
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__emergency_nonbusiness --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/emergency_nonbusiness-fallback1/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "receipt": "cpu-compatibility-emergency_nonbusiness-fallback1.json",
+            "sha256": "29b264f6fc8b7fe72c447f93d08e5be54e4e1b0b80cf71ef347a894374dd17ae",
+            "log": "cpu-compatibility-analysis-emergency_nonbusiness-fallback1.log",
+            "negative_log": "cpu-compatibility-negative-emergency_nonbusiness-fallback1.log"
+          }
+        }
+      ],
+      "measurement_contract": "cases/emergency_nonbusiness/measurement-contract.json",
+      "fixture_recipe": "work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/diagnostics/emergency_nonbusiness/fixture-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "acquisition": {
+        "red_curb_location": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-red_curb_location.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "sign_and_vehicle_status": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-sign_and_vehicle_status.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "original_halt_activity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-original_halt_activity.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "exception_purpose": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-exception_purpose.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "attendance_and_engine": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-attendance_and_engine.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "governing_context": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-governing_context.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-camera_frame_identity.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__emergency_nonbusiness --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/emergency_nonbusiness-primary/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "16876a0d371bd9251248d13069aa9011af2ed4fe11e6686f0a1f0c3400a2a9dd",
+        "log": "cpu-offline-detail-emergency_nonbusiness-primary.log",
+        "log_sha256": "988e728e72a46239d164fb1f1cd5d628e4d9554fc621244ba05bd47ec4e1186c"
+      },
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__emergency_nonbusiness --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/emergency_nonbusiness-primary/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "receipt": "cpu-compatibility-emergency_nonbusiness-primary.json",
+        "sha256": "623271e69e3aed1c9fcd38272b15ef440914ab935872f4d87a468277bf844cdc",
+        "log": "cpu-compatibility-analysis-emergency_nonbusiness-primary.log",
+        "negative_log": "cpu-compatibility-negative-emergency_nonbusiness-primary.log"
+      },
+      "negative": {
+        "log": "cpu-compatibility-negative-emergency_nonbusiness-primary.log"
+      }
+    },
+    {
+      "case_id": "testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__mail_stop",
+      "kind": "delivery",
+      "construction": "cases/mail_stop/construction.json",
+      "construction_sha256": "34d2540d520fd2db8b59d4acec18ff31cdc85aaed2d593521d6d37db89ccc509",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original red paint, sign face or mail-box activity can be hidden by parked vehicle from the primary camera pose."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/mail_stop/fallback1-construction.json",
+          "construction_sha256": "280e917983ebe9572f89f20b328946d5cf574896e476bd6e34a5627f916f7802",
+          "trigger": {
+            "source": "original four-camera video and Native camera readback",
+            "metric": "governed red edge and relevant sign or mail box visible with vehicle halt",
+            "failure_condition": "primary curb or relevant device/activity is occluded during the original halt interval"
+          },
+          "changed_knobs": [
+            "reviewed alternate camera placement around the same curb and vehicle"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__mail_stop --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/mail_stop-fallback1/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "280e917983ebe9572f89f20b328946d5cf574896e476bd6e34a5627f916f7802",
+            "log": "cpu-offline-detail-mail_stop-fallback1.log",
+            "log_sha256": "9f6d158bf8783246a0ecc457dbfab607020413778991413fb69b16f616ff3367"
+          },
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__mail_stop --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/mail_stop-fallback1/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "receipt": "cpu-compatibility-mail_stop-fallback1.json",
+            "sha256": "6f7244426927a8345f9532d3f0e555909e82e0ff32d88bc08b6c282f098873d3",
+            "log": "cpu-compatibility-analysis-mail_stop-fallback1.log",
+            "negative_log": "cpu-compatibility-negative-mail_stop-fallback1.log"
+          }
+        }
+      ],
+      "measurement_contract": "cases/mail_stop/measurement-contract.json",
+      "fixture_recipe": "work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/diagnostics/mail_stop/fixture-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "acquisition": {
+        "red_curb_location": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-red_curb_location.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "sign_and_vehicle_status": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-sign_and_vehicle_status.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "original_halt_activity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-original_halt_activity.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "exception_purpose": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-exception_purpose.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "attendance_and_engine": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-attendance_and_engine.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "governing_context": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-governing_context.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-camera_frame_identity.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__mail_stop --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/mail_stop-primary/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "34d2540d520fd2db8b59d4acec18ff31cdc85aaed2d593521d6d37db89ccc509",
+        "log": "cpu-offline-detail-mail_stop-primary.log",
+        "log_sha256": "8af30a7641a943109183a0f0c8097eb9a06f666bce72d416d6e5e933e147c829"
+      },
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__mail_stop --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/mail_stop-primary/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "receipt": "cpu-compatibility-mail_stop-primary.json",
+        "sha256": "7ef2c7edeff2e215c032529be05a514ba4f042e1e444dbe6a26424fde9ceeebb",
+        "log": "cpu-compatibility-analysis-mail_stop-primary.log",
+        "negative_log": "cpu-compatibility-negative-mail_stop-primary.log"
+      },
+      "negative": {
+        "log": "cpu-compatibility-negative-mail_stop-primary.log"
+      }
+    },
+    {
+      "case_id": "testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__mail_stop_no_deposit",
+      "kind": "delivery",
+      "construction": "cases/mail_stop_no_deposit/construction.json",
+      "construction_sha256": "c1b25508e2f503c354c21efee2645798c568355397a8ad93699ba20a72098a02",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original red paint, sign face or mail-box activity can be hidden by parked vehicle from the primary camera pose."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/mail_stop_no_deposit/fallback1-construction.json",
+          "construction_sha256": "6b6e4e74f4e9e18b1c7c4c942733358b8303c448eeb9668c009194aaee2135c4",
+          "trigger": {
+            "source": "original four-camera video and Native camera readback",
+            "metric": "governed red edge and relevant sign or mail box visible with vehicle halt",
+            "failure_condition": "primary curb or relevant device/activity is occluded during the original halt interval"
+          },
+          "changed_knobs": [
+            "reviewed alternate camera placement around the same curb and vehicle"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__mail_stop_no_deposit --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/mail_stop_no_deposit-fallback1/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "6b6e4e74f4e9e18b1c7c4c942733358b8303c448eeb9668c009194aaee2135c4",
+            "log": "cpu-offline-detail-mail_stop_no_deposit-fallback1.log",
+            "log_sha256": "5e7038ceb89a2c27a8e939a951f5384605568d4c1db192a95fc968c8068bfd7b"
+          },
+          "compatibility": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__mail_stop_no_deposit --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/mail_stop_no_deposit-fallback1/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "receipt": "cpu-compatibility-mail_stop_no_deposit-fallback1.json",
+            "sha256": "e8c8e6c7c7bb46766343b2a37a1738378d59878f686fe2df483f8d01a64f5ed7",
+            "log": "cpu-compatibility-analysis-mail_stop_no_deposit-fallback1.log",
+            "negative_log": "cpu-compatibility-negative-mail_stop_no_deposit-fallback1.log"
+          }
+        }
+      ],
+      "measurement_contract": "cases/mail_stop_no_deposit/measurement-contract.json",
+      "fixture_recipe": "work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/diagnostics/mail_stop_no_deposit/fixture-recipe.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "acquisition": {
+        "red_curb_location": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-red_curb_location.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "sign_and_vehicle_status": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-sign_and_vehicle_status.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "original_halt_activity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-original_halt_activity.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "exception_purpose": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-exception_purpose.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "attendance_and_engine": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-attendance_and_engine.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "governing_context": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-governing_context.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "evidence": "channel-camera_frame_identity.jsonl",
+          "method": "source-bound original red-curb and camera frame joins"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__mail_stop_no_deposit --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/mail_stop_no_deposit-primary/offline --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "c1b25508e2f503c354c21efee2645798c568355397a8ad93699ba20a72098a02",
+        "log": "cpu-offline-detail-mail_stop_no_deposit-primary.log",
+        "log_sha256": "61bd95aac9f5fa3c7fc9d02f49949769e85b55f6a823e78143ff0a51ecb4fd87"
+      },
+      "compatibility": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py compatibility --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/execution-manifest.json --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__mail_stop_no_deposit --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229452-proofs-v1/mail_stop_no_deposit-primary/compat --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "receipt": "cpu-compatibility-mail_stop_no_deposit-primary.json",
+        "sha256": "5f9c3344fa83caf6ec4142baacc38de71e6aceb9d917ec5bb2e7577ada181d8d",
+        "log": "cpu-compatibility-analysis-mail_stop_no_deposit-primary.log",
+        "negative_log": "cpu-compatibility-negative-mail_stop_no_deposit-primary.log"
+      },
+      "negative": {
+        "log": "cpu-compatibility-negative-mail_stop_no_deposit-primary.log"
+      }
+    }
+  ]
+}
