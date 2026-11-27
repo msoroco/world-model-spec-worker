@@ -3,18 +3,124 @@
   "cell_id": "C230247",
   "actor": "motor_vehicle_driver",
   "law_id": "NRS-484B-307-12b",
-  "status": "draft_pending_semantic_validation",
+  "status": "draft",
   "cases": [
+    {
+      "case_id": "training__C230247__NRS-484B-307-12b__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared lane signal and roadway context without a legal verdict",
+      "variable_assignments": {
+        "red_x_lane_occupancy": {
+          "kind": "world_setup",
+          "unit": "lane entry event",
+          "value": false
+        },
+        "rel.occupies": {
+          "kind": "subject_behavior",
+          "unit": "lane overlap",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "dev.lane_control_signal",
+            "unit": "structured",
+            "method": "original Native 600-frame map, signal, actor body, trace and camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "official provenance, red-X pixels and physical lane entry pending independent local review"
+          },
+          {
+            "name": "dev.governs",
+            "unit": "structured",
+            "method": "original Native 600-frame map, signal, actor body, trace and camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "official provenance, red-X pixels and physical lane entry pending independent local review"
+          },
+          {
+            "name": "st.lane",
+            "unit": "structured",
+            "method": "original Native 600-frame map, signal, actor body, trace and camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "official provenance, red-X pixels and physical lane entry pending independent local review"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "lane overlap",
+            "method": "original Native 600-frame map, signal, actor body, trace and camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "official provenance, red-X pixels and physical lane entry pending independent local review"
+          },
+          {
+            "name": "drv.lane_change",
+            "unit": "lane entry event",
+            "method": "original Native 600-frame map, signal, actor body, trace and camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "official provenance, red-X pixels and physical lane entry pending independent local review"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "m/s",
+            "method": "original Native 600-frame map, signal, actor body, trace and camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "official provenance, red-X pixels and physical lane entry pending independent local review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Highway classification and official device authority await original local review.",
+          "CPU fixture does not prove actual red-X pixels or physical entry"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "facing the signal"
+      ],
+      "sweep_id": "training__C230247__NRS-484B-307-12b__motor_vehicle_driver__selected_378a10ff__comparison",
+      "sweep_point": {
+        "red_x_lane_occupancy": false
+      },
+      "sweep_spec_version": "9b50158f1eca19d65312f9518007cae1bd5471fad81957bfd45e29d27dea386d",
+      "sweep_measurements": [
+        {
+          "variable": "red_x_lane_occupancy",
+          "observable": "rel.occupies",
+          "unit": "lane overlap",
+          "measurement": {
+            "method": "original actor body and lane map",
+            "time_window": "600 original frames",
+            "statistic": "max"
+          }
+        }
+      ]
+    },
     {
       "case_id": "training__C230247__NRS-484B-307-12b__motor_vehicle_driver__probe_1",
       "target_law_id": "NRS-484B-307-12b",
-      "target_type": "controlled_pair",
+      "target_type": "boundary_probe",
       "rationale": "Measure outside or entering the original red-X governed lane",
       "variable_assignments": {
         "red_x_lane_occupancy": {
-          "kind": "subject_behavior",
+          "kind": "world_setup",
           "unit": "lane entry event",
           "value": false
+        },
+        "rel.occupies": {
+          "kind": "subject_behavior",
+          "unit": "lane overlap",
+          "value": null
         }
       },
       "paired_probe_id": "red_x_lane_occupancy",
@@ -83,18 +189,48 @@
           "Highway classification and official device authority await original local review.",
           "CPU fixture does not prove actual red-X pixels or physical entry"
         ]
+      },
+      "unresolved_judgment_calls": [
+        "facing the signal"
+      ],
+      "sweep_id": "training__C230247__NRS-484B-307-12b__motor_vehicle_driver__selected_378a10ff__comparison",
+      "sweep_point": {
+        "red_x_lane_occupancy": false
+      },
+      "sweep_spec_version": "9b50158f1eca19d65312f9518007cae1bd5471fad81957bfd45e29d27dea386d",
+      "sweep_measurements": [
+        {
+          "variable": "red_x_lane_occupancy",
+          "observable": "rel.occupies",
+          "unit": "lane overlap",
+          "measurement": {
+            "method": "original actor body and lane map",
+            "time_window": "600 original frames",
+            "statistic": "max"
+          }
+        }
+      ],
+      "probe": {
+        "primary_variable": "red_x_lane_occupancy",
+        "comparison_or_standard": "entry into the lane governed by the red X",
+        "target_value_or_branch": false
       }
     },
     {
       "case_id": "training__C230247__NRS-484B-307-12b__motor_vehicle_driver__probe_2",
       "target_law_id": "NRS-484B-307-12b",
-      "target_type": "controlled_pair",
+      "target_type": "boundary_probe",
       "rationale": "Measure outside or entering the original red-X governed lane",
       "variable_assignments": {
         "red_x_lane_occupancy": {
-          "kind": "subject_behavior",
+          "kind": "world_setup",
           "unit": "lane entry event",
           "value": true
+        },
+        "rel.occupies": {
+          "kind": "subject_behavior",
+          "unit": "lane overlap",
+          "value": null
         }
       },
       "paired_probe_id": "red_x_lane_occupancy",
@@ -163,7 +299,148 @@
           "Highway classification and official device authority await original local review.",
           "CPU fixture does not prove actual red-X pixels or physical entry"
         ]
+      },
+      "unresolved_judgment_calls": [
+        "facing the signal"
+      ],
+      "sweep_id": "training__C230247__NRS-484B-307-12b__motor_vehicle_driver__selected_378a10ff__comparison",
+      "sweep_point": {
+        "red_x_lane_occupancy": true
+      },
+      "sweep_spec_version": "9b50158f1eca19d65312f9518007cae1bd5471fad81957bfd45e29d27dea386d",
+      "sweep_measurements": [
+        {
+          "variable": "red_x_lane_occupancy",
+          "observable": "rel.occupies",
+          "unit": "lane overlap",
+          "measurement": {
+            "method": "original actor body and lane map",
+            "time_window": "600 original frames",
+            "statistic": "max"
+          }
+        }
+      ],
+      "probe": {
+        "primary_variable": "red_x_lane_occupancy",
+        "comparison_or_standard": "entry into the lane governed by the red X",
+        "target_value_or_branch": true
       }
     }
-  ]
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "training__C230247__NRS-484B-307-12b__motor_vehicle_driver__selected_378a10ff__comparison",
+      "target_law_id": "NRS-484B-307-12b",
+      "judgment_refs": [
+        {
+          "phrase": "facing the signal",
+          "note": "Actual original device pixels and driver-facing geometry require independent review."
+        }
+      ],
+      "rationale": "Vary measured entry into the red-X-governed lane while holding the signal, road, actor, and cameras fixed.",
+      "status": "complete",
+      "mode": "one_dimensional",
+      "axes": [
+        {
+          "variable": "red_x_lane_occupancy",
+          "observable": "rel.occupies",
+          "unit": "lane overlap",
+          "min": 0,
+          "max": 1,
+          "spacing": 1,
+          "range_rationale": "Two planned occupancy outcomes: remaining outside or entering the governed lane.",
+          "spacing_rationale": "The binary entry event distinguishes the two exact cases.",
+          "feasibility_evidence": "Both exact offline constructions and source-bound diagnostic finalization pass.",
+          "measurement": {
+            "method": "original actor body and lane map",
+            "time_window": "600 original frames",
+            "statistic": "max"
+          }
+        }
+      ],
+      "landmarks": [],
+      "variable_assignments": {
+        "red_x_lane_occupancy": {
+          "kind": "world_setup",
+          "unit": "lane entry event",
+          "value": false
+        },
+        "rel.occupies": {
+          "kind": "subject_behavior",
+          "unit": "lane overlap",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "dev.lane_control_signal",
+            "unit": "structured",
+            "method": "original Native 600-frame map, signal, actor body, trace and camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "official provenance, red-X pixels and physical lane entry pending independent local review"
+          },
+          {
+            "name": "dev.governs",
+            "unit": "structured",
+            "method": "original Native 600-frame map, signal, actor body, trace and camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "official provenance, red-X pixels and physical lane entry pending independent local review"
+          },
+          {
+            "name": "st.lane",
+            "unit": "structured",
+            "method": "original Native 600-frame map, signal, actor body, trace and camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "official provenance, red-X pixels and physical lane entry pending independent local review"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "lane overlap",
+            "method": "original Native 600-frame map, signal, actor body, trace and camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "official provenance, red-X pixels and physical lane entry pending independent local review"
+          },
+          {
+            "name": "drv.lane_change",
+            "unit": "lane entry event",
+            "method": "original Native 600-frame map, signal, actor body, trace and camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "official provenance, red-X pixels and physical lane entry pending independent local review"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "m/s",
+            "method": "original Native 600-frame map, signal, actor body, trace and camera source join",
+            "sampling_rate_hz": 20,
+            "time_window": "30 s / 600 original frames",
+            "reference_frame": "original Native map and frame",
+            "uncertainty": "official provenance, red-X pixels and physical lane entry pending independent local review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Highway classification and official device authority await original local review.",
+          "CPU fixture does not prove actual red-X pixels or physical entry"
+        ]
+      },
+      "planned_case_count": 2,
+      "selection_order": [
+        "training__C230247__NRS-484B-307-12b__motor_vehicle_driver__probe_1",
+        "training__C230247__NRS-484B-307-12b__motor_vehicle_driver__probe_2"
+      ],
+      "spec_version": "9b50158f1eca19d65312f9518007cae1bd5471fad81957bfd45e29d27dea386d"
+    }
+  ],
+  "sweeps_expanded": true
 }

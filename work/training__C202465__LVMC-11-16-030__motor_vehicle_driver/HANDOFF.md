@@ -1,6 +1,12 @@
 # training__C202465__LVMC-11-16-030__motor_vehicle_driver
 
-Status: partial. A source-shaped rail-sight and speed proof is present; this is not a deployable delivery package.
+Status: see result.json for current scoped strict-gate status. Native CARLA capture and physical/legal acceptance remain future work.
+
+## 2026-11-27 final CPU delivery boundary
+
+Ten exact selected cases and nine controlled source comparisons are implemented. The 20 primary/fallback offline proofs and 20 public compatibility proofs passed, including selected measurement, missing-source rejection, semantic decoding and full video decode. All ten 600-frame saved-only processing receipts passed. Independent original-source delivery audits passed both positive and missing-rail-ray negative checks for all ten cases; nine comparison audits passed with mismatched-original-source rejection. Semantic stage validation covers seven stages and ten selected cases; physical status triads are diagnostic and do not assert Native physical completion. The source-bound CPU contract test in tests/test_rail_contract.py passed. Execution, semantic, delivery and public compatibility validators passed directly.
+
+The root construction inline config was synchronized with config.json. Source observation mappings now name the declared captured channels. The scoped strict check exposed and prompted an actual tests/test*.py CPU entrypoint; that test and its passing log are now bound in result.json. The exact scoped strict gate is being rerun. All returned files remain below 2 MiB and pass local UTF-8, trailing-whitespace, blank-EOF and conflict-marker checks. No real CARLA acquisition, independently qualified railway geometry or legal verdict is claimed.
 
 ## 2026-11-27 exact boundary and canonical stage continuation
 

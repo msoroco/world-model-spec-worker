@@ -1,0 +1,250 @@
+{
+  "case_id": "training__C230247__NRS-484B-307-12b__motor_vehicle_driver__probe_2",
+  "measured_values": {
+    "red_x_facing_frames": 600,
+    "first_governed_lane_overlap_frame": 228,
+    "governed_lane_overlap_frames": 372,
+    "original_travel_progress_m": 74.875
+  },
+  "target_checks": [
+    {
+      "target": "authored_red_x_lane_entry",
+      "requested": true,
+      "measured": true,
+      "method": "original per-frame body polygon and map-lane intersection",
+      "tolerance": 0,
+      "matched": true,
+      "physical_cause_confirmed": false,
+      "cause_evidence": [
+        "native-signal-rows.jsonl",
+        "native-map-readback.xodr"
+      ]
+    },
+    {
+      "target": "authored_travel_progress_m",
+      "requested": 75.0,
+      "measured": 74.875,
+      "method": "original trace endpoints",
+      "tolerance": 1.0,
+      "matched": true,
+      "physical_cause_confirmed": false,
+      "cause_evidence": [
+        "trace.jsonl"
+      ]
+    }
+  ],
+  "setup_confirmed": false,
+  "behavior_attempted": false,
+  "maneuver_completed": false,
+  "termination_reason": "Saved evidence assessed; maneuver unverified; legal judgments remain separate",
+  "physical_failure_flags": [
+    "red_x_pixels_official_authority_and_lane_entry_pending_review"
+  ],
+  "trace_reference": "trace.jsonl",
+  "video_references": [
+    "overview.mkv",
+    "approach.mkv",
+    "reference_corner.mkv",
+    "driver_reference.mkv"
+  ],
+  "video_frame_map_reference": "video_frames.jsonl",
+  "recording_description": {
+    "channels": [
+      {
+        "name": "dev.lane_control_signal",
+        "unit": "structured",
+        "method": "original Native 600-frame map, signal, actor body, trace and camera source join",
+        "sampling_rate_hz": 20,
+        "time_window": "30 s / 600 original frames",
+        "reference_frame": "original Native map and frame",
+        "uncertainty": "official provenance, red-X pixels and physical lane entry pending independent local review"
+      },
+      {
+        "name": "dev.governs",
+        "unit": "structured",
+        "method": "original Native 600-frame map, signal, actor body, trace and camera source join",
+        "sampling_rate_hz": 20,
+        "time_window": "30 s / 600 original frames",
+        "reference_frame": "original Native map and frame",
+        "uncertainty": "official provenance, red-X pixels and physical lane entry pending independent local review"
+      },
+      {
+        "name": "st.lane",
+        "unit": "structured",
+        "method": "original Native 600-frame map, signal, actor body, trace and camera source join",
+        "sampling_rate_hz": 20,
+        "time_window": "30 s / 600 original frames",
+        "reference_frame": "original Native map and frame",
+        "uncertainty": "official provenance, red-X pixels and physical lane entry pending independent local review"
+      },
+      {
+        "name": "rel.occupies",
+        "unit": "lane overlap",
+        "method": "original Native 600-frame map, signal, actor body, trace and camera source join",
+        "sampling_rate_hz": 20,
+        "time_window": "30 s / 600 original frames",
+        "reference_frame": "original Native map and frame",
+        "uncertainty": "official provenance, red-X pixels and physical lane entry pending independent local review"
+      },
+      {
+        "name": "drv.lane_change",
+        "unit": "lane entry event",
+        "method": "original Native 600-frame map, signal, actor body, trace and camera source join",
+        "sampling_rate_hz": 20,
+        "time_window": "30 s / 600 original frames",
+        "reference_frame": "original Native map and frame",
+        "uncertainty": "official provenance, red-X pixels and physical lane entry pending independent local review"
+      },
+      {
+        "name": "kin.velocity",
+        "unit": "m/s",
+        "method": "original Native 600-frame map, signal, actor body, trace and camera source join",
+        "sampling_rate_hz": 20,
+        "time_window": "30 s / 600 original frames",
+        "reference_frame": "original Native map and frame",
+        "uncertainty": "official provenance, red-X pixels and physical lane entry pending independent local review"
+      }
+    ],
+    "context_inputs": [],
+    "limitations": [
+      "Highway classification and official device authority await original local review.",
+      "CPU fixture does not prove actual red-X pixels or physical entry"
+    ]
+  },
+  "recording_evidence": [
+    {
+      "name": "dev.lane_control_signal",
+      "unit": "structured",
+      "reference": "channels/dev.lane_control_signal.jsonl"
+    },
+    {
+      "name": "dev.governs",
+      "unit": "structured",
+      "reference": "channels/dev.governs.jsonl"
+    },
+    {
+      "name": "st.lane",
+      "unit": "structured",
+      "reference": "channels/st.lane.jsonl"
+    },
+    {
+      "name": "rel.occupies",
+      "unit": "lane overlap",
+      "reference": "channels/rel.occupies.jsonl"
+    },
+    {
+      "name": "drv.lane_change",
+      "unit": "lane entry event",
+      "reference": "channels/drv.lane_change.jsonl"
+    },
+    {
+      "name": "kin.velocity",
+      "unit": "m/s",
+      "reference": "channels/kin.velocity.jsonl"
+    }
+  ],
+  "realized_observables": {},
+  "provenance_kind": "synthetic_fixture",
+  "accepted": false,
+  "legal_verdict_claimed": false,
+  "physical_checks": {
+    "setup": {
+      "status": "unverified",
+      "method": "source-bound setup assessment",
+      "intervals": [],
+      "sources": {
+        "config.json": "327da1c652e5dddc211a396419f239e5a3af41b6194e7a1d8642b1b9c939c142",
+        "video_frames.jsonl": "00157f148b3e5d98d98ba83d4213b72d0cd7ccbd8929957aa5004443630e96d8"
+      },
+      "details": {
+        "criterion": {
+          "format": "worker-physical-completion-criteria",
+          "criterion": "travel_progress",
+          "motion_source": "trace.jsonl",
+          "position_key": "position_m",
+          "minimum_progress_m": 40.0,
+          "minimum_samples": 600,
+          "engineering_tolerances_not_legal": true,
+          "context_sources": [],
+          "completion_goal_method": "Authored finite progress milestone: requested speed times planned duration divided by two; minimum1m. Engineering event criterion, not full recording acceptance or legal threshold."
+        },
+        "reason": "Required original source is missing"
+      },
+      "missing_evidence": [
+        "trace.jsonl"
+      ],
+      "legal_verdict_claimed": false,
+      "physical_causation_claimed": false
+    },
+    "target": {
+      "status": "unverified",
+      "method": "source-bound target assessment",
+      "intervals": [],
+      "sources": {
+        "config.json": "327da1c652e5dddc211a396419f239e5a3af41b6194e7a1d8642b1b9c939c142",
+        "video_frames.jsonl": "00157f148b3e5d98d98ba83d4213b72d0cd7ccbd8929957aa5004443630e96d8"
+      },
+      "details": {
+        "criterion": {
+          "format": "worker-physical-completion-criteria",
+          "criterion": "travel_progress",
+          "motion_source": "trace.jsonl",
+          "position_key": "position_m",
+          "minimum_progress_m": 40.0,
+          "minimum_samples": 600,
+          "engineering_tolerances_not_legal": true,
+          "context_sources": [],
+          "completion_goal_method": "Authored finite progress milestone: requested speed times planned duration divided by two; minimum1m. Engineering event criterion, not full recording acceptance or legal threshold."
+        },
+        "reason": "Required original source is missing"
+      },
+      "missing_evidence": [
+        "trace.jsonl"
+      ],
+      "legal_verdict_claimed": false,
+      "physical_causation_claimed": false
+    },
+    "maneuver": {
+      "status": "unverified",
+      "method": "source-bound maneuver assessment",
+      "intervals": [],
+      "sources": {
+        "config.json": "327da1c652e5dddc211a396419f239e5a3af41b6194e7a1d8642b1b9c939c142",
+        "video_frames.jsonl": "00157f148b3e5d98d98ba83d4213b72d0cd7ccbd8929957aa5004443630e96d8"
+      },
+      "details": {
+        "criterion": {
+          "format": "worker-physical-completion-criteria",
+          "criterion": "travel_progress",
+          "motion_source": "trace.jsonl",
+          "position_key": "position_m",
+          "minimum_progress_m": 40.0,
+          "minimum_samples": 600,
+          "engineering_tolerances_not_legal": true,
+          "context_sources": [],
+          "completion_goal_method": "Authored finite progress milestone: requested speed times planned duration divided by two; minimum1m. Engineering event criterion, not full recording acceptance or legal threshold."
+        },
+        "reason": "Required original source is missing"
+      },
+      "missing_evidence": [
+        "trace.jsonl"
+      ],
+      "legal_verdict_claimed": false,
+      "physical_causation_claimed": false
+    },
+    "attempt": {
+      "status": "unverified",
+      "method": "observed finite original motion; separate from target success",
+      "intervals": [],
+      "sources": {
+        "config.json": "327da1c652e5dddc211a396419f239e5a3af41b6194e7a1d8642b1b9c939c142",
+        "video_frames.jsonl": "00157f148b3e5d98d98ba83d4213b72d0cd7ccbd8929957aa5004443630e96d8"
+      },
+      "physical_causation_claimed": false
+    }
+  },
+  "physical_observations": {},
+  "diagnostic_fixture": true,
+  "scope": "Source protocol provenance, not physical or legal acceptance",
+  "physical_acceptance_claimed": false
+}

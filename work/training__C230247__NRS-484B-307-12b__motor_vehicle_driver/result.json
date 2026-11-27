@@ -2,7 +2,7 @@
   "assignment_id": "training__C230247__NRS-484B-307-12b__motor_vehicle_driver",
   "input_sha256": "adecc0b7bd85f4b1034712b483c912071ca8ca20f3c98b98512eae803b449eb3",
   "status": "partial",
-  "reason": "Both exact primary Native red-X constructions and source meter pass CPU offline checks; public compatibility, saved-only processing, semantic proposals, independent audits, fallback risk decisions and strict gate remain unfinished. Physical red-X pixels, official authority and lane crossing remain unverified.",
+  "reason": "Strict assignment gate reached construction validation and found missing static_checks; refreshing construction and exact-case CPU receipts before retry. Original physical pixels and official device authority await GPU review.",
   "readiness_kind": "implementation_checkpoint",
   "planned_case_count": 2,
   "candidate_count": 2,
@@ -13,27 +13,112 @@
   "applied_update": 16,
   "tests": [
     {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230247__NRS-484B-307-12b__motor_vehicle_driver/draft-manifest.json --case training__C230247__NRS-484B-307-12b__motor_vehicle_driver__probe_1 --output .runtime-work/c230247-12b-probe_1-offline",
+      "command": "runtime.py offline exact probe_1",
       "exit_code": 0,
       "log": "probe_1-offline.log",
-      "sha256": "e4430dd00fa0a35417a9efe665720528fa1fd58c4fc1127eac45f530332559b2"
+      "sha256": "bdcc8dbc29f440e312131f9119ee08b8f22345694b74fdf640ceab578c0219a0"
     },
     {
-      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C230247__NRS-484B-307-12b__motor_vehicle_driver/draft-manifest.json --case training__C230247__NRS-484B-307-12b__motor_vehicle_driver__probe_2 --output .runtime-work/c230247-12b-probe_2-offline",
+      "command": "runtime.py offline exact probe_2",
       "exit_code": 0,
       "log": "probe_2-offline.log",
       "sha256": "f8dd947cb0480ef49fbe5a624faa900d15a329b32744b0b2463c40bbd3fba8e7"
     },
     {
-      "command": ".venv-cpu/bin/python work/training__C230247__NRS-484B-307-12b__motor_vehicle_driver/native/prove_meter.py",
+      "command": "runtime.py compatibility exact probe_1",
+      "exit_code": 0,
+      "log": "probe_1-compatibility-analysis.log",
+      "sha256": "a592e13c2709216b56f6abc2cc2d1594b97a5e2fe40bb03c820c134d9dacaa8c"
+    },
+    {
+      "command": "runtime.py compatibility exact probe_2",
+      "exit_code": 0,
+      "log": "probe_2-compatibility-analysis.log",
+      "sha256": "b1df6bb08abc02b765c439d14d0c2587bb7ea68a9dc85682eeee02866b826778"
+    },
+    {
+      "command": "runtime.py compatibility negative probe_1",
+      "exit_code": 0,
+      "log": "probe_1-negative-analysis.log",
+      "sha256": "4977599441e54f037299a8ac08ca78891905850483d417fffba2b5321363bdd9"
+    },
+    {
+      "command": "runtime.py compatibility negative probe_2",
+      "exit_code": 0,
+      "log": "probe_2-negative-analysis.log",
+      "sha256": "c99ae9697743c947fef766996b01b2182cf649f6c2a27119ec867ac87f7a03cb"
+    },
+    {
+      "command": "native/prove_recorded_only.py",
+      "exit_code": 0,
+      "log": "recorded-only-proof.log",
+      "sha256": "f509d79e5498b201af0148a4e66f4f7c689d5b12b6d4c892ecfece6bece121e2"
+    },
+    {
+      "command": "native/build_physical_proofs.py",
+      "exit_code": 0,
+      "log": "physical-lifecycle.log",
+      "sha256": "6ad93b2949bd7232c0c7e567771616fc408f3ac738d9155a03350dcf4bd1e94c"
+    },
+    {
+      "command": "native/delivery_audit.py exact probe_1",
+      "exit_code": 0,
+      "log": "delivery-probe_1-positive.log",
+      "sha256": "33ae79482f1a10dc1aa3a65e7f4bde446b0b5c8f36f511d6acb640a9e0076157"
+    },
+    {
+      "command": "native/delivery_audit.py exact probe_2",
+      "exit_code": 0,
+      "log": "delivery-probe_2-positive.log",
+      "sha256": "cedbc2bec7a8a9fbfebfa0ff181c1484b20561d277b9b7b78171f79b48b47563"
+    },
+    {
+      "command": "native/comparison_audit.py exact pair",
+      "exit_code": 0,
+      "log": "comparison-positive.log",
+      "sha256": "70e854fee704e8bd3ddbb64571585d1d2c93bdb54134c69e4db2a750061596d9"
+    },
+    {
+      "command": "python -m unittest discover exact tests",
+      "exit_code": 0,
+      "log": "tests/native-test.log",
+      "sha256": "6f283ee6225d2cef4c0127d95456a6f954c45141c92b97dd89016cb1c630e8f4"
+    },
+    {
+      "command": "native/prove_meter.py",
       "exit_code": 0,
       "log": "native/meter-proof.log",
       "sha256": "4c6a8213730985dc91ffb122065d4318113307ae86d07f05296c584b20b9bdac"
     }
   ],
   "remaining_gpu_checks": [
-    "Actual red-X asset and official provenance",
-    "Original actor lane crossing and facing orientation",
-    "Four-camera pixels, duration and source quality"
-  ]
+    "Original Native red-X asset and official provenance",
+    "Original actor lane crossing and driver-facing geometry",
+    "Four camera pixels, exact duration and source quality"
+  ],
+  "counts": {
+    "source_topics": 3,
+    "selected_comparison_cases_planned": 2,
+    "comparisons_planned": 1,
+    "delivery_cases_prepared": 2,
+    "candidates_proven": 0,
+    "accepted_equivalence_reuses": 0,
+    "accepted_membership_rows": 0
+  },
+  "cases_planned": 2,
+  "cases_selected": 2,
+  "comparison_audits_passed": 1,
+  "carla_executed": false,
+  "recordings_accepted": 0,
+  "source_only_saved_cases_passed": 2,
+  "source_only_saved_negatives_passed": 2,
+  "physical_acceptance_claimed": false,
+  "legal_verdict_claimed": false,
+  "first_gpu_delivery_command": "PYTHONPATH=runtime/scenario_pipeline .venv-cpu/bin/python -m worker_exchange execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C230247__NRS-484B-307-12b__motor_vehicle_driver --case training__C230247__NRS-484B-307-12b__motor_vehicle_driver__probe_1 --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT",
+  "execution_manifest_sha256": "fbfdc0974191d1784e126f446a48a5221210329c90763f320494638aa5962f3e",
+  "selected_manifest": {
+    "path": "execution-manifest.json",
+    "sha256": "fbfdc0974191d1784e126f446a48a5221210329c90763f320494638aa5962f3e",
+    "original_native_observed": false
+  }
 }

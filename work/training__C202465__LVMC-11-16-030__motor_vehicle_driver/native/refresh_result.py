@@ -33,6 +33,8 @@ def main():
     for name in unit_names:
         add(".venv-cpu/bin/python -B work/" + WORK.name + "/native/prove_" + name + ".py",
             "native/" + name.replace("_", "-") + "-proof.log")
+    add(".venv-cpu/bin/python -B work/" + WORK.name + "/tests/test_rail_contract.py",
+        "tests/rail-contract-proof.log")
     offline = compatibility = physical = saved = delivery = 0
     for entry in manifest["cases"]:
         suffix = entry["case_id"].split("__")[-1]

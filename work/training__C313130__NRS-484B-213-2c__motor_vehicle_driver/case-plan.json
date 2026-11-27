@@ -37,9 +37,14 @@
       "requirement": "NRS-484B-213-2c",
       "source": "NRS 484B.213(2)(c); with 484B.213(3)",
       "branch": "bridge and viaduct alternatives",
-      "status": "alternative_pending",
-      "case_ids": [],
-      "evidence_or_gap": "Distinct physical structure or highway direction is outside the selected tunnel/two-way contrast; original-source applicability remains pending and no legal conclusion is asserted."
+      "status": "selected_required",
+      "case_ids": [
+        "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__bridge_right",
+        "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__bridge_left",
+        "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__viaduct_right",
+        "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__viaduct_left"
+      ],
+      "evidence_or_gap": "Four same-cell authored bridge/viaduct raised-road construction requests, distinct span inventories, original Native source acquisition and saved-only measurement paths are selected for CPU proof. Physical structure identity, installed support asset, original pixels, sight obstruction and legal judgment remain unverified; compatibility and delivery proof chains are still being run."
     },
     {
       "requirement": "NRS-484B-213-2c",
@@ -109,6 +114,58 @@
       "selection_targets": [
         "full-train"
       ]
+    },
+    {
+      "case_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__bridge_right",
+      "target_law_id": "NRS-484B-213-2c",
+      "kind": "selected_cpu_construction",
+      "target_type": "controlled_attempt",
+      "physical_target": "approach bridge with requested right side trajectory and independently assessed view obstruction",
+      "comparison_variable": "left_side_occupancy_within_100ft",
+      "source_branch": "bridge and viaduct alternatives",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ]
+    },
+    {
+      "case_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__bridge_left",
+      "target_law_id": "NRS-484B-213-2c",
+      "kind": "selected_cpu_construction",
+      "target_type": "controlled_attempt",
+      "physical_target": "approach bridge with requested left side trajectory and independently assessed view obstruction",
+      "comparison_variable": "left_side_occupancy_within_100ft",
+      "source_branch": "bridge and viaduct alternatives",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ]
+    },
+    {
+      "case_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__viaduct_right",
+      "target_law_id": "NRS-484B-213-2c",
+      "kind": "selected_cpu_construction",
+      "target_type": "controlled_attempt",
+      "physical_target": "approach viaduct with requested right side trajectory and independently assessed view obstruction",
+      "comparison_variable": "left_side_occupancy_within_100ft",
+      "source_branch": "bridge and viaduct alternatives",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ]
+    },
+    {
+      "case_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__viaduct_left",
+      "target_law_id": "NRS-484B-213-2c",
+      "kind": "selected_cpu_construction",
+      "target_type": "controlled_attempt",
+      "physical_target": "approach viaduct with requested left side trajectory and independently assessed view obstruction",
+      "comparison_variable": "left_side_occupancy_within_100ft",
+      "source_branch": "bridge and viaduct alternatives",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ]
     }
   ],
   "comparisons": [
@@ -138,6 +195,36 @@
       "fixed_conditions": [
         "same authored one-way tunnel road and original direction survey requirement",
         "same actor, portal, occluder, cameras, 600-frame duration and control policy"
+      ]
+    },
+    {
+      "comparison_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__bridge_comparison",
+      "case_ids": [
+        "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__bridge_right",
+        "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__bridge_left"
+      ],
+      "deliberate_differences": [
+        "requested_lateral_target"
+      ],
+      "fixed_conditions": [
+        "frozen cell and actor",
+        "same authored raised road and support request",
+        "same controller family and four-camera policy"
+      ]
+    },
+    {
+      "comparison_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__viaduct_comparison",
+      "case_ids": [
+        "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__viaduct_right",
+        "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__viaduct_left"
+      ],
+      "deliberate_differences": [
+        "requested_lateral_target"
+      ],
+      "fixed_conditions": [
+        "frozen cell and actor",
+        "same authored raised road and support request",
+        "same controller family and four-camera policy"
       ]
     }
   ],
@@ -284,37 +371,40 @@
   ],
   "source_observation_mapping": {
     "st.elevated_structure": {
-      "measurement": "source-identified tunnel portal and Native map geometry",
+      "measurement": "source-identified tunnel portal or Native raised-deck/support geometry",
       "channels": [
         "st.elevated_structure"
       ],
       "source_refs": [
         "inputs/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/assignment.json",
-        "selected-measurement-contract.json"
+        "selected-measurement-contract.json",
+        "structure-measurement-contract.json"
       ],
-      "evidence": "Selected CPU source-shaped measurement and original Native acquisition plan; physical/legal source review pending"
+      "evidence": "Selected tunnel, bridge and viaduct source-bound CPU measurements with original Native acquisition plans; physical and legal source review pending"
     },
     "drv.approaching": {
-      "measurement": "observed positive speed and body before tunnel portal",
+      "measurement": "observed positive speed and complete body before selected tunnel or structure start",
       "channels": [
         "drv.approaching"
       ],
       "source_refs": [
         "inputs/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/assignment.json",
-        "selected-measurement-contract.json"
+        "selected-measurement-contract.json",
+        "structure-measurement-contract.json"
       ],
-      "evidence": "Selected CPU source-shaped measurement and original Native acquisition plan; physical/legal source review pending"
+      "evidence": "Selected tunnel, bridge and viaduct source-bound CPU measurements with original Native acquisition plans; physical and legal source review pending"
     },
     "rel.centre_distance": {
-      "measurement": "body front distance to portal in metres compared with exact 100-foot conversion",
+      "measurement": "body front distance to selected portal or structure start compared with exact 100-foot conversion",
       "channels": [
         "rel.centre_distance"
       ],
       "source_refs": [
         "inputs/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/assignment.json",
-        "selected-measurement-contract.json"
+        "selected-measurement-contract.json",
+        "structure-measurement-contract.json"
       ],
-      "evidence": "Selected CPU source-shaped measurement and original Native acquisition plan; physical/legal source review pending"
+      "evidence": "Selected tunnel, bridge and viaduct source-bound CPU measurements with original Native acquisition plans; physical and legal source review pending"
     },
     "st.sight_distance": {
       "measurement": "source-hashed incoming-lane ray bracket; clear-to-limit is a lower bound",
@@ -323,9 +413,10 @@
       ],
       "source_refs": [
         "inputs/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/assignment.json",
-        "selected-measurement-contract.json"
+        "selected-measurement-contract.json",
+        "structure-measurement-contract.json"
       ],
-      "evidence": "Selected CPU source-shaped measurement and original Native acquisition plan; physical/legal source review pending"
+      "evidence": "Selected tunnel, bridge and viaduct source-bound CPU measurements with original Native acquisition plans; physical and legal source review pending"
     },
     "drv.sight_distance_adequate": {
       "measurement": "not asserted by ray proxy; legal view obstruction needs independent review",
@@ -334,9 +425,10 @@
       ],
       "source_refs": [
         "inputs/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/assignment.json",
-        "selected-measurement-contract.json"
+        "selected-measurement-contract.json",
+        "structure-measurement-contract.json"
       ],
-      "evidence": "Selected CPU source-shaped measurement and original Native acquisition plan; physical/legal source review pending"
+      "evidence": "Selected tunnel, bridge and viaduct source-bound CPU measurements with original Native acquisition plans; physical and legal source review pending"
     },
     "st.centre_line": {
       "measurement": "source-identified highway centre y coordinate",
@@ -345,9 +437,10 @@
       ],
       "source_refs": [
         "inputs/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/assignment.json",
-        "selected-measurement-contract.json"
+        "selected-measurement-contract.json",
+        "structure-measurement-contract.json"
       ],
-      "evidence": "Selected CPU source-shaped measurement and original Native acquisition plan; physical/legal source review pending"
+      "evidence": "Selected tunnel, bridge and viaduct source-bound CPU measurements with original Native acquisition plans; physical and legal source review pending"
     },
     "rel.occupies": {
       "measurement": "four-corner body footprint relative to highway centre",
@@ -356,9 +449,10 @@
       ],
       "source_refs": [
         "inputs/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/assignment.json",
-        "selected-measurement-contract.json"
+        "selected-measurement-contract.json",
+        "structure-measurement-contract.json"
       ],
-      "evidence": "Selected CPU source-shaped measurement and original Native acquisition plan; physical/legal source review pending"
+      "evidence": "Selected tunnel, bridge and viaduct source-bound CPU measurements with original Native acquisition plans; physical and legal source review pending"
     },
     "st.one_way_roadway": {
       "measurement": "original Native direction survey retained as exception context",
@@ -367,9 +461,10 @@
       ],
       "source_refs": [
         "inputs/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/assignment.json",
-        "selected-measurement-contract.json"
+        "selected-measurement-contract.json",
+        "structure-measurement-contract.json"
       ],
-      "evidence": "Selected CPU source-shaped measurement and original Native acquisition plan; physical/legal source review pending"
+      "evidence": "Selected tunnel, bridge and viaduct source-bound CPU measurements with original Native acquisition plans; physical and legal source review pending"
     }
   },
   "measurement_contract": "tunnel-measurement-contract.json",
@@ -397,6 +492,21 @@
         "subject": "driver sight direction and original pixels",
         "view": "driver_reference",
         "interval": "all 600 frames"
+      },
+      {
+        "subject": "bridge deck, supports and opposing lane",
+        "view": "overview",
+        "interval": "all 600 bridge frames"
+      },
+      {
+        "subject": "viaduct deck and intermediate supports",
+        "view": "overview",
+        "interval": "all 600 viaduct frames"
+      },
+      {
+        "subject": "structure start, complete body and centerline",
+        "view": "reference_corner",
+        "interval": "all 600 bridge and viaduct frames"
       }
     ]
   }

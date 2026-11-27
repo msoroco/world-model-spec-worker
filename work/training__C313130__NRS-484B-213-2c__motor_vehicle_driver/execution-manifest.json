@@ -2,7 +2,7 @@
   "format": "worker-execution-manifest",
   "assignment_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver",
   "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
-  "status": "selected_delivery_cpu_prepared_full_statutory_review_pending",
+  "status": "selected_delivery_cpu_prepared",
   "cases": [
     {
       "case_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__probe_1",
@@ -645,6 +645,650 @@
         "test_log_sha256": "71f5c921434b653a178852bd83b568120346e172d01fb25f79fd936d4c4eb084",
         "negative_log": "selected-proofs/one_way_left-delivery-negative.log",
         "negative_log_sha256": "455170105bc5062032b6963e585880dfbdad10742853e9f4f8f48c84634e751a",
+        "scope": "CPU diagnostic join and required rejection; original Native physical and legal acceptance pending"
+      }
+    },
+    {
+      "case_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__bridge_right",
+      "kind": "delivery",
+      "id": "primary",
+      "construction": "structure-construction-bridge_right-primary.json",
+      "construction_sha256": "ca4c1a51eaff09750cbdc145146890591a2206a7823c8b0d1024c4a918207e5a",
+      "fixture_recipe": "work/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/structure-recipe-bridge_right.json",
+      "measurement_contract": "structure-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-structure-selected-measurement"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native structural support asset, physical identity and approach require original review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "structure-construction-bridge_right-fallback1.json",
+          "construction_sha256": "67cbe08b23a545022fbd771f8c747aa0ddaf8c482a497fe0737cf0412a93a803",
+          "trigger": {
+            "source": "structure-rows.jsonl",
+            "metric": "full-body lateral discrepancy at 100-foot zone entry",
+            "failure_condition": "body remains over 1 m from requested lane center"
+          },
+          "changed_knobs": [
+            "controller_gain: 1.5 to 2.0"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/structure-probe-manifest.json --case training__C313130__NRS-484B-213-2c__motor_vehicle_driver__bridge_right --candidate fallback1 --output .runtime-work/c313130-structure-offline-bridge_right-fallback1 --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "67cbe08b23a545022fbd771f8c747aa0ddaf8c482a497fe0737cf0412a93a803",
+            "log": "selected-proofs/bridge_right-fallback1-offline.log",
+            "log_sha256": "20f4007883ab34378b1d3432f886fdb157493fd2f1661a87403ce2f6df5a2918"
+          },
+          "compatibility": {
+            "receipt": "selected-proofs/bridge_right-fallback1-compatibility.json",
+            "sha256": "cc1647ddc8995d7f3104d46f511749e601fc8f003e90052b4755486a4f530ebb",
+            "log": "selected-proofs/bridge_right-fallback1-analysis.log",
+            "negative_log": "selected-proofs/bridge_right-fallback1-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/structure-probe-manifest.json --case training__C313130__NRS-484B-213-2c__motor_vehicle_driver__bridge_right --candidate primary --output .runtime-work/c313130-structure-bridge-right-offline-3 --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "ca4c1a51eaff09750cbdc145146890591a2206a7823c8b0d1024c4a918207e5a",
+        "log": "selected-proofs/bridge_right-primary-offline.log",
+        "log_sha256": "d5adc9b9a38f82ec85bd519c9e2ef8074b5e140b23450ed1bc67f4f354e2adbf"
+      },
+      "compatibility": {
+        "receipt": "selected-proofs/bridge_right-primary-compatibility.json",
+        "sha256": "5259f6375c93ea6da1e1bb3b1a4fb158241a6bbc4d5ced89b89386926819e9ea",
+        "log": "selected-proofs/bridge_right-primary-analysis.log",
+        "negative_log": "selected-proofs/bridge_right-primary-negative.log"
+      },
+      "negative": {
+        "log": "selected-proofs/bridge_right-primary-negative.log"
+      },
+      "saved_processing": {
+        "receipt": "selected-proofs/bridge_right-primary-processing.json",
+        "sha256": "f8bc14da1cc81c45f94643b1b95126d5a9a6b26280415fc3683ebdff2a184277"
+      },
+      "post_capture": {
+        "command": "python runtime.py process-saved --manifest work/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/execution-manifest.json --case training__C313130__NRS-484B-213-2c__motor_vehicle_driver__bridge_right --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$SAVED_OUTPUT\"/v0001/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "selected-proofs/bridge_right-primary-processing.json",
+        "test_log_sha256": "f8bc14da1cc81c45f94643b1b95126d5a9a6b26280415fc3683ebdff2a184277"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "st.elevated_structure": {
+          "entrypoint": "structure_capture.py",
+          "method": "20 Hz original Native raised deck, supports, body, lane, sight and four-camera acquisition",
+          "evidence": "structure-context.json, structure-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "drv.approaching": {
+          "entrypoint": "structure_capture.py",
+          "method": "20 Hz original Native raised deck, supports, body, lane, sight and four-camera acquisition",
+          "evidence": "structure-context.json, structure-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "structure_capture.py",
+          "method": "20 Hz original Native raised deck, supports, body, lane, sight and four-camera acquisition",
+          "evidence": "structure-context.json, structure-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "st.sight_distance": {
+          "entrypoint": "structure_capture.py",
+          "method": "20 Hz original Native raised deck, supports, body, lane, sight and four-camera acquisition",
+          "evidence": "structure-context.json, structure-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "drv.sight_distance_adequate": {
+          "entrypoint": "structure_capture.py",
+          "method": "20 Hz original Native raised deck, supports, body, lane, sight and four-camera acquisition",
+          "evidence": "structure-context.json, structure-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "st.centre_line": {
+          "entrypoint": "structure_capture.py",
+          "method": "20 Hz original Native raised deck, supports, body, lane, sight and four-camera acquisition",
+          "evidence": "structure-context.json, structure-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "rel.occupies": {
+          "entrypoint": "structure_capture.py",
+          "method": "20 Hz original Native raised deck, supports, body, lane, sight and four-camera acquisition",
+          "evidence": "structure-context.json, structure-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "st.one_way_roadway": {
+          "entrypoint": "structure_capture.py",
+          "method": "20 Hz original Native raised deck, supports, body, lane, sight and four-camera acquisition",
+          "evidence": "structure-context.json, structure-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "kin.position": {
+          "entrypoint": "structure_capture.py",
+          "method": "20 Hz original Native raised deck, supports, body, lane, sight and four-camera acquisition",
+          "evidence": "structure-context.json, structure-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "kin.heading": {
+          "entrypoint": "structure_capture.py",
+          "method": "20 Hz original Native raised deck, supports, body, lane, sight and four-camera acquisition",
+          "evidence": "structure-context.json, structure-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        }
+      },
+      "physical_preparation": {
+        "case_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__bridge_right",
+        "receipt": "structure-physical-preparation-bridge_right.json",
+        "sha256": "364bc87c71c2c9373caf6b0e7595efa3ad0f8837b0fd9db482ca81b8ed74475b"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__bridge_right",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "structure_delivery_audit.py",
+        "script_sha256": "498c09022f328e7ceeb6e815798da885921502fc0dad38ecf131e7adfebbca45",
+        "command": ".venv-cpu/bin/python -B work/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/structure_delivery_audit.py --case training__C313130__NRS-484B-213-2c__motor_vehicle_driver__bridge_right --diagnostic",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/structure_delivery_audit.py --case training__C313130__NRS-484B-213-2c__motor_vehicle_driver__bridge_right",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original bridge or viaduct geometry, unobstructed view assessment and four camera pixels required for delivery acceptance",
+        "test_log": "selected-proofs/bridge_right-delivery-audit.log",
+        "test_log_sha256": "1e586c3e210d3dabd01bee513af18f3ab349807c579788f4f7de781ff1b656ea",
+        "negative_log": "selected-proofs/bridge_right-delivery-negative.log",
+        "negative_log_sha256": "8fa48789ee89b03e3103ac4f5b9425df3a624c9a6e23acd815919c867f5f3f69",
+        "scope": "CPU diagnostic join and required rejection; original Native physical and legal acceptance pending"
+      }
+    },
+    {
+      "case_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__bridge_left",
+      "kind": "delivery",
+      "id": "primary",
+      "construction": "structure-construction-bridge_left-primary.json",
+      "construction_sha256": "0894e73ebe82ade1a0d591155d6c2d5f2766212c21e8c204f101992ad67f8dbd",
+      "fixture_recipe": "work/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/structure-recipe-bridge_left.json",
+      "measurement_contract": "structure-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-structure-selected-measurement"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native structural support asset, physical identity and approach require original review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "structure-construction-bridge_left-fallback1.json",
+          "construction_sha256": "ebfbce82c431f118c661bb20c67a4d8d7223ef31f5e2eb8358507de290e87d27",
+          "trigger": {
+            "source": "structure-rows.jsonl",
+            "metric": "full-body lateral discrepancy at 100-foot zone entry",
+            "failure_condition": "body remains over 1 m from requested lane center"
+          },
+          "changed_knobs": [
+            "controller_gain: 1.5 to 2.0"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/structure-probe-manifest.json --case training__C313130__NRS-484B-213-2c__motor_vehicle_driver__bridge_left --candidate fallback1 --output .runtime-work/c313130-structure-offline-bridge_left-fallback1 --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "ebfbce82c431f118c661bb20c67a4d8d7223ef31f5e2eb8358507de290e87d27",
+            "log": "selected-proofs/bridge_left-fallback1-offline.log",
+            "log_sha256": "1cc54663ca9578ce3bb09ad33865d51e267e4a8eb074eab4de532a6e1918b19f"
+          },
+          "compatibility": {
+            "receipt": "selected-proofs/bridge_left-fallback1-compatibility.json",
+            "sha256": "6e49c13d8feddede44a4f6760d47cbafba5e0866f653f3566c4658107fc53392",
+            "log": "selected-proofs/bridge_left-fallback1-analysis.log",
+            "negative_log": "selected-proofs/bridge_left-fallback1-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/structure-probe-manifest.json --case training__C313130__NRS-484B-213-2c__motor_vehicle_driver__bridge_left --candidate primary --output .runtime-work/c313130-structure-offline-bridge_left-primary --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "0894e73ebe82ade1a0d591155d6c2d5f2766212c21e8c204f101992ad67f8dbd",
+        "log": "selected-proofs/bridge_left-primary-offline.log",
+        "log_sha256": "cb3299eb93848ed6f5d2bda94fcc15bd43c1d4300be6c7cf2a793084b6d11e6a"
+      },
+      "compatibility": {
+        "receipt": "selected-proofs/bridge_left-primary-compatibility.json",
+        "sha256": "95408efbf840f9dab1d51fb6145d29d22d3806b50e5e99a75e850a30a7f8117a",
+        "log": "selected-proofs/bridge_left-primary-analysis.log",
+        "negative_log": "selected-proofs/bridge_left-primary-negative.log"
+      },
+      "negative": {
+        "log": "selected-proofs/bridge_left-primary-negative.log"
+      },
+      "saved_processing": {
+        "receipt": "selected-proofs/bridge_left-primary-processing.json",
+        "sha256": "ab6e17b4e1b8006ce4df9ac5b7ac2b7afd953e381fa3fdf8633332f64b1a47d7"
+      },
+      "post_capture": {
+        "command": "python runtime.py process-saved --manifest work/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/execution-manifest.json --case training__C313130__NRS-484B-213-2c__motor_vehicle_driver__bridge_left --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$SAVED_OUTPUT\"/v0001/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "selected-proofs/bridge_left-primary-processing.json",
+        "test_log_sha256": "ab6e17b4e1b8006ce4df9ac5b7ac2b7afd953e381fa3fdf8633332f64b1a47d7"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "st.elevated_structure": {
+          "entrypoint": "structure_capture.py",
+          "method": "20 Hz original Native raised deck, supports, body, lane, sight and four-camera acquisition",
+          "evidence": "structure-context.json, structure-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "drv.approaching": {
+          "entrypoint": "structure_capture.py",
+          "method": "20 Hz original Native raised deck, supports, body, lane, sight and four-camera acquisition",
+          "evidence": "structure-context.json, structure-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "structure_capture.py",
+          "method": "20 Hz original Native raised deck, supports, body, lane, sight and four-camera acquisition",
+          "evidence": "structure-context.json, structure-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "st.sight_distance": {
+          "entrypoint": "structure_capture.py",
+          "method": "20 Hz original Native raised deck, supports, body, lane, sight and four-camera acquisition",
+          "evidence": "structure-context.json, structure-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "drv.sight_distance_adequate": {
+          "entrypoint": "structure_capture.py",
+          "method": "20 Hz original Native raised deck, supports, body, lane, sight and four-camera acquisition",
+          "evidence": "structure-context.json, structure-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "st.centre_line": {
+          "entrypoint": "structure_capture.py",
+          "method": "20 Hz original Native raised deck, supports, body, lane, sight and four-camera acquisition",
+          "evidence": "structure-context.json, structure-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "rel.occupies": {
+          "entrypoint": "structure_capture.py",
+          "method": "20 Hz original Native raised deck, supports, body, lane, sight and four-camera acquisition",
+          "evidence": "structure-context.json, structure-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "st.one_way_roadway": {
+          "entrypoint": "structure_capture.py",
+          "method": "20 Hz original Native raised deck, supports, body, lane, sight and four-camera acquisition",
+          "evidence": "structure-context.json, structure-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "kin.position": {
+          "entrypoint": "structure_capture.py",
+          "method": "20 Hz original Native raised deck, supports, body, lane, sight and four-camera acquisition",
+          "evidence": "structure-context.json, structure-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "kin.heading": {
+          "entrypoint": "structure_capture.py",
+          "method": "20 Hz original Native raised deck, supports, body, lane, sight and four-camera acquisition",
+          "evidence": "structure-context.json, structure-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        }
+      },
+      "physical_preparation": {
+        "case_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__bridge_left",
+        "receipt": "structure-physical-preparation-bridge_left.json",
+        "sha256": "2511a22659b3f3a9be524ef35a48171e108192d8a9c88cbb1619f993bc7092e2"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__bridge_left",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "structure_delivery_audit.py",
+        "script_sha256": "498c09022f328e7ceeb6e815798da885921502fc0dad38ecf131e7adfebbca45",
+        "command": ".venv-cpu/bin/python -B work/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/structure_delivery_audit.py --case training__C313130__NRS-484B-213-2c__motor_vehicle_driver__bridge_left --diagnostic",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/structure_delivery_audit.py --case training__C313130__NRS-484B-213-2c__motor_vehicle_driver__bridge_left",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original bridge or viaduct geometry, unobstructed view assessment and four camera pixels required for delivery acceptance",
+        "test_log": "selected-proofs/bridge_left-delivery-audit.log",
+        "test_log_sha256": "c7c9e2aa5f427451bade1e0a2feee0f5d7bd64d09f663ea61b3fa5bedf600217",
+        "negative_log": "selected-proofs/bridge_left-delivery-negative.log",
+        "negative_log_sha256": "8fa48789ee89b03e3103ac4f5b9425df3a624c9a6e23acd815919c867f5f3f69",
+        "scope": "CPU diagnostic join and required rejection; original Native physical and legal acceptance pending"
+      }
+    },
+    {
+      "case_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__viaduct_right",
+      "kind": "delivery",
+      "id": "primary",
+      "construction": "structure-construction-viaduct_right-primary.json",
+      "construction_sha256": "ecd9d73f0ccb14290201ec6322b89885acc845ab440a5ee1ab1638e24e7a81bc",
+      "fixture_recipe": "work/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/structure-recipe-viaduct_right.json",
+      "measurement_contract": "structure-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-structure-selected-measurement"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native structural support asset, physical identity and approach require original review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "structure-construction-viaduct_right-fallback1.json",
+          "construction_sha256": "1bb25a74fad74a62e40e7b78995e6c802be23fe1571433848bfdd58311c822f6",
+          "trigger": {
+            "source": "structure-rows.jsonl",
+            "metric": "full-body lateral discrepancy at 100-foot zone entry",
+            "failure_condition": "body remains over 1 m from requested lane center"
+          },
+          "changed_knobs": [
+            "controller_gain: 1.5 to 2.0"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/structure-probe-manifest.json --case training__C313130__NRS-484B-213-2c__motor_vehicle_driver__viaduct_right --candidate fallback1 --output .runtime-work/c313130-structure-offline-viaduct_right-fallback1 --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "1bb25a74fad74a62e40e7b78995e6c802be23fe1571433848bfdd58311c822f6",
+            "log": "selected-proofs/viaduct_right-fallback1-offline.log",
+            "log_sha256": "8e3c0761e516aa8a06c4dd445840afafcdbdef03780833a993d2b3194232899e"
+          },
+          "compatibility": {
+            "receipt": "selected-proofs/viaduct_right-fallback1-compatibility.json",
+            "sha256": "bef7b42fc609915c49bf858d4220d31390beadc178b598501e1b68d636178d43",
+            "log": "selected-proofs/viaduct_right-fallback1-analysis.log",
+            "negative_log": "selected-proofs/viaduct_right-fallback1-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/structure-probe-manifest.json --case training__C313130__NRS-484B-213-2c__motor_vehicle_driver__viaduct_right --candidate primary --output .runtime-work/c313130-structure-offline-viaduct_right-primary --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "ecd9d73f0ccb14290201ec6322b89885acc845ab440a5ee1ab1638e24e7a81bc",
+        "log": "selected-proofs/viaduct_right-primary-offline.log",
+        "log_sha256": "1fd0219d3d69c647264d8b78ce1617a193df92a14ae2295241ec10693677771e"
+      },
+      "compatibility": {
+        "receipt": "selected-proofs/viaduct_right-primary-compatibility.json",
+        "sha256": "8572deb4b2e57ec4cf39fba0296b2d1737f4cd81f70af94f3b304bd13e5b9770",
+        "log": "selected-proofs/viaduct_right-primary-analysis.log",
+        "negative_log": "selected-proofs/viaduct_right-primary-negative.log"
+      },
+      "negative": {
+        "log": "selected-proofs/viaduct_right-primary-negative.log"
+      },
+      "saved_processing": {
+        "receipt": "selected-proofs/viaduct_right-primary-processing.json",
+        "sha256": "d10937edddff0f24266280ddcee4d60c941a770db0940c2e32f3e09fb8549b8c"
+      },
+      "post_capture": {
+        "command": "python runtime.py process-saved --manifest work/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/execution-manifest.json --case training__C313130__NRS-484B-213-2c__motor_vehicle_driver__viaduct_right --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$SAVED_OUTPUT\"/v0001/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "selected-proofs/viaduct_right-primary-processing.json",
+        "test_log_sha256": "d10937edddff0f24266280ddcee4d60c941a770db0940c2e32f3e09fb8549b8c"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "st.elevated_structure": {
+          "entrypoint": "structure_capture.py",
+          "method": "20 Hz original Native raised deck, supports, body, lane, sight and four-camera acquisition",
+          "evidence": "structure-context.json, structure-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "drv.approaching": {
+          "entrypoint": "structure_capture.py",
+          "method": "20 Hz original Native raised deck, supports, body, lane, sight and four-camera acquisition",
+          "evidence": "structure-context.json, structure-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "structure_capture.py",
+          "method": "20 Hz original Native raised deck, supports, body, lane, sight and four-camera acquisition",
+          "evidence": "structure-context.json, structure-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "st.sight_distance": {
+          "entrypoint": "structure_capture.py",
+          "method": "20 Hz original Native raised deck, supports, body, lane, sight and four-camera acquisition",
+          "evidence": "structure-context.json, structure-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "drv.sight_distance_adequate": {
+          "entrypoint": "structure_capture.py",
+          "method": "20 Hz original Native raised deck, supports, body, lane, sight and four-camera acquisition",
+          "evidence": "structure-context.json, structure-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "st.centre_line": {
+          "entrypoint": "structure_capture.py",
+          "method": "20 Hz original Native raised deck, supports, body, lane, sight and four-camera acquisition",
+          "evidence": "structure-context.json, structure-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "rel.occupies": {
+          "entrypoint": "structure_capture.py",
+          "method": "20 Hz original Native raised deck, supports, body, lane, sight and four-camera acquisition",
+          "evidence": "structure-context.json, structure-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "st.one_way_roadway": {
+          "entrypoint": "structure_capture.py",
+          "method": "20 Hz original Native raised deck, supports, body, lane, sight and four-camera acquisition",
+          "evidence": "structure-context.json, structure-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "kin.position": {
+          "entrypoint": "structure_capture.py",
+          "method": "20 Hz original Native raised deck, supports, body, lane, sight and four-camera acquisition",
+          "evidence": "structure-context.json, structure-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "kin.heading": {
+          "entrypoint": "structure_capture.py",
+          "method": "20 Hz original Native raised deck, supports, body, lane, sight and four-camera acquisition",
+          "evidence": "structure-context.json, structure-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        }
+      },
+      "physical_preparation": {
+        "case_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__viaduct_right",
+        "receipt": "structure-physical-preparation-viaduct_right.json",
+        "sha256": "8e4fcfe4bb87a107227e228baad3830aa9117f3b01ff56e7cf8ff8bce7b61f7e"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__viaduct_right",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "structure_delivery_audit.py",
+        "script_sha256": "498c09022f328e7ceeb6e815798da885921502fc0dad38ecf131e7adfebbca45",
+        "command": ".venv-cpu/bin/python -B work/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/structure_delivery_audit.py --case training__C313130__NRS-484B-213-2c__motor_vehicle_driver__viaduct_right --diagnostic",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/structure_delivery_audit.py --case training__C313130__NRS-484B-213-2c__motor_vehicle_driver__viaduct_right",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original bridge or viaduct geometry, unobstructed view assessment and four camera pixels required for delivery acceptance",
+        "test_log": "selected-proofs/viaduct_right-delivery-audit.log",
+        "test_log_sha256": "dd4c55214d427bf0021066c77449a56366224324e4c4ae4c30d1b89a1bb9150d",
+        "negative_log": "selected-proofs/viaduct_right-delivery-negative.log",
+        "negative_log_sha256": "8fa48789ee89b03e3103ac4f5b9425df3a624c9a6e23acd815919c867f5f3f69",
+        "scope": "CPU diagnostic join and required rejection; original Native physical and legal acceptance pending"
+      }
+    },
+    {
+      "case_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__viaduct_left",
+      "kind": "delivery",
+      "id": "primary",
+      "construction": "structure-construction-viaduct_left-primary.json",
+      "construction_sha256": "8f5cd901c8143e16c00d674fd79498df0f9f5dff3b0e76031d5009cbd998816c",
+      "fixture_recipe": "work/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/structure-recipe-viaduct_left.json",
+      "measurement_contract": "structure-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-structure-selected-measurement"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native structural support asset, physical identity and approach require original review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "structure-construction-viaduct_left-fallback1.json",
+          "construction_sha256": "4d73e1ef67e95ac9d2ee3c1c9e5c49bbd09ed4da99a269be99fcffda8e87eb24",
+          "trigger": {
+            "source": "structure-rows.jsonl",
+            "metric": "full-body lateral discrepancy at 100-foot zone entry",
+            "failure_condition": "body remains over 1 m from requested lane center"
+          },
+          "changed_knobs": [
+            "controller_gain: 1.5 to 2.0"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/structure-probe-manifest.json --case training__C313130__NRS-484B-213-2c__motor_vehicle_driver__viaduct_left --candidate fallback1 --output .runtime-work/c313130-structure-offline-viaduct_left-fallback1 --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "4d73e1ef67e95ac9d2ee3c1c9e5c49bbd09ed4da99a269be99fcffda8e87eb24",
+            "log": "selected-proofs/viaduct_left-fallback1-offline.log",
+            "log_sha256": "01e0fda6e2e347a682dec356df9d907620958aaeb5044ce42041c742e8dfc327"
+          },
+          "compatibility": {
+            "receipt": "selected-proofs/viaduct_left-fallback1-compatibility.json",
+            "sha256": "9a04bdf4a149b2524151214370ee24337f7d8cd03c17edd880b4e5ae6a2f7dbb",
+            "log": "selected-proofs/viaduct_left-fallback1-analysis.log",
+            "negative_log": "selected-proofs/viaduct_left-fallback1-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/structure-probe-manifest.json --case training__C313130__NRS-484B-213-2c__motor_vehicle_driver__viaduct_left --candidate primary --output .runtime-work/c313130-structure-offline-viaduct_left-primary --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "8f5cd901c8143e16c00d674fd79498df0f9f5dff3b0e76031d5009cbd998816c",
+        "log": "selected-proofs/viaduct_left-primary-offline.log",
+        "log_sha256": "7c8c377ff8fae844d556913f8c37e45193ddc3b87e4919c09eba1d00317db5f2"
+      },
+      "compatibility": {
+        "receipt": "selected-proofs/viaduct_left-primary-compatibility.json",
+        "sha256": "968e7166600999e11f94d6fb459c2f04aec11d65644f9adfcdec1fbad44e4e87",
+        "log": "selected-proofs/viaduct_left-primary-analysis.log",
+        "negative_log": "selected-proofs/viaduct_left-primary-negative.log"
+      },
+      "negative": {
+        "log": "selected-proofs/viaduct_left-primary-negative.log"
+      },
+      "saved_processing": {
+        "receipt": "selected-proofs/viaduct_left-primary-processing.json",
+        "sha256": "359b4622f95699fec53cb7f8e3be7e171a20c985da4c1e5dbcdb93ea21d4f361"
+      },
+      "post_capture": {
+        "command": "python runtime.py process-saved --manifest work/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/execution-manifest.json --case training__C313130__NRS-484B-213-2c__motor_vehicle_driver__viaduct_left --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$SAVED_OUTPUT\"/v0001/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "selected-proofs/viaduct_left-primary-processing.json",
+        "test_log_sha256": "359b4622f95699fec53cb7f8e3be7e171a20c985da4c1e5dbcdb93ea21d4f361"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "st.elevated_structure": {
+          "entrypoint": "structure_capture.py",
+          "method": "20 Hz original Native raised deck, supports, body, lane, sight and four-camera acquisition",
+          "evidence": "structure-context.json, structure-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "drv.approaching": {
+          "entrypoint": "structure_capture.py",
+          "method": "20 Hz original Native raised deck, supports, body, lane, sight and four-camera acquisition",
+          "evidence": "structure-context.json, structure-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "structure_capture.py",
+          "method": "20 Hz original Native raised deck, supports, body, lane, sight and four-camera acquisition",
+          "evidence": "structure-context.json, structure-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "st.sight_distance": {
+          "entrypoint": "structure_capture.py",
+          "method": "20 Hz original Native raised deck, supports, body, lane, sight and four-camera acquisition",
+          "evidence": "structure-context.json, structure-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "drv.sight_distance_adequate": {
+          "entrypoint": "structure_capture.py",
+          "method": "20 Hz original Native raised deck, supports, body, lane, sight and four-camera acquisition",
+          "evidence": "structure-context.json, structure-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "st.centre_line": {
+          "entrypoint": "structure_capture.py",
+          "method": "20 Hz original Native raised deck, supports, body, lane, sight and four-camera acquisition",
+          "evidence": "structure-context.json, structure-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "rel.occupies": {
+          "entrypoint": "structure_capture.py",
+          "method": "20 Hz original Native raised deck, supports, body, lane, sight and four-camera acquisition",
+          "evidence": "structure-context.json, structure-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "st.one_way_roadway": {
+          "entrypoint": "structure_capture.py",
+          "method": "20 Hz original Native raised deck, supports, body, lane, sight and four-camera acquisition",
+          "evidence": "structure-context.json, structure-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "kin.position": {
+          "entrypoint": "structure_capture.py",
+          "method": "20 Hz original Native raised deck, supports, body, lane, sight and four-camera acquisition",
+          "evidence": "structure-context.json, structure-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "kin.heading": {
+          "entrypoint": "structure_capture.py",
+          "method": "20 Hz original Native raised deck, supports, body, lane, sight and four-camera acquisition",
+          "evidence": "structure-context.json, structure-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        }
+      },
+      "physical_preparation": {
+        "case_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__viaduct_left",
+        "receipt": "structure-physical-preparation-viaduct_left.json",
+        "sha256": "ed07054a17a408c74ffc1fabd4f504a03b56dc872b50def75b50d5d724d0544e"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__viaduct_left",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "structure_delivery_audit.py",
+        "script_sha256": "498c09022f328e7ceeb6e815798da885921502fc0dad38ecf131e7adfebbca45",
+        "command": ".venv-cpu/bin/python -B work/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/structure_delivery_audit.py --case training__C313130__NRS-484B-213-2c__motor_vehicle_driver__viaduct_left --diagnostic",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/structure_delivery_audit.py --case training__C313130__NRS-484B-213-2c__motor_vehicle_driver__viaduct_left",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original bridge or viaduct geometry, unobstructed view assessment and four camera pixels required for delivery acceptance",
+        "test_log": "selected-proofs/viaduct_left-delivery-audit.log",
+        "test_log_sha256": "d29f7fbda67a051c34b3e4f8614233093eebb87ff8648bf1031784ad96d48fcb",
+        "negative_log": "selected-proofs/viaduct_left-delivery-negative.log",
+        "negative_log_sha256": "8fa48789ee89b03e3103ac4f5b9425df3a624c9a6e23acd815919c867f5f3f69",
         "scope": "CPU diagnostic join and required rejection; original Native physical and legal acceptance pending"
       }
     }

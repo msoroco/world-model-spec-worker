@@ -72,13 +72,13 @@ def finalize(attempt, output):
         name = channel['name']
         path = channels / (name.replace('/', '_') + '.jsonl')
         path.write_text(''.join(json.dumps({
-            'time_s': row['time_s'], 'value': {
+            'time_s': row['time_s'], 'value': int(measured['observations'][index]['governed_lane_overlap']) if name == 'rel.occupies' else {
                 'red_x': row['signal']['indication'] == 'red_x',
                 'signal_lane_id': row['signal']['lane_id'],
                 'actor_lane_id': row['vehicle']['lane_id'],
                 'body_vertices_m': row['vehicle']['body_vertices_m'],
                 'proposed_lane_id': row['vehicle']['proposed_lane_id']}
-        }, separators=(',', ':')) + '\n' for row in signal_rows))
+        }, separators=(',', ':')) + '\n' for index, row in enumerate(signal_rows)))
         channel_refs.append({'name': name, 'unit': channel['unit'], 'reference': 'channels/' + path.name})
     result = {
         'case_id': cfg['case_id'],
@@ -104,6 +104,11 @@ def finalize(attempt, output):
         'video_frame_map_reference': 'video_frames.jsonl',
         'recording_description': cfg['recording_description'], 'recording_evidence': channel_refs,
         'realized_observables': {
+            'rel.occupies': {'value': int(entered), 'unit': 'lane overlap',
+                             'method': 'original actor body and lane map',
+                             'time_window': '600 original frames', 'statistic': 'max',
+                             'sample_window_s': [signal_rows[0]['time_s'], signal_rows[-1]['time_s']],
+                             'reference': 'channels/rel.occupies.jsonl'},
             'red_x_facing_frames': {'value': measured['red_x_facing_frames'], 'unit': 'frames',
                                     'method': 'original signal and actor orientation join',
                                     'time_window': '600 original frames', 'statistic': 'count',
