@@ -11,7 +11,6 @@ from freight_scene import CASES, CAMERAS, scene_request
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
 EXAMPLE = json.loads((REPO / 'runtime/fixtures/example.json').read_text())
-GENERIC = json.loads((REPO / 'work/training__C111325__NRS-484B-257-1__motor_vehicle_driver/selected-generator-complete_stop_then_yield.json').read_text())
 VIEWS = (('overview', 1920, 1080), ('approach', 1280, 720),
          ('reference_corner', 1280, 720), ('driver_reference', 1280, 720))
 
@@ -87,7 +86,12 @@ def build(slug, videos):
     base_trace = json.loads(EXAMPLE['files']['trace.jsonl'].splitlines()[0])
     base_evidence = json.loads(EXAMPLE['files']['capture/evidence.jsonl'].splitlines()[0])
     frames, freight, core, ego_body, material_body, passenger_body, waiting_body = [], [], [], [], [], [], []
-    evidence, native_rows = [], []
+    evidence, native_rows, graph_rows = [], [], []
+    source_ego = next(node for node in EXAMPLE['graphs'][0]['nodes'] if node['id'] == 'ego')
+    keep = ('vertex', 'sem_class', 'forward', 'right', 'up', 'entity_id',
+            'threedbbox', 'carla_vel_x', 'carla_vel_y', 'carla_vel_z',
+            'carla_speed', 'original_observation')
+    ego_node = {'id': 'ego', 'attributes': {key: source_ego['attributes'][key] for key in keep}}
     for i in range(600):
         native = 800000 + i
         time_s = i / 20
@@ -141,6 +145,11 @@ def build(slug, videos):
             'blueprint': 'sensor.camera.rgb', 'diagnostic_fixture_only': True}]
         obs['original_observations']['world_settings']['no_rendering_mode'] = False
         evidence.append(obs)
+        graph_rows.append({'path': f'capture/native/graphs/base/{native:09d}.adapter.json',
+                           'attributes': {'frame': native, 'simulation_time_s': time_s,
+                                          'observed_evidence': obs['original_observations'],
+                                          'synthetic_diagnostic': True},
+                           'nodes': [ego_node], 'edges': []})
         native_rows.append({'frame': native, 'time_s': time_s,
             'simulation_time': time_s, 'synthetic_diagnostic': True,
             'adapter_graph': f'graphs/base/{native:09d}.adapter.json'})
@@ -180,10 +189,10 @@ def build(slug, videos):
     manifest['native_map_facts'] = {'path': 'native_map_facts.json',
                                     'sha256': sha(sources / 'capture/native_map_facts.json')}
     put(sources / 'capture/manifest.json', manifest)
-    generator = copy.deepcopy(GENERIC)
-    generator['videos'] = [{'path': name + '.mkv', 'frames': 600, 'width': width,
+    generator = {'files': {}, 'graphs': graph_rows,
+                 'videos': [{'path': name + '.mkv', 'frames': 600, 'width': width,
                             'height': height, 'fps': 20, 'color': 'black'}
-                           for name, width, height in VIEWS]
+                           for name, width, height in VIEWS]}
     generator_path = HERE / ('selected-generator-' + slug + '.json')
     put(generator_path, generator)
     inventory = [{'path': str(path.relative_to(sources)),

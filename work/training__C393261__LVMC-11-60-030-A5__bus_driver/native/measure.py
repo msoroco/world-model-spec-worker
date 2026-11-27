@@ -1,5 +1,6 @@
 """Measure original bus dwell; require sourced designation before comparing a limit."""
 import argparse
+import hashlib
 import json
 import math
 from pathlib import Path
@@ -47,10 +48,20 @@ def measure(history_path, context_path):
         raise ValueError('parking interval censored by capture boundary')
     longest = max(complete, key=lambda v: v['duration_s'])
     period = context.get('designated_period_s')
-    verified = context.get('designation_verified') is True and bool(context.get('designation_authority_source'))
+    authority = context.get('designation_authority_source')
+    verified = context.get('designation_verified') is True
+    if verified:
+        if not isinstance(authority, dict) or not all(authority.get(k) for k in ('path', 'sha256')):
+            raise ValueError('verified designation lacks exact authority source')
+        authority_path = (Path(context_path).parent / authority['path']).resolve()
+        if not authority_path.is_file() or hashlib.sha256(authority_path.read_bytes()).hexdigest() != authority['sha256']:
+            raise ValueError('designated-period authority hash differs')
+        designation = json.loads(authority_path.read_text())
+        if designation.get('endpoint_id') != context.get('endpoint_id') or designation.get('period_s') != period:
+            raise ValueError('designated-period authority does not bind endpoint and period')
     if verified and (type(period) not in (int, float) or not math.isfinite(period) or period <= 0):
         raise ValueError('verified designation has no valid period')
-    return {'frames': 600, 'parking_intervals': intervals, 'longest_complete_interval_s': longest['duration_s'], 'designated_period_s': period if verified else None, 'dwell_exceeds_verified_period': longest['duration_s'] > period if verified else None, 'designation_source': context['designation_authority_source'] if verified else None, 'legal_conclusion': None, 'physical_review_required': True, 'activity_classification_unverified': not context.get('actual_loading_activity_verified', False)}
+    return {'frames': 600, 'parking_intervals': intervals, 'longest_complete_interval_s': longest['duration_s'], 'designated_period_s': period if verified else None, 'dwell_exceeds_verified_period': longest['duration_s'] > period if verified else None, 'designation_source': authority if verified else None, 'legal_conclusion': None, 'physical_review_required': True, 'activity_classification_unverified': not context.get('actual_loading_activity_verified', False)}
 
 if __name__ == '__main__':
     p = argparse.ArgumentParser()

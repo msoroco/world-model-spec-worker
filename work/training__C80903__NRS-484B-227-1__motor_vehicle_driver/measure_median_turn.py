@@ -22,10 +22,14 @@ def measure(context, rows):
     if context.get("source_kind") != "original_native_divided_highway_readback":
         raise ValueError("Original divided-highway source missing")
     for name in ("native_map_sha256", "divider_geometry_sha256", "roadway_direction_sha256",
-                 "public_authority_opening_sha256", "vehicle_extent_sha256", "ego_pose_source_sha256"):
+                 "physical_opening_sha256", "vehicle_extent_sha256", "ego_pose_source_sha256"):
         source_hash(context.get(name), name)
-    if context.get("public_authority_opening_verified") is not True:
-        raise ValueError("Public-authority crossover not sourced")
+    authority = context.get("public_authority_crossover_established")
+    if authority not in (True, False, None):
+        raise ValueError("Invalid public-authority disposition")
+    if authority is True:
+        source_hash(context.get("public_authority_crossover_sha256"),
+                    "public_authority_crossover_sha256")
     low, high = [finite(x, "authorized opening bound") for x in context.get("opening_x_m", [])]
     median_low, median_high = [finite(x, "median y bound") for x in context.get("median_y_m", [])]
     if low >= high or median_low >= median_high:
@@ -35,7 +39,10 @@ def measure(context, rows):
     previous_native = None
     median_frames = []
     crossing_x = []
+    crossing_footprints = []
     left_turn_frames = []
+    semicircular_turn_frames = []
+    u_turn_frames = []
     wrong_roadway_frames = []
     for i, row in enumerate(rows):
         if row.get("video_frame") != i:
@@ -52,10 +59,13 @@ def measure(context, rows):
         x = finite(row.get("ego_center_x_m"), "ego x")
         y = finite(row.get("ego_center_y_m"), "ego y")
         width = finite(row.get("ego_width_m"), "ego width")
-        if width <= 0:
+        length = finite(row.get("ego_length_m"), "ego length")
+        if width <= 0 or length <= 0:
             raise ValueError("Invalid ego extent")
         if row.get("left_turn_active") not in (True, False):
             raise ValueError("Left turn state missing")
+        if row.get("semicircular_turn_active") not in (True, False):
+            raise ValueError("Semicircular turn state missing")
         if row.get("u_turn_active") not in (True, False):
             raise ValueError("U-turn state missing")
         if row.get("roadway_direction") not in {"right_hand", "opposite", "median"}:
@@ -64,17 +74,24 @@ def measure(context, rows):
         if intersects_median:
             median_frames.append(i)
             crossing_x.append(x)
+            crossing_footprints.append((x-length/2, x+length/2))
         if row["left_turn_active"]:
             left_turn_frames.append(i)
+        if row["semicircular_turn_active"]:
+            semicircular_turn_frames.append(i)
+        if row["u_turn_active"]:
+            u_turn_frames.append(i)
         if row["roadway_direction"] == "opposite":
             wrong_roadway_frames.append(i)
     if not median_frames:
         raise ValueError("No observed median footprint overlap")
-    if not left_turn_frames:
-        raise ValueError("No observed left turn")
-    if max(left_turn_frames) < min(median_frames) or min(left_turn_frames) > max(median_frames):
-        raise ValueError("Left turn does not coincide with median crossing")
+    turns = left_turn_frames+semicircular_turn_frames+u_turn_frames
+    if not turns:
+        raise ValueError("No observed turn")
+    if max(turns) < min(median_frames) or min(turns) > max(median_frames):
+        raise ValueError("Turn does not coincide with median crossing")
     in_opening = [low <= x <= high for x in crossing_x]
+    footprint_in_opening = [low <= left and right <= high for left,right in crossing_footprints]
     return {"format": "worker-source-divided-highway-median-crossing-measurement",
             "frame_count": FRAMES, "rate_hz": RATE_HZ,
             "first_median_footprint_frame": median_frames[0],
@@ -82,8 +99,13 @@ def measure(context, rows):
             "median_crossing_center_x_range_m": [min(crossing_x), max(crossing_x)],
             "all_median_overlap_centers_within_authorized_opening": all(in_opening),
             "median_overlap_frames_outside_authorized_opening": sum(not value for value in in_opening),
+            "all_median_overlap_footprints_within_physical_opening": all(footprint_in_opening),
+            "median_overlap_frames_with_footprint_outside_opening": sum(not value for value in footprint_in_opening),
+            "public_authority_crossover_established": authority,
             "wrong_roadway_frame_count": len(wrong_roadway_frames),
-            "observed_left_turn": True,
+            "observed_left_turn": bool(left_turn_frames),
+            "observed_semicircular_turn": bool(semicircular_turn_frames),
+            "observed_u_turn": bool(u_turn_frames),
             "legal_compliance": "unassessed",
             "limitations": ["A centre station inside an opening does not prove the full vehicle footprint cleared the barrier.",
                             "Public-authority establishment and median geometry require original source and independent review.",

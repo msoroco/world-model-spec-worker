@@ -1,0 +1,358 @@
+{
+  "cell_id": "C393261",
+  "actor": "bus_driver",
+  "status": "draft",
+  "sweep_specs": [
+    {
+      "sweep_id": "training__C393261__LVMC-11-60-030-A5__bus_driver__dwell_comparison",
+      "target_law_id": "LVMC-11-60-030-A5",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "designated for such bus stop or origin or destination point in accordance with Section 11.60.010",
+          "note": "Require original applicable authority, exact endpoint and effective designated period; a marker without a time is insufficient."
+        }
+      ],
+      "rationale": "Actual complete bus dwell and official applicable period require separate original sources.",
+      "missing_inputs": [
+        "Original Native motion and official Section 11.60.010 designation."
+      ]
+    }
+  ],
+  "sweeps_expanded": true,
+  "cases": [
+    {
+      "case_id": "training__C393261__LVMC-11-60-030-A5__bus_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Unselected neutral residential terminus context.",
+      "variable_assignments": {
+        "target_stationary_dwell_s": {
+          "kind": "controller",
+          "value": null,
+          "unit": "categorical"
+        },
+        "terminus_road_and_zone": {
+          "kind": "world_setup",
+          "value": null,
+          "unit": "categorical"
+        },
+        "designation_source_status": {
+          "kind": "world_setup",
+          "value": null,
+          "unit": "categorical"
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ru.bus",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original post-tick bus history joined to Native terminus survey and source-gated authority",
+            "time_window": "600 original frames",
+            "reference_frame": "residential endpoint road 1 parking lane -2",
+            "uncertainty": "authority, bus activity, physical sign pixels and 50 ms sampling remain reviewable"
+          },
+          {
+            "name": "st.curb_zone",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original post-tick bus history joined to Native terminus survey and source-gated authority",
+            "time_window": "600 original frames",
+            "reference_frame": "residential endpoint road 1 parking lane -2",
+            "uncertainty": "authority, bus activity, physical sign pixels and 50 ms sampling remain reviewable"
+          },
+          {
+            "name": "dev.regulatory_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original post-tick bus history joined to Native terminus survey and source-gated authority",
+            "time_window": "600 original frames",
+            "reference_frame": "residential endpoint road 1 parking lane -2",
+            "uncertainty": "authority, bus activity, physical sign pixels and 50 ms sampling remain reviewable"
+          },
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original post-tick bus history joined to Native terminus survey and source-gated authority",
+            "time_window": "600 original frames",
+            "reference_frame": "residential endpoint road 1 parking lane -2",
+            "uncertainty": "authority, bus activity, physical sign pixels and 50 ms sampling remain reviewable"
+          },
+          {
+            "name": "kin.time",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original post-tick bus history joined to Native terminus survey and source-gated authority",
+            "time_window": "600 original frames",
+            "reference_frame": "residential endpoint road 1 parking lane -2",
+            "uncertainty": "authority, bus activity, physical sign pixels and 50 ms sampling remain reviewable"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original post-tick bus history joined to Native terminus survey and source-gated authority",
+            "time_window": "600 original frames",
+            "reference_frame": "residential endpoint road 1 parking lane -2",
+            "uncertainty": "authority, bus activity, physical sign pixels and 50 ms sampling remain reviewable"
+          },
+          {
+            "name": "drv.condition_in_effect",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original post-tick bus history joined to Native terminus survey and source-gated authority",
+            "time_window": "600 original frames",
+            "reference_frame": "residential endpoint road 1 parking lane -2",
+            "uncertainty": "authority, bus activity, physical sign pixels and 50 ms sampling remain reviewable"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "designation_authority_source",
+            "unit": "structured",
+            "method": "Hash-verified original Section 11.60.010 designation matched to exact endpoint and applicable period"
+          }
+        ],
+        "limitations": [
+          "Official designated period and establishing authority absent",
+          "Sign need not display designated duration",
+          "Actual bus activity and non-tour status require original review"
+        ]
+      }
+    },
+    {
+      "case_id": "training__C393261__LVMC-11-60-030-A5__bus_driver__probe_01",
+      "target_law_id": "LVMC-11-60-030-A5",
+      "target_type": "judgment_sweep",
+      "rationale": "Compare measured complete bus dwell with all road, actor, marker and cameras fixed; official period remains unknown until sourced.",
+      "variable_assignments": {
+        "target_stationary_dwell_s": {
+          "kind": "controller",
+          "value": 8.0,
+          "unit": "seconds"
+        },
+        "terminus_road_and_zone": {
+          "kind": "world_setup",
+          "value": "same residential road 1 parking lane -2",
+          "unit": "categorical"
+        },
+        "designation_source_status": {
+          "kind": "world_setup",
+          "value": null,
+          "unit": "categorical"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "designated for such bus stop or origin or destination point in accordance with Section 11.60.010"
+      ],
+      "paired_probe_id": "training__C393261__LVMC-11-60-030-A5__bus_driver__dwell_comparison",
+      "deliberate_differences": [
+        "target_stationary_dwell_s"
+      ],
+      "probe": {
+        "primary_variable": "target_stationary_dwell_s",
+        "comparison_or_standard": "Original authority-designated period, if established",
+        "target_value_or_branch": 8.0
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ru.bus",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original post-tick bus history joined to Native terminus survey and source-gated authority",
+            "time_window": "600 original frames",
+            "reference_frame": "residential endpoint road 1 parking lane -2",
+            "uncertainty": "authority, bus activity, physical sign pixels and 50 ms sampling remain reviewable"
+          },
+          {
+            "name": "st.curb_zone",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original post-tick bus history joined to Native terminus survey and source-gated authority",
+            "time_window": "600 original frames",
+            "reference_frame": "residential endpoint road 1 parking lane -2",
+            "uncertainty": "authority, bus activity, physical sign pixels and 50 ms sampling remain reviewable"
+          },
+          {
+            "name": "dev.regulatory_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original post-tick bus history joined to Native terminus survey and source-gated authority",
+            "time_window": "600 original frames",
+            "reference_frame": "residential endpoint road 1 parking lane -2",
+            "uncertainty": "authority, bus activity, physical sign pixels and 50 ms sampling remain reviewable"
+          },
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original post-tick bus history joined to Native terminus survey and source-gated authority",
+            "time_window": "600 original frames",
+            "reference_frame": "residential endpoint road 1 parking lane -2",
+            "uncertainty": "authority, bus activity, physical sign pixels and 50 ms sampling remain reviewable"
+          },
+          {
+            "name": "kin.time",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original post-tick bus history joined to Native terminus survey and source-gated authority",
+            "time_window": "600 original frames",
+            "reference_frame": "residential endpoint road 1 parking lane -2",
+            "uncertainty": "authority, bus activity, physical sign pixels and 50 ms sampling remain reviewable"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original post-tick bus history joined to Native terminus survey and source-gated authority",
+            "time_window": "600 original frames",
+            "reference_frame": "residential endpoint road 1 parking lane -2",
+            "uncertainty": "authority, bus activity, physical sign pixels and 50 ms sampling remain reviewable"
+          },
+          {
+            "name": "drv.condition_in_effect",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original post-tick bus history joined to Native terminus survey and source-gated authority",
+            "time_window": "600 original frames",
+            "reference_frame": "residential endpoint road 1 parking lane -2",
+            "uncertainty": "authority, bus activity, physical sign pixels and 50 ms sampling remain reviewable"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "designation_authority_source",
+            "unit": "structured",
+            "method": "Hash-verified original Section 11.60.010 designation matched to exact endpoint and applicable period"
+          }
+        ],
+        "limitations": [
+          "Official designated period and establishing authority absent",
+          "Sign need not display designated duration",
+          "Actual bus activity and non-tour status require original review"
+        ]
+      },
+      "selection_rank": 1
+    },
+    {
+      "case_id": "training__C393261__LVMC-11-60-030-A5__bus_driver__probe_02",
+      "target_law_id": "LVMC-11-60-030-A5",
+      "target_type": "judgment_sweep",
+      "rationale": "Compare measured complete bus dwell with all road, actor, marker and cameras fixed; official period remains unknown until sourced.",
+      "variable_assignments": {
+        "target_stationary_dwell_s": {
+          "kind": "controller",
+          "value": 18.0,
+          "unit": "seconds"
+        },
+        "terminus_road_and_zone": {
+          "kind": "world_setup",
+          "value": "same residential road 1 parking lane -2",
+          "unit": "categorical"
+        },
+        "designation_source_status": {
+          "kind": "world_setup",
+          "value": null,
+          "unit": "categorical"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "designated for such bus stop or origin or destination point in accordance with Section 11.60.010"
+      ],
+      "paired_probe_id": "training__C393261__LVMC-11-60-030-A5__bus_driver__dwell_comparison",
+      "deliberate_differences": [
+        "target_stationary_dwell_s"
+      ],
+      "probe": {
+        "primary_variable": "target_stationary_dwell_s",
+        "comparison_or_standard": "Original authority-designated period, if established",
+        "target_value_or_branch": 18.0
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ru.bus",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original post-tick bus history joined to Native terminus survey and source-gated authority",
+            "time_window": "600 original frames",
+            "reference_frame": "residential endpoint road 1 parking lane -2",
+            "uncertainty": "authority, bus activity, physical sign pixels and 50 ms sampling remain reviewable"
+          },
+          {
+            "name": "st.curb_zone",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original post-tick bus history joined to Native terminus survey and source-gated authority",
+            "time_window": "600 original frames",
+            "reference_frame": "residential endpoint road 1 parking lane -2",
+            "uncertainty": "authority, bus activity, physical sign pixels and 50 ms sampling remain reviewable"
+          },
+          {
+            "name": "dev.regulatory_sign",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original post-tick bus history joined to Native terminus survey and source-gated authority",
+            "time_window": "600 original frames",
+            "reference_frame": "residential endpoint road 1 parking lane -2",
+            "uncertainty": "authority, bus activity, physical sign pixels and 50 ms sampling remain reviewable"
+          },
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original post-tick bus history joined to Native terminus survey and source-gated authority",
+            "time_window": "600 original frames",
+            "reference_frame": "residential endpoint road 1 parking lane -2",
+            "uncertainty": "authority, bus activity, physical sign pixels and 50 ms sampling remain reviewable"
+          },
+          {
+            "name": "kin.time",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original post-tick bus history joined to Native terminus survey and source-gated authority",
+            "time_window": "600 original frames",
+            "reference_frame": "residential endpoint road 1 parking lane -2",
+            "uncertainty": "authority, bus activity, physical sign pixels and 50 ms sampling remain reviewable"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original post-tick bus history joined to Native terminus survey and source-gated authority",
+            "time_window": "600 original frames",
+            "reference_frame": "residential endpoint road 1 parking lane -2",
+            "uncertainty": "authority, bus activity, physical sign pixels and 50 ms sampling remain reviewable"
+          },
+          {
+            "name": "drv.condition_in_effect",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original post-tick bus history joined to Native terminus survey and source-gated authority",
+            "time_window": "600 original frames",
+            "reference_frame": "residential endpoint road 1 parking lane -2",
+            "uncertainty": "authority, bus activity, physical sign pixels and 50 ms sampling remain reviewable"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "designation_authority_source",
+            "unit": "structured",
+            "method": "Hash-verified original Section 11.60.010 designation matched to exact endpoint and applicable period"
+          }
+        ],
+        "limitations": [
+          "Official designated period and establishing authority absent",
+          "Sign need not display designated duration",
+          "Actual bus activity and non-tour status require original review"
+        ]
+      },
+      "selection_rank": 2
+    }
+  ]
+}

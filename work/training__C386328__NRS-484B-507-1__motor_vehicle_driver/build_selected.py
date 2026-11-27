@@ -87,7 +87,7 @@ def build(slug, plan, assignment):
                 'requirements': [{'disposition_index': i, 'requirement': item['requirement'],
                                   'source': item['source'], 'kind': 'measured',
                                   'method': 'measure_freight_zone',
-                                  'output_key': 'freight_zone_observation',
+                                  'output_key': 'freight_zone_observation_' + str(i),
                                   'value_type': 'object',
                                   'inputs': ['road.xodr', 'zone-review.json',
                                              'activity-review.json', 'freight_trace.jsonl',
@@ -129,8 +129,8 @@ def build(slug, plan, assignment):
             'recording_description': cfg['recording_description'],
             'native_handoff': {'python_env_var': 'CARLA_PYTHON', 'host_env_var': 'CARLA_HOST',
                                'port_env_var': 'CARLA_PORT'},
-            'candidate_risk': {'status': 'primary_unverified',
-                               'reason': 'Original curb spawn, walker and waiting-materials-vehicle geometry require local Native physical review; no measured fallback trigger yet'},
+            'candidate_risk': {'status': 'none',
+                               'reason': 'Original curb, walker and waiting-vehicle geometry need local Native review; no measured primary failure or justified fallback trigger yet'},
             'candidates': []}
 
 

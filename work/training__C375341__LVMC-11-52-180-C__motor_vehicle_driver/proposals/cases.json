@@ -1,7 +1,112 @@
 {
+  "actor": "motor_vehicle_driver",
   "cases": [
     {
+      "case_id": "training__C375341__LVMC-11-52-180-C__motor_vehicle_driver__baseline",
+      "rationale": "Neutral alley parking duration baseline; no selected recording or legal result",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "source-bound original alley context, hour ledger and 20 Hz Native trace",
+            "name": "st.alley",
+            "reference_frame": "surveyed alley and civil-time ledger",
+            "sampling_rate_hz": 20,
+            "time_window": "full 600-frame original capture plus at least one-hour original ledger",
+            "uncertainty": "original source, physical completion and legal review pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-bound original alley context, hour ledger and 20 Hz Native trace",
+            "name": "drv.standing_or_parked",
+            "reference_frame": "surveyed alley and civil-time ledger",
+            "sampling_rate_hz": 20,
+            "time_window": "full 600-frame original capture plus at least one-hour original ledger",
+            "uncertainty": "original source, physical completion and legal review pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-bound original alley context, hour ledger and 20 Hz Native trace",
+            "name": "kin.time",
+            "reference_frame": "surveyed alley and civil-time ledger",
+            "sampling_rate_hz": 20,
+            "time_window": "full 600-frame original capture plus at least one-hour original ledger",
+            "uncertainty": "original source, physical completion and legal review pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-bound original alley context, hour ledger and 20 Hz Native trace",
+            "name": "env.civil_time",
+            "reference_frame": "surveyed alley and civil-time ledger",
+            "sampling_rate_hz": 20,
+            "time_window": "full 600-frame original capture plus at least one-hour original ledger",
+            "uncertainty": "original source, physical completion and legal review pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-bound original alley context, hour ledger and 20 Hz Native trace",
+            "name": "rel.occupies",
+            "reference_frame": "surveyed alley and civil-time ledger",
+            "sampling_rate_hz": 20,
+            "time_window": "full 600-frame original capture plus at least one-hour original ledger",
+            "uncertainty": "original source, physical completion and legal review pending",
+            "unit": "structured"
+          },
+          {
+            "method": "source-bound original alley context, hour ledger and 20 Hz Native trace",
+            "name": "kin.position",
+            "reference_frame": "surveyed alley and civil-time ledger",
+            "sampling_rate_hz": 20,
+            "time_window": "full 600-frame original capture plus at least one-hour original ledger",
+            "uncertainty": "original source, physical completion and legal review pending",
+            "unit": "structured"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Requested duration is not observed parking",
+          "30-second video alone cannot prove one-hour parking history",
+          "Original alley status and otherwise lawful prerequisite require independent source audit",
+          "Synthetic CPU fixture is diagnostic only"
+        ]
+      },
+      "target_law_id": null,
+      "target_type": "baseline",
+      "unresolved_judgment_calls": [
+        "Original alley status, otherwise lawful context and hour ledger remain source gated"
+      ],
+      "variable_assignments": {
+        "commanded_parked_minutes_in_rolling_hour": {
+          "kind": "controller",
+          "unit": "min",
+          "value": 0
+        },
+        "observed_parked_minutes_in_rolling_hour": {
+          "kind": "subject_behavior",
+          "unit": "min",
+          "value": null
+        }
+      }
+    },
+    {
       "case_id": "training__C375341__LVMC-11-52-180-C__motor_vehicle_driver__probe_1",
+      "deliberate_differences": [
+        "commanded_parked_minutes_in_rolling_hour"
+      ],
+      "epsilon_used": {
+        "rationale": "Requested construction separation only; source measurement decides and no legal tolerance is invented.",
+        "unit": "min",
+        "value": 5
+      },
+      "paired_probe_id": "alley_rolling_hour_30_minute_boundary",
+      "probe": {
+        "comparison_or_standard": "source-measured parked time in any rolling hour versus exact 30-minute statutory boundary",
+        "operator": ">",
+        "primary_variable": "observed_parked_minutes_in_rolling_hour",
+        "target_value_or_branch": 25.0,
+        "test_value": 25.0,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "unit": "min"
+      },
       "rationale": "Requested 1500 seconds of alley parking within an hour; source ledger, original alley status and otherwise-lawful prerequisite determine observation",
       "recording_description": {
         "channels": [
@@ -69,32 +174,45 @@
         ]
       },
       "target_law_id": "LVMC-11-52-180-C",
-      "target_type": "delivery",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
         "original surveyed alley and hour ledger",
         "otherwise-lawful prerequisite",
         "physical parking and legal effect"
       ],
       "variable_assignments": {
-        "original_hour_ledger": {
-          "kind": "source_review",
-          "unit": "structured",
-          "value": null
+        "commanded_parked_minutes_in_rolling_hour": {
+          "kind": "controller",
+          "unit": "min",
+          "value": 25.0
         },
-        "otherwise_lawful": {
-          "kind": "source_review",
-          "unit": "structured",
+        "observed_parked_minutes_in_rolling_hour": {
+          "kind": "subject_behavior",
+          "unit": "min",
           "value": null
-        },
-        "requested_parked_seconds_in_rolling_hour": {
-          "kind": "controller_request",
-          "unit": "s",
-          "value": 1500
         }
       }
     },
     {
       "case_id": "training__C375341__LVMC-11-52-180-C__motor_vehicle_driver__probe_at_30",
+      "deliberate_differences": [
+        "commanded_parked_minutes_in_rolling_hour"
+      ],
+      "epsilon_used": {
+        "rationale": "Requested construction separation only; source measurement decides and no legal tolerance is invented.",
+        "unit": "min",
+        "value": 5
+      },
+      "paired_probe_id": "alley_rolling_hour_30_minute_boundary",
+      "probe": {
+        "comparison_or_standard": "source-measured parked time in any rolling hour versus exact 30-minute statutory boundary",
+        "operator": ">",
+        "primary_variable": "observed_parked_minutes_in_rolling_hour",
+        "target_value_or_branch": 30.0,
+        "test_value": 30.0,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "unit": "min"
+      },
       "rationale": "Requested 1800 seconds of alley parking within an hour; source ledger, original alley status and otherwise-lawful prerequisite determine observation",
       "recording_description": {
         "channels": [
@@ -162,32 +280,45 @@
         ]
       },
       "target_law_id": "LVMC-11-52-180-C",
-      "target_type": "delivery",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
         "original surveyed alley and hour ledger",
         "otherwise-lawful prerequisite",
         "physical parking and legal effect"
       ],
       "variable_assignments": {
-        "original_hour_ledger": {
-          "kind": "source_review",
-          "unit": "structured",
-          "value": null
+        "commanded_parked_minutes_in_rolling_hour": {
+          "kind": "controller",
+          "unit": "min",
+          "value": 30.0
         },
-        "otherwise_lawful": {
-          "kind": "source_review",
-          "unit": "structured",
+        "observed_parked_minutes_in_rolling_hour": {
+          "kind": "subject_behavior",
+          "unit": "min",
           "value": null
-        },
-        "requested_parked_seconds_in_rolling_hour": {
-          "kind": "controller_request",
-          "unit": "s",
-          "value": 1800
         }
       }
     },
     {
       "case_id": "training__C375341__LVMC-11-52-180-C__motor_vehicle_driver__probe_2",
+      "deliberate_differences": [
+        "commanded_parked_minutes_in_rolling_hour"
+      ],
+      "epsilon_used": {
+        "rationale": "Requested construction separation only; source measurement decides and no legal tolerance is invented.",
+        "unit": "min",
+        "value": 5
+      },
+      "paired_probe_id": "alley_rolling_hour_30_minute_boundary",
+      "probe": {
+        "comparison_or_standard": "source-measured parked time in any rolling hour versus exact 30-minute statutory boundary",
+        "operator": ">",
+        "primary_variable": "observed_parked_minutes_in_rolling_hour",
+        "target_value_or_branch": 35.0,
+        "test_value": 35.0,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "unit": "min"
+      },
       "rationale": "Requested 2100 seconds of alley parking within an hour; source ledger, original alley status and otherwise-lawful prerequisite determine observation",
       "recording_description": {
         "channels": [
@@ -255,30 +386,28 @@
         ]
       },
       "target_law_id": "LVMC-11-52-180-C",
-      "target_type": "delivery",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
         "original surveyed alley and hour ledger",
         "otherwise-lawful prerequisite",
         "physical parking and legal effect"
       ],
       "variable_assignments": {
-        "original_hour_ledger": {
-          "kind": "source_review",
-          "unit": "structured",
-          "value": null
+        "commanded_parked_minutes_in_rolling_hour": {
+          "kind": "controller",
+          "unit": "min",
+          "value": 35.0
         },
-        "otherwise_lawful": {
-          "kind": "source_review",
-          "unit": "structured",
+        "observed_parked_minutes_in_rolling_hour": {
+          "kind": "subject_behavior",
+          "unit": "min",
           "value": null
-        },
-        "requested_parked_seconds_in_rolling_hour": {
-          "kind": "controller_request",
-          "unit": "s",
-          "value": 2100
         }
       }
     }
   ],
-  "format": "worker-case-proposals"
+  "cell_id": "C375341",
+  "status": "draft",
+  "sweep_specs": [],
+  "sweeps_expanded": true
 }

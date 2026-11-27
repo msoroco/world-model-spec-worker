@@ -1,4 +1,5 @@
 import json
+import hashlib
 import tempfile
 import unittest
 from pathlib import Path
@@ -46,7 +47,11 @@ class NativeDraft(unittest.TestCase):
     def test_source_bound_duration_and_missing_designation(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            context = {'zone_x_m': [-2.0, 20.0], 'parking_lane_id': -2, 'native_survey': survey(FakeWorld(), FakeCarla), 'designation_verified': False, 'designated_period_s': 12, 'designation_authority_source': None}
+            context = {'zone_x_m': [-2.0, 20.0], 'parking_lane_id': -2,
+                       'endpoint_id': 'native_road_1_parking_-2_terminus',
+                       'native_survey': survey(FakeWorld(), FakeCarla),
+                       'designation_verified': False, 'designated_period_s': 12,
+                       'designation_authority_source': None}
             cp = root / 'context.json'
             hp = root / 'history.jsonl'
             cp.write_text(json.dumps(context))
@@ -59,9 +64,20 @@ class NativeDraft(unittest.TestCase):
             unknown = measure(hp, cp)
             self.assertEqual(unknown['longest_complete_interval_s'], 18)
             self.assertIsNone(unknown['dwell_exceeds_verified_period'])
-            context.update(designation_verified=True, designation_authority_source='synthetic_native_sample/authority-fixture', designated_period_s=12)
+            authority = root / 'authority.json'
+            authority.write_text(json.dumps({'endpoint_id': context['endpoint_id'],
+                                             'period_s': 12,
+                                             'source_kind': 'synthetic_diagnostic'}))
+            context.update(designation_verified=True,
+                           designation_authority_source={'path': 'authority.json',
+                               'sha256': hashlib.sha256(authority.read_bytes()).hexdigest()},
+                           designated_period_s=12)
             cp.write_text(json.dumps(context))
             self.assertTrue(measure(hp, cp)['dwell_exceeds_verified_period'])
+            authority.write_text(json.dumps({'endpoint_id': context['endpoint_id'],
+                                             'period_s': 20,
+                                             'source_kind': 'synthetic_diagnostic'}))
+            context['designation_authority_source']['sha256'] = hashlib.sha256(authority.read_bytes()).hexdigest()
             context['designated_period_s'] = 20
             cp.write_text(json.dumps(context))
             self.assertFalse(measure(hp, cp)['dwell_exceeds_verified_period'])

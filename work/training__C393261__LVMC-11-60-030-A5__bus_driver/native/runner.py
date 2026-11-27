@@ -1,8 +1,10 @@
 """Survey-gated 30-second Native bus terminus capture. CPU check avoids CARLA import."""
 import argparse
+import hashlib
 import json
 import queue
 import subprocess
+import sys
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from geometry import check as geometry_check, open_drive
@@ -10,12 +12,19 @@ from geometry import check as geometry_check, open_drive
 RATE = 20
 FRAMES = 600
 CAMERAS = (
-    ('terminus_overview', 1280, 720, 10, -22, 18, -42, False),
-    ('terminus_marker', 1280, 720, -8, -13, 6, -18, False),
-    ('parking_zone', 1280, 720, 12, -15, 8, -35, False),
-    ('bus_chase', 1280, 720, -8, 0, 5, -10, True),
+    ('overview', 1920, 1080, 10, -22, 18, -42, False),
+    ('approach', 1280, 720, -8, -13, 6, -18, False),
+    ('reference_corner', 1280, 720, 12, -15, 8, -35, False),
+    ('driver_reference', 1280, 720, -8, 0, 5, -10, True),
 )
 DWELL_TARGET_S = {'probe_01': 8.0, 'probe_02': 18.0}
+
+def sha_file(path):
+    digest = hashlib.sha256()
+    with Path(path).open('rb') as stream:
+        for block in iter(lambda: stream.read(1024 * 1024), b''):
+            digest.update(block)
+    return digest.hexdigest()
 
 def check():
     geo = geometry_check()
@@ -46,7 +55,13 @@ def survey(world, carla):
     return {'terminus_signal': signs[0].attrib, 'parking_lane_samples': samples, 'sign_pixels_verified': False, 'official_designation_verified': False}
 
 def execute(case_id, output_dir, host, port):
+    repo = next((p for p in Path(__file__).resolve().parents if (p / 'batch.json').is_file()), None)
+    if repo is None:
+        raise RuntimeError('Worker runtime root unavailable')
+    sys.path.insert(0, str(repo / 'runtime' / 'scenario_pipeline'))
+    sys.path.insert(1, str(repo / 'runtime' / 'python'))
     import carla
+    from pipeline_capture import PipelineCapture
     from worker_exchange.native_output import FrameMap
     from worker_exchange.world_restore import snapshot, restore
     from measure import measure
@@ -80,7 +95,13 @@ def execute(case_id, output_dir, host, port):
         seen = survey(world, carla)
         output.mkdir(parents=True)
         (output / 'road.xodr').write_text(world.get_map().to_opendrive())
-        context = {'zone_x_m': [-2.0, 20.0], 'parking_lane_id': -2, 'native_survey': seen, 'covered_non_tour_bus_claim': 'vehicle.mitsubishi.fusorosa', 'operator_id': 'authored-bus-controller', 'designation_authority_source': None, 'designated_period_s': None, 'designation_verified': False, 'actual_loading_activity_verified': False, 'physical_sign_pixels_verified': False}
+        context = {'zone_x_m': [-2.0, 20.0], 'parking_lane_id': -2,
+                   'endpoint_id': 'native_road_1_parking_-2_terminus',
+                   'native_survey': seen, 'covered_non_tour_bus_claim': 'vehicle.mitsubishi.fusorosa',
+                   'operator_id': 'authored-bus-controller',
+                   'designation_authority_source': None, 'designated_period_s': None,
+                   'designation_verified': False, 'actual_loading_activity_verified': False,
+                   'physical_sign_pixels_verified': False}
         (output / 'terminus-context.json').write_text(json.dumps(context, indent=2) + '\n')
         library = world.get_blueprint_library()
         bp = library.find('vehicle.mitsubishi.fusorosa')
@@ -102,13 +123,15 @@ def execute(case_id, output_dir, host, port):
             encoders[name] = subprocess.Popen(['ffmpeg', '-nostdin', '-hide_banner', '-loglevel', 'error', '-y', '-f', 'rawvideo', '-pix_fmt', 'bgra', '-s', f'{width}x{height}', '-r', '20', '-i', '-', '-frames:v', '600', '-c:v', 'ffv1', '-level', '1', str(output / (name + '.mkv'))], stdin=subprocess.PIPE, stderr=subprocess.PIPE)
         state = 'approach'
         parked_since = None
-        with FrameMap(output / 'video_frames.jsonl') as frame_map, (output / 'terminus-history.jsonl').open('x') as history:
+        with PipelineCapture(client, bus, output, case_id, required_observations=[]) as capture, \
+                FrameMap(output / 'video_frames.jsonl') as frame_map, \
+                (output / 'terminus-history.jsonl').open('x') as history:
             first_time = None
             for index in range(FRAMES):
                 pose_before = bus.get_transform()
                 speed_before = bus.get_velocity().length()
                 if state == 'approach':
-                    if pose_before.location.x >= 0 and speed_before < .25:
+                    if pose_before.location.x >= -1 and speed_before < .25:
                         state = 'parked'
                     control = carla.VehicleControl(throttle=.23 if pose_before.location.x < -1 else 0, brake=1 if pose_before.location.x >= -1 else 0, hand_brake=False)
                 elif state == 'parked':
@@ -142,12 +165,23 @@ def execute(case_id, output_dir, host, port):
                     encoders[name].stdin.write(image.raw_data)
                     mapped[name] = image.frame
                 frame_map.append(frame, relative, camera_native_frames=mapped)
+                capture.capture(frame, relative, extra={'video_frame': index,
+                                 'native_bus_actor_id': bus.id})
                 history.write(json.dumps({'video_frame': index, 'native_frame': frame, 'time_s': relative, 'native_elapsed_seconds': absolute, 'subject_id': bus.id, 'blueprint_id': bus.type_id, 'position_xyz_m': [pose.location.x, pose.location.y, pose.location.z], 'velocity_xyz_mps': [velocity.x, velocity.y, velocity.z], 'controller_state': state, 'control': {'throttle': control.throttle, 'brake': control.brake, 'hand_brake': control.hand_brake}}) + '\n')
         for name, process in encoders.items():
             process.stdin.close()
             stderr = process.stderr.read()
             if process.wait(timeout=180) or not (output / (name + '.mkv')).is_file():
                 raise RuntimeError('Original camera encoding failed: ' + name + ': ' + stderr.decode()[-400:])
+        source_names = ['road.xodr', 'terminus-context.json', 'terminus-history.jsonl',
+                        'video_frames.jsonl', 'trace.jsonl', 'capture/manifest.json'] + \
+                       [name + '.mkv' for name in queues]
+        review = {'assignment_id': case_id.rsplit('__', 1)[0], 'case_id': case_id,
+                  'review_kind': 'original_native_source',
+                  'source_sha256': {name: sha_file(output / name) for name in source_names},
+                  'official_designation_verified': False,
+                  'physical_acceptance_claimed': False}
+        (output / 'terminus-review.json').write_text(json.dumps(review, indent=2) + '\n')
         measured = measure(output / 'terminus-history.jsonl', output / 'terminus-context.json')
         (output / 'terminus-measurement.json').write_text(json.dumps(measured, indent=2) + '\n')
         return {'frames': FRAMES, 'camera_names': list(queues), 'measurement': measured, 'physical_acceptance_claimed': False}

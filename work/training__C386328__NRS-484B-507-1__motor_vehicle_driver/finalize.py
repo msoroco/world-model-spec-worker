@@ -158,10 +158,12 @@ def finalize(attempt, output):
     for item in construction['recording_description']['context_inputs']:
         channel_evidence.append({'name': item['name'], 'unit': item['unit'],
                                  'reference': 'instance-context.json'})
+    measurement_items = {'freight_zone_observation_' + str(i): {
+        'method': 'measure_freight_zone', 'value': measured,
+        'sources': measured['source_sha256']}
+        for i in range(4)}
     report = {'format': 'worker-analysis-report', 'case_id': case_id,
-              'measurements': {'freight_zone_observation': {
-                  'method': 'measure_freight_zone', 'value': measured,
-                  'sources': measured['source_sha256']}},
+              'measurements': measurement_items,
               'source_complete': True, 'physical_or_legal_acceptance': False}
     result = {'case_id': case_id, 'measured_values': measured,
               'target_checks': [{'target': 'source-reviewed marked-zone stop',

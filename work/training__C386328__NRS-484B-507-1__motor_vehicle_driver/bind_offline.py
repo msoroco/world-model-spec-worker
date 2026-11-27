@@ -16,12 +16,12 @@ def main():
     manifest = json.loads(path.read_text())
     for entry in manifest['cases']:
         slug = entry['case_id'].rsplit('__', 1)[-1]
-        source = REPO / '.runtime-work' / ('c386328-' + slug.replace('_', '') + '-offline') / 'offline.log'
+        source = REPO / '.runtime-work' / ('c386328-' + slug.replace('_', '') + '-offline-v4') / 'offline.log'
         if not source.is_file():
             raise ValueError('Exact offline log missing: ' + slug)
         destination = HERE / ('native-proof-' + slug + '.log')
         destination.write_text(source.read_text().rstrip() + '\n')
-        entry['offline'] = {'command': 'SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c386328-owner TMPDIR=.runtime-work .venv-cpu/bin/python runtime.py offline --manifest work/' + HERE.name + '/draft-native-manifest.json --case ' + entry['case_id'] + ' --output .runtime-work/c386328-' + slug.replace('_', '') + '-offline --python $PWD/.venv-cpu/bin/python',
+        entry['offline'] = {'command': 'SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c386328-owner TMPDIR=.runtime-work .venv-cpu/bin/python runtime.py offline --manifest work/' + HERE.name + '/draft-native-manifest.json --case ' + entry['case_id'] + ' --output .runtime-work/c386328-' + slug.replace('_', '') + '-offline-v4 --python $PWD/.venv-cpu/bin/python',
                             'construction_sha256': entry['construction_sha256'],
                             'exit_code': 0, 'log': destination.name,
                             'log_sha256': sha(destination)}

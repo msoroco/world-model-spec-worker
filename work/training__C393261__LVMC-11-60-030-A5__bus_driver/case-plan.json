@@ -40,24 +40,32 @@
     {
       "case_id": "training__C393261__LVMC-11-60-030-A5__bus_driver__probe_01",
       "target_law_id": "LVMC-11-60-030-A5",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
       "physical_target": "non-tour bus dwell at same endpoint shorter than an authority-verified designated period if sourced",
       "comparison_variable": "dwell versus designated maximum",
-      "selection_status": "not_selected",
+      "selection_status": "selected",
       "expected_label": null,
-      "construction_status": "unproven"
+      "construction_status": "current-runtime offline construction; original physical review pending",
+      "gap_ids": [
+        "g1",
+        "g2"
+      ]
     },
     {
       "case_id": "training__C393261__LVMC-11-60-030-A5__bus_driver__probe_02",
       "target_law_id": "LVMC-11-60-030-A5",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
       "physical_target": "non-tour bus dwell at surveyed endpoint longer than an authority-verified designated period if sourced",
       "comparison_variable": "dwell versus designated maximum",
-      "selection_status": "not_selected",
+      "selection_status": "selected",
       "expected_label": null,
-      "construction_status": "executable_native_primary_offline_cpu_passed; not selected delivery"
+      "construction_status": "current-runtime offline construction; original physical review pending",
+      "gap_ids": [
+        "g1",
+        "g2"
+      ]
     }
   ],
   "comparisons": [
@@ -93,7 +101,7 @@
     },
     {
       "term": "st.curb_zone",
-      "note": "kind bus_stop \u2014 the stop or origin/destination point"
+      "note": "kind bus_stop — the stop or origin/destination point"
     },
     {
       "term": "dev.regulatory_sign",
@@ -130,9 +138,9 @@
     "Frozen endpoint is plausible; exact designated period under Section 11.60.010 is absent from cell and must be sourced."
   ],
   "runtime_gaps": [
-    "Native primary draft for probe_02 passes pinned offline, but no real CARLA run or physical survey has occurred.",
-    "Official designation authority, endpoint bounds, applicable period and activity classification remain unsourced. Sign need not show period.",
-    "Selected exact delivery cases, second comparison construction, candidate fallbacks, source-bound compatibility, saved processing, semantic proposals and independent audits remain unfinished."
+    "Official Section 11.60.010 endpoint designation and applicable period remain unsourced and may not be inferred from a sign or fixture.",
+    "Original Native bus motion, non-tour activity, camera pixels and physical completion require local review.",
+    "Current-runtime positive, negative, saved-only and independent audit CPU proofs pending."
   ],
   "observations": [
     {
@@ -143,7 +151,7 @@
     {
       "name": "st.curb_zone",
       "mandatory": true,
-      "reason": "kind bus_stop \u2014 the stop or origin/destination point"
+      "reason": "kind bus_stop — the stop or origin/destination point"
     },
     {
       "name": "dev.regulatory_sign",
@@ -200,7 +208,145 @@
         "training__C393261__LVMC-11-60-030-A5__bus_driver__probe_01",
         "training__C393261__LVMC-11-60-030-A5__bus_driver__probe_02"
       ],
-      "evidence_or_gap": "Draft only: no exact construction, CPU candidate proofs, saved audit, or physical realization."
+      "evidence_or_gap": "Two selected controlled dwell cases address missing original bus motion; official endpoint authority and period remain source-gated."
     }
-  ]
+  ],
+  "evidence_review": {
+    "reviewer": "worker-owned exact-source review",
+    "method": "No accepted recordings are listed for this assignment; the frozen endpoint is only plausible, so both controlled cases remain selected and official designation is unknown.",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "g1",
+        "requirement": "Original non-tour bus at the surveyed terminus with complete measured dwell",
+        "source": {
+          "path": "inputs/training__C393261__LVMC-11-60-030-A5__bus_driver/assignment.json",
+          "sha256": "982834ae3f3ad99c221f2e54780fd0bb1e134a5534e00e5db40bc233dd86d77a"
+        },
+        "why_existing_insufficient": "No accepted recording or original Native trace is supplied."
+      },
+      {
+        "id": "g2",
+        "requirement": "Official applicable endpoint designation and period under Section 11.60.010",
+        "source": {
+          "path": "inputs/training__C393261__LVMC-11-60-030-A5__bus_driver/assignment.json",
+          "sha256": "982834ae3f3ad99c221f2e54780fd0bb1e134a5534e00e5db40bc233dd86d77a"
+        },
+        "why_existing_insufficient": "The law, cell and marker do not provide the designated period or authority."
+      }
+    ]
+  },
+  "source_observation_mapping": {
+    "ru.bus": {
+      "evidence": "Original post-tick bus history and survey, with authority left unknown until separately source-verified for ru.bus",
+      "channels": [
+        "ru.bus"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/training__C393261__LVMC-11-60-030-A5__bus_driver/assignment.json",
+          "sha256": "982834ae3f3ad99c221f2e54780fd0bb1e134a5534e00e5db40bc233dd86d77a"
+        }
+      ]
+    },
+    "st.curb_zone": {
+      "evidence": "Original post-tick bus history and survey, with authority left unknown until separately source-verified for st.curb_zone",
+      "channels": [
+        "st.curb_zone"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/training__C393261__LVMC-11-60-030-A5__bus_driver/assignment.json",
+          "sha256": "982834ae3f3ad99c221f2e54780fd0bb1e134a5534e00e5db40bc233dd86d77a"
+        }
+      ]
+    },
+    "dev.regulatory_sign": {
+      "evidence": "Original post-tick bus history and survey, with authority left unknown until separately source-verified for dev.regulatory_sign",
+      "channels": [
+        "dev.regulatory_sign"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/training__C393261__LVMC-11-60-030-A5__bus_driver/assignment.json",
+          "sha256": "982834ae3f3ad99c221f2e54780fd0bb1e134a5534e00e5db40bc233dd86d77a"
+        }
+      ]
+    },
+    "drv.standing_or_parked": {
+      "evidence": "Original post-tick bus history and survey, with authority left unknown until separately source-verified for drv.standing_or_parked",
+      "channels": [
+        "drv.standing_or_parked"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/training__C393261__LVMC-11-60-030-A5__bus_driver/assignment.json",
+          "sha256": "982834ae3f3ad99c221f2e54780fd0bb1e134a5534e00e5db40bc233dd86d77a"
+        }
+      ]
+    },
+    "kin.time": {
+      "evidence": "Original post-tick bus history and survey, with authority left unknown until separately source-verified for kin.time",
+      "channels": [
+        "kin.time"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/training__C393261__LVMC-11-60-030-A5__bus_driver/assignment.json",
+          "sha256": "982834ae3f3ad99c221f2e54780fd0bb1e134a5534e00e5db40bc233dd86d77a"
+        }
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Original post-tick bus history and survey, with authority left unknown until separately source-verified for rel.occupies",
+      "channels": [
+        "rel.occupies"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/training__C393261__LVMC-11-60-030-A5__bus_driver/assignment.json",
+          "sha256": "982834ae3f3ad99c221f2e54780fd0bb1e134a5534e00e5db40bc233dd86d77a"
+        }
+      ]
+    },
+    "drv.condition_in_effect": {
+      "evidence": "Original post-tick bus history and survey, with authority left unknown until separately source-verified for drv.condition_in_effect",
+      "channels": [
+        "drv.condition_in_effect"
+      ],
+      "source_refs": [
+        {
+          "path": "inputs/training__C393261__LVMC-11-60-030-A5__bus_driver/assignment.json",
+          "sha256": "982834ae3f3ad99c221f2e54780fd0bb1e134a5534e00e5db40bc233dd86d77a"
+        }
+      ]
+    }
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "bus, terminus and full parking zone",
+        "interval": "all 600 frames"
+      },
+      {
+        "view": "approach",
+        "subject": "bus arrival and stop entrance",
+        "interval": "arrival through stop"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "terminus marker and parked bus",
+        "interval": "full dwell"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "bus motion, departure and driver reference",
+        "interval": "all 600 frames"
+      }
+    ]
+  }
 }

@@ -15,12 +15,16 @@ def main():
         cid = AID + '__' + slug
         item = by_id[cid]
         entries.append({'case_id': cid, 'target_law_id': 'NRS-484B-507-1',
-            'target_type': 'controlled_branch_probe',
-            'probe': {'primary_variable': item['comparison_variable'],
+            'target_type': 'boundary_probe',
+            'probe': {'primary_variable': ('material_activity_request' if slug in ('probe_1', 'probe_2') else
+                                            'signed_effective_hours' if slug == 'probe_3' else
+                                            'passenger_activity_request' if slug == 'probe_4' else
+                                            'materials_vehicle_waiting_request'),
                       'comparison_or_standard': 'Source-measured freight-zone episode without legal duration cutoff',
                       'target_value_or_branch': slug},
             'paired_probe_id': 'C386328-freight-zone-branches',
-            'deliberate_differences': [item['comparison_variable']],
+            'deliberate_differences': ['material_activity_request', 'passenger_activity_request',
+                                       'signed_effective_hours', 'materials_vehicle_waiting_request'],
             'rationale': 'Authored zone, sign, material, passenger and waiting-vehicle requests require original Native and independent review.',
             'recording_description': description(),
             'unresolved_judgment_calls': ['freight zone and sign authority',
@@ -34,18 +38,19 @@ def main():
                                                 'value': intent['passenger']},
                 'signed_effective_hours': {'kind': 'world_setup', 'unit': 'category',
                                             'value': 'inside' if intent['effective'] else 'outside'},
-                'materials_vehicle_waiting_request': {'kind': 'participant', 'unit': 'boolean',
+                'materials_vehicle_waiting_request': {'kind': 'world_setup', 'unit': 'boolean',
                                                        'value': intent['waiting']}}})
     baseline = {'case_id': AID + '__baseline', 'target_law_id': None,
                 'target_type': 'baseline', 'rationale': 'Unselected neutral freight curb request definition.',
                 'recording_description': description(),
                 'unresolved_judgment_calls': ['freight zone sign authority', 'actual activity'],
                 'variable_assignments': entries[1]['variable_assignments']}
+    judgments = json.loads((HERE / 'proposals/template.json').read_text())['structure']['judgment_calls_needed']
     value = {'actor': 'motor_vehicle_driver', 'cell_id': 'C386328', 'status': 'draft',
              'sweeps_expanded': True, 'cases': [baseline, *entries],
              'sweep_specs': [{'sweep_id': 'unresolved_freight_zone_judgments',
                              'target_law_id': 'NRS-484B-507-1',
-                             'judgment_refs': ['expeditious', 'temporarily', 'interference'],
+                             'judgment_refs': judgments,
                              'status': 'incomplete',
                              'rationale': 'Five controlled requests expose source conditions; no original legal threshold or physical interference result is established.',
                              'missing_inputs': ['Original regulatory authority',
