@@ -214,3 +214,17 @@ Resume: review the corrected immutable branch/cell allocation and obtain source-
 Independent review found two CPU defects. The original through-motion reviewer accepted an entire crossing with empty through-vehicle lists, leaving the selected comparison without observed through traffic. Capture and saved measurement now reject missing crossing traffic, with negative tests. The selected-bundle builder also embedded assignment-level tests for absent accepted-source and stop-sign modules; it now embeds only tests whose implementation is carried into each selected yield construction. Assignment-level tests remain in the owning directory.
 
 The assignment suite passes 55/55 tests (`cpu-nov27-deep-tests.log`); three exact selected bundles pass refreshed offline and positive/negative compatibility (`cpu-nov27-deep-offline-*.log`, `cpu-nov27-deep-compat-*.log`). Pinned preflight and scoped `--complete` pass. The exact scoped strict gate (`cpu-nov27-deep-strict.log`) still fails at truthful partial status. Frozen C158190 retains `stop_sign` while its selected branch requires `yield_sign`; no original reviewed site, accepted trace or video bytes are present. Keep result partial. Resume after corrected immutable allocation and original source review, then run the exact strict assignment gate before promotion.
+
+## 2026-11-27 original-frame type and finiteness proof
+
+`native_capture._validate_row` now requires exact integer original, Native and local frame IDs; a Boolean can no longer masquerade as frame 1. It also rejects nonfinite ego speed and nonnumeric/nonfinite distance to the intersection before sealing the original Native trace. `tests/test_native_capture.py` exercises six malformed original-frame inputs. This changes only capture integrity, not the selected legal branch or physical outcome.
+
+The full assignment suite passes 56/56 (`cpu-frame-integrity-tests.log`). All three selected construction bundles were rebuilt; each refreshed offline proof (`cpu-frame-offline-<case>.log`) and positive/negative compatibility proof (`cpu-frame-compat-<case>-receipt.json`, `cpu-frame-compat-<case>-negative.log`) passes. The pinned runtime's compatibility receipt validator independently accepted all three current hashes. The scoped `--complete` check passes (`cpu-frame-integrity-static.log`); the exact scoped strict check exits 1 (`cpu-frame-integrity-strict.log`) at the truthful partial-status condition. Frozen C158190 still has stop-sign control while its selected branch requires yield-sign control; original reviewed site, trace and video bytes are absent. No ready or queue promotion is claimed.
+
+| Exact case suffix | Construction SHA-256 | Compatibility receipt SHA-256 |
+| --- | --- | --- |
+| `yield_slow_hazard` | `3f3e34fd369c5320d46d01a41fef4cd1dbf9be6b176e7684dd4e0ff8dc32f9ad` | `13043154d955da8bf95c9c3a30d3240766ce224cf2c589f9d80c3598bc940ae3` |
+| `yield_stop_hazard` | `854aacd24b6401f675d2dd4cbe46817e8920e23dc4c58ea02c8eff1fd1ace597` | `8335dac81f74ca3f4e9b97a923bb2bb30b47a93a95c710d59c1e369730556d28` |
+| `yield_slow_no_hazard` | `88fec2b27943d17429f1d058c3c21472d3e2c2256c10115112cbcf880c99b2a1` | `8a71b11230fda7d1e984c901e511317747fbac77b1e7ed15867a4ac322fff32e` |
+
+Resume after a contract-faithful corrected immutable branch/cell allocation and original source review, then rerun all bound selected CPU proofs and `.venv-cpu/bin/python worker_check.py --assignment testing__C158190__NRS-484B-257-1__motor_vehicle_driver --complete --require-delivery-ready`.

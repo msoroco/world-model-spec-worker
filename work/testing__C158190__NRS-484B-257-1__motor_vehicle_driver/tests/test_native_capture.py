@@ -152,6 +152,20 @@ class NativeCaptureTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'through-vehicle crossing'):
             capture_module._validate_row(row, 1, 101, site, case_id)
 
+    def test_non_numeric_original_frame_or_motion_rejected(self):
+        case_id = ASSIGNMENT+'__yield_slow_hazard'
+        site = {key: 'a'*64 for key in capture_module.SOURCE_FIELDS}
+        base = Adapter(site, case_id).read_original_frame(case_id, 1, 101)
+        for key, invalid in (('frame', True), ('native_frame', True),
+                             ('original_frame', True), ('ego_speed_mps', float('inf')),
+                             ('distance_to_intersection_m', True),
+                             ('distance_to_intersection_m', float('nan'))):
+            with self.subTest(key=key, invalid=str(invalid)):
+                row = dict(base)
+                row[key] = invalid
+                with self.assertRaises(ValueError):
+                    capture_module._validate_row(row, 1, 101, site, case_id)
+
 
 if __name__ == '__main__':
     unittest.main()

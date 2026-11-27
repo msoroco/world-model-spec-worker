@@ -104,6 +104,11 @@ class SchoolSiteTests(unittest.TestCase):
         path.write_text(json.dumps(site))
         with self.assertRaisesRegex(ValueError, 'route readback invalid'):
             load_site(path)
+        site = self.inspect()
+        site['lane_route_samples'] = [site['lane_route_samples'][0], site['lane_route_samples'][-1]]
+        path.write_text(json.dumps(site))
+        with self.assertRaisesRegex(ValueError, 'route readback invalid'):
+            load_site(path)
 
     def test_spawn_rechecks_source_lane_and_uses_readback_yaw(self):
         site = self.inspect(mapping=Map(yaw_by_x=lambda x: .4 if x < -20 else 0))

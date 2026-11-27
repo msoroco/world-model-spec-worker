@@ -44,9 +44,12 @@ def write_sources(root, p):
                                  "original_video_sha256": p["original_video_sha256"]},
               "frame_map": {"frames": [{"frame": row["frame"], "time_s": row["time_s"]}
                                        for row in p["samples"]]},
-              "light_readback": {"samples": p["samples"]},
+              "light_readback": {"samples": p["samples"],
+                                 "signal_source": p["signal_source"],
+                                 "position_source": p["position_source"]},
               "turn_onset": {"turn_onset_frame": p["turn_onset_frame"],
-                             "turn_direction": p["turn_direction"]},
+                             "turn_direction": p["turn_direction"],
+                             "turn_onset_source": p["turn_onset_source"]},
               "district_context": {k: p[k] for k in ("district_class", "district_source", "weather")}}
     p["source_files"] = {}
     for name, value in values.items():
@@ -173,6 +176,23 @@ class SignalDistanceTest(unittest.TestCase):
         with self.assertRaisesRegex(mod.EvidenceError, "not measured"):
             mod.audit_comparison(packet(case_id="a"), packet(case_id="b"), "signal_activation_distance")
 
+    def test_comparison_rejects_empty_fixed_identity_and_duration(self):
+        for key in ("route_sha256", "map_sha256", "camera_plan_sha256", "other_vehicle_plan_sha256"):
+            with self.subTest(key=key):
+                a, b = packet(case_id="a"), packet(start=10, case_id="b")
+                a[key] = b[key] = ""
+                with self.assertRaisesRegex(mod.EvidenceError, "invalid fixed source hash"):
+                    mod.audit_comparison(a, b, "signal_activation_distance")
+        for value in (0, True):
+            with self.subTest(duration_frames=value):
+                a, b = packet(case_id="a"), packet(start=10, case_id="b")
+                a["duration_frames"] = b["duration_frames"] = value
+                with self.assertRaisesRegex(mod.EvidenceError, "invalid fixed duration"):
+                    mod.audit_comparison(a, b, "signal_activation_distance")
+        a, b = packet(case_id=""), packet(start=10, case_id="b")
+        with self.assertRaisesRegex(mod.EvidenceError, "missing comparison case identity"):
+            mod.audit_comparison(a, b, "signal_activation_distance")
+
     def test_source_inventory_checks_file_bytes_and_missing_source(self):
         p = packet()
         with TemporaryDirectory(dir=SCRATCH) as temp:
@@ -206,6 +226,16 @@ class SignalDistanceTest(unittest.TestCase):
             p["turn_onset_frame"] = 28
             with self.assertRaisesRegex(mod.EvidenceError, "turn onset disagrees"):
                 mod.verify_source_bindings(p, root)
+
+    def test_source_inventory_rejects_relabelled_observation_sources(self):
+        for key in ("signal_source", "position_source", "turn_onset_source"):
+            with self.subTest(key=key), TemporaryDirectory(dir=SCRATCH) as temp:
+                p = packet()
+                root = Path(temp)
+                write_sources(root, p)
+                p[key] = "substituted_observation_source"
+                with self.assertRaisesRegex(mod.EvidenceError, "disagrees with source"):
+                    mod.verify_source_bindings(p, root)
 
     def test_resealed_frame_map_disagreement_rejected(self):
         p = packet()

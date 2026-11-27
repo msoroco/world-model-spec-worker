@@ -47,9 +47,12 @@ def _encoder(output, view):
 
 
 def _validate_row(row, index, native_frame, site, case_id):
-    require(isinstance(row, dict) and row.get("frame") == index and
-            row.get("native_frame") == native_frame and
-            row.get("original_frame") == native_frame and
+    require(isinstance(row, dict) and type(row.get("frame")) is int and
+            row["frame"] == index and
+            type(row.get("native_frame")) is int and
+            row["native_frame"] == native_frame and
+            type(row.get("original_frame")) is int and
+            row["original_frame"] == native_frame and
             type(row.get("time_s")) in (int, float) and
             math.isfinite(row["time_s"]) and abs(row["time_s"] - index / RATE) <= .002,
             "original Native frame/time join differs")
@@ -71,7 +74,10 @@ def _validate_row(row, index, native_frame, site, case_id):
                 all(type(value) in (int, float) and math.isfinite(value) for value in vertex)
                 for vertex in row["body_vertices_m"]), "original body geometry missing")
     require(type(row["ego_within_intersection"]) is bool and
-            type(row["ego_speed_mps"]) in (int, float) and row["ego_speed_mps"] >= 0 and
+            type(row["ego_speed_mps"]) in (int, float) and
+            math.isfinite(row["ego_speed_mps"]) and row["ego_speed_mps"] >= 0 and
+            type(row["distance_to_intersection_m"]) in (int, float) and
+            math.isfinite(row["distance_to_intersection_m"]) and
             isinstance(row["through_vehicle_ids"], list) and
             isinstance(row["through_vehicles"], list), "original yield/through observation missing")
     if row["ego_within_intersection"]:

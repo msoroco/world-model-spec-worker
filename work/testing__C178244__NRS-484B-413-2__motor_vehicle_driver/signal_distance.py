@@ -64,6 +64,8 @@ def verify_source_bindings(packet: dict, source_root: Path) -> list[str]:
         require(sealed.get(key) == value,
                 f"sealed result original recording binding disagrees: {key}")
     require(light.get("samples") == packet.get("samples"), "light/position samples disagree with source")
+    for key in ("signal_source", "position_source"):
+        require(light.get(key) == packet.get(key), f"{key} disagrees with source")
     expected_frames = [{"frame": row.get("frame"), "time_s": row.get("time_s")}
                        for row in packet.get("samples", [])]
     require(frame_map.get("frames") == expected_frames,
@@ -71,6 +73,8 @@ def verify_source_bindings(packet: dict, source_root: Path) -> list[str]:
     require(onset.get("turn_onset_frame") == packet.get("turn_onset_frame"), "turn onset disagrees with source")
     require(onset.get("turn_direction") == packet.get("turn_direction"),
             "observed turn direction disagrees with source")
+    require(onset.get("turn_onset_source") == packet.get("turn_onset_source"),
+            "turn onset observation source disagrees with source")
     for key in ("district_class", "district_source", "weather"):
         require(district.get(key) == packet.get(key), f"{key} disagrees with source")
     return list(required)
@@ -161,6 +165,19 @@ def audit_comparison(left: dict, right: dict, declared_difference: str) -> dict:
     for key in fixed:
         require(left.get(key) is not None and right.get(key) is not None, f"missing fixed condition: {key}")
         require(left[key] == right[key], f"changed fixed condition: {key}")
+    for key in ("route_sha256", "map_sha256", "camera_plan_sha256", "other_vehicle_plan_sha256"):
+        value = left[key]
+        require(isinstance(value, str) and len(value) == 64 and
+                all(c in "0123456789abcdef" for c in value),
+                f"invalid fixed source hash: {key}")
+    for key in ("district_source", "weather", "ego_blueprint"):
+        require(isinstance(left[key], str) and bool(left[key].strip()),
+                f"empty fixed condition: {key}")
+    require(isinstance(left["duration_frames"], int) and not isinstance(left["duration_frames"], bool)
+            and left["duration_frames"] > 0, "invalid fixed duration")
+    require(isinstance(left.get("case_id"), str) and bool(left["case_id"].strip()) and
+            isinstance(right.get("case_id"), str) and bool(right["case_id"].strip()),
+            "missing comparison case identity")
     require(left.get("case_id") != right.get("case_id"), "comparison repeats one case")
     a, b = measure(left), measure(right)
     require(abs(a["continuous_distance_m"] - b["continuous_distance_m"]) > 0.01,

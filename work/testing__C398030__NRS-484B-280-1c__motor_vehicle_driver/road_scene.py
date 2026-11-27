@@ -64,7 +64,8 @@ def load_site(path):
                 or sample.get("lane_id") != site.get("original_lane_id")
                 or abs(center[0] - x) > .75 or abs(center[1] - midpoint_y) > .35
                 or abs(yaw) > 1.0 or width < 3
-                or (previous_x is not None and x <= previous_x)):
+                or abs(width - site.get("original_lane_width_m", -1)) > .25
+                or (previous_x is not None and not 0 < x - previous_x <= 5.01)):
             raise ValueError("original school lane route readback invalid")
         previous_x = x
     if site.get("school_designation_source") != "original Native school traffic-sign objects":
