@@ -10,6 +10,7 @@ import subprocess
 import tempfile
 
 from original_source_contract import AID, CAMERAS, FRAME_COUNT, FPS, sha, validate
+from geometry import SIGN_NAME, open_drive
 
 
 def write(path: Path, value) -> None:
@@ -39,7 +40,7 @@ def prove() -> dict:
     with tempfile.TemporaryDirectory(prefix="c135709-original-", dir=scratch) as temporary:
         attempt = Path(temporary)
         case_id = AID + "__witness_1"
-        (attempt / "road.xodr").write_text("<OpenDRIVE><road id='1'/></OpenDRIVE>\n", encoding="utf-8")
+        (attempt / "road.xodr").write_text(open_drive(), encoding="utf-8")
         map_sha256 = sha(attempt / "road.xodr")
         for camera in CAMERAS:
             subprocess.run(["ffmpeg", "-v", "error", "-f", "lavfi", "-i",
@@ -56,7 +57,7 @@ def prove() -> dict:
         write(attempt / "capture-manifest.json", capture)
         write(attempt / "zone-survey.json", {"bounds_m": [0, 0, 10, 4],
               "map_sha256": map_sha256, "sign_id": "510",
-              "sign_text_readback": "restricted-purpose placeholder"})
+              "sign_text_readback": SIGN_NAME})
         actors = []
         joins = []
         for i in range(FRAME_COUNT):
@@ -93,11 +94,16 @@ def prove() -> dict:
             lambda path: write(path, dict(review_content, case_id=AID + "__witness_2")))
         negatives["stale_map"] = expect_rejection(
             attempt, review, attempt / "road.xodr",
-            lambda path: path.write_text("<OpenDRIVE><road id='2'/></OpenDRIVE>\n", encoding="utf-8"))
+            lambda path: path.write_text(path.read_text().replace("narrow-road", "changed-road"),
+                                         encoding="utf-8"))
         negatives["stale_review"] = expect_rejection(
             attempt, review, attempt / "zone-survey.json",
-            lambda path: path.write_text(path.read_text().replace('restricted-purpose placeholder',
+            lambda path: path.write_text(path.read_text().replace(SIGN_NAME,
                                                            'changed purpose'), encoding="utf-8"))
+        negatives["map_sign_mismatch"] = expect_rejection(
+            attempt, review, attempt / "road.xodr",
+            lambda path: path.write_text(path.read_text().replace(SIGN_NAME, "OTHER SIGN"),
+                                         encoding="utf-8"))
         negatives["missing_camera"] = expect_rejection(
             attempt, review, attempt / "driver_reference.mkv", lambda path: path.unlink())
         negatives["unclosed"] = expect_rejection(
@@ -147,7 +153,7 @@ def prove() -> dict:
             negatives["missing_original_occupant"] = str(exc)
         else:
             raise AssertionError("accepted missing original nearby passenger identity")
-        assert len(negatives) == 8
+        assert len(negatives) == 9
         return {"format": "restricted-zone-original-source-fixture-proof-v1",
                 "positive": {"stopped_in_zone_frames": positive["stopped_in_zone_frames"],
                              "nearby_passenger_identity_change_frames_with_door_request": positive["nearby_passenger_identity_change_frames_with_door_request"],

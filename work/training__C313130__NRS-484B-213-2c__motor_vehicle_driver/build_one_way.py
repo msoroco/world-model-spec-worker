@@ -89,6 +89,7 @@ def main():
         entries.append({"case_id": ASSIGNMENT + "__" + case,
             "kind": "delivery", "id": "primary",
             "construction": primary, "construction_sha256": primary_sha,
+            "fixture_recipe": f"work/{ASSIGNMENT}/selected-recipe-{case}.json",
             "measurement_contract": "selected-measurement-contract.json",
             "measurement_procedure": {"entrypoint": "finalize.py",
                                       "output_schema": "worker-tunnel-selected-measurement"},

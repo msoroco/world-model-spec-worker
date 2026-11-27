@@ -43,6 +43,19 @@ for suffix, spec in CASES.items():
                              'requested 25 ft gap as case 25; only the named branch request changes.')
 for disposition in plan['requirement_dispositions']:
     disposition['case_ids'] = [aid+'__'+suffix for suffix in CASES]
+plan['evidence_review'] = {
+    'reviewer': 'C229987 source preparation',
+    'method': 'Reviewed the frozen assignment evidence inventory; no accepted recording or source-hashed reuse receipt exists for this selected cell.',
+    'facts': [],
+    'gaps': [
+        {'id': 'original-approach', 'requirement': 'Measured original Native roadside signal approach and activity',
+         'source': 'inputs/'+aid+'/assignment.json',
+         'why_existing_insufficient': 'The full-train inventory contains no accepted recording for this exact cell.'},
+        {'id': 'exception-branches', 'requirement': 'Original evidence for each statutory exception request',
+         'source': 'inputs/'+aid+'/assignment.json',
+         'why_existing_insufficient': 'No source-reviewed conflict, law, officer or device direction recording is available.'}]}
+for item in plan['cases']:
+    item['gap_ids'] = ['original-approach'] + (['exception-branches'] if item['exception_request'] != 'none' else [])
 plan['comparisons'] = [plan['comparisons'][0]]
 for suffix in list(CASES)[3:]:
     spec = CASES[suffix]

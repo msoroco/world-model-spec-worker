@@ -7,10 +7,12 @@ import subprocess
 from pathlib import Path
 
 from road import EGO_LANE_ID, SIGNAL_STATION_M, SIGNAL_ID, check as road_check, open_drive
+from case_specs import CASES
+from context import spawn_context
 
 FRAMES = 600
 RATE_HZ = 20
-TARGETS_FT = {'25': 25.0, '30': 30.0, '35': 35.0}
+TARGETS_FT = {name: spec['gap_ft'] for name, spec in CASES.items()}
 CAMERAS = (('overview', 1920, 1080), ('approach', 1280, 720),
            ('reference_corner', 1280, 720), ('driver_reference', 1280, 720))
 
@@ -42,11 +44,16 @@ def execute(case_id, output_dir, host, port):
     from worker_exchange.native_output import FrameMap, seal_capture
     from worker_exchange.world_restore import snapshot, restore
     suffix = case_id.rsplit('__', 1)[-1]
-    if suffix not in TARGETS_FT or not case_id.startswith('training__C229987__NRS-484B-450-1g__motor_vehicle_driver__'):
+    if suffix not in CASES or not case_id.startswith('training__C229987__NRS-484B-450-1g__motor_vehicle_driver__'):
         raise ValueError('Unknown exact signal approach case')
     case_config = json.loads((Path(__file__).parent/'config.json').read_text())
     if case_config.get('selected_case_id') != case_id:
         raise ValueError('Selected signal approach case differs')
+    spec = CASES[suffix]
+    if (case_config.get('activity_mode') != spec['activity'] or
+            case_config.get('exception_request') != spec['exception'] or
+            case_config.get('requested_front_gap_ft') != spec['gap_ft']):
+        raise ValueError('Signal activity or exception construction differs')
     brake_lead_seconds = float(case_config.get('brake_lead_seconds', 1.2))
     if not 1.0 <= brake_lead_seconds <= 2.0:
         raise ValueError('Signal approach brake lead outside tested engineering range')
@@ -92,7 +99,8 @@ def execute(case_id, output_dir, host, port):
         signal_pose = head.get_transform()
         if abs(signal_pose.location.x-SIGNAL_STATION_M) > 6:
             raise RuntimeError('Native signal roadside location differs from specification')
-        head.set_state(carla.TrafficLightState.Green)
+        head.set_state(carla.TrafficLightState.Red if spec['exception'] in
+                       ('other_law','device_direction') else carla.TrafficLightState.Green)
         head.freeze(True)
         output.mkdir(parents=True, exist_ok=True)
         (output/'road.xodr').write_text(mapping.to_opendrive())
@@ -108,6 +116,11 @@ def execute(case_id, output_dir, host, port):
         if ego is None:
             raise RuntimeError('Native subject did not spawn')
         owned.append(ego)
+        requested_front_gap_m = TARGETS_FT[suffix]*.3048
+        target_center_x = SIGNAL_STATION_M-requested_front_gap_m-2.25
+        context_actors, context_requests = spawn_context(
+            world, carla, library, spec['activity'], spec['exception'], target_center_x)
+        owned.extend(context_actors)
         capture = PipelineCapture(client, ego, output, case_id,
                                   visibility=False,
                                   required_observations=case_config.get('required_atoms', []))
@@ -128,8 +141,6 @@ def execute(case_id, output_dir, host, port):
                                                '-r', str(RATE_HZ), '-i', '-', '-frames:v', str(FRAMES),
                                                '-c:v', 'ffv1', '-level', '1', str(output/(name+'.mkv'))],
                                               stdin=subprocess.PIPE, stderr=subprocess.PIPE)
-        requested_front_gap_m = TARGETS_FT[suffix]*.3048
-        target_center_x = SIGNAL_STATION_M-requested_front_gap_m-2.25
         signal_frames = []
         with FrameMap(output/'video_frames.jsonl') as frame_map, (output/'trace.jsonl').open('x') as trace:
             start = None
@@ -141,7 +152,8 @@ def execute(case_id, output_dir, host, port):
                 ego.apply_control(carla.VehicleControl(
                     throttle=.25 if remaining > max(2, velocity_before*brake_lead_seconds) else 0,
                     brake=1.0 if remaining <= max(2, velocity_before*brake_lead_seconds) else 0,
-                    hand_brake=remaining <= .7 and velocity_before < .4, steer=0))
+                    hand_brake=spec['activity'] in ('stand','park') and
+                               remaining <= .7 and velocity_before < .4, steer=0))
                 frame = world.tick()
                 snap = world.get_snapshot()
                 if snap.frame != frame:
@@ -199,6 +211,10 @@ def execute(case_id, output_dir, host, port):
                        'actor_id': head.id, 'opendrive_id': SIGNAL_ID,
                        'governs_lane': governed},
             'geometry_uncertainty_m': .05,
+            'constructed_context': {'activity_request': spec['activity'],
+                                    'exception_request': spec['exception'],
+                                    'actor_ids': [actor.id for actor in context_actors],
+                                    'actor_requests': context_requests},
             'context_sources': {key: 'context-survey.json' for key in (
                 'highway_status_source', 'official_signal_status_source',
                 'roadside_placement_source', 'governed_movement_source',
@@ -213,12 +229,17 @@ def execute(case_id, output_dir, host, port):
                 raise RuntimeError('Native source camera encoding failed: '+name+': '+stderr.decode()[-400:])
         (output/'context-survey.template.json').write_text(json.dumps({
             'case_id': case_id, 'review_kind': 'original_source_review',
+            'activity_request': spec['activity'],
+            'exception_request': spec['exception'],
+            'constructed_context_actor_ids': [actor.id for actor in context_actors],
             'highway_status': None, 'official_signal_status': None,
             'signal_governs_selected_lane_native': governed,
             'signal_actor_id': head.id, 'signal_opendrive_id': SIGNAL_ID,
             'halt_purpose': None, 'other_traffic_conflict': None,
             'applicable_law_direction': None, 'officer_direction': None,
-            'device_direction': None, 'independent_reviewer': None}, indent=2)+'\n')
+            'device_direction': None, 'independent_reviewer': None,
+            'actual_pixels_reviewed': None, 'approach_geometry_reviewed': None,
+            'signal_raw_sha256': None, 'road_sha256': None}, indent=2)+'\n')
         complete = True
         return {'case_id': case_id, 'frames': FRAMES, 'signal_actor_id': head.id,
                 'requested_front_gap_ft': TARGETS_FT[suffix], 'physical_acceptance_claimed': False}

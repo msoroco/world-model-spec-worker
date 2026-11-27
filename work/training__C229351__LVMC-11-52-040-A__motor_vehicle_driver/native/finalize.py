@@ -217,10 +217,16 @@ def finalize(attempt, output):
         'trace_reference': 'trace.jsonl', 'video_references': list(video_counts),
         'video_frame_map_reference': 'video_frames.jsonl',
         'recording_description': description, 'recording_evidence': refs,
-        'realized_observables': {'roadway_rest': rest_check['details']} if rest_check['status'] == 'met' else {},
+        'realized_observables': {'maximum_rest_speed_mps': {
+            'value': rest_check['details']['maximum_speed_mps'], 'unit': 'm/s',
+            'method': rest_check['method'], 'time_window': 'final five saved seconds',
+            'statistic': 'maximum', 'reference': 'native_samples.jsonl'}}
+            if rest_check['status'] == 'met' else {},
         'physical_checks': {'maneuver': rest_check},
-        'provenance_kind': 'synthetic_cpu_fixture' if fixture else 'native',
-        'accepted': False, 'legal_verdict_claimed': False}
+        'provenance_kind': 'synthetic_fixture' if fixture else 'native',
+        'diagnostic_fixture': fixture,
+        'accepted': False, 'legal_verdict_claimed': False,
+        'physical_acceptance_claimed': False}
     from worker_exchange.native_output import write_result
     write_result(attempt, result)
     report = {'format': 'worker-roadside-saved-analysis',

@@ -17,7 +17,8 @@ def sha(path):
 for entry in manifest['cases']:
     suffix = entry['id']
     for candidate in ('primary', 'fallback1'):
-        source = repo/'.runtime-work/c229987'/('compat-v9-'+suffix+'-'+candidate)
+        version = 'v10' if suffix == 'conflict_25' else 'v9'
+        source = repo/'.runtime-work/c229987'/('compat-'+version+'-'+suffix+'-'+candidate)
         receipt = json.loads((source/'compatibility.json').read_text())
         selected = entry if candidate == 'primary' else entry['candidates'][0]
         assert receipt['passed'] and receipt['case_id'] == entry['case_id']

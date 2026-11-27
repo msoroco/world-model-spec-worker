@@ -19,7 +19,7 @@ def write(path, item):
 
 def offline(index, case_id, candidate, construction_hash):
     log = f'native/condition-{index}-{candidate}-offline-tests.log'
-    return {'command': f'.venv-cpu/bin/python runtime.py offline --manifest work/{IDENT}/native/draft-manifest.json --case {case_id} --candidate {candidate} --output .runtime-work/c229351-offline-v3-{index}-{candidate}',
+    return {'command': f'.venv-cpu/bin/python runtime.py offline --manifest work/{IDENT}/native/draft-manifest.json --case {case_id} --candidate {candidate} --output .runtime-work/c229351-offline-v7-{index}-{candidate}',
             'exit_code': 0, 'construction_sha256': construction_hash,
             'log': log, 'log_sha256': digest(FOLDER / log)}
 

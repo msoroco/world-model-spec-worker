@@ -2,6 +2,63 @@
   "assignment_id": "training__C229987__NRS-484B-450-1g__motor_vehicle_driver",
   "cases": [
     {
+      "acquisition": {
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "dev.position": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "dev.traffic_signal": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "drv.approaching": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "drv.forced_halt": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "stop_distance_on_signal_approach": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        }
+      },
       "candidate_risk": {
         "reason": "Open-loop primary brake timing may overshoot the requested signal approach gap on actual CARLA dynamics; original footprint and speed reveal the failure.",
         "status": "physical"
@@ -11,7 +68,12 @@
           "changed_knobs": [
             "brake_lead_seconds: 1.2 to 1.8; same target gap, signal, camera and subject"
           ],
-          "compatibility": {},
+          "compatibility": {
+            "log": "compatibility/25/fallback1/analysis.log",
+            "negative_log": "compatibility/25/fallback1/negative.log",
+            "receipt": "compatibility/25/fallback1/compatibility.json",
+            "sha256": "d0067862338b29d98eb57ea344ddef676a25c88ea6f0938a9875a578df9b79b1"
+          },
           "construction": "native/25-fallback1-construction.json",
           "construction_sha256": "e511a8018af8c50ca9d5e80aea02ccaa7973c89b730775d3a8e34044f598b6cd",
           "id": "fallback1",
@@ -30,6 +92,12 @@
         }
       ],
       "case_id": "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__25",
+      "compatibility": {
+        "log": "compatibility/25/primary/analysis.log",
+        "negative_log": "compatibility/25/primary/negative.log",
+        "receipt": "compatibility/25/primary/compatibility.json",
+        "sha256": "69f9aeabb39aab6a6955a2d68669c84343348d58ef8e61d5a7e7a998ddd3d12a"
+      },
       "construction": "native/25-construction.json",
       "construction_sha256": "42e0ab140e81c1b0be04766136bec09f8631b0af8ca716616088e9b03ed7129c",
       "delivery_acceptance": {
@@ -47,10 +115,10 @@
         "negative_exit_code": 1,
         "negative_expected_error": "Missing original source: exact original Native result",
         "negative_log": "delivery-proofs/25-negative.log",
-        "negative_log_sha256": "a47ae0c12f49e7b14134dce5e45871e95cdfb1263a9255e502c15f5292f12454",
+        "negative_log_sha256": "fbe1452636f2486447ac9d68e601ee36282a6d68199341352f35475b06c058e5",
         "scope": "CPU predicates only; original Native capture pending",
         "script": "delivery_audit.py",
-        "script_sha256": "d6d321670b42c228fdb22f8fcecdf0a4677b991e26edc1202ef6463a02857846",
+        "script_sha256": "deaefe3753b7d7cf1b56b68758867a0851e0b4a2540e49b12c41c8fbd3f88894",
         "sets": [
           "full-train"
         ],
@@ -70,6 +138,9 @@
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
       },
+      "negative": {
+        "log": "compatibility/25/primary/negative.log"
+      },
       "offline": {
         "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__25 --candidate primary --output .runtime-work/c229987/offline-v9-25-primary",
         "construction_sha256": "42e0ab140e81c1b0be04766136bec09f8631b0af8ca716616088e9b03ed7129c",
@@ -80,6 +151,16 @@
       "physical_preparation": {
         "receipt": "physical-proof/25/proof.json",
         "sha256": "fa882c8b83cd144c1cac9571a6b935ae95405d14c38406d3727f7b8f2e51183c"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__25 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__25 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "processing_receipt": "saved/25-processing.json",
+        "processing_receipt_sha256": "e4140f216ee12e17aa7de70bd87a67bfff5bf443869b0579cca37270a26db948",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/25-processing.log",
+        "test_log_sha256": "e4140f216ee12e17aa7de70bd87a67bfff5bf443869b0579cca37270a26db948"
       },
       "recording_description": {
         "channels": [
@@ -192,6 +273,63 @@
       }
     },
     {
+      "acquisition": {
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "dev.position": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "dev.traffic_signal": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "drv.approaching": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "drv.forced_halt": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "stop_distance_on_signal_approach": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        }
+      },
       "candidate_risk": {
         "reason": "Open-loop primary brake timing may overshoot the requested signal approach gap on actual CARLA dynamics; original footprint and speed reveal the failure.",
         "status": "physical"
@@ -201,7 +339,12 @@
           "changed_knobs": [
             "brake_lead_seconds: 1.2 to 1.8; same target gap, signal, camera and subject"
           ],
-          "compatibility": {},
+          "compatibility": {
+            "log": "compatibility/30/fallback1/analysis.log",
+            "negative_log": "compatibility/30/fallback1/negative.log",
+            "receipt": "compatibility/30/fallback1/compatibility.json",
+            "sha256": "1e198c2b366e9c2e8f2bb623b4a49e447e9140b6e99514268f30bc4a9b7512d4"
+          },
           "construction": "native/30-fallback1-construction.json",
           "construction_sha256": "70c23ed20e1bb5e6b57d9f7e63e93da3469acc31c65353bd989bf732ae1e4264",
           "id": "fallback1",
@@ -220,6 +363,12 @@
         }
       ],
       "case_id": "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__30",
+      "compatibility": {
+        "log": "compatibility/30/primary/analysis.log",
+        "negative_log": "compatibility/30/primary/negative.log",
+        "receipt": "compatibility/30/primary/compatibility.json",
+        "sha256": "b208c5c1b4ac90cc076cc3cf72211b0b99f8365c1cab5075b91db6e371ca5f80"
+      },
       "construction": "native/30-construction.json",
       "construction_sha256": "d9baec8d80a6403079b91fd47618415132fa664dbe7a70c97c990257e43725a6",
       "delivery_acceptance": {
@@ -237,10 +386,10 @@
         "negative_exit_code": 1,
         "negative_expected_error": "Missing original source: exact original Native result",
         "negative_log": "delivery-proofs/30-negative.log",
-        "negative_log_sha256": "a47ae0c12f49e7b14134dce5e45871e95cdfb1263a9255e502c15f5292f12454",
+        "negative_log_sha256": "fbe1452636f2486447ac9d68e601ee36282a6d68199341352f35475b06c058e5",
         "scope": "CPU predicates only; original Native capture pending",
         "script": "delivery_audit.py",
-        "script_sha256": "d6d321670b42c228fdb22f8fcecdf0a4677b991e26edc1202ef6463a02857846",
+        "script_sha256": "deaefe3753b7d7cf1b56b68758867a0851e0b4a2540e49b12c41c8fbd3f88894",
         "sets": [
           "full-train"
         ],
@@ -260,6 +409,9 @@
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
       },
+      "negative": {
+        "log": "compatibility/30/primary/negative.log"
+      },
       "offline": {
         "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__30 --candidate primary --output .runtime-work/c229987/offline-v9-30-primary",
         "construction_sha256": "d9baec8d80a6403079b91fd47618415132fa664dbe7a70c97c990257e43725a6",
@@ -270,6 +422,16 @@
       "physical_preparation": {
         "receipt": "physical-proof/30/proof.json",
         "sha256": "a112ecaf014fcb33732cffb53e97252884dd67eef76b8d3676a16050d426fea6"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__30 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__30 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "processing_receipt": "saved/30-processing.json",
+        "processing_receipt_sha256": "19741f8523c3464cea9f3aa76916263af42b6294b7c00fae0c68191ed6e24114",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/30-processing.log",
+        "test_log_sha256": "19741f8523c3464cea9f3aa76916263af42b6294b7c00fae0c68191ed6e24114"
       },
       "recording_description": {
         "channels": [
@@ -382,6 +544,63 @@
       }
     },
     {
+      "acquisition": {
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "dev.position": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "dev.traffic_signal": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "drv.approaching": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "drv.forced_halt": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "stop_distance_on_signal_approach": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        }
+      },
       "candidate_risk": {
         "reason": "Open-loop primary brake timing may overshoot the requested signal approach gap on actual CARLA dynamics; original footprint and speed reveal the failure.",
         "status": "physical"
@@ -391,7 +610,12 @@
           "changed_knobs": [
             "brake_lead_seconds: 1.2 to 1.8; same target gap, signal, camera and subject"
           ],
-          "compatibility": {},
+          "compatibility": {
+            "log": "compatibility/35/fallback1/analysis.log",
+            "negative_log": "compatibility/35/fallback1/negative.log",
+            "receipt": "compatibility/35/fallback1/compatibility.json",
+            "sha256": "0e3e41cea3fd29ed8ae935489e5d7886e1c4331229032b61c290fa0752bd2319"
+          },
           "construction": "native/35-fallback1-construction.json",
           "construction_sha256": "3fa198c53e28f3530e1c51bfb32353c16f404f3a158bcc7e168c962f313d81eb",
           "id": "fallback1",
@@ -410,6 +634,12 @@
         }
       ],
       "case_id": "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__35",
+      "compatibility": {
+        "log": "compatibility/35/primary/analysis.log",
+        "negative_log": "compatibility/35/primary/negative.log",
+        "receipt": "compatibility/35/primary/compatibility.json",
+        "sha256": "9d5b28fb53905a5b68e5bcb98068fdfee0514bb733c0e8d92c0a53164d9e4bfc"
+      },
       "construction": "native/35-construction.json",
       "construction_sha256": "36760edf36205d96ae71036df7743a5e84677ff254eb1cd70754b5ea74dd9d8f",
       "delivery_acceptance": {
@@ -427,10 +657,10 @@
         "negative_exit_code": 1,
         "negative_expected_error": "Missing original source: exact original Native result",
         "negative_log": "delivery-proofs/35-negative.log",
-        "negative_log_sha256": "a47ae0c12f49e7b14134dce5e45871e95cdfb1263a9255e502c15f5292f12454",
+        "negative_log_sha256": "fbe1452636f2486447ac9d68e601ee36282a6d68199341352f35475b06c058e5",
         "scope": "CPU predicates only; original Native capture pending",
         "script": "delivery_audit.py",
-        "script_sha256": "d6d321670b42c228fdb22f8fcecdf0a4677b991e26edc1202ef6463a02857846",
+        "script_sha256": "deaefe3753b7d7cf1b56b68758867a0851e0b4a2540e49b12c41c8fbd3f88894",
         "sets": [
           "full-train"
         ],
@@ -450,6 +680,9 @@
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
       },
+      "negative": {
+        "log": "compatibility/35/primary/negative.log"
+      },
       "offline": {
         "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__35 --candidate primary --output .runtime-work/c229987/offline-v9-35-primary",
         "construction_sha256": "36760edf36205d96ae71036df7743a5e84677ff254eb1cd70754b5ea74dd9d8f",
@@ -460,6 +693,16 @@
       "physical_preparation": {
         "receipt": "physical-proof/35/proof.json",
         "sha256": "3da4bd8a74585bc8c8222bd934558f38d53f675c20f20ac46c851f8ddac7f26c"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__35 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__35 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "processing_receipt": "saved/35-processing.json",
+        "processing_receipt_sha256": "fc184597b91ad25cd7236ae46d9d781ae19053b0d61d6424e1805323c62c6119",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/35-processing.log",
+        "test_log_sha256": "fc184597b91ad25cd7236ae46d9d781ae19053b0d61d6424e1805323c62c6119"
       },
       "recording_description": {
         "channels": [
@@ -572,6 +815,63 @@
       }
     },
     {
+      "acquisition": {
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "dev.position": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "dev.traffic_signal": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "drv.approaching": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "drv.forced_halt": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "stop_distance_on_signal_approach": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        }
+      },
       "candidate_risk": {
         "reason": "Open-loop primary brake timing may overshoot the requested signal approach gap on actual CARLA dynamics; original footprint and speed reveal the failure.",
         "status": "physical"
@@ -581,7 +881,12 @@
           "changed_knobs": [
             "brake_lead_seconds: 1.2 to 1.8; same target gap, signal, camera and subject"
           ],
-          "compatibility": {},
+          "compatibility": {
+            "log": "compatibility/stand_25/fallback1/analysis.log",
+            "negative_log": "compatibility/stand_25/fallback1/negative.log",
+            "receipt": "compatibility/stand_25/fallback1/compatibility.json",
+            "sha256": "30fcbb78473a9634ee71b1aee5b5822b9e387bc5896b1dbf445d86798b526806"
+          },
           "construction": "native/stand_25-fallback1-construction.json",
           "construction_sha256": "62ac28ff58dcac00b6b8f2db6e58b30eb9e005013acd8b6478d881a2ef8661b4",
           "id": "fallback1",
@@ -600,6 +905,12 @@
         }
       ],
       "case_id": "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__stand_25",
+      "compatibility": {
+        "log": "compatibility/stand_25/primary/analysis.log",
+        "negative_log": "compatibility/stand_25/primary/negative.log",
+        "receipt": "compatibility/stand_25/primary/compatibility.json",
+        "sha256": "5149e93b07e7f3ed35d3a69c908f3ee78ed4e7d201556c58a45682ea4e374566"
+      },
       "construction": "native/stand_25-construction.json",
       "construction_sha256": "06941df69fba322e05052048f98b518f831a55cb91ab5fcd1bb13da922573e2f",
       "delivery_acceptance": {
@@ -617,10 +928,10 @@
         "negative_exit_code": 1,
         "negative_expected_error": "Missing original source: exact original Native result",
         "negative_log": "delivery-proofs/stand_25-negative.log",
-        "negative_log_sha256": "a47ae0c12f49e7b14134dce5e45871e95cdfb1263a9255e502c15f5292f12454",
+        "negative_log_sha256": "fbe1452636f2486447ac9d68e601ee36282a6d68199341352f35475b06c058e5",
         "scope": "CPU predicates only; original Native capture pending",
         "script": "delivery_audit.py",
-        "script_sha256": "d6d321670b42c228fdb22f8fcecdf0a4677b991e26edc1202ef6463a02857846",
+        "script_sha256": "deaefe3753b7d7cf1b56b68758867a0851e0b4a2540e49b12c41c8fbd3f88894",
         "sets": [
           "full-train"
         ],
@@ -640,6 +951,9 @@
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
       },
+      "negative": {
+        "log": "compatibility/stand_25/primary/negative.log"
+      },
       "offline": {
         "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__stand_25 --candidate primary --output .runtime-work/c229987/offline-v9-stand_25-primary",
         "construction_sha256": "06941df69fba322e05052048f98b518f831a55cb91ab5fcd1bb13da922573e2f",
@@ -650,6 +964,16 @@
       "physical_preparation": {
         "receipt": "physical-proof/stand_25/proof.json",
         "sha256": "1dfa89940c3759216c749456d52fc870345052b1faa1beed4368758dfb2d9f13"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__stand_25 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__stand_25 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "processing_receipt": "saved/stand_25-processing.json",
+        "processing_receipt_sha256": "47064d932c91adf3b2038d4ea2daa898979ea824204bb0559233833c4abc2fce",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/stand_25-processing.log",
+        "test_log_sha256": "47064d932c91adf3b2038d4ea2daa898979ea824204bb0559233833c4abc2fce"
       },
       "recording_description": {
         "channels": [
@@ -762,6 +1086,63 @@
       }
     },
     {
+      "acquisition": {
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "dev.position": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "dev.traffic_signal": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "drv.approaching": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "drv.forced_halt": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "stop_distance_on_signal_approach": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        }
+      },
       "candidate_risk": {
         "reason": "Open-loop primary brake timing may overshoot the requested signal approach gap on actual CARLA dynamics; original footprint and speed reveal the failure.",
         "status": "physical"
@@ -771,7 +1152,12 @@
           "changed_knobs": [
             "brake_lead_seconds: 1.2 to 1.8; same target gap, signal, camera and subject"
           ],
-          "compatibility": {},
+          "compatibility": {
+            "log": "compatibility/park_25/fallback1/analysis.log",
+            "negative_log": "compatibility/park_25/fallback1/negative.log",
+            "receipt": "compatibility/park_25/fallback1/compatibility.json",
+            "sha256": "e88306efc1a72d1bf80eef3bc41be175629087115fe9fd5f4378f58ef618952e"
+          },
           "construction": "native/park_25-fallback1-construction.json",
           "construction_sha256": "529d9815abd1606f62942d0971e6bbab7f5bd9686455edcc8de95cf3fed50371",
           "id": "fallback1",
@@ -790,6 +1176,12 @@
         }
       ],
       "case_id": "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__park_25",
+      "compatibility": {
+        "log": "compatibility/park_25/primary/analysis.log",
+        "negative_log": "compatibility/park_25/primary/negative.log",
+        "receipt": "compatibility/park_25/primary/compatibility.json",
+        "sha256": "80ddda7dbc0861b7a7b91b3db1961170f571ee80084c35ae4e654b1701828d9d"
+      },
       "construction": "native/park_25-construction.json",
       "construction_sha256": "54c6bbc8a67501eb717dbb52128fad60e0c1b7b1a1a3043ea3c0f3e65d09e90f",
       "delivery_acceptance": {
@@ -807,10 +1199,10 @@
         "negative_exit_code": 1,
         "negative_expected_error": "Missing original source: exact original Native result",
         "negative_log": "delivery-proofs/park_25-negative.log",
-        "negative_log_sha256": "a47ae0c12f49e7b14134dce5e45871e95cdfb1263a9255e502c15f5292f12454",
+        "negative_log_sha256": "fbe1452636f2486447ac9d68e601ee36282a6d68199341352f35475b06c058e5",
         "scope": "CPU predicates only; original Native capture pending",
         "script": "delivery_audit.py",
-        "script_sha256": "d6d321670b42c228fdb22f8fcecdf0a4677b991e26edc1202ef6463a02857846",
+        "script_sha256": "deaefe3753b7d7cf1b56b68758867a0851e0b4a2540e49b12c41c8fbd3f88894",
         "sets": [
           "full-train"
         ],
@@ -830,6 +1222,9 @@
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
       },
+      "negative": {
+        "log": "compatibility/park_25/primary/negative.log"
+      },
       "offline": {
         "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__park_25 --candidate primary --output .runtime-work/c229987/offline-v9-park_25-primary",
         "construction_sha256": "54c6bbc8a67501eb717dbb52128fad60e0c1b7b1a1a3043ea3c0f3e65d09e90f",
@@ -840,6 +1235,16 @@
       "physical_preparation": {
         "receipt": "physical-proof/park_25/proof.json",
         "sha256": "0436dfd30d3e2998525f2939978d0bc8fd58049bfee902b345997245bed49100"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__park_25 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__park_25 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "processing_receipt": "saved/park_25-processing.json",
+        "processing_receipt_sha256": "f12dc491c7fcd2d8917e0f23442df0ff83a1e3162857a0071b633708abacc998",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/park_25-processing.log",
+        "test_log_sha256": "f12dc491c7fcd2d8917e0f23442df0ff83a1e3162857a0071b633708abacc998"
       },
       "recording_description": {
         "channels": [
@@ -952,6 +1357,63 @@
       }
     },
     {
+      "acquisition": {
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "dev.position": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "dev.traffic_signal": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "drv.approaching": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "drv.forced_halt": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "stop_distance_on_signal_approach": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        }
+      },
       "candidate_risk": {
         "reason": "Open-loop primary brake timing may overshoot the requested signal approach gap on actual CARLA dynamics; original footprint and speed reveal the failure.",
         "status": "physical"
@@ -961,9 +1423,22 @@
           "changed_knobs": [
             "brake_lead_seconds: 1.2 to 1.8; same target gap, signal, camera and subject"
           ],
+          "compatibility": {
+            "log": "compatibility/conflict_25/fallback1/analysis.log",
+            "negative_log": "compatibility/conflict_25/fallback1/negative.log",
+            "receipt": "compatibility/conflict_25/fallback1/compatibility.json",
+            "sha256": "88669e34793b86f9fb3c0b0f123246466b9779c6d1632bacc15c24386e39978f"
+          },
           "construction": "native/conflict_25-fallback1-construction.json",
           "construction_sha256": "174bc9e1ce4f56f8793b40cda7b0701394be8500461320664ab59ff62417c465",
           "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__conflict_25 --candidate fallback1 --output .runtime-work/c229987/offline-v10-conflict_25-fallback1",
+            "construction_sha256": "174bc9e1ce4f56f8793b40cda7b0701394be8500461320664ab59ff62417c465",
+            "exit_code": 0,
+            "log": "native/conflict_25-fallback1-offline.log",
+            "log_sha256": "171047e552ded3367caaf494de55bc30647b6ec9e3ac86e4fe142c63c1f4a9ea"
+          },
           "trigger": {
             "failure_condition": "Primary final rest misses engineering target by more than 0.2 m or crosses the signal station",
             "metric": "observed final front-edge signal approach gap minus requested gap",
@@ -972,6 +1447,12 @@
         }
       ],
       "case_id": "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__conflict_25",
+      "compatibility": {
+        "log": "compatibility/conflict_25/primary/analysis.log",
+        "negative_log": "compatibility/conflict_25/primary/negative.log",
+        "receipt": "compatibility/conflict_25/primary/compatibility.json",
+        "sha256": "ff8444273e26832f8b665950b51e2053ea9f26785db63d2d62e84423fdbad8ae"
+      },
       "construction": "native/conflict_25-construction.json",
       "construction_sha256": "1933bad9fc2325a6e129712c1018010866c03a5994e3e1c7114c316a48a0d04d",
       "delivery_acceptance": {
@@ -989,10 +1470,10 @@
         "negative_exit_code": 1,
         "negative_expected_error": "Missing original source: exact original Native result",
         "negative_log": "delivery-proofs/conflict_25-negative.log",
-        "negative_log_sha256": "a47ae0c12f49e7b14134dce5e45871e95cdfb1263a9255e502c15f5292f12454",
+        "negative_log_sha256": "fbe1452636f2486447ac9d68e601ee36282a6d68199341352f35475b06c058e5",
         "scope": "CPU predicates only; original Native capture pending",
         "script": "delivery_audit.py",
-        "script_sha256": "d6d321670b42c228fdb22f8fcecdf0a4677b991e26edc1202ef6463a02857846",
+        "script_sha256": "deaefe3753b7d7cf1b56b68758867a0851e0b4a2540e49b12c41c8fbd3f88894",
         "sets": [
           "full-train"
         ],
@@ -1012,6 +1493,30 @@
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
       },
+      "negative": {
+        "log": "compatibility/conflict_25/primary/negative.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__conflict_25 --candidate primary --output .runtime-work/c229987/offline-v10-conflict_25-primary",
+        "construction_sha256": "1933bad9fc2325a6e129712c1018010866c03a5994e3e1c7114c316a48a0d04d",
+        "exit_code": 0,
+        "log": "native/conflict_25-offline.log",
+        "log_sha256": "171047e552ded3367caaf494de55bc30647b6ec9e3ac86e4fe142c63c1f4a9ea"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/conflict_25/proof.json",
+        "sha256": "28dcf32202cf8a973194ad4ec07e4fec054afbac3eb0fbf2bf9a2ee561e9cffd"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__conflict_25 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__conflict_25 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "processing_receipt": "saved/conflict_25-processing.json",
+        "processing_receipt_sha256": "de03d599b2c7ba618fd800c29215e16417d85c32a1c04c4a78fa8afd1abed86d",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/conflict_25-processing.log",
+        "test_log_sha256": "de03d599b2c7ba618fd800c29215e16417d85c32a1c04c4a78fa8afd1abed86d"
+      },
       "recording_description": {
         "channels": [
           {
@@ -1123,6 +1628,63 @@
       }
     },
     {
+      "acquisition": {
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "dev.position": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "dev.traffic_signal": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "drv.approaching": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "drv.forced_halt": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "stop_distance_on_signal_approach": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        }
+      },
       "candidate_risk": {
         "reason": "Open-loop primary brake timing may overshoot the requested signal approach gap on actual CARLA dynamics; original footprint and speed reveal the failure.",
         "status": "physical"
@@ -1132,7 +1694,12 @@
           "changed_knobs": [
             "brake_lead_seconds: 1.2 to 1.8; same target gap, signal, camera and subject"
           ],
-          "compatibility": {},
+          "compatibility": {
+            "log": "compatibility/law_25/fallback1/analysis.log",
+            "negative_log": "compatibility/law_25/fallback1/negative.log",
+            "receipt": "compatibility/law_25/fallback1/compatibility.json",
+            "sha256": "2d9c5f8da7630fa14392d49bf43056f30648d8dea41b659ddbe276b8fe533ace"
+          },
           "construction": "native/law_25-fallback1-construction.json",
           "construction_sha256": "441c176115250e26cfee5d74c6064cf97579b56de3e83da101a4590bb339961c",
           "id": "fallback1",
@@ -1151,6 +1718,12 @@
         }
       ],
       "case_id": "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__law_25",
+      "compatibility": {
+        "log": "compatibility/law_25/primary/analysis.log",
+        "negative_log": "compatibility/law_25/primary/negative.log",
+        "receipt": "compatibility/law_25/primary/compatibility.json",
+        "sha256": "c78568c5eb836baecfe1320c3c3d27b67d7ea622f7e6c57d1ac48ac76b002810"
+      },
       "construction": "native/law_25-construction.json",
       "construction_sha256": "56ad0e333086df25cd8f4205a3196091748acc76afdb3867f8d9d86f22c3c62d",
       "delivery_acceptance": {
@@ -1168,10 +1741,10 @@
         "negative_exit_code": 1,
         "negative_expected_error": "Missing original source: exact original Native result",
         "negative_log": "delivery-proofs/law_25-negative.log",
-        "negative_log_sha256": "a47ae0c12f49e7b14134dce5e45871e95cdfb1263a9255e502c15f5292f12454",
+        "negative_log_sha256": "fbe1452636f2486447ac9d68e601ee36282a6d68199341352f35475b06c058e5",
         "scope": "CPU predicates only; original Native capture pending",
         "script": "delivery_audit.py",
-        "script_sha256": "d6d321670b42c228fdb22f8fcecdf0a4677b991e26edc1202ef6463a02857846",
+        "script_sha256": "deaefe3753b7d7cf1b56b68758867a0851e0b4a2540e49b12c41c8fbd3f88894",
         "sets": [
           "full-train"
         ],
@@ -1191,6 +1764,9 @@
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
       },
+      "negative": {
+        "log": "compatibility/law_25/primary/negative.log"
+      },
       "offline": {
         "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__law_25 --candidate primary --output .runtime-work/c229987/offline-v9-law_25-primary",
         "construction_sha256": "56ad0e333086df25cd8f4205a3196091748acc76afdb3867f8d9d86f22c3c62d",
@@ -1201,6 +1777,16 @@
       "physical_preparation": {
         "receipt": "physical-proof/law_25/proof.json",
         "sha256": "de29ae4317dbbd2f81243cccb26d570373509c9127162bd5e465657017f43f3d"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__law_25 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__law_25 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "processing_receipt": "saved/law_25-processing.json",
+        "processing_receipt_sha256": "5de7276a5bb32139dfbab1b5ec7c8ca81738454e0813e61fada3b4a7d5da265a",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/law_25-processing.log",
+        "test_log_sha256": "5de7276a5bb32139dfbab1b5ec7c8ca81738454e0813e61fada3b4a7d5da265a"
       },
       "recording_description": {
         "channels": [
@@ -1313,6 +1899,63 @@
       }
     },
     {
+      "acquisition": {
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "dev.position": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "dev.traffic_signal": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "drv.approaching": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "drv.forced_halt": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "stop_distance_on_signal_approach": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        }
+      },
       "candidate_risk": {
         "reason": "Open-loop primary brake timing may overshoot the requested signal approach gap on actual CARLA dynamics; original footprint and speed reveal the failure.",
         "status": "physical"
@@ -1322,7 +1965,12 @@
           "changed_knobs": [
             "brake_lead_seconds: 1.2 to 1.8; same target gap, signal, camera and subject"
           ],
-          "compatibility": {},
+          "compatibility": {
+            "log": "compatibility/officer_25/fallback1/analysis.log",
+            "negative_log": "compatibility/officer_25/fallback1/negative.log",
+            "receipt": "compatibility/officer_25/fallback1/compatibility.json",
+            "sha256": "60670bad45d186a962af65a32bbba9baf096409ae95d51fbe8a7ca35eb04d5f3"
+          },
           "construction": "native/officer_25-fallback1-construction.json",
           "construction_sha256": "63ed0c200d36ed25f708099196a1f1d28df5bea6e26c9f2f7a7e76341cd14d76",
           "id": "fallback1",
@@ -1341,6 +1989,12 @@
         }
       ],
       "case_id": "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__officer_25",
+      "compatibility": {
+        "log": "compatibility/officer_25/primary/analysis.log",
+        "negative_log": "compatibility/officer_25/primary/negative.log",
+        "receipt": "compatibility/officer_25/primary/compatibility.json",
+        "sha256": "0ad63d9ac5314f401b2b42495115cbe0dbc54c884387b3ff53e60efd182172e2"
+      },
       "construction": "native/officer_25-construction.json",
       "construction_sha256": "3d4e41fc7c42141dd3c22d849a5163f74f0e275f237211729e9bb25935db3560",
       "delivery_acceptance": {
@@ -1358,10 +2012,10 @@
         "negative_exit_code": 1,
         "negative_expected_error": "Missing original source: exact original Native result",
         "negative_log": "delivery-proofs/officer_25-negative.log",
-        "negative_log_sha256": "a47ae0c12f49e7b14134dce5e45871e95cdfb1263a9255e502c15f5292f12454",
+        "negative_log_sha256": "fbe1452636f2486447ac9d68e601ee36282a6d68199341352f35475b06c058e5",
         "scope": "CPU predicates only; original Native capture pending",
         "script": "delivery_audit.py",
-        "script_sha256": "d6d321670b42c228fdb22f8fcecdf0a4677b991e26edc1202ef6463a02857846",
+        "script_sha256": "deaefe3753b7d7cf1b56b68758867a0851e0b4a2540e49b12c41c8fbd3f88894",
         "sets": [
           "full-train"
         ],
@@ -1381,6 +2035,9 @@
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
       },
+      "negative": {
+        "log": "compatibility/officer_25/primary/negative.log"
+      },
       "offline": {
         "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__officer_25 --candidate primary --output .runtime-work/c229987/offline-v9-officer_25-primary",
         "construction_sha256": "3d4e41fc7c42141dd3c22d849a5163f74f0e275f237211729e9bb25935db3560",
@@ -1391,6 +2048,16 @@
       "physical_preparation": {
         "receipt": "physical-proof/officer_25/proof.json",
         "sha256": "54d19bc3a8b77c51f37ce37b216a30d99d0964c40ef25884333c9b691e181335"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__officer_25 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__officer_25 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "processing_receipt": "saved/officer_25-processing.json",
+        "processing_receipt_sha256": "362ed299d6de2b1067e2f36cab8866b18c18d7116d5c8cc272681d9016109b80",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/officer_25-processing.log",
+        "test_log_sha256": "362ed299d6de2b1067e2f36cab8866b18c18d7116d5c8cc272681d9016109b80"
       },
       "recording_description": {
         "channels": [
@@ -1503,6 +2170,63 @@
       }
     },
     {
+      "acquisition": {
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "dev.position": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "dev.traffic_signal": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "drv.approaching": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "drv.forced_halt": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        },
+        "stop_distance_on_signal_approach": {
+          "entrypoint": "runner.py",
+          "evidence": "signal_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original same-tick Native signal, vehicle, context and road readback; survey retained"
+        }
+      },
       "candidate_risk": {
         "reason": "Open-loop primary brake timing may overshoot the requested signal approach gap on actual CARLA dynamics; original footprint and speed reveal the failure.",
         "status": "physical"
@@ -1512,7 +2236,12 @@
           "changed_knobs": [
             "brake_lead_seconds: 1.2 to 1.8; same target gap, signal, camera and subject"
           ],
-          "compatibility": {},
+          "compatibility": {
+            "log": "compatibility/device_25/fallback1/analysis.log",
+            "negative_log": "compatibility/device_25/fallback1/negative.log",
+            "receipt": "compatibility/device_25/fallback1/compatibility.json",
+            "sha256": "ddeaa25641f927a830f47429d2cd87bf51888b059fd987de9be53572e0c01ea9"
+          },
           "construction": "native/device_25-fallback1-construction.json",
           "construction_sha256": "f7aa497a045f38e42b95c373146066c80f811961a4df04f0dae6cac4ee3b00a4",
           "id": "fallback1",
@@ -1531,6 +2260,12 @@
         }
       ],
       "case_id": "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__device_25",
+      "compatibility": {
+        "log": "compatibility/device_25/primary/analysis.log",
+        "negative_log": "compatibility/device_25/primary/negative.log",
+        "receipt": "compatibility/device_25/primary/compatibility.json",
+        "sha256": "b6ebd8ef956aca7414abd1cef92479d380cbc026b8c30f862d03206d3db2cfa8"
+      },
       "construction": "native/device_25-construction.json",
       "construction_sha256": "fcbdc9d4684bde7e368a8a54aebe8013ab1c34720a019451cd618f9a8b2b9cf9",
       "delivery_acceptance": {
@@ -1548,10 +2283,10 @@
         "negative_exit_code": 1,
         "negative_expected_error": "Missing original source: exact original Native result",
         "negative_log": "delivery-proofs/device_25-negative.log",
-        "negative_log_sha256": "a47ae0c12f49e7b14134dce5e45871e95cdfb1263a9255e502c15f5292f12454",
+        "negative_log_sha256": "fbe1452636f2486447ac9d68e601ee36282a6d68199341352f35475b06c058e5",
         "scope": "CPU predicates only; original Native capture pending",
         "script": "delivery_audit.py",
-        "script_sha256": "d6d321670b42c228fdb22f8fcecdf0a4677b991e26edc1202ef6463a02857846",
+        "script_sha256": "deaefe3753b7d7cf1b56b68758867a0851e0b4a2540e49b12c41c8fbd3f88894",
         "sets": [
           "full-train"
         ],
@@ -1571,6 +2306,9 @@
         "port_env_var": "CARLA_PORT",
         "python_env_var": "CARLA_PYTHON"
       },
+      "negative": {
+        "log": "compatibility/device_25/primary/negative.log"
+      },
       "offline": {
         "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__device_25 --candidate primary --output .runtime-work/c229987/offline-v9-device_25-primary",
         "construction_sha256": "fcbdc9d4684bde7e368a8a54aebe8013ab1c34720a019451cd618f9a8b2b9cf9",
@@ -1581,6 +2319,16 @@
       "physical_preparation": {
         "receipt": "physical-proof/device_25/proof.json",
         "sha256": "305134248e1eb177206dad79d8c5c42b30c11520431f51b922a4664d021ebf70"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__device_25 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C229987__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case training__C229987__NRS-484B-450-1g__motor_vehicle_driver__device_25 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "processing_receipt": "saved/device_25-processing.json",
+        "processing_receipt_sha256": "2fd88eb0ec1d8789fd1802633648bef3e1ecfcd69518cd1a90742a35279d0af1",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/device_25-processing.log",
+        "test_log_sha256": "2fd88eb0ec1d8789fd1802633648bef3e1ecfcd69518cd1a90742a35279d0af1"
       },
       "recording_description": {
         "channels": [

@@ -1,0 +1,72 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "diagnostic_selected_probe",
+  "cases": [
+    {
+      "case_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__one_way_right",
+      "kind": "delivery",
+      "id": "primary",
+      "construction": "one-way-construction-one_way_right-primary.json",
+      "construction_sha256": "24b3829c18aec4be4d79b47cc1e1dc7fd747ea44dfc650994a14af8b4b122c51",
+      "fixture_recipe": "work/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/selected-recipe-one_way_right.json",
+      "measurement_contract": "one-way-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-tunnel-selected-measurement"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native one-way road, tunnel prop, occlusion and lateral tracking need review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "one-way-construction-one_way_right-fallback1.json",
+          "construction_sha256": "ac4d76bba28fa1aededa4481f9b3944f0dfe7a93ce9b6ab9e0827d035fc36256",
+          "trigger": {
+            "source": "tunnel-rows.jsonl",
+            "metric": "full-body lateral discrepancy at 100-foot zone entry",
+            "failure_condition": "body remains over 1 m from requested lane center"
+          },
+          "changed_knobs": [
+            "controller_gain: 1.5 to 2.0"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__one_way_left",
+      "kind": "delivery",
+      "id": "primary",
+      "construction": "one-way-construction-one_way_left-primary.json",
+      "construction_sha256": "74fc459949d2193c4613c43e1feef6663f6f228c60eda0c990e4c62aaa02cdbb",
+      "fixture_recipe": "work/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/selected-recipe-one_way_left.json",
+      "measurement_contract": "one-way-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-tunnel-selected-measurement"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native one-way road, tunnel prop, occlusion and lateral tracking need review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "one-way-construction-one_way_left-fallback1.json",
+          "construction_sha256": "2e999a68db1c9e8bbcc194f7849966ed7e3b5dc36ac891807e275eaaadee5de7",
+          "trigger": {
+            "source": "tunnel-rows.jsonl",
+            "metric": "full-body lateral discrepancy at 100-foot zone entry",
+            "failure_condition": "body remains over 1 m from requested lane center"
+          },
+          "changed_knobs": [
+            "controller_gain: 1.5 to 2.0"
+          ]
+        }
+      ]
+    }
+  ]
+}

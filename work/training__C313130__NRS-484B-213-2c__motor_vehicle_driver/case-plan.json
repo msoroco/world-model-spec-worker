@@ -45,9 +45,12 @@
       "requirement": "NRS-484B-213-2c",
       "source": "NRS 484B.213(2)(c); with 484B.213(3)",
       "branch": "one-way-highway exclusion",
-      "status": "alternative_pending",
-      "case_ids": [],
-      "evidence_or_gap": "Distinct physical structure or highway direction is outside the selected tunnel/two-way contrast; original-source applicability remains pending and no legal conclusion is asserted."
+      "status": "selected_required",
+      "case_ids": [
+        "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__one_way_right",
+        "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__one_way_left"
+      ],
+      "evidence_or_gap": "Two exact one-way same-cell construction variants and synthetic source-shape proof; original Native direction survey and legal one-way classification pending."
     }
   ],
   "neutral_baseline": {
@@ -80,6 +83,32 @@
       "selection_targets": [
         "full-train"
       ]
+    },
+    {
+      "case_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__one_way_right",
+      "target_law_id": "NRS-484B-213-2c",
+      "kind": "selected_cpu_construction",
+      "target_type": "controlled_attempt",
+      "physical_target": "approach tunnel in rightmost eastbound lane on authored one-way highway",
+      "comparison_variable": "one_way_highway_exception_within_100ft",
+      "source_branch": "one-way-highway exclusion",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ]
+    },
+    {
+      "case_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__one_way_left",
+      "target_law_id": "NRS-484B-213-2c",
+      "kind": "selected_cpu_construction",
+      "target_type": "controlled_attempt",
+      "physical_target": "approach tunnel in left eastbound lane on authored one-way highway",
+      "comparison_variable": "one_way_highway_exception_within_100ft",
+      "source_branch": "one-way-highway exclusion",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ]
     }
   ],
   "comparisons": [
@@ -95,6 +124,20 @@
       "fixed_conditions": [
         "frozen cell, actor and physical road context",
         "other participants, controller policy and camera policy except law-relevant target"
+      ]
+    },
+    {
+      "comparison_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__one_way_comparison",
+      "case_ids": [
+        "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__one_way_right",
+        "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__one_way_left"
+      ],
+      "deliberate_differences": [
+        "requested one-way lateral lane target"
+      ],
+      "fixed_conditions": [
+        "same authored one-way tunnel road and original direction survey requirement",
+        "same actor, portal, occluder, cameras, 600-frame duration and control policy"
       ]
     }
   ],
@@ -152,6 +195,30 @@
       "candidate_id": "primary",
       "construction": "selected-construction-probe_2.json",
       "status": "offline_passed_physical_unobserved"
+    },
+    {
+      "case_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__one_way_right",
+      "candidate_id": "primary",
+      "construction": "one-way-construction-one_way_right-primary.json",
+      "status": "offline_and_public_compatibility_passed_physical_unobserved"
+    },
+    {
+      "case_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__one_way_right",
+      "candidate_id": "fallback1",
+      "construction": "one-way-construction-one_way_right-fallback1.json",
+      "status": "offline_and_public_compatibility_passed_physical_unobserved"
+    },
+    {
+      "case_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__one_way_left",
+      "candidate_id": "primary",
+      "construction": "one-way-construction-one_way_left-primary.json",
+      "status": "offline_and_public_compatibility_passed_physical_unobserved"
+    },
+    {
+      "case_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__one_way_left",
+      "candidate_id": "fallback1",
+      "construction": "one-way-construction-one_way_left-fallback1.json",
+      "status": "offline_and_public_compatibility_passed_physical_unobserved"
     }
   ],
   "existing_evidence": [],

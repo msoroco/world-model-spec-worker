@@ -2,7 +2,7 @@
   "format": "worker-execution-manifest",
   "assignment_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver",
   "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
-  "status": "selected_delivery_cpu_prepared",
+  "status": "selected_delivery_cpu_prepared_full_statutory_review_pending",
   "cases": [
     {
       "case_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__probe_1",
@@ -323,6 +323,308 @@
         "test_log_sha256": "c236eec8d0d7f17e2a0b93153f9546ab2e9031373dc466901ac6e9b1edbda9ac",
         "negative_log": "selected-proofs/probe_2-delivery-negative.log",
         "negative_log_sha256": "b543ac6c0f985a8d2734babd6f744bc1c9e9dcbd93fa812a336ada95602b4633",
+        "scope": "CPU diagnostic join and required rejection; original Native physical and legal acceptance pending"
+      }
+    },
+    {
+      "case_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__one_way_right",
+      "kind": "delivery",
+      "id": "primary",
+      "construction": "one-way-construction-one_way_right-primary.json",
+      "construction_sha256": "24b3829c18aec4be4d79b47cc1e1dc7fd747ea44dfc650994a14af8b4b122c51",
+      "fixture_recipe": "work/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/selected-recipe-one_way_right.json",
+      "measurement_contract": "one-way-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-tunnel-selected-measurement"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native one-way road, tunnel prop, occlusion and lateral tracking need review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "one-way-construction-one_way_right-fallback1.json",
+          "construction_sha256": "ac4d76bba28fa1aededa4481f9b3944f0dfe7a93ce9b6ab9e0827d035fc36256",
+          "trigger": {
+            "source": "tunnel-rows.jsonl",
+            "metric": "full-body lateral discrepancy at 100-foot zone entry",
+            "failure_condition": "body remains over 1 m from requested lane center"
+          },
+          "changed_knobs": [
+            "controller_gain: 1.5 to 2.0"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/one-way-probe-manifest.json --case training__C313130__NRS-484B-213-2c__motor_vehicle_driver__one_way_right --candidate fallback1 --output .runtime-work/c313130_oneway_offline_one_way_right_fallback1 --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "ac4d76bba28fa1aededa4481f9b3944f0dfe7a93ce9b6ab9e0827d035fc36256",
+            "log": "selected-proofs/one_way_right-fallback1-offline.log",
+            "log_sha256": "df3c3a0f60d23b5701d290d237c55d2ab2488e4ee4a7da87055fc0221c0ac9da"
+          },
+          "compatibility": {
+            "receipt": "selected-proofs/one_way_right-fallback1-compatibility.json",
+            "sha256": "8eb201d889858f0b5cae6201b1a522350148ec5a4bb05d5d6e4de243c01c327d",
+            "log": "selected-proofs/one_way_right-fallback1-analysis.log",
+            "negative_log": "selected-proofs/one_way_right-fallback1-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/one-way-probe-manifest.json --case training__C313130__NRS-484B-213-2c__motor_vehicle_driver__one_way_right --candidate primary --output .runtime-work/c313130_oneway_offline_one_way_right_primary --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "24b3829c18aec4be4d79b47cc1e1dc7fd747ea44dfc650994a14af8b4b122c51",
+        "log": "selected-proofs/one_way_right-primary-offline.log",
+        "log_sha256": "ef806d9eaaa32a5d0b8e5f3ab7192cb1ec805e9d5941587c7986df321a048d4f"
+      },
+      "compatibility": {
+        "receipt": "selected-proofs/one_way_right-primary-compatibility.json",
+        "sha256": "a710c04d20f42127877c4df5dd6ae0818ba70f96f1e7c40165d3aa2c097c6b42",
+        "log": "selected-proofs/one_way_right-primary-analysis.log",
+        "negative_log": "selected-proofs/one_way_right-primary-negative.log"
+      },
+      "negative": {
+        "log": "selected-proofs/one_way_right-primary-negative.log"
+      },
+      "saved_processing": {
+        "receipt": "selected-proofs/one_way_right-primary-processing.json",
+        "sha256": "227fa08880fc36737769f821845270386ac3c3f40adc8cab96594f47df5aa162"
+      },
+      "post_capture": {
+        "command": "python runtime.py process-saved --manifest work/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/execution-manifest.json --case training__C313130__NRS-484B-213-2c__motor_vehicle_driver__one_way_right --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$SAVED_OUTPUT\"/v0001/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "selected-proofs/one_way_right-primary-processing.json",
+        "test_log_sha256": "227fa08880fc36737769f821845270386ac3c3f40adc8cab96594f47df5aa162"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "st.elevated_structure": {
+          "entrypoint": "one_way_capture.py",
+          "method": "20 Hz original Native one-way tunnel direction, portal, body and four-camera acquisition",
+          "evidence": "tunnel-context.json, road-direction-survey.json, tunnel-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "drv.approaching": {
+          "entrypoint": "one_way_capture.py",
+          "method": "20 Hz original Native one-way tunnel direction, portal, body and four-camera acquisition",
+          "evidence": "tunnel-context.json, road-direction-survey.json, tunnel-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "one_way_capture.py",
+          "method": "20 Hz original Native one-way tunnel direction, portal, body and four-camera acquisition",
+          "evidence": "tunnel-context.json, road-direction-survey.json, tunnel-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "st.sight_distance": {
+          "entrypoint": "one_way_capture.py",
+          "method": "20 Hz original Native one-way tunnel direction, portal, body and four-camera acquisition",
+          "evidence": "tunnel-context.json, road-direction-survey.json, tunnel-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "drv.sight_distance_adequate": {
+          "entrypoint": "one_way_capture.py",
+          "method": "20 Hz original Native one-way tunnel direction, portal, body and four-camera acquisition",
+          "evidence": "tunnel-context.json, road-direction-survey.json, tunnel-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "st.centre_line": {
+          "entrypoint": "one_way_capture.py",
+          "method": "20 Hz original Native one-way tunnel direction, portal, body and four-camera acquisition",
+          "evidence": "tunnel-context.json, road-direction-survey.json, tunnel-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "rel.occupies": {
+          "entrypoint": "one_way_capture.py",
+          "method": "20 Hz original Native one-way tunnel direction, portal, body and four-camera acquisition",
+          "evidence": "tunnel-context.json, road-direction-survey.json, tunnel-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "st.one_way_roadway": {
+          "entrypoint": "one_way_capture.py",
+          "method": "20 Hz original Native one-way tunnel direction, portal, body and four-camera acquisition",
+          "evidence": "tunnel-context.json, road-direction-survey.json, tunnel-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        }
+      },
+      "physical_preparation": {
+        "case_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__one_way_right",
+        "receipt": "physical-preparation-one_way_right.json",
+        "sha256": "01c8e2eda1c79227095963fb19c1d3c5026b46fa03f3ef29ce0de3a1f395d413"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__one_way_right",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "one_way_delivery_audit.py",
+        "script_sha256": "ef884588bcde352de5723afc1df0e71840d4a3d58a768e9bca1ad8723dcffe47",
+        "command": ".venv-cpu/bin/python -B work/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/one_way_delivery_audit.py --case training__C313130__NRS-484B-213-2c__motor_vehicle_driver__one_way_right --diagnostic",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/one_way_delivery_audit.py --case training__C313130__NRS-484B-213-2c__motor_vehicle_driver__one_way_right",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original one-way direction, tunnel identity, obstructed view and four camera pixels required for delivery acceptance",
+        "test_log": "selected-proofs/one_way_right-delivery-audit.log",
+        "test_log_sha256": "7a43899b96ff306406054c9194908b2decc392d6cd04f59d247c2497651422d2",
+        "negative_log": "selected-proofs/one_way_right-delivery-negative.log",
+        "negative_log_sha256": "455170105bc5062032b6963e585880dfbdad10742853e9f4f8f48c84634e751a",
+        "scope": "CPU diagnostic join and required rejection; original Native physical and legal acceptance pending"
+      }
+    },
+    {
+      "case_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__one_way_left",
+      "kind": "delivery",
+      "id": "primary",
+      "construction": "one-way-construction-one_way_left-primary.json",
+      "construction_sha256": "74fc459949d2193c4613c43e1feef6663f6f228c60eda0c990e4c62aaa02cdbb",
+      "fixture_recipe": "work/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/selected-recipe-one_way_left.json",
+      "measurement_contract": "one-way-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-tunnel-selected-measurement"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native one-way road, tunnel prop, occlusion and lateral tracking need review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "one-way-construction-one_way_left-fallback1.json",
+          "construction_sha256": "2e999a68db1c9e8bbcc194f7849966ed7e3b5dc36ac891807e275eaaadee5de7",
+          "trigger": {
+            "source": "tunnel-rows.jsonl",
+            "metric": "full-body lateral discrepancy at 100-foot zone entry",
+            "failure_condition": "body remains over 1 m from requested lane center"
+          },
+          "changed_knobs": [
+            "controller_gain: 1.5 to 2.0"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/one-way-probe-manifest.json --case training__C313130__NRS-484B-213-2c__motor_vehicle_driver__one_way_left --candidate fallback1 --output .runtime-work/c313130_oneway_offline_one_way_left_fallback1 --python $PWD/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "2e999a68db1c9e8bbcc194f7849966ed7e3b5dc36ac891807e275eaaadee5de7",
+            "log": "selected-proofs/one_way_left-fallback1-offline.log",
+            "log_sha256": "79944eae6d5f58e71e2cadc97fb1c034bf1ea2c1bbb346b43aa72d1dbad2cb26"
+          },
+          "compatibility": {
+            "receipt": "selected-proofs/one_way_left-fallback1-compatibility.json",
+            "sha256": "4116fccf982cc6180860690687bbef47039b8c89b7ae3aa0deaf5da0a0c9577f",
+            "log": "selected-proofs/one_way_left-fallback1-analysis.log",
+            "negative_log": "selected-proofs/one_way_left-fallback1-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/one-way-probe-manifest.json --case training__C313130__NRS-484B-213-2c__motor_vehicle_driver__one_way_left --candidate primary --output .runtime-work/c313130_oneway_offline_one_way_left_primary --python $PWD/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "construction_sha256": "74fc459949d2193c4613c43e1feef6663f6f228c60eda0c990e4c62aaa02cdbb",
+        "log": "selected-proofs/one_way_left-primary-offline.log",
+        "log_sha256": "0d6d29b12da652ca4c7e27eb99b08c31cf8fb24af6cef628720ed46f9828bfc5"
+      },
+      "compatibility": {
+        "receipt": "selected-proofs/one_way_left-primary-compatibility.json",
+        "sha256": "1a9bc364e691eb5274eed849c06c58eb63dcf580e5bb04f5afa88b9aaed3ee5b",
+        "log": "selected-proofs/one_way_left-primary-analysis.log",
+        "negative_log": "selected-proofs/one_way_left-primary-negative.log"
+      },
+      "negative": {
+        "log": "selected-proofs/one_way_left-primary-negative.log"
+      },
+      "saved_processing": {
+        "receipt": "selected-proofs/one_way_left-primary-processing.json",
+        "sha256": "e77e1f6f220297362ae466aea82f75926e3b569d092453e9db34d7dd792289e2"
+      },
+      "post_capture": {
+        "command": "python runtime.py process-saved --manifest work/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/execution-manifest.json --case training__C313130__NRS-484B-213-2c__motor_vehicle_driver__one_way_left --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$SAVED_OUTPUT\"/v0001/feedback.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "selected-proofs/one_way_left-primary-processing.json",
+        "test_log_sha256": "e77e1f6f220297362ae466aea82f75926e3b569d092453e9db34d7dd792289e2"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "st.elevated_structure": {
+          "entrypoint": "one_way_capture.py",
+          "method": "20 Hz original Native one-way tunnel direction, portal, body and four-camera acquisition",
+          "evidence": "tunnel-context.json, road-direction-survey.json, tunnel-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "drv.approaching": {
+          "entrypoint": "one_way_capture.py",
+          "method": "20 Hz original Native one-way tunnel direction, portal, body and four-camera acquisition",
+          "evidence": "tunnel-context.json, road-direction-survey.json, tunnel-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "one_way_capture.py",
+          "method": "20 Hz original Native one-way tunnel direction, portal, body and four-camera acquisition",
+          "evidence": "tunnel-context.json, road-direction-survey.json, tunnel-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "st.sight_distance": {
+          "entrypoint": "one_way_capture.py",
+          "method": "20 Hz original Native one-way tunnel direction, portal, body and four-camera acquisition",
+          "evidence": "tunnel-context.json, road-direction-survey.json, tunnel-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "drv.sight_distance_adequate": {
+          "entrypoint": "one_way_capture.py",
+          "method": "20 Hz original Native one-way tunnel direction, portal, body and four-camera acquisition",
+          "evidence": "tunnel-context.json, road-direction-survey.json, tunnel-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "st.centre_line": {
+          "entrypoint": "one_way_capture.py",
+          "method": "20 Hz original Native one-way tunnel direction, portal, body and four-camera acquisition",
+          "evidence": "tunnel-context.json, road-direction-survey.json, tunnel-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "rel.occupies": {
+          "entrypoint": "one_way_capture.py",
+          "method": "20 Hz original Native one-way tunnel direction, portal, body and four-camera acquisition",
+          "evidence": "tunnel-context.json, road-direction-survey.json, tunnel-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        },
+        "st.one_way_roadway": {
+          "entrypoint": "one_way_capture.py",
+          "method": "20 Hz original Native one-way tunnel direction, portal, body and four-camera acquisition",
+          "evidence": "tunnel-context.json, road-direction-survey.json, tunnel-rows.jsonl, trace.jsonl, video_frames.jsonl and four original videos"
+        }
+      },
+      "physical_preparation": {
+        "case_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__one_way_left",
+        "receipt": "physical-preparation-one_way_left.json",
+        "sha256": "1e4904e569d0f0fd90c7b802a4f4cc4f81e80086d74d5821ab7c993c9f40afdd"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__one_way_left",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "one_way_delivery_audit.py",
+        "script_sha256": "ef884588bcde352de5723afc1df0e71840d4a3d58a768e9bca1ad8723dcffe47",
+        "command": ".venv-cpu/bin/python -B work/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/one_way_delivery_audit.py --case training__C313130__NRS-484B-213-2c__motor_vehicle_driver__one_way_left --diagnostic",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C313130__NRS-484B-213-2c__motor_vehicle_driver/one_way_delivery_audit.py --case training__C313130__NRS-484B-213-2c__motor_vehicle_driver__one_way_left",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original one-way direction, tunnel identity, obstructed view and four camera pixels required for delivery acceptance",
+        "test_log": "selected-proofs/one_way_left-delivery-audit.log",
+        "test_log_sha256": "71f5c921434b653a178852bd83b568120346e172d01fb25f79fd936d4c4eb084",
+        "negative_log": "selected-proofs/one_way_left-delivery-negative.log",
+        "negative_log_sha256": "455170105bc5062032b6963e585880dfbdad10742853e9f4f8f48c84634e751a",
         "scope": "CPU diagnostic join and required rejection; original Native physical and legal acceptance pending"
       }
     }

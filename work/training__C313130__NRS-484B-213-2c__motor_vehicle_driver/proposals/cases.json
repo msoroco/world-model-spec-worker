@@ -23,6 +23,11 @@
           "kind": "world_setup",
           "value": null,
           "unit": "original source review"
+        },
+        "one_way_native_survey": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "source-hashed original Native road readback; legal status unverified"
         }
       },
       "unresolved_judgment_calls": [],
@@ -134,6 +139,11 @@
           "kind": "world_setup",
           "value": null,
           "unit": "original source review"
+        },
+        "one_way_native_survey": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "source-hashed original Native road readback; legal status unverified"
         }
       },
       "unresolved_judgment_calls": [
@@ -256,6 +266,11 @@
           "kind": "world_setup",
           "value": null,
           "unit": "original source review"
+        },
+        "one_way_native_survey": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "source-hashed original Native road readback; legal status unverified"
         }
       },
       "unresolved_judgment_calls": [
@@ -355,6 +370,262 @@
       "probe": {
         "primary_variable": "requested_lateral_target",
         "comparison_or_standard": "right-side approach versus requested left-side approach within 100 feet of tunnel",
+        "target_value_or_branch": "left"
+      }
+    },
+    {
+      "case_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__one_way_right",
+      "target_law_id": "NRS-484B-213-2c",
+      "target_type": "boundary_probe",
+      "rationale": "Measure original one-way direction and full-body lateral position during tunnel approach",
+      "variable_assignments": {
+        "requested_lateral_target": {
+          "kind": "controller",
+          "value": "right",
+          "unit": "categorical"
+        },
+        "observed_left_occupancy": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "per frame"
+        },
+        "one_way_native_survey": {
+          "kind": "world_setup",
+          "value": true,
+          "unit": "source-hashed original Native road readback; legal status unverified"
+        },
+        "view_obstructed": {
+          "kind": "world_setup",
+          "value": null,
+          "unit": "original source review"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "legal one-way highway status",
+        "legal meaning of obstructed view"
+      ],
+      "paired_probe_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__one_way_comparison",
+      "deliberate_differences": [
+        "requested_lateral_target"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.elevated_structure",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Native tunnel prop bounds, authored portal and original four-view review",
+            "time_window": "all original 600 Native frames / 30 seconds",
+            "reference_frame": "original Native road, actor and camera frame",
+            "uncertainty": "50 ms sampling; physical and legal interpretation pending"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native ego speed and complete footprint before tunnel portal",
+            "time_window": "all original 600 Native frames / 30 seconds",
+            "reference_frame": "original Native road, actor and camera frame",
+            "uncertainty": "50 ms sampling; physical and legal interpretation pending"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Observed body front distance to portal in metres, with exact 30.48 m comparison",
+            "time_window": "all original 600 Native frames / 30 seconds",
+            "reference_frame": "original Native road, actor and camera frame",
+            "uncertainty": "50 ms sampling; physical and legal interpretation pending"
+          },
+          {
+            "name": "st.sight_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native incoming-lane sight ray and source camera pixels; unknown if unavailable",
+            "time_window": "all original 600 Native frames / 30 seconds",
+            "reference_frame": "original Native road, actor and camera frame",
+            "uncertainty": "50 ms sampling; physical and legal interpretation pending"
+          },
+          {
+            "name": "drv.sight_distance_adequate",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "No automatic judgment from ray proxy; independent view review needed",
+            "time_window": "all original 600 Native frames / 30 seconds",
+            "reference_frame": "original Native road, actor and camera frame",
+            "uncertainty": "50 ms sampling; physical and legal interpretation pending"
+          },
+          {
+            "name": "st.centre_line",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Authored centerline and original opposed-lane Native map readback",
+            "time_window": "all original 600 Native frames / 30 seconds",
+            "reference_frame": "original Native road, actor and camera frame",
+            "uncertainty": "50 ms sampling; physical and legal interpretation pending"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native four-corner vehicle footprint relative to reviewed highway center",
+            "time_window": "all original 600 Native frames / 30 seconds",
+            "reference_frame": "original Native road, actor and camera frame",
+            "uncertainty": "50 ms sampling; physical and legal interpretation pending"
+          },
+          {
+            "name": "st.one_way_roadway",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native opposed-lane direction readback",
+            "time_window": "all original 600 Native frames / 30 seconds",
+            "reference_frame": "original Native road, actor and camera frame",
+            "uncertainty": "50 ms sampling; physical and legal interpretation pending"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "tunnel_source_context",
+            "unit": "structured",
+            "method": "Source-hashed original map, portal bounds and one-way direction readback"
+          }
+        ],
+        "limitations": [
+          "Authored one-way road does not establish a legal one-way public highway",
+          "Tunnel identity and obstruction require original Native pixels and review"
+        ]
+      },
+      "probe": {
+        "primary_variable": "requested_lateral_target",
+        "comparison_or_standard": "right versus left authored eastbound lane on one-way tunnel approach with original direction and view review",
+        "target_value_or_branch": "right"
+      }
+    },
+    {
+      "case_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__one_way_left",
+      "target_law_id": "NRS-484B-213-2c",
+      "target_type": "boundary_probe",
+      "rationale": "Measure original one-way direction and full-body lateral position during tunnel approach",
+      "variable_assignments": {
+        "requested_lateral_target": {
+          "kind": "controller",
+          "value": "left",
+          "unit": "categorical"
+        },
+        "observed_left_occupancy": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "per frame"
+        },
+        "one_way_native_survey": {
+          "kind": "world_setup",
+          "value": true,
+          "unit": "source-hashed original Native road readback; legal status unverified"
+        },
+        "view_obstructed": {
+          "kind": "world_setup",
+          "value": null,
+          "unit": "original source review"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "legal one-way highway status",
+        "legal meaning of obstructed view"
+      ],
+      "paired_probe_id": "training__C313130__NRS-484B-213-2c__motor_vehicle_driver__one_way_comparison",
+      "deliberate_differences": [
+        "requested_lateral_target"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "st.elevated_structure",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Native tunnel prop bounds, authored portal and original four-view review",
+            "time_window": "all original 600 Native frames / 30 seconds",
+            "reference_frame": "original Native road, actor and camera frame",
+            "uncertainty": "50 ms sampling; physical and legal interpretation pending"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native ego speed and complete footprint before tunnel portal",
+            "time_window": "all original 600 Native frames / 30 seconds",
+            "reference_frame": "original Native road, actor and camera frame",
+            "uncertainty": "50 ms sampling; physical and legal interpretation pending"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Observed body front distance to portal in metres, with exact 30.48 m comparison",
+            "time_window": "all original 600 Native frames / 30 seconds",
+            "reference_frame": "original Native road, actor and camera frame",
+            "uncertainty": "50 ms sampling; physical and legal interpretation pending"
+          },
+          {
+            "name": "st.sight_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native incoming-lane sight ray and source camera pixels; unknown if unavailable",
+            "time_window": "all original 600 Native frames / 30 seconds",
+            "reference_frame": "original Native road, actor and camera frame",
+            "uncertainty": "50 ms sampling; physical and legal interpretation pending"
+          },
+          {
+            "name": "drv.sight_distance_adequate",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "No automatic judgment from ray proxy; independent view review needed",
+            "time_window": "all original 600 Native frames / 30 seconds",
+            "reference_frame": "original Native road, actor and camera frame",
+            "uncertainty": "50 ms sampling; physical and legal interpretation pending"
+          },
+          {
+            "name": "st.centre_line",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Authored centerline and original opposed-lane Native map readback",
+            "time_window": "all original 600 Native frames / 30 seconds",
+            "reference_frame": "original Native road, actor and camera frame",
+            "uncertainty": "50 ms sampling; physical and legal interpretation pending"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native four-corner vehicle footprint relative to reviewed highway center",
+            "time_window": "all original 600 Native frames / 30 seconds",
+            "reference_frame": "original Native road, actor and camera frame",
+            "uncertainty": "50 ms sampling; physical and legal interpretation pending"
+          },
+          {
+            "name": "st.one_way_roadway",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native opposed-lane direction readback",
+            "time_window": "all original 600 Native frames / 30 seconds",
+            "reference_frame": "original Native road, actor and camera frame",
+            "uncertainty": "50 ms sampling; physical and legal interpretation pending"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "tunnel_source_context",
+            "unit": "structured",
+            "method": "Source-hashed original map, portal bounds and one-way direction readback"
+          }
+        ],
+        "limitations": [
+          "Authored one-way road does not establish a legal one-way public highway",
+          "Tunnel identity and obstruction require original Native pixels and review"
+        ]
+      },
+      "probe": {
+        "primary_variable": "requested_lateral_target",
+        "comparison_or_standard": "right versus left authored eastbound lane on one-way tunnel approach with original direction and view review",
         "target_value_or_branch": "left"
       }
     }

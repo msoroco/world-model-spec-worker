@@ -111,7 +111,10 @@ def comparison_audit(extracts, surveys, observed):
     plans = {case: request(case, surveys[case]) for case in CASES}
     compare_requests(plans)
     baseline = next(iter(CASES))
-    fixed = ('geometry_sha256', 'survey_sha256')
+    fixed = ('authored_map_sha256', 'native_map_sha256',
+             'roadway_boundary_source_id', 'lawful_traffic_source_id',
+             'edge_tangent_xy', 'lawful_traffic_direction_xy')
+    baseline_geometry = json.loads(Path(extracts[baseline]['geometry_path']).read_text())
     for case in CASES:
         item, measurement = extracts[case], observed[case]
         require(item.get('case_id') == case and item.get('format') == 'worker-saved-pose-extract',
@@ -146,7 +149,7 @@ def comparison_audit(extracts, surveys, observed):
                 require(finite_number(row.get(key)) and math.isclose(row[key], value, abs_tol=1e-6),
                         'measured source value changed: ' + key)
         for key in fixed:
-            require(item.get(key) == extracts[baseline].get(key),
+            require(geometry.get(key) == baseline_geometry.get(key),
                     'comparison fixed source changed: ' + key)
     pairs = []
     for activity in ('parking', 'standing'):

@@ -12,6 +12,7 @@ import json
 import math
 from pathlib import Path
 import subprocess
+import xml.etree.ElementTree as ET
 
 CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 FRAME_COUNT = 600
@@ -85,11 +86,19 @@ def validate(attempt: Path, review_path: Path) -> dict:
     join_path = attempt / "camera-frames.jsonl"
     zone = read_json(zone_path)
     map_sha256 = sha(map_path)
+    try:
+        map_root = ET.fromstring(map_path.read_text(encoding="utf-8"))
+    except ET.ParseError as exc:
+        raise ValueError("original OpenDRIVE map is malformed") from exc
     zone_box = rectangle(zone.get("bounds_m"), "restricted zone")
     require(zone.get("map_sha256") == capture.get("map_sha256") == map_sha256 and
             zone.get("sign_id") == "510", "zone/map/sign source binding absent")
     require(isinstance(zone.get("sign_text_readback"), str) and zone["sign_text_readback"],
             "sign readback absent")
+    signs = [item for item in map_root.findall(".//signal")
+             if item.attrib.get("id") == zone["sign_id"]]
+    require(len(signs) == 1 and signs[0].attrib.get("name") == zone["sign_text_readback"],
+            "sign identity or text absent from original map")
     video = capture.get("video_sources")
     require(isinstance(video, dict) and set(video) == set(CAMERAS), "four original videos required")
     source_hashes = {"capture-manifest.json": sha(attempt / "capture-manifest.json"),

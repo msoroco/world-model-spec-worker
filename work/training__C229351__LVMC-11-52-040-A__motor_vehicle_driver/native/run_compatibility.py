@@ -42,22 +42,18 @@ def main():
                SCENARIO_PIPELINE_OUTPUT_ROOT=str(ROOT / '.runtime-work'))
     for index, entry in enumerate(manifest['cases']):
         for candidate in ('primary', 'fallback1'):
-            output = ROOT / f'.runtime-work/c229351-compat-v2-{index}-{candidate}'
-            if index == 0 and candidate == 'primary':
-                if not (output / 'compatibility.json').is_file():
-                    raise ValueError('First compatibility receipt missing')
-            else:
-                command = [str(ROOT / '.venv-cpu/bin/python'), str(ROOT / 'runtime.py'),
-                           'compatibility', '--manifest', str(MANIFEST),
-                           '--case', entry['case_id'], '--candidate', candidate,
-                           '--output', str(output), '--library', str(ROOT / 'runtime/library'),
-                           '--validator', str(DECODER)]
-                log = ROOT / f'.runtime-work/c229351-compat-v2-{index}-{candidate}.log'
-                with log.open('w') as stream:
-                    result = subprocess.run(command, cwd=ROOT, env=env, stdout=stream,
-                                            stderr=subprocess.STDOUT)
-                if result.returncode:
-                    raise RuntimeError(f'{index} {candidate} failed; see {log}')
+            output = ROOT / f'.runtime-work/c229351-compat-v6-{index}-{candidate}'
+            command = [str(ROOT / '.venv-cpu/bin/python'), str(ROOT / 'runtime.py'),
+                       'compatibility', '--manifest', str(MANIFEST),
+                       '--case', entry['case_id'], '--candidate', candidate,
+                       '--output', str(output), '--library', str(ROOT / 'runtime/library'),
+                       '--validator', str(DECODER)]
+            log = ROOT / f'.runtime-work/c229351-compat-v6-{index}-{candidate}.log'
+            with log.open('w') as stream:
+                result = subprocess.run(command, cwd=ROOT, env=env, stdout=stream,
+                                        stderr=subprocess.STDOUT)
+            if result.returncode:
+                raise RuntimeError(f'{index} {candidate} failed; see {log}')
             bind(entry, candidate, output)
             MANIFEST.write_text(json.dumps(manifest, indent=2, allow_nan=False) + '\n')
             print(f'{index} {candidate} passed and bound', flush=True)

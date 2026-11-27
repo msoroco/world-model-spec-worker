@@ -3,6 +3,7 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+from native.case_specs import CASES
 
 CHECKS = ('native_source','all_participants','time_join','full_video_decode',
           'actual_pixels','physical_completion')
@@ -56,6 +57,33 @@ def check_review(review,case,sources):
         raise ValueError('Original signal pixels or approach geometry unreviewed')
     if review.get('signal_raw_sha256')!=sources['signal_raw.json'] or review.get('road_sha256')!=sources['road.xodr']:
         raise ValueError('Original signal review source hash differs')
+    suffix=case.rsplit('__',1)[-1]
+    spec=CASES[suffix]
+    if (review.get('activity_request')!=spec['activity'] or
+            review.get('exception_request')!=spec['exception']):
+        raise ValueError('Original review changed selected activity or exception request')
+    purpose=review.get('halt_purpose')
+    if (not isinstance(purpose,dict) or
+            purpose.get('activity_classification')!=spec['activity'] or
+            purpose.get('source_sha256')!=sources['signal_raw.json']):
+        raise ValueError('Original stop, stand or park classification lacks source')
+    branch={'traffic_conflict':'other_traffic_conflict',
+            'other_law':'applicable_law_direction',
+            'police_direction':'officer_direction',
+            'device_direction':'device_direction'}.get(spec['exception'])
+    if branch:
+        finding=review.get(branch)
+        if (not isinstance(finding,dict) or finding.get('applies') is not True or
+                finding.get('source_sha256')!=sources['signal_raw.json']):
+            raise ValueError('Requested exception lacks affirmative original source review: '+branch)
+        if spec['exception']=='other_law' and not finding.get('law_citation'):
+            raise ValueError('Other-law direction lacks cited authority')
+        if spec['exception']=='traffic_conflict' and finding.get('necessary') is not True:
+            raise ValueError('Traffic conflict necessity unproved')
+        if spec['exception']=='police_direction' and finding.get('police_authority_verified') is not True:
+            raise ValueError('Human proxy does not prove police authority')
+        if spec['exception']=='device_direction' and finding.get('official_device_verified') is not True:
+            raise ValueError('Signal indication does not alone prove official device direction')
 
 
 def audit(args):
@@ -119,6 +147,35 @@ def selftest(case,negative):
         try:check_result(changed,case)
         except ValueError:pass
         else:raise AssertionError('Missing original evidence accepted: '+key)
+    spec=CASES[case.rsplit('__',1)[-1]]
+    hashes={'signal_raw.json':'a'*64,'road.xodr':'b'*64}
+    review={'case_id':case,'review_kind':'original_source_review',
+            'independent_reviewer':'CPU predicate test',
+            'highway_status':True,'official_signal_status':True,
+            'halt_purpose':{'activity_classification':spec['activity'],
+                            'source_sha256':hashes['signal_raw.json']},
+            'activity_request':spec['activity'],'exception_request':spec['exception'],
+            'other_traffic_conflict':False,'applicable_law_direction':False,
+            'officer_direction':False,'device_direction':False,
+            'actual_pixels_reviewed':True,'approach_geometry_reviewed':True,
+            'signal_raw_sha256':hashes['signal_raw.json'],
+            'road_sha256':hashes['road.xodr']}
+    branch={'traffic_conflict':'other_traffic_conflict','other_law':'applicable_law_direction',
+            'police_direction':'officer_direction','device_direction':'device_direction'}.get(spec['exception'])
+    if branch:
+        finding={'applies':True,'source_sha256':hashes['signal_raw.json'],
+                 'law_citation':'test authority','necessary':True,
+                 'police_authority_verified':True,'official_device_verified':True}
+        review[branch]=finding
+    check_review(review,case,hashes)
+    altered=dict(review)
+    if branch:
+        altered[branch]=False
+    else:
+        altered['halt_purpose']=None
+    try:check_review(altered,case,hashes)
+    except ValueError:pass
+    else:raise AssertionError('Unproved original branch review accepted')
     return {'case_id':case,'source_predicates_tested':True,'original_capture_attested':False}
 
 
