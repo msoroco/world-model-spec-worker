@@ -1,25 +1,50 @@
-# C229452 red curb checkpoint
+# C229452 red curb delivery handoff
 
-Status: partial. Exact scoped strict gate exits 1 because this result remains partial.
+Status: ready for exact CPU package delivery. The scoped strict gate passed on 2026-11-26. Native physical and legal acceptance require actual capture.
 
-## Constructed CPU scope
+## Selected scope
 
-`red_curb.py` constructs a source-gated red curb, matching sign and vehicle subtype, parking route and actual halt activity. A long original event trace measures 1799/1800/1801-second signed tour-bus probes and separately covers shuttle, limo, RTC bus, armored/emergency business, ordinary stop/park and adjacent U.S. mail deposit. Attendance, engine operation, conflict and authority directions are retained without treating them as automatic exceptions. No accepted recording exists in the frozen evidence inventory.
+- 20 exact red-curb cases, each with a source-gated primary and camera-pose fallback construction.
+- 17 source-shaped comparisons with positive and damaged negative CPU audits.
+- Four original synchronized cameras at 20 Hz for a 1806-second capture envelope; original event times measure the 1799/1800/1801-second passenger boundary.
+- Ordinary park, stop and stand; signed tour, shuttle, limo and RTC passenger branches; special-vehicle business purpose; adjacent U.S. mail deposit and negative controls.
+- Qualitative necessity and expeditiousness stay unresolved. Their sweep plans are incomplete pending independently reviewed business/mail activity and feasible ranges.
 
-The eleven exact cases and eight controlled comparisons are in `case-plan.json`. Legal applicability and expeditiousness/necessity remain unresolved. A 900-frame 45-second video cannot prove a 30-minute boundary; a linked long event trace is required.
+## CPU proof results
 
-## CPU proof receipts
+- All 40 primary/fallback offline checks and source-bound positive/negative compatibility checks passed.
+- All 20 per-case physical fixture triples and lifecycle-order proofs passed; synthetic fixtures claim no Native physical completion.
+- All 20 recorded-only saved-processing positives and missing-source negatives passed without Native replay.
+- All 20 independent diagnostic delivery positives and missing-source negatives passed, including full four-view decode.
+- All 17 controlled diagnostic comparison positives and damaged negatives passed.
+- Thirteen focused unittests, package execution/semantic/delivery/compatibility validation, and exact scoped strict gate passed.
 
-- `case-plan.json` SHA256 `235c39bed13263f42f7c5127ae48c054d93307ecabae294e8e5c99cb773c7811`
-- `red_curb.py` SHA256 `caa2ee481be43fc447871e36a3e8929b44613394995d2d5d7005c98b430a34ee`
-- `tests/test_red_curb.py` SHA256 `5690e2f6d10b3970793996fdabb80050b58252b22864decdea9cadba5db22fbf`
-- `cpu-tests.log` SHA256 `6e6b97d7b27420efb09529fd68dc6e5af37befcf6c813e2dd19db42cc6c19bb2`
-- `cpu-preflight.log` SHA256 `b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63`
-- `cpu-static-check.log` SHA256 `e6c4b636ea169282984d9a421a87b9cfc75ced7f2b59036f16021bd821a5c80b`
-- `cpu-strict-check.log` SHA256 `3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a`
+## Exact artifact hashes
 
-Focused unittest: exit 0 (4 tests). Pinned `runtime.py preflight`: exit 0. Scoped static `worker_check.py --assignment testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver`: exit 0. Exact scoped strict with `--complete --require-delivery-ready`: exit 1 on truthful partial. `result.json.tests` includes only passing commands with package-relative logs and SHA256.
+- `case-plan.json` SHA-256 `d3e8d113a1aef1b92231b72d4bbbfe8d5fe62d9ee0d7da2f0dbe3260ddcbdf14`
+- `execution-manifest.json` SHA-256 `aab5c679223314d57c18a852180885c538c725296d8e2478dd642a8d1df0e867`
+- `proposals/semantic-index.json` SHA-256 `4668235f402a4d82531a51eba457b59507698e1c3b6a3d438555beef4c7e3fc3`
+- `proposals/cases.json` SHA-256 `676dff67be8ae50074eb77ff58d5760d2e53e8d051b4d8ef274e220414c25d27`
+- `gpu-queue-proposal.json` SHA-256 `60da90c1f284baad7e9d8419ae77dea09fc5bde24c9d866daee6575a83b3dd84`
+- `red_curb.py` SHA-256 `6a772888c44441ae0dde99835f0f4a14254c492a9e7eb54fcd027e9ff6fa06b4`
+- `native_capture.py` SHA-256 `d9add6da5cae4de10c07e8ecdd72219f18a9989261a17780985bcf8fa543b499`
+- `analysis.py` SHA-256 `b9bf590d85aa7b8bb9f9d4fc55c9929bfeb2764885385e95fed44bce864c476a`
+- `physical_completion.py` SHA-256 `73eb54baabe183e34042407e8ba5004a6afcb28e17aad6b87d52025a3a5a9c53`
+- `delivery_audit.py` SHA-256 `3e9dfd07d1a4dd322f7b87daadcdb5e8c8df26739b1fa20a50d7a33eabbf3cdb`
+- `comparison_audit.py` SHA-256 `d08bf4b3e514176e6de2e9a58d7035063529793bee975c4112fe823aa3206c08`
+- `result.json` SHA-256 `5e56b313e6796d26594ce60b96d6fd12d34989b22be876f9bf7b0783e995b388`
+- `cpu-tests.log` SHA-256 `67ebd99c5d5cbf4bf523a304698a6664ea1637e54c5f7daa576900e1dfc128c7`
+- `cpu-package-validation.log` SHA-256 `c01549645df6a2b5b17241d537803eb47c58a8fcbebbcfb72662d4598155b26c`
+- `cpu-strict-check.log` SHA-256 `e6c4b636ea169282984d9a421a87b9cfc75ced7f2b59036f16021bd821a5c80b`
 
-## Remaining CPU work
+## Local delivery handoff
 
-Create canonical selected-case execution bundles and source-bound positive/negative compatibility proofs for each case; add saved-only processing, semantic proposals, independent delivery/comparison audits. Add remaining statutory alternatives such as standing and RTC bus below/above boundary where selected. Then rerun exact scoped strict. CARLA physical motion and camera verification follow CPU readiness.
+The lead can integrate `gpu-queue-proposal.json` into the shared queue. Every exact case has prepare, execute, accept, capture, saved-processing, owner-release and source-audit commands; the fallback command names its exact case and candidate. The queue proposal also lists all 17 comparison audits.
+
+First Native command:
+
+```sh
+PYTHONPATH="$PWD/runtime" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root "$LOCAL_ROOT" execute-delivery --repo "$PWD" --batch full-test-delivery --db "$DB" --run "$RUN" --assignment testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__ordinary_park --job "$JOB_ID" --python "$CARLA_PYTHON" --host "$CARLA_HOST" --port "$CARLA_PORT"
+```
+
+Actual original red curb, jurisdiction, sign, vehicle status, passenger/business/mail activity, full pixels, cleanup and legal conclusion remain subject to independent local review. Diagnostic media and synthetic fixture rows are software probes only.

@@ -1,241 +1,249 @@
 {
-  "assignment_id": "testing__C143766__NRS-484B-283-1d3__pedestrian",
   "actor": "pedestrian",
-  "cell_id": "C143766",
-  "law_id": "NRS-484B-283-1d3",
-  "selected_branches": [
-    {
-      "law_id": "NRS-484B-283-1d3",
-      "cell_id": "C143766",
-      "actor": "pedestrian",
-      "requirement": "NRS-484B-283-1d3",
-      "branch": "Continuation toward sidewalk conditional on lawful prior entry",
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 388,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
-      "coverage_status": "pending_review",
-      "recording_ids": [],
-      "law_partition": "training",
-      "scenario_partition": "testing"
-    }
-  ],
-  "law_text": "Except as otherwise provided in NRS 484B.287 [NRS-484B-287-1c, NRS-484B-287-1d, NRS-484B-287-1e, LVMC-11-30-060-A, LVMC-11-30-060-B], 484B.290 [LVMC-11-30-140-B] and 484B.350 [LVMC-11-46-030]: Whenever signals exhibiting the words \u201cWalk,\u201d \u201cDon\u2019t Walk,\u201d \u201cWait\u201d or similar symbols are in place, such signals indicate as follows: While the \u201cDon\u2019t Walk\u201d or \u201cWait\u201d indication or an upraised hand symbol is illuminated and flashing but is not accompanied by a countdown timer, a pedestrian may not proceed to cross the highway, but a pedestrian who entered the highway lawfully pursuant to subparagraph (1) [NRS-484B-283-1d1] may continue to cross the highway but must proceed to a curb, sidewalk, safety zone if one is provided or other place of safety before the \u201cDon\u2019t Walk\u201d or \u201cWait\u201d indication or an upraised hand symbol is illuminated and steady.",
-  "law_source": "NRS 484B.283(1)(d)(3)",
-  "topic_inventory": {
-    "exact-text": "Except as otherwise provided in NRS 484B.287 [NRS-484B-287-1c, NRS-484B-287-1d, NRS-484B-287-1e, LVMC-11-30-060-A, LVMC-11-30-060-B], 484B.290 [LVMC-11-30-140-B] and 484B.350 [LVMC-11-46-030]: Whenever signals exhibiting the words \u201cWalk,\u201d \u201cDon\u2019t Walk,\u201d \u201cWait\u201d or similar symbols are in place, such signals indicate as follows: While the \u201cDon\u2019t Walk\u201d or \u201cWait\u201d indication or an upraised hand symbol is illuminated and flashing but is not accompanied by a countdown timer, a pedestrian may not proceed to cross the highway, but a pedestrian who entered the highway lawfully pursuant to subparagraph (1) [NRS-484B-283-1d1] may continue to cross the highway but must proceed to a curb, sidewalk, safety zone if one is provided or other place of safety before the \u201cDon\u2019t Walk\u201d or \u201cWait\u201d indication or an upraised hand symbol is illuminated and steady."
+  "assignment_id": "testing__C143766__NRS-484B-283-1d3__pedestrian",
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "original frames 0..899",
+        "subject": "trail, highway crossing and destination",
+        "view": "overview"
+      },
+      {
+        "interval": "original frames 0..899",
+        "subject": "pedestrian entry and crossing",
+        "view": "approach"
+      },
+      {
+        "interval": "original frames 0..899",
+        "subject": "facing pedestrian signal and countdown",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "original frames 0..899",
+        "subject": "opposing approach and destination geometry",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 45,
+    "profile": "overview1080-capability"
   },
   "cases": [
     {
+      "arrival_phase": "flashing",
       "case_id": "testing__C143766__NRS-484B-283-1d3__pedestrian__walk_entry_sidewalk_before",
-      "target_law_id": "NRS-484B-283-1d3",
-      "entry_phase": "walk",
-      "destination": "sidewalk",
-      "arrival_phase": "flashing",
+      "construction": "pedestrian_crossing.py construct with sourced trail, crossing, sidewalk and pedestrian signal",
       "countdown": false,
+      "destination": "sidewalk",
+      "entry_phase": "walk",
       "gap_ids": [
         "no-accepted-evidence"
       ],
-      "construction": "pedestrian_crossing.py construct with sourced trail, crossing, sidewalk and pedestrian signal",
       "measurement": "pedestrian_crossing.py measure_original from synchronized original signal and pedestrian pose; prior lawful entry and exception status unresolved",
       "physical_risk": {
-        "status": "physical",
-        "reason": "Trail, actual highway crossing, accessible sidewalk or other safety place and original pedestrian display may not connect or remain visible in four cameras; physical review is required."
-      }
+        "reason": "Trail, actual highway crossing, accessible sidewalk or other safety place and original pedestrian display may not connect or remain visible in four cameras; physical review is required.",
+        "status": "physical"
+      },
+      "target_law_id": "NRS-484B-283-1d3"
     },
     {
-      "case_id": "testing__C143766__NRS-484B-283-1d3__pedestrian__walk_entry_sidewalk_after",
-      "target_law_id": "NRS-484B-283-1d3",
-      "entry_phase": "walk",
-      "destination": "sidewalk",
       "arrival_phase": "steady",
+      "case_id": "testing__C143766__NRS-484B-283-1d3__pedestrian__walk_entry_sidewalk_after",
+      "construction": "pedestrian_crossing.py construct with sourced trail, crossing, sidewalk and pedestrian signal",
       "countdown": false,
+      "destination": "sidewalk",
+      "entry_phase": "walk",
       "gap_ids": [
         "no-accepted-evidence"
       ],
-      "construction": "pedestrian_crossing.py construct with sourced trail, crossing, sidewalk and pedestrian signal",
       "measurement": "pedestrian_crossing.py measure_original from synchronized original signal and pedestrian pose; prior lawful entry and exception status unresolved",
       "physical_risk": {
-        "status": "physical",
-        "reason": "Trail, actual highway crossing, accessible sidewalk or other safety place and original pedestrian display may not connect or remain visible in four cameras; physical review is required."
-      }
+        "reason": "Trail, actual highway crossing, accessible sidewalk or other safety place and original pedestrian display may not connect or remain visible in four cameras; physical review is required.",
+        "status": "physical"
+      },
+      "target_law_id": "NRS-484B-283-1d3"
     },
     {
+      "arrival_phase": "flashing",
       "case_id": "testing__C143766__NRS-484B-283-1d3__pedestrian__flashing_new_entry",
-      "target_law_id": "NRS-484B-283-1d3",
+      "construction": "pedestrian_crossing.py construct with sourced trail, crossing, sidewalk and pedestrian signal",
+      "countdown": false,
+      "destination": "sidewalk",
       "entry_phase": "flashing",
-      "destination": "sidewalk",
-      "arrival_phase": "flashing",
-      "countdown": false,
       "gap_ids": [
         "no-accepted-evidence"
       ],
-      "construction": "pedestrian_crossing.py construct with sourced trail, crossing, sidewalk and pedestrian signal",
       "measurement": "pedestrian_crossing.py measure_original from synchronized original signal and pedestrian pose; prior lawful entry and exception status unresolved",
       "physical_risk": {
-        "status": "physical",
-        "reason": "Trail, actual highway crossing, accessible sidewalk or other safety place and original pedestrian display may not connect or remain visible in four cameras; physical review is required."
-      }
+        "reason": "Trail, actual highway crossing, accessible sidewalk or other safety place and original pedestrian display may not connect or remain visible in four cameras; physical review is required.",
+        "status": "physical"
+      },
+      "target_law_id": "NRS-484B-283-1d3"
     },
     {
+      "arrival_phase": "flashing",
       "case_id": "testing__C143766__NRS-484B-283-1d3__pedestrian__walk_entry_curb_before",
-      "target_law_id": "NRS-484B-283-1d3",
-      "entry_phase": "walk",
+      "construction": "pedestrian_crossing.py construct with sourced trail, crossing, sidewalk and pedestrian signal",
+      "countdown": false,
       "destination": "curb",
-      "arrival_phase": "flashing",
-      "countdown": false,
+      "entry_phase": "walk",
       "gap_ids": [
         "no-accepted-evidence"
       ],
-      "construction": "pedestrian_crossing.py construct with sourced trail, crossing, sidewalk and pedestrian signal",
       "measurement": "pedestrian_crossing.py measure_original from synchronized original signal and pedestrian pose; prior lawful entry and exception status unresolved",
       "physical_risk": {
-        "status": "physical",
-        "reason": "Trail, actual highway crossing, accessible sidewalk or other safety place and original pedestrian display may not connect or remain visible in four cameras; physical review is required."
-      }
+        "reason": "Trail, actual highway crossing, accessible sidewalk or other safety place and original pedestrian display may not connect or remain visible in four cameras; physical review is required.",
+        "status": "physical"
+      },
+      "target_law_id": "NRS-484B-283-1d3"
     },
     {
+      "arrival_phase": "flashing",
       "case_id": "testing__C143766__NRS-484B-283-1d3__pedestrian__walk_entry_safety_zone_before",
-      "target_law_id": "NRS-484B-283-1d3",
-      "entry_phase": "walk",
+      "construction": "pedestrian_crossing.py construct with sourced trail, crossing, sidewalk and pedestrian signal",
+      "countdown": false,
       "destination": "safety_zone",
-      "arrival_phase": "flashing",
-      "countdown": false,
+      "entry_phase": "walk",
       "gap_ids": [
         "no-accepted-evidence"
       ],
-      "construction": "pedestrian_crossing.py construct with sourced trail, crossing, sidewalk and pedestrian signal",
       "measurement": "pedestrian_crossing.py measure_original from synchronized original signal and pedestrian pose; prior lawful entry and exception status unresolved",
       "physical_risk": {
-        "status": "physical",
-        "reason": "Trail, actual highway crossing, accessible sidewalk or other safety place and original pedestrian display may not connect or remain visible in four cameras; physical review is required."
-      }
+        "reason": "Trail, actual highway crossing, accessible sidewalk or other safety place and original pedestrian display may not connect or remain visible in four cameras; physical review is required.",
+        "status": "physical"
+      },
+      "target_law_id": "NRS-484B-283-1d3"
     },
     {
+      "arrival_phase": "flashing",
       "case_id": "testing__C143766__NRS-484B-283-1d3__pedestrian__walk_entry_other_place_before",
-      "target_law_id": "NRS-484B-283-1d3",
-      "entry_phase": "walk",
-      "destination": "other_place",
-      "arrival_phase": "flashing",
+      "construction": "pedestrian_crossing.py construct with sourced trail, crossing, sidewalk and pedestrian signal",
       "countdown": false,
+      "destination": "other_place",
+      "entry_phase": "walk",
       "gap_ids": [
         "no-accepted-evidence"
       ],
-      "construction": "pedestrian_crossing.py construct with sourced trail, crossing, sidewalk and pedestrian signal",
       "measurement": "pedestrian_crossing.py measure_original from synchronized original signal and pedestrian pose; prior lawful entry and exception status unresolved",
       "physical_risk": {
-        "status": "physical",
-        "reason": "Trail, actual highway crossing, accessible sidewalk or other safety place and original pedestrian display may not connect or remain visible in four cameras; physical review is required."
-      }
+        "reason": "Trail, actual highway crossing, accessible sidewalk or other safety place and original pedestrian display may not connect or remain visible in four cameras; physical review is required.",
+        "status": "physical"
+      },
+      "target_law_id": "NRS-484B-283-1d3"
     },
     {
-      "case_id": "testing__C143766__NRS-484B-283-1d3__pedestrian__countdown_present",
-      "target_law_id": "NRS-484B-283-1d3",
-      "entry_phase": "walk",
-      "destination": "sidewalk",
       "arrival_phase": "flashing",
+      "case_id": "testing__C143766__NRS-484B-283-1d3__pedestrian__countdown_present",
+      "construction": "pedestrian_crossing.py construct with sourced trail, crossing, sidewalk and pedestrian signal",
       "countdown": true,
+      "destination": "sidewalk",
+      "entry_phase": "walk",
       "gap_ids": [
         "no-accepted-evidence"
       ],
-      "construction": "pedestrian_crossing.py construct with sourced trail, crossing, sidewalk and pedestrian signal",
       "measurement": "pedestrian_crossing.py measure_original from synchronized original signal and pedestrian pose; prior lawful entry and exception status unresolved",
       "physical_risk": {
-        "status": "physical",
-        "reason": "Trail, actual highway crossing, accessible sidewalk or other safety place and original pedestrian display may not connect or remain visible in four cameras; physical review is required."
-      }
+        "reason": "Trail, actual highway crossing, accessible sidewalk or other safety place and original pedestrian display may not connect or remain visible in four cameras; physical review is required.",
+        "status": "physical"
+      },
+      "target_law_id": "NRS-484B-283-1d3"
     }
   ],
+  "cell_id": "C143766",
   "comparisons": [
     {
-      "comparison_id": "arrival_before_steady",
       "case_ids": [
         "testing__C143766__NRS-484B-283-1d3__pedestrian__walk_entry_sidewalk_before",
         "testing__C143766__NRS-484B-283-1d3__pedestrian__walk_entry_sidewalk_after"
       ],
+      "comparison_id": "arrival_before_steady",
+      "deliberate_differences": [
+        "observed destination arrival before versus after steady transition"
+      ],
       "fixed_conditions": [
         "same sourced trail, highway crossing and accessible sidewalk geometry",
         "same pedestrian blueprint, facing signal head and original camera profile",
         "same 20 Hz 900-frame episode and signal timing except declared countdown",
         "same route and controller except declared entry/arrival/destination difference"
       ],
-      "deliberate_differences": [
-        "observed destination arrival before versus after steady transition"
-      ],
       "legal_limit": "Observed signal/position history is a physical probe. Prior lawful entry and exceptions require separate legal/context review."
     },
     {
-      "comparison_id": "entry_phase",
       "case_ids": [
         "testing__C143766__NRS-484B-283-1d3__pedestrian__walk_entry_sidewalk_before",
         "testing__C143766__NRS-484B-283-1d3__pedestrian__flashing_new_entry"
       ],
+      "comparison_id": "entry_phase",
+      "deliberate_differences": [
+        "observed first highway entry during prior Walk versus flashing"
+      ],
       "fixed_conditions": [
         "same sourced trail, highway crossing and accessible sidewalk geometry",
         "same pedestrian blueprint, facing signal head and original camera profile",
         "same 20 Hz 900-frame episode and signal timing except declared countdown",
         "same route and controller except declared entry/arrival/destination difference"
       ],
-      "deliberate_differences": [
-        "observed first highway entry during prior Walk versus flashing"
-      ],
       "legal_limit": "Observed signal/position history is a physical probe. Prior lawful entry and exceptions require separate legal/context review."
     },
     {
-      "comparison_id": "curb_destination",
       "case_ids": [
         "testing__C143766__NRS-484B-283-1d3__pedestrian__walk_entry_sidewalk_before",
         "testing__C143766__NRS-484B-283-1d3__pedestrian__walk_entry_curb_before"
       ],
+      "comparison_id": "curb_destination",
+      "deliberate_differences": [
+        "sourced destination is curb versus sidewalk"
+      ],
       "fixed_conditions": [
         "same sourced trail, highway crossing and accessible sidewalk geometry",
         "same pedestrian blueprint, facing signal head and original camera profile",
         "same 20 Hz 900-frame episode and signal timing except declared countdown",
         "same route and controller except declared entry/arrival/destination difference"
       ],
-      "deliberate_differences": [
-        "sourced destination is curb versus sidewalk"
-      ],
       "legal_limit": "Observed signal/position history is a physical probe. Prior lawful entry and exceptions require separate legal/context review."
     },
     {
-      "comparison_id": "safety_zone_destination",
       "case_ids": [
         "testing__C143766__NRS-484B-283-1d3__pedestrian__walk_entry_sidewalk_before",
         "testing__C143766__NRS-484B-283-1d3__pedestrian__walk_entry_safety_zone_before"
       ],
+      "comparison_id": "safety_zone_destination",
+      "deliberate_differences": [
+        "provided sourced safety zone versus sidewalk"
+      ],
       "fixed_conditions": [
         "same sourced trail, highway crossing and accessible sidewalk geometry",
         "same pedestrian blueprint, facing signal head and original camera profile",
         "same 20 Hz 900-frame episode and signal timing except declared countdown",
         "same route and controller except declared entry/arrival/destination difference"
       ],
-      "deliberate_differences": [
-        "provided sourced safety zone versus sidewalk"
-      ],
       "legal_limit": "Observed signal/position history is a physical probe. Prior lawful entry and exceptions require separate legal/context review."
     },
     {
-      "comparison_id": "other_place_destination",
       "case_ids": [
         "testing__C143766__NRS-484B-283-1d3__pedestrian__walk_entry_sidewalk_before",
         "testing__C143766__NRS-484B-283-1d3__pedestrian__walk_entry_other_place_before"
       ],
+      "comparison_id": "other_place_destination",
+      "deliberate_differences": [
+        "reviewed other place of safety versus sidewalk"
+      ],
       "fixed_conditions": [
         "same sourced trail, highway crossing and accessible sidewalk geometry",
         "same pedestrian blueprint, facing signal head and original camera profile",
         "same 20 Hz 900-frame episode and signal timing except declared countdown",
         "same route and controller except declared entry/arrival/destination difference"
-      ],
-      "deliberate_differences": [
-        "reviewed other place of safety versus sidewalk"
       ],
       "legal_limit": "Observed signal/position history is a physical probe. Prior lawful entry and exceptions require separate legal/context review."
     },
     {
-      "comparison_id": "countdown_activation",
       "case_ids": [
         "testing__C143766__NRS-484B-283-1d3__pedestrian__walk_entry_sidewalk_before",
         "testing__C143766__NRS-484B-283-1d3__pedestrian__countdown_present"
+      ],
+      "comparison_id": "countdown_activation",
+      "deliberate_differences": [
+        "original flashing indication has a countdown; 1d3 activation changes"
       ],
       "fixed_conditions": [
         "same sourced trail, highway crossing and accessible sidewalk geometry",
@@ -243,12 +251,30 @@
         "same 20 Hz 900-frame episode and signal timing except declared countdown",
         "same route and controller except declared entry/arrival/destination difference"
       ],
-      "deliberate_differences": [
-        "original flashing indication has a countdown; 1d3 activation changes"
-      ],
       "legal_limit": "Observed signal/position history is a physical probe. Prior lawful entry and exceptions require separate legal/context review."
     }
   ],
+  "evidence_review": {
+    "facts": [],
+    "gaps": [
+      {
+        "id": "no-accepted-evidence",
+        "requirement": "Original signal, prior entry, destination arrival and referenced exception context",
+        "source": {
+          "path": "inputs/testing__C143766__NRS-484B-283-1d3__pedestrian/evidence.json",
+          "sha256": "7c8dd5d3d6b64d7da75b1c8f162cf70ce34ed5d3134e524fa9f16cfbc6d3fb3a"
+        },
+        "why_existing_insufficient": "Frozen evidence inventory contains zero accepted recordings."
+      }
+    ],
+    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
+    "reviewer": "CPU worker"
+  },
+  "existing_evidence": [],
+  "judgment_range_inventory": [],
+  "law_id": "NRS-484B-283-1d3",
+  "law_source": "NRS 484B.283(1)(d)(3)",
+  "law_text": "Except as otherwise provided in NRS 484B.287 [NRS-484B-287-1c, NRS-484B-287-1d, NRS-484B-287-1e, LVMC-11-30-060-A, LVMC-11-30-060-B], 484B.290 [LVMC-11-30-140-B] and 484B.350 [LVMC-11-46-030]: Whenever signals exhibiting the words \u201cWalk,\u201d \u201cDon\u2019t Walk,\u201d \u201cWait\u201d or similar symbols are in place, such signals indicate as follows: While the \u201cDon\u2019t Walk\u201d or \u201cWait\u201d indication or an upraised hand symbol is illuminated and flashing but is not accompanied by a countdown timer, a pedestrian may not proceed to cross the highway, but a pedestrian who entered the highway lawfully pursuant to subparagraph (1) [NRS-484B-283-1d1] may continue to cross the highway but must proceed to a curb, sidewalk, safety zone if one is provided or other place of safety before the \u201cDon\u2019t Walk\u201d or \u201cWait\u201d indication or an upraised hand symbol is illuminated and steady.",
   "observations": [
     "original facing Walk, flashing without countdown, and steady display and transition",
     "first actual pedestrian highway entry and earlier signal history",
@@ -256,6 +282,65 @@
     "arrival at curb, accessible sidewalk, provided safety zone or reviewed other safety place",
     "NRS 484B.283(1)(d)(1) entry prerequisites and cited exception applicability retained unresolved"
   ],
+  "planning_status": "partial_exact_cases_and_original_measurement",
+  "requirement_dispositions": [
+    {
+      "case_ids": [
+        "testing__C143766__NRS-484B-283-1d3__pedestrian__flashing_new_entry",
+        "testing__C143766__NRS-484B-283-1d3__pedestrian__walk_entry_sidewalk_before"
+      ],
+      "evidence_or_gap": "No accepted original signal/entry evidence",
+      "requirement": "flashing no-countdown new entry prohibition",
+      "source": "NRS 484B.283(1)(d)(3)",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C143766__NRS-484B-283-1d3__pedestrian__walk_entry_sidewalk_before",
+        "testing__C143766__NRS-484B-283-1d3__pedestrian__walk_entry_sidewalk_after",
+        "testing__C143766__NRS-484B-283-1d3__pedestrian__walk_entry_curb_before",
+        "testing__C143766__NRS-484B-283-1d3__pedestrian__walk_entry_safety_zone_before",
+        "testing__C143766__NRS-484B-283-1d3__pedestrian__walk_entry_other_place_before",
+        "testing__C143766__NRS-484B-283-1d3__pedestrian__countdown_present"
+      ],
+      "evidence_or_gap": "No accepted original entry, destination, signal or exception evidence; legal qualification independently pending",
+      "requirement": "prior lawful entry continuation to curb, sidewalk, provided safety zone or other place of safety before steady",
+      "source": "NRS 484B.283(1)(d)(3), conditional NRS 484B.283(1)(d)(1)",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C143766__NRS-484B-283-1d3__pedestrian__walk_entry_sidewalk_before",
+        "testing__C143766__NRS-484B-283-1d3__pedestrian__countdown_present"
+      ],
+      "evidence_or_gap": "No accepted original countdown or exception context",
+      "requirement": "no-countdown condition and introductory exceptions",
+      "source": "NRS 484B.283(1)(d)(3); NRS 484B.287, .290, .350",
+      "status": "selected_required"
+    }
+  ],
+  "runtime_uncertainties": [
+    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
+    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+  ],
+  "selected_branch": "Continuation toward sidewalk conditional on lawful prior entry",
+  "selected_branches": [
+    {
+      "actor": "pedestrian",
+      "branch": "Continuation toward sidewalk conditional on lawful prior entry",
+      "cell_id": "C143766",
+      "coverage_status": "pending_review",
+      "law_id": "NRS-484B-283-1d3",
+      "law_partition": "training",
+      "recording_ids": [],
+      "requirement": "NRS-484B-283-1d3",
+      "scenario_partition": "testing",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 388,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
+    }
+  ],
+  "source_observation_mapping": {},
   "sources": [
     {
       "path": "inputs/testing__C143766__NRS-484B-283-1d3__pedestrian/assignment.json",
@@ -278,37 +363,15 @@
       "sha256": "b046b6eafc75815f802256b312c5d9a414af856791bb93e17bdd60739856daf6"
     }
   ],
-  "existing_evidence": [],
-  "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
-  ],
-  "evidence_review": {
-    "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
-    "facts": [],
-    "gaps": [
-      {
-        "id": "no-accepted-evidence",
-        "requirement": "Original signal, prior entry, destination arrival and referenced exception context",
-        "source": {
-          "path": "inputs/testing__C143766__NRS-484B-283-1d3__pedestrian/evidence.json",
-          "sha256": "7c8dd5d3d6b64d7da75b1c8f162cf70ce34ed5d3134e524fa9f16cfbc6d3fb3a"
-        },
-        "why_existing_insufficient": "Frozen evidence inventory contains zero accepted recordings."
-      }
-    ]
+  "topic_inventory": {
+    "exact-text": "Except as otherwise provided in NRS 484B.287 [NRS-484B-287-1c, NRS-484B-287-1d, NRS-484B-287-1e, LVMC-11-30-060-A, LVMC-11-30-060-B], 484B.290 [LVMC-11-30-140-B] and 484B.350 [LVMC-11-46-030]: Whenever signals exhibiting the words \u201cWalk,\u201d \u201cDon\u2019t Walk,\u201d \u201cWait\u201d or similar symbols are in place, such signals indicate as follows: While the \u201cDon\u2019t Walk\u201d or \u201cWait\u201d indication or an upraised hand symbol is illuminated and flashing but is not accompanied by a countdown timer, a pedestrian may not proceed to cross the highway, but a pedestrian who entered the highway lawfully pursuant to subparagraph (1) [NRS-484B-283-1d1] may continue to cross the highway but must proceed to a curb, sidewalk, safety zone if one is provided or other place of safety before the \u201cDon\u2019t Walk\u201d or \u201cWait\u201d indication or an upraised hand symbol is illuminated and steady."
   },
-  "judgment_range_inventory": [],
-  "planning_status": "partial_exact_cases_and_original_measurement",
   "witness_review": [
     {
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 388,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
       "branch": "Continuation toward sidewalk conditional on lawful prior entry",
-      "decision": "conditional",
       "confidence": "low",
+      "decision": "conditional",
+      "reason": "A trail-connected travel route can include a highway crossing toward the fixed sidewalk while the signal changes from flashing to steady.",
       "required_context": [
         "Construct distinct connected trail, crossing and sidewalk segments; preserve trail access restrictions.",
         "Do not substitute an invented safety criterion for the enumerated sidewalk destination.",
@@ -321,7 +384,9 @@
         "Retain prior Walk indication, signal-facing direction, entry history, flashing interval, arrival observations and transition to steady.",
         "Use the supplied NRS-484B-283-1d1 text to assess the entry prerequisites while leaving lawful entry and opening-exception applicability unresolved."
       ],
-      "reason": "A trail-connected travel route can include a highway crossing toward the fixed sidewalk while the signal changes from flashing to steady."
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 388,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
     }
   ]
 }

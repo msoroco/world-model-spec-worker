@@ -37,6 +37,12 @@
             "construction_sha256": "f3a24e3462025f171336e971f46012ae4255958e890b46d7df4054ec17e7247d",
             "log": "cpu-offline-motorcycle_adjacent_clear-fallback1.log",
             "log_sha256": "f7241a873b29392e9de1f7eb90bcf054633328bbc57d7bc6422f068404927c8e"
+          },
+          "compatibility": {
+            "receipt": "cpu-compatibility-receipt-motorcycle_adjacent_clear-fallback1.json",
+            "log": "cpu-compatibility-motorcycle_adjacent_clear-fallback1.log",
+            "negative_log": "cpu-compatibility-negative-motorcycle_adjacent_clear-fallback1.log",
+            "sha256": "391ca9402fc139feda3901233b2d3493c0ac597b88899b5799560c364bb92c67"
           }
         }
       ],
@@ -46,6 +52,86 @@
         "construction_sha256": "85349ed054167a9969d7300eea9624abcd61174be8cfecd47ba73137b2d7273f",
         "log": "cpu-offline-motorcycle_adjacent_clear-primary.log",
         "log_sha256": "f4883b877355d57541027bfd92e10741809cbbed5cde6d01b54dd8e94583f4e1"
+      },
+      "compatibility": {
+        "receipt": "cpu-compatibility-receipt-motorcycle_adjacent_clear-primary.json",
+        "log": "cpu-compatibility-motorcycle_adjacent_clear-primary.log",
+        "negative_log": "cpu-compatibility-negative-motorcycle_adjacent_clear-primary.log",
+        "sha256": "ae9cc718553e26be1ec909a0c8b9e8b12324e2e724dfaeef9cd1916901348705"
+      },
+      "negative": {
+        "log": "cpu-compatibility-negative-motorcycle_adjacent_clear-primary.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-preparation-motorcycle_adjacent_clear.json",
+        "sha256": "24c672b854ad0aaf372f7f27073e440eb330bbf39874ea07236dc16f108fde24"
+      },
+      "acquisition": {
+        "occupied_lane": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame reviewed lane map and two-actor readback",
+          "evidence": "protected-lane-history.jsonl and channel-occupied_lane.jsonl"
+        },
+        "body_intrusion": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame reviewed lane map and two-actor readback",
+          "evidence": "protected-lane-history.jsonl and channel-body_intrusion.jsonl"
+        },
+        "protected_motion": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame reviewed lane map and two-actor readback",
+          "evidence": "protected-lane-history.jsonl and channel-protected_motion.jsonl"
+        },
+        "participant_class": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame reviewed lane map and two-actor readback",
+          "evidence": "protected-lane-history.jsonl and channel-participant_class.jsonl"
+        },
+        "four_camera_visibility": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame reviewed lane map and two-actor readback",
+          "evidence": "protected-lane-history.jsonl and channel-four_camera_visibility.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C147339__NRS-486-341__motor_vehicle_driver__motorcycle_adjacent_clear",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "2c910c8b6876ce8736f5978db1d1b97ba83878f2d6f9b909a2f5b0dcf779ccc6",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147339__NRS-486-341__motor_vehicle_driver/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147339-compat-third --case testing__C147339__NRS-486-341__motor_vehicle_driver__motorcycle_adjacent_clear",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147339__NRS-486-341__motor_vehicle_driver/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147339-compat-third --case testing__C147339__NRS-486-341__motor_vehicle_driver__motorcycle_adjacent_clear --require-original",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Diagnostic source cannot satisfy original Native delivery",
+        "test_log": "cpu-delivery-positive-motorcycle_adjacent_clear.log",
+        "test_log_sha256": "5fd170cf9d45d82aa1e51bd6f10975b98781480610197ddcfda0a1e00ffc6c31",
+        "negative_log": "cpu-delivery-negative-motorcycle_adjacent_clear.log",
+        "negative_log_sha256": "b7200c4d861f4a31ad4dabc208611a59f8820f8d6a68818e7df22de652a022b5",
+        "scope": "CPU diagnostic integrity and original-only rejection; Native visual and physical review awaits GPU"
+      },
+      "post_capture": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147339__NRS-486-341__motor_vehicle_driver/execution-manifest.json --case testing__C147339__NRS-486-341__motor_vehicle_driver__motorcycle_adjacent_clear --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147339-saved-processing/motorcycle_adjacent_clear-source --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147339-saved-processing/motorcycle_adjacent_clear-processed --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147339__NRS-486-341__motor_vehicle_driver/execution-manifest.json --case testing__C147339__NRS-486-341__motor_vehicle_driver__motorcycle_adjacent_clear --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147339-saved-processing/motorcycle_adjacent_clear-source --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147339-saved-processing/motorcycle_adjacent_clear-feedback --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-post-capture-motorcycle_adjacent_clear.log",
+        "test_log_sha256": "4a758ae725a182addac58cfb11e98051e449b52c8c9350c2bc6856b24153a484",
+        "scope": "CPU diagnostic saved-only processing after separate ownership closure proof"
       }
     },
     {
@@ -82,6 +168,12 @@
             "construction_sha256": "743aab18c45b3f7b50fa6fc6c69805799a2ef8fd1617799daf25139a334e7b91",
             "log": "cpu-offline-motorcycle_edge_encroach-fallback1.log",
             "log_sha256": "a683a3ef8cfe20d5722f6f965c62fc177a867f4e1189ef585052fe2cf2338ff1"
+          },
+          "compatibility": {
+            "receipt": "cpu-compatibility-receipt-motorcycle_edge_encroach-fallback1.json",
+            "log": "cpu-compatibility-motorcycle_edge_encroach-fallback1.log",
+            "negative_log": "cpu-compatibility-negative-motorcycle_edge_encroach-fallback1.log",
+            "sha256": "3f4fbe205ac670780dc8acd6f77d3c4c077629c4cb32e9d58a6aecee6741ef5b"
           }
         }
       ],
@@ -91,6 +183,86 @@
         "construction_sha256": "c117052c3da219bcb5704fb9b5d7f56bd758f8f6698ddd827758536074e7075c",
         "log": "cpu-offline-motorcycle_edge_encroach-primary.log",
         "log_sha256": "027caf8fb9ba902b57aa1c90374c1134130450aaa8150fff81741ab8dc54c6a1"
+      },
+      "compatibility": {
+        "receipt": "cpu-compatibility-receipt-motorcycle_edge_encroach-primary.json",
+        "log": "cpu-compatibility-motorcycle_edge_encroach-primary.log",
+        "negative_log": "cpu-compatibility-negative-motorcycle_edge_encroach-primary.log",
+        "sha256": "6d8f5fe611ee802b2aa252f7f940066d7ee29643ecbeb1efa0e3089b30d1272d"
+      },
+      "negative": {
+        "log": "cpu-compatibility-negative-motorcycle_edge_encroach-primary.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-preparation-motorcycle_edge_encroach.json",
+        "sha256": "6425a4e7f8d145f723e50a8565892a836098d16038893670a1b6c78993c51771"
+      },
+      "acquisition": {
+        "occupied_lane": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame reviewed lane map and two-actor readback",
+          "evidence": "protected-lane-history.jsonl and channel-occupied_lane.jsonl"
+        },
+        "body_intrusion": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame reviewed lane map and two-actor readback",
+          "evidence": "protected-lane-history.jsonl and channel-body_intrusion.jsonl"
+        },
+        "protected_motion": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame reviewed lane map and two-actor readback",
+          "evidence": "protected-lane-history.jsonl and channel-protected_motion.jsonl"
+        },
+        "participant_class": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame reviewed lane map and two-actor readback",
+          "evidence": "protected-lane-history.jsonl and channel-participant_class.jsonl"
+        },
+        "four_camera_visibility": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame reviewed lane map and two-actor readback",
+          "evidence": "protected-lane-history.jsonl and channel-four_camera_visibility.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C147339__NRS-486-341__motor_vehicle_driver__motorcycle_edge_encroach",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "2c910c8b6876ce8736f5978db1d1b97ba83878f2d6f9b909a2f5b0dcf779ccc6",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147339__NRS-486-341__motor_vehicle_driver/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147339-compat-batch-motorcycle_edge_encroach-primary --case testing__C147339__NRS-486-341__motor_vehicle_driver__motorcycle_edge_encroach",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147339__NRS-486-341__motor_vehicle_driver/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147339-compat-batch-motorcycle_edge_encroach-primary --case testing__C147339__NRS-486-341__motor_vehicle_driver__motorcycle_edge_encroach --require-original",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Diagnostic source cannot satisfy original Native delivery",
+        "test_log": "cpu-delivery-positive-motorcycle_edge_encroach.log",
+        "test_log_sha256": "40146139351520edf3d150142c541f15fa08a92c28f55cc4f058a5857f4b8286",
+        "negative_log": "cpu-delivery-negative-motorcycle_edge_encroach.log",
+        "negative_log_sha256": "b7200c4d861f4a31ad4dabc208611a59f8820f8d6a68818e7df22de652a022b5",
+        "scope": "CPU diagnostic integrity and original-only rejection; Native visual and physical review awaits GPU"
+      },
+      "post_capture": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147339__NRS-486-341__motor_vehicle_driver/execution-manifest.json --case testing__C147339__NRS-486-341__motor_vehicle_driver__motorcycle_edge_encroach --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147339-saved-processing/motorcycle_edge_encroach-source --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147339-saved-processing/motorcycle_edge_encroach-processed --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147339__NRS-486-341__motor_vehicle_driver/execution-manifest.json --case testing__C147339__NRS-486-341__motor_vehicle_driver__motorcycle_edge_encroach --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147339-saved-processing/motorcycle_edge_encroach-source --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147339-saved-processing/motorcycle_edge_encroach-feedback --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-post-capture-motorcycle_edge_encroach.log",
+        "test_log_sha256": "3fbc9159683546dcf1a4ef1b4c368e301c50eac9a1f2e52102480c133dbb095c",
+        "scope": "CPU diagnostic saved-only processing after separate ownership closure proof"
       }
     },
     {
@@ -127,6 +299,12 @@
             "construction_sha256": "de57d9546080ec90dee2176e88143943c7353db4d7895f9af18049c8d14f0989",
             "log": "cpu-offline-motorcycle_deep_encroach-fallback1.log",
             "log_sha256": "b50e7c2182a626a005e0e873c0a7662157f88c2f5ccfea6d5378efa26f19f57d"
+          },
+          "compatibility": {
+            "receipt": "cpu-compatibility-receipt-motorcycle_deep_encroach-fallback1.json",
+            "log": "cpu-compatibility-motorcycle_deep_encroach-fallback1.log",
+            "negative_log": "cpu-compatibility-negative-motorcycle_deep_encroach-fallback1.log",
+            "sha256": "962734f91bbab0ee4835ef4e08f4ff79ce09b86ed488e9a54646f16264172732"
           }
         }
       ],
@@ -136,6 +314,86 @@
         "construction_sha256": "5e667d028f98bf8ef7df2f3daecb45fbcfebfe508a51b0e47ab72aea81c66b98",
         "log": "cpu-offline-motorcycle_deep_encroach-primary.log",
         "log_sha256": "dca5e49011169560089b3cdc7b2a28c23443920b4b747ed4b54865278cc3e9e3"
+      },
+      "compatibility": {
+        "receipt": "cpu-compatibility-receipt-motorcycle_deep_encroach-primary.json",
+        "log": "cpu-compatibility-motorcycle_deep_encroach-primary.log",
+        "negative_log": "cpu-compatibility-negative-motorcycle_deep_encroach-primary.log",
+        "sha256": "d0f87c89b6914f9ae119dcf8b677a260a6cc2122cd0e6a7aafe3495878f6efbd"
+      },
+      "negative": {
+        "log": "cpu-compatibility-negative-motorcycle_deep_encroach-primary.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-preparation-motorcycle_deep_encroach.json",
+        "sha256": "bd10603c489731162c9891d5f29f14a9fb4a4f0208f90410151288064ac6e455"
+      },
+      "acquisition": {
+        "occupied_lane": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame reviewed lane map and two-actor readback",
+          "evidence": "protected-lane-history.jsonl and channel-occupied_lane.jsonl"
+        },
+        "body_intrusion": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame reviewed lane map and two-actor readback",
+          "evidence": "protected-lane-history.jsonl and channel-body_intrusion.jsonl"
+        },
+        "protected_motion": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame reviewed lane map and two-actor readback",
+          "evidence": "protected-lane-history.jsonl and channel-protected_motion.jsonl"
+        },
+        "participant_class": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame reviewed lane map and two-actor readback",
+          "evidence": "protected-lane-history.jsonl and channel-participant_class.jsonl"
+        },
+        "four_camera_visibility": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame reviewed lane map and two-actor readback",
+          "evidence": "protected-lane-history.jsonl and channel-four_camera_visibility.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C147339__NRS-486-341__motor_vehicle_driver__motorcycle_deep_encroach",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "2c910c8b6876ce8736f5978db1d1b97ba83878f2d6f9b909a2f5b0dcf779ccc6",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147339__NRS-486-341__motor_vehicle_driver/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147339-compat-batch-motorcycle_deep_encroach-primary --case testing__C147339__NRS-486-341__motor_vehicle_driver__motorcycle_deep_encroach",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147339__NRS-486-341__motor_vehicle_driver/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147339-compat-batch-motorcycle_deep_encroach-primary --case testing__C147339__NRS-486-341__motor_vehicle_driver__motorcycle_deep_encroach --require-original",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Diagnostic source cannot satisfy original Native delivery",
+        "test_log": "cpu-delivery-positive-motorcycle_deep_encroach.log",
+        "test_log_sha256": "b54397f7d907c284e262f6066ee38a299c2c94ced32799a732b12d9bea79135e",
+        "negative_log": "cpu-delivery-negative-motorcycle_deep_encroach.log",
+        "negative_log_sha256": "b7200c4d861f4a31ad4dabc208611a59f8820f8d6a68818e7df22de652a022b5",
+        "scope": "CPU diagnostic integrity and original-only rejection; Native visual and physical review awaits GPU"
+      },
+      "post_capture": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147339__NRS-486-341__motor_vehicle_driver/execution-manifest.json --case testing__C147339__NRS-486-341__motor_vehicle_driver__motorcycle_deep_encroach --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147339-saved-processing/motorcycle_deep_encroach-source --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147339-saved-processing/motorcycle_deep_encroach-processed --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147339__NRS-486-341__motor_vehicle_driver/execution-manifest.json --case testing__C147339__NRS-486-341__motor_vehicle_driver__motorcycle_deep_encroach --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147339-saved-processing/motorcycle_deep_encroach-source --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147339-saved-processing/motorcycle_deep_encroach-feedback --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-post-capture-motorcycle_deep_encroach.log",
+        "test_log_sha256": "984160419a4b10c2d5c4bc4b67119abf5ad80092635d5399e10539d6d15bd52f",
+        "scope": "CPU diagnostic saved-only processing after separate ownership closure proof"
       }
     },
     {
@@ -172,6 +430,12 @@
             "construction_sha256": "fb14bffaa2dee183e9e86f035ba5589eed3525f23203ef6fb061511fed35a26a",
             "log": "cpu-offline-moped_edge_encroach-fallback1.log",
             "log_sha256": "1e0fc46618218446034e6c62162baaacc7578abba64c6a8fe97d73a658ed93c6"
+          },
+          "compatibility": {
+            "receipt": "cpu-compatibility-receipt-moped_edge_encroach-fallback1.json",
+            "log": "cpu-compatibility-moped_edge_encroach-fallback1.log",
+            "negative_log": "cpu-compatibility-negative-moped_edge_encroach-fallback1.log",
+            "sha256": "23dbfb36608087d6f03614a6cf965a1ef996472ce0a566a63ed1f30d30432009"
           }
         }
       ],
@@ -181,6 +445,86 @@
         "construction_sha256": "d6344d7124c3b923a67c67c12da4291aeaec61d214c5d0821c2c4000ea65c1e3",
         "log": "cpu-offline-moped_edge_encroach-primary.log",
         "log_sha256": "3642b32187694136bf9190fa0b99b8c826d8bbd2190ceeb6667301a3cad8070f"
+      },
+      "compatibility": {
+        "receipt": "cpu-compatibility-receipt-moped_edge_encroach-primary.json",
+        "log": "cpu-compatibility-moped_edge_encroach-primary.log",
+        "negative_log": "cpu-compatibility-negative-moped_edge_encroach-primary.log",
+        "sha256": "d173ad73be2ab44229aee4dce4dc7c836636e7f50ea5e94e801b8fc9edd6e50e"
+      },
+      "negative": {
+        "log": "cpu-compatibility-negative-moped_edge_encroach-primary.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-preparation-moped_edge_encroach.json",
+        "sha256": "9d75dff64de6f54b55ddda2a3b6e753346388d145d67e53914638b2bf222bf40"
+      },
+      "acquisition": {
+        "occupied_lane": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame reviewed lane map and two-actor readback",
+          "evidence": "protected-lane-history.jsonl and channel-occupied_lane.jsonl"
+        },
+        "body_intrusion": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame reviewed lane map and two-actor readback",
+          "evidence": "protected-lane-history.jsonl and channel-body_intrusion.jsonl"
+        },
+        "protected_motion": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame reviewed lane map and two-actor readback",
+          "evidence": "protected-lane-history.jsonl and channel-protected_motion.jsonl"
+        },
+        "participant_class": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame reviewed lane map and two-actor readback",
+          "evidence": "protected-lane-history.jsonl and channel-participant_class.jsonl"
+        },
+        "four_camera_visibility": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame reviewed lane map and two-actor readback",
+          "evidence": "protected-lane-history.jsonl and channel-four_camera_visibility.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C147339__NRS-486-341__motor_vehicle_driver__moped_edge_encroach",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "2c910c8b6876ce8736f5978db1d1b97ba83878f2d6f9b909a2f5b0dcf779ccc6",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147339__NRS-486-341__motor_vehicle_driver/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147339-compat-batch-moped_edge_encroach-primary --case testing__C147339__NRS-486-341__motor_vehicle_driver__moped_edge_encroach",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147339__NRS-486-341__motor_vehicle_driver/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147339-compat-batch-moped_edge_encroach-primary --case testing__C147339__NRS-486-341__motor_vehicle_driver__moped_edge_encroach --require-original",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Diagnostic source cannot satisfy original Native delivery",
+        "test_log": "cpu-delivery-positive-moped_edge_encroach.log",
+        "test_log_sha256": "1c9019e16f9863d40b920dd6c7d8e37e8e180dac5305a827823e26b7402ac5ce",
+        "negative_log": "cpu-delivery-negative-moped_edge_encroach.log",
+        "negative_log_sha256": "b7200c4d861f4a31ad4dabc208611a59f8820f8d6a68818e7df22de652a022b5",
+        "scope": "CPU diagnostic integrity and original-only rejection; Native visual and physical review awaits GPU"
+      },
+      "post_capture": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147339__NRS-486-341__motor_vehicle_driver/execution-manifest.json --case testing__C147339__NRS-486-341__motor_vehicle_driver__moped_edge_encroach --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147339-saved-processing/moped_edge_encroach-source --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147339-saved-processing/moped_edge_encroach-processed --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147339__NRS-486-341__motor_vehicle_driver/execution-manifest.json --case testing__C147339__NRS-486-341__motor_vehicle_driver__moped_edge_encroach --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147339-saved-processing/moped_edge_encroach-source --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147339-saved-processing/moped_edge_encroach-feedback --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-post-capture-moped_edge_encroach.log",
+        "test_log_sha256": "1d785f9520a551ed8332d9704d5de06e3b1e3b5567798feba469004e9d407d75",
+        "scope": "CPU diagnostic saved-only processing after separate ownership closure proof"
       }
     },
     {
@@ -217,6 +561,12 @@
             "construction_sha256": "465f76cc9d746ee16cc24f078d497ff352f6fd8266fbec534c184bde6910985d",
             "log": "cpu-offline-motorcycle_stationary_edge-fallback1.log",
             "log_sha256": "13f9ed4b9b1d77b2c933484982802cf3904e71a3686927a4e1c8019e03bf1078"
+          },
+          "compatibility": {
+            "receipt": "cpu-compatibility-receipt-motorcycle_stationary_edge-fallback1.json",
+            "log": "cpu-compatibility-motorcycle_stationary_edge-fallback1.log",
+            "negative_log": "cpu-compatibility-negative-motorcycle_stationary_edge-fallback1.log",
+            "sha256": "232b86d9c319d7a1fb77f63ef185125709198b58bec7b6b61ffddae580a6599c"
           }
         }
       ],
@@ -226,6 +576,86 @@
         "construction_sha256": "1087e0547e3bddaf660e7239f6967743fe8042aba5a2ca232e305711346ca0c8",
         "log": "cpu-offline-motorcycle_stationary_edge-primary.log",
         "log_sha256": "ce081fc4f2847c810841e2073abf4754841ce3376d9624c998c34a68dbb80206"
+      },
+      "compatibility": {
+        "receipt": "cpu-compatibility-receipt-motorcycle_stationary_edge-primary.json",
+        "log": "cpu-compatibility-motorcycle_stationary_edge-primary.log",
+        "negative_log": "cpu-compatibility-negative-motorcycle_stationary_edge-primary.log",
+        "sha256": "2509658aab861d70cbdea0b552f6ea6c22f1e4fa20dac2f3520d828e8348dec7"
+      },
+      "negative": {
+        "log": "cpu-compatibility-negative-motorcycle_stationary_edge-primary.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-preparation-motorcycle_stationary_edge.json",
+        "sha256": "da522221a35f056d222fdcb8fa9a69466b44bb9c64bd13cda091cbfdaef4b265"
+      },
+      "acquisition": {
+        "occupied_lane": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame reviewed lane map and two-actor readback",
+          "evidence": "protected-lane-history.jsonl and channel-occupied_lane.jsonl"
+        },
+        "body_intrusion": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame reviewed lane map and two-actor readback",
+          "evidence": "protected-lane-history.jsonl and channel-body_intrusion.jsonl"
+        },
+        "protected_motion": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame reviewed lane map and two-actor readback",
+          "evidence": "protected-lane-history.jsonl and channel-protected_motion.jsonl"
+        },
+        "participant_class": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame reviewed lane map and two-actor readback",
+          "evidence": "protected-lane-history.jsonl and channel-participant_class.jsonl"
+        },
+        "four_camera_visibility": {
+          "entrypoint": "original_capture.py",
+          "method": "run_native original 900-frame reviewed lane map and two-actor readback",
+          "evidence": "protected-lane-history.jsonl and channel-four_camera_visibility.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C147339__NRS-486-341__motor_vehicle_driver__motorcycle_stationary_edge",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "2c910c8b6876ce8736f5978db1d1b97ba83878f2d6f9b909a2f5b0dcf779ccc6",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147339__NRS-486-341__motor_vehicle_driver/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147339-compat-batch-motorcycle_stationary_edge-primary --case testing__C147339__NRS-486-341__motor_vehicle_driver__motorcycle_stationary_edge",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147339__NRS-486-341__motor_vehicle_driver/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147339-compat-batch-motorcycle_stationary_edge-primary --case testing__C147339__NRS-486-341__motor_vehicle_driver__motorcycle_stationary_edge --require-original",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Diagnostic source cannot satisfy original Native delivery",
+        "test_log": "cpu-delivery-positive-motorcycle_stationary_edge.log",
+        "test_log_sha256": "c0976dec081a2911ba823e824b3eef2838c3c154027c6cf211bf94aafaacbc8a",
+        "negative_log": "cpu-delivery-negative-motorcycle_stationary_edge.log",
+        "negative_log_sha256": "b7200c4d861f4a31ad4dabc208611a59f8820f8d6a68818e7df22de652a022b5",
+        "scope": "CPU diagnostic integrity and original-only rejection; Native visual and physical review awaits GPU"
+      },
+      "post_capture": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147339__NRS-486-341__motor_vehicle_driver/execution-manifest.json --case testing__C147339__NRS-486-341__motor_vehicle_driver__motorcycle_stationary_edge --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147339-saved-processing/motorcycle_stationary_edge-source --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147339-saved-processing/motorcycle_stationary_edge-processed --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147339__NRS-486-341__motor_vehicle_driver/execution-manifest.json --case testing__C147339__NRS-486-341__motor_vehicle_driver__motorcycle_stationary_edge --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147339-saved-processing/motorcycle_stationary_edge-source --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147339-saved-processing/motorcycle_stationary_edge-feedback --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-post-capture-motorcycle_stationary_edge.log",
+        "test_log_sha256": "8be257f5b870e560a2ec38d91ee5600f9bdd67ca18d37448590db4fedf5a484a",
+        "scope": "CPU diagnostic saved-only processing after separate ownership closure proof"
       }
     }
   ],

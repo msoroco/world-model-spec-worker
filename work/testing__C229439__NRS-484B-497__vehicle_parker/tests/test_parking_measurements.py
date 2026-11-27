@@ -7,6 +7,8 @@ import unittest
 
 
 MODULE = Path(__file__).resolve().parents[1] / "parking_measurements.py"
+SCRATCH = MODULE.parents[2] / ".runtime-work" / "c229439-497-owner-nov26" / "tests"
+SCRATCH.mkdir(parents=True, exist_ok=True)
 spec = importlib.util.spec_from_file_location("parking_measurements", MODULE)
 measurements = importlib.util.module_from_spec(spec)
 sys.modules[spec.name] = measurements
@@ -15,7 +17,7 @@ spec.loader.exec_module(measurements)
 
 class ParkingTests(unittest.TestCase):
     def setUp(self):
-        self.tmp = tempfile.TemporaryDirectory()
+        self.tmp = tempfile.TemporaryDirectory(dir=SCRATCH)
         self.addCleanup(self.tmp.cleanup)
         self.root = Path(self.tmp.name)
         self.case_id = measurements.ASSIGNMENT_ID + "__left_park_official_permit"

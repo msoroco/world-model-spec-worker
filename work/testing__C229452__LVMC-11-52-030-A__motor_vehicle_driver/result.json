@@ -1,15 +1,15 @@
 {
   "assignment_id": "testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver",
   "input_sha256": "b7bdf7159d452b1a69f260499186b93bcf9466358bc45e04815b19eea138c8db",
-  "status": "partial",
-  "readiness_kind": "source_gated_cpu_construction",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
   "tests": [
     {
       "log": "cpu-tests.log",
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver/tests -v",
       "exit_code": 0,
-      "sha256": "6e6b97d7b27420efb09529fd68dc6e5af37befcf6c813e2dd19db42cc6c19bb2"
+      "sha256": "67ebd99c5d5cbf4bf523a304698a6664ea1637e54c5f7daa576900e1dfc128c7"
     },
     {
       "log": "cpu-preflight.log",
@@ -22,10 +22,23 @@
       "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver",
       "exit_code": 0,
       "sha256": "e6c4b636ea169282984d9a421a87b9cfc75ced7f2b59036f16021bd821a5c80b"
+    },
+    {
+      "log": "cpu-package-validation.log",
+      "command": "independent execution/semantic/delivery/compatibility validator for testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver",
+      "exit_code": 0,
+      "sha256": "c01549645df6a2b5b17241d537803eb47c58a8fcbebbcfb72662d4598155b26c"
+    },
+    {
+      "log": "cpu-strict-check.log",
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver --complete --require-delivery-ready",
+      "exit_code": 0,
+      "sha256": "e6c4b636ea169282984d9a421a87b9cfc75ced7f2b59036f16021bd821a5c80b"
     }
   ],
   "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+    "Original CARLA capture, actual red paint/sign and participant review, complete camera pixels and physical completion, independent legal acceptance"
   ],
-  "reason": "Eleven exact red-curb cases have source-gated construction and long original event-trace measurement with four passing focused tests. Selected-case execution bundles, source-bound compatibility, semantic proposals and independent saved delivery/comparison audits remain CPU work. Strict scoped gate exits 1 because result remains truthfully partial."
+  "reason": "All exact CPU construction, source-bound compatibility, physical/lifecycle, saved-only, delivery and comparison proofs passed; original Native physical and legal acceptance remains for delivery.",
+  "first_gpu_delivery_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --run \"$RUN\" --assignment testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver --case testing__C229452__LVMC-11-52-030-A__motor_vehicle_driver__ordinary_park --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
 }
