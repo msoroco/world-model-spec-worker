@@ -4,15 +4,167 @@
   "status": "draft",
   "cases": [
     {
+      "case_id": "training__C183085__NRS-484D-165-3__motor_vehicle_driver__baseline",
+      "target_law_id": "NRS-484D-165-3",
+      "target_type": "baseline",
+      "rationale": "Shared shoulder source context",
+      "variable_assignments": {
+        "parked_lamp_display": {
+          "kind": "controller",
+          "value": "display",
+          "unit": "categorical"
+        },
+        "ambient_reveal_distance": {
+          "kind": "world_setup",
+          "value": 1000,
+          "unit": "feet"
+        },
+        "front_lamp_visibility": {
+          "kind": "world_setup",
+          "value": 500,
+          "unit": "feet"
+        },
+        "rear_lamp_visibility": {
+          "kind": "world_setup",
+          "value": 500,
+          "unit": "feet"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          },
+          {
+            "name": "st.shoulder",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          },
+          {
+            "name": "drv.civil_night",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          },
+          {
+            "name": "env.visibility",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          },
+          {
+            "name": "sig.position_lamp",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          },
+          {
+            "name": "sig.headlamp",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          },
+          {
+            "name": "rel.bearing",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          },
+          {
+            "name": "st.lane",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          },
+          {
+            "name": "st.roadway",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "shoulder_lighting_survey",
+            "unit": "structured",
+            "method": "independent original map, clock and optical protocol survey"
+          }
+        ],
+        "limitations": [
+          "Commanded lamp bits do not prove colored emitted light",
+          "CARLA pixels do not establish calibrated 500-foot equipment visibility",
+          "Requested numeric target is not a measured result"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "as near as practicable to the side of the vehicle which is closest to passing traffic"
+      ]
+    },
+    {
       "case_id": "training__C183085__NRS-484D-165-3__motor_vehicle_driver__witness_1",
       "target_law_id": "NRS-484D-165-3",
-      "target_type": "controlled_attempt",
+      "target_type": "judgment_sweep",
       "rationale": "stopped vehicle displays required front and rear lamps in low light",
       "variable_assignments": {
         "parked_lamp_display": {
           "kind": "controller",
           "value": "display",
           "unit": "categorical"
+        },
+        "ambient_reveal_distance": {
+          "kind": "world_setup",
+          "value": 1000,
+          "unit": "feet"
+        },
+        "front_lamp_visibility": {
+          "kind": "world_setup",
+          "value": 500,
+          "unit": "feet"
+        },
+        "rear_lamp_visibility": {
+          "kind": "world_setup",
+          "value": 500,
+          "unit": "feet"
         }
       },
       "recording_description": {
@@ -121,258 +273,45 @@
           "Requested numeric target is not a measured result"
         ]
       },
-      "sweep_measurements": []
+      "sweep_measurements": [],
+      "unresolved_judgment_calls": [
+        "as near as practicable to the side of the vehicle which is closest to passing traffic"
+      ],
+      "paired_probe_id": "training__C183085__NRS-484D-165-3__motor_vehicle_driver__witness_comparison",
+      "deliberate_differences": [
+        "parked_lamp_display"
+      ],
+      "probe": {
+        "primary_variable": "parked_lamp_display",
+        "comparison_or_standard": "Continuous lamp display under source-verified low light",
+        "target_value_or_branch": "display"
+      }
     },
     {
       "case_id": "training__C183085__NRS-484D-165-3__motor_vehicle_driver__witness_2",
       "target_law_id": "NRS-484D-165-3",
-      "target_type": "controlled_attempt",
+      "target_type": "judgment_sweep",
       "rationale": "stopped vehicle omits required displayed lamps in low light",
       "variable_assignments": {
         "parked_lamp_display": {
           "kind": "controller",
           "value": "omit",
           "unit": "categorical"
-        }
-      },
-      "recording_description": {
-        "channels": [
-          {
-            "name": "drv.standing_or_parked",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "optical distance and actual pixels need independent review"
-          },
-          {
-            "name": "st.shoulder",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "optical distance and actual pixels need independent review"
-          },
-          {
-            "name": "rel.occupies",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "optical distance and actual pixels need independent review"
-          },
-          {
-            "name": "drv.civil_night",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "optical distance and actual pixels need independent review"
-          },
-          {
-            "name": "env.visibility",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "optical distance and actual pixels need independent review"
-          },
-          {
-            "name": "sig.position_lamp",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "optical distance and actual pixels need independent review"
-          },
-          {
-            "name": "sig.headlamp",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "optical distance and actual pixels need independent review"
-          },
-          {
-            "name": "rel.bearing",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "optical distance and actual pixels need independent review"
-          },
-          {
-            "name": "st.lane",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "optical distance and actual pixels need independent review"
-          },
-          {
-            "name": "st.roadway",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "optical distance and actual pixels need independent review"
-          }
-        ],
-        "context_inputs": [
-          {
-            "name": "shoulder_lighting_survey",
-            "unit": "structured",
-            "method": "independent original map, clock and optical protocol survey"
-          }
-        ],
-        "limitations": [
-          "Commanded lamp bits do not prove colored emitted light",
-          "CARLA pixels do not establish calibrated 500-foot equipment visibility",
-          "Requested numeric target is not a measured result"
-        ]
-      },
-      "sweep_measurements": []
-    },
-    {
-      "case_id": "training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_1_0",
-      "target_law_id": "NRS-484D-165-3",
-      "target_type": "below",
-      "rationale": "ambient reveal distance requested at 990 feet; actual measured value and uncertainty required",
-      "variable_assignments": {
-        "ambient_reveal_distance": {
-          "kind": "world_setup",
-          "value": 990.0,
-          "unit": "feet"
-        }
-      },
-      "recording_description": {
-        "channels": [
-          {
-            "name": "drv.standing_or_parked",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "optical distance and actual pixels need independent review"
-          },
-          {
-            "name": "st.shoulder",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "optical distance and actual pixels need independent review"
-          },
-          {
-            "name": "rel.occupies",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "optical distance and actual pixels need independent review"
-          },
-          {
-            "name": "drv.civil_night",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "optical distance and actual pixels need independent review"
-          },
-          {
-            "name": "env.visibility",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "optical distance and actual pixels need independent review"
-          },
-          {
-            "name": "sig.position_lamp",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "optical distance and actual pixels need independent review"
-          },
-          {
-            "name": "sig.headlamp",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "optical distance and actual pixels need independent review"
-          },
-          {
-            "name": "rel.bearing",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "optical distance and actual pixels need independent review"
-          },
-          {
-            "name": "st.lane",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "optical distance and actual pixels need independent review"
-          },
-          {
-            "name": "st.roadway",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "optical distance and actual pixels need independent review"
-          }
-        ],
-        "context_inputs": [
-          {
-            "name": "shoulder_lighting_survey",
-            "unit": "structured",
-            "method": "independent original map, clock and optical protocol survey"
-          }
-        ],
-        "limitations": [
-          "Commanded lamp bits do not prove colored emitted light",
-          "CARLA pixels do not establish calibrated 500-foot equipment visibility",
-          "Requested numeric target is not a measured result"
-        ]
-      },
-      "sweep_measurements": []
-    },
-    {
-      "case_id": "training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_1_1",
-      "target_law_id": "NRS-484D-165-3",
-      "target_type": "at",
-      "rationale": "ambient reveal distance requested at 1000 feet; actual measured value and uncertainty required",
-      "variable_assignments": {
+        },
         "ambient_reveal_distance": {
           "kind": "world_setup",
           "value": 1000,
           "unit": "feet"
+        },
+        "front_lamp_visibility": {
+          "kind": "world_setup",
+          "value": 500,
+          "unit": "feet"
+        },
+        "rear_lamp_visibility": {
+          "kind": "world_setup",
+          "value": 500,
+          "unit": "feet"
         }
       },
       "recording_description": {
@@ -481,17 +420,350 @@
           "Requested numeric target is not a measured result"
         ]
       },
-      "sweep_measurements": []
+      "sweep_measurements": [],
+      "unresolved_judgment_calls": [
+        "as near as practicable to the side of the vehicle which is closest to passing traffic"
+      ],
+      "paired_probe_id": "training__C183085__NRS-484D-165-3__motor_vehicle_driver__witness_comparison",
+      "deliberate_differences": [
+        "parked_lamp_display"
+      ],
+      "probe": {
+        "primary_variable": "parked_lamp_display",
+        "comparison_or_standard": "Continuous lamp display under source-verified low light",
+        "target_value_or_branch": "omit"
+      }
+    },
+    {
+      "case_id": "training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_1_0",
+      "target_law_id": "NRS-484D-165-3",
+      "target_type": "boundary_probe",
+      "rationale": "ambient reveal distance requested at 990 feet; actual measured value and uncertainty required",
+      "variable_assignments": {
+        "parked_lamp_display": {
+          "kind": "controller",
+          "value": "display",
+          "unit": "categorical"
+        },
+        "ambient_reveal_distance": {
+          "kind": "world_setup",
+          "value": 990,
+          "unit": "feet"
+        },
+        "front_lamp_visibility": {
+          "kind": "world_setup",
+          "value": 500,
+          "unit": "feet"
+        },
+        "rear_lamp_visibility": {
+          "kind": "world_setup",
+          "value": 500,
+          "unit": "feet"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          },
+          {
+            "name": "st.shoulder",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          },
+          {
+            "name": "drv.civil_night",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          },
+          {
+            "name": "env.visibility",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          },
+          {
+            "name": "sig.position_lamp",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          },
+          {
+            "name": "sig.headlamp",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          },
+          {
+            "name": "rel.bearing",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          },
+          {
+            "name": "st.lane",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          },
+          {
+            "name": "st.roadway",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "shoulder_lighting_survey",
+            "unit": "structured",
+            "method": "independent original map, clock and optical protocol survey"
+          }
+        ],
+        "limitations": [
+          "Commanded lamp bits do not prove colored emitted light",
+          "CARLA pixels do not establish calibrated 500-foot equipment visibility",
+          "Requested numeric target is not a measured result"
+        ]
+      },
+      "sweep_measurements": [],
+      "probe": {
+        "threshold_ref": "activation.numeric_conditions[0]",
+        "operator": "<",
+        "unit": "ft",
+        "test_value": 990,
+        "primary_variable": "ambient_reveal_distance",
+        "comparison_or_standard": "Source-measured statutory optical distance",
+        "target_value_or_branch": 990
+      },
+      "epsilon_used": {
+        "value": 10,
+        "unit": "ft",
+        "rationale": "Authored probe spacing, not a legal tolerance."
+      },
+      "paired_probe_id": "training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_1_comparison",
+      "deliberate_differences": [
+        "ambient_reveal_distance"
+      ]
+    },
+    {
+      "case_id": "training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_1_1",
+      "target_law_id": "NRS-484D-165-3",
+      "target_type": "boundary_probe",
+      "rationale": "ambient reveal distance requested at 1000 feet; actual measured value and uncertainty required",
+      "variable_assignments": {
+        "parked_lamp_display": {
+          "kind": "controller",
+          "value": "display",
+          "unit": "categorical"
+        },
+        "ambient_reveal_distance": {
+          "kind": "world_setup",
+          "value": 1000,
+          "unit": "feet"
+        },
+        "front_lamp_visibility": {
+          "kind": "world_setup",
+          "value": 500,
+          "unit": "feet"
+        },
+        "rear_lamp_visibility": {
+          "kind": "world_setup",
+          "value": 500,
+          "unit": "feet"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          },
+          {
+            "name": "st.shoulder",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          },
+          {
+            "name": "drv.civil_night",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          },
+          {
+            "name": "env.visibility",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          },
+          {
+            "name": "sig.position_lamp",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          },
+          {
+            "name": "sig.headlamp",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          },
+          {
+            "name": "rel.bearing",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          },
+          {
+            "name": "st.lane",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          },
+          {
+            "name": "st.roadway",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "shoulder_lighting_survey",
+            "unit": "structured",
+            "method": "independent original map, clock and optical protocol survey"
+          }
+        ],
+        "limitations": [
+          "Commanded lamp bits do not prove colored emitted light",
+          "CARLA pixels do not establish calibrated 500-foot equipment visibility",
+          "Requested numeric target is not a measured result"
+        ]
+      },
+      "sweep_measurements": [],
+      "probe": {
+        "threshold_ref": "activation.numeric_conditions[0]",
+        "operator": "<",
+        "unit": "ft",
+        "test_value": 1000,
+        "primary_variable": "ambient_reveal_distance",
+        "comparison_or_standard": "Source-measured statutory optical distance",
+        "target_value_or_branch": 1000
+      },
+      "epsilon_used": {
+        "value": 10,
+        "unit": "ft",
+        "rationale": "Authored probe spacing, not a legal tolerance."
+      },
+      "paired_probe_id": "training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_1_comparison",
+      "deliberate_differences": [
+        "ambient_reveal_distance"
+      ]
     },
     {
       "case_id": "training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_1_2",
       "target_law_id": "NRS-484D-165-3",
-      "target_type": "above",
+      "target_type": "boundary_probe",
       "rationale": "ambient reveal distance requested at 1010 feet; actual measured value and uncertainty required",
       "variable_assignments": {
+        "parked_lamp_display": {
+          "kind": "controller",
+          "value": "display",
+          "unit": "categorical"
+        },
         "ambient_reveal_distance": {
           "kind": "world_setup",
-          "value": 1010.0,
+          "value": 1010,
+          "unit": "feet"
+        },
+        "front_lamp_visibility": {
+          "kind": "world_setup",
+          "value": 500,
+          "unit": "feet"
+        },
+        "rear_lamp_visibility": {
+          "kind": "world_setup",
+          "value": 500,
           "unit": "feet"
         }
       },
@@ -601,17 +873,50 @@
           "Requested numeric target is not a measured result"
         ]
       },
-      "sweep_measurements": []
+      "sweep_measurements": [],
+      "probe": {
+        "threshold_ref": "activation.numeric_conditions[0]",
+        "operator": "<",
+        "unit": "ft",
+        "test_value": 1010,
+        "primary_variable": "ambient_reveal_distance",
+        "comparison_or_standard": "Source-measured statutory optical distance",
+        "target_value_or_branch": 1010
+      },
+      "epsilon_used": {
+        "value": 10,
+        "unit": "ft",
+        "rationale": "Authored probe spacing, not a legal tolerance."
+      },
+      "paired_probe_id": "training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_1_comparison",
+      "deliberate_differences": [
+        "ambient_reveal_distance"
+      ]
     },
     {
       "case_id": "training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_2_0",
       "target_law_id": "NRS-484D-165-3",
-      "target_type": "below",
+      "target_type": "boundary_probe",
       "rationale": "front lamp visibility requested at 495 feet; actual measured value and uncertainty required",
       "variable_assignments": {
+        "parked_lamp_display": {
+          "kind": "controller",
+          "value": "display",
+          "unit": "categorical"
+        },
+        "ambient_reveal_distance": {
+          "kind": "world_setup",
+          "value": 1000,
+          "unit": "feet"
+        },
         "front_lamp_visibility": {
           "kind": "world_setup",
-          "value": 495.0,
+          "value": 495,
+          "unit": "feet"
+        },
+        "rear_lamp_visibility": {
+          "kind": "world_setup",
+          "value": 500,
           "unit": "feet"
         }
       },
@@ -721,15 +1026,48 @@
           "Requested numeric target is not a measured result"
         ]
       },
-      "sweep_measurements": []
+      "sweep_measurements": [],
+      "probe": {
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": ">=",
+        "unit": "ft",
+        "test_value": 495,
+        "primary_variable": "front_lamp_visibility",
+        "comparison_or_standard": "Source-measured statutory optical distance",
+        "target_value_or_branch": 495
+      },
+      "epsilon_used": {
+        "value": 5,
+        "unit": "ft",
+        "rationale": "Authored probe spacing, not a legal tolerance."
+      },
+      "paired_probe_id": "training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_2_comparison",
+      "deliberate_differences": [
+        "front_lamp_visibility"
+      ]
     },
     {
       "case_id": "training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_2_1",
       "target_law_id": "NRS-484D-165-3",
-      "target_type": "at",
+      "target_type": "boundary_probe",
       "rationale": "front lamp visibility requested at 500 feet; actual measured value and uncertainty required",
       "variable_assignments": {
+        "parked_lamp_display": {
+          "kind": "controller",
+          "value": "display",
+          "unit": "categorical"
+        },
+        "ambient_reveal_distance": {
+          "kind": "world_setup",
+          "value": 1000,
+          "unit": "feet"
+        },
         "front_lamp_visibility": {
+          "kind": "world_setup",
+          "value": 500,
+          "unit": "feet"
+        },
+        "rear_lamp_visibility": {
           "kind": "world_setup",
           "value": 500,
           "unit": "feet"
@@ -841,254 +1179,47 @@
           "Requested numeric target is not a measured result"
         ]
       },
-      "sweep_measurements": []
+      "sweep_measurements": [],
+      "probe": {
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": ">=",
+        "unit": "ft",
+        "test_value": 500,
+        "primary_variable": "front_lamp_visibility",
+        "comparison_or_standard": "Source-measured statutory optical distance",
+        "target_value_or_branch": 500
+      },
+      "epsilon_used": {
+        "value": 5,
+        "unit": "ft",
+        "rationale": "Authored probe spacing, not a legal tolerance."
+      },
+      "paired_probe_id": "training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_2_comparison",
+      "deliberate_differences": [
+        "front_lamp_visibility"
+      ]
     },
     {
       "case_id": "training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_2_2",
       "target_law_id": "NRS-484D-165-3",
-      "target_type": "above",
+      "target_type": "boundary_probe",
       "rationale": "front lamp visibility requested at 505 feet; actual measured value and uncertainty required",
       "variable_assignments": {
+        "parked_lamp_display": {
+          "kind": "controller",
+          "value": "display",
+          "unit": "categorical"
+        },
+        "ambient_reveal_distance": {
+          "kind": "world_setup",
+          "value": 1000,
+          "unit": "feet"
+        },
         "front_lamp_visibility": {
           "kind": "world_setup",
-          "value": 505.0,
+          "value": 505,
           "unit": "feet"
-        }
-      },
-      "recording_description": {
-        "channels": [
-          {
-            "name": "drv.standing_or_parked",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "optical distance and actual pixels need independent review"
-          },
-          {
-            "name": "st.shoulder",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "optical distance and actual pixels need independent review"
-          },
-          {
-            "name": "rel.occupies",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "optical distance and actual pixels need independent review"
-          },
-          {
-            "name": "drv.civil_night",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "optical distance and actual pixels need independent review"
-          },
-          {
-            "name": "env.visibility",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "optical distance and actual pixels need independent review"
-          },
-          {
-            "name": "sig.position_lamp",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "optical distance and actual pixels need independent review"
-          },
-          {
-            "name": "sig.headlamp",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "optical distance and actual pixels need independent review"
-          },
-          {
-            "name": "rel.bearing",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "optical distance and actual pixels need independent review"
-          },
-          {
-            "name": "st.lane",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "optical distance and actual pixels need independent review"
-          },
-          {
-            "name": "st.roadway",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "optical distance and actual pixels need independent review"
-          }
-        ],
-        "context_inputs": [
-          {
-            "name": "shoulder_lighting_survey",
-            "unit": "structured",
-            "method": "independent original map, clock and optical protocol survey"
-          }
-        ],
-        "limitations": [
-          "Commanded lamp bits do not prove colored emitted light",
-          "CARLA pixels do not establish calibrated 500-foot equipment visibility",
-          "Requested numeric target is not a measured result"
-        ]
-      },
-      "sweep_measurements": []
-    },
-    {
-      "case_id": "training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_3_0",
-      "target_law_id": "NRS-484D-165-3",
-      "target_type": "below",
-      "rationale": "rear lamp visibility requested at 495 feet; actual measured value and uncertainty required",
-      "variable_assignments": {
-        "rear_lamp_visibility": {
-          "kind": "world_setup",
-          "value": 495.0,
-          "unit": "feet"
-        }
-      },
-      "recording_description": {
-        "channels": [
-          {
-            "name": "drv.standing_or_parked",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "optical distance and actual pixels need independent review"
-          },
-          {
-            "name": "st.shoulder",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "optical distance and actual pixels need independent review"
-          },
-          {
-            "name": "rel.occupies",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "optical distance and actual pixels need independent review"
-          },
-          {
-            "name": "drv.civil_night",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "optical distance and actual pixels need independent review"
-          },
-          {
-            "name": "env.visibility",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "optical distance and actual pixels need independent review"
-          },
-          {
-            "name": "sig.position_lamp",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "optical distance and actual pixels need independent review"
-          },
-          {
-            "name": "sig.headlamp",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "optical distance and actual pixels need independent review"
-          },
-          {
-            "name": "rel.bearing",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "optical distance and actual pixels need independent review"
-          },
-          {
-            "name": "st.lane",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "optical distance and actual pixels need independent review"
-          },
-          {
-            "name": "st.roadway",
-            "unit": "structured",
-            "sampling_rate_hz": 20,
-            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
-            "time_window": "all 600 frames / 30 seconds",
-            "reference_frame": "original Native frame and elapsed time",
-            "uncertainty": "optical distance and actual pixels need independent review"
-          }
-        ],
-        "context_inputs": [
-          {
-            "name": "shoulder_lighting_survey",
-            "unit": "structured",
-            "method": "independent original map, clock and optical protocol survey"
-          }
-        ],
-        "limitations": [
-          "Commanded lamp bits do not prove colored emitted light",
-          "CARLA pixels do not establish calibrated 500-foot equipment visibility",
-          "Requested numeric target is not a measured result"
-        ]
-      },
-      "sweep_measurements": []
-    },
-    {
-      "case_id": "training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_3_1",
-      "target_law_id": "NRS-484D-165-3",
-      "target_type": "at",
-      "rationale": "rear lamp visibility requested at 500 feet; actual measured value and uncertainty required",
-      "variable_assignments": {
+        },
         "rear_lamp_visibility": {
           "kind": "world_setup",
           "value": 500,
@@ -1201,17 +1332,50 @@
           "Requested numeric target is not a measured result"
         ]
       },
-      "sweep_measurements": []
+      "sweep_measurements": [],
+      "probe": {
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": ">=",
+        "unit": "ft",
+        "test_value": 505,
+        "primary_variable": "front_lamp_visibility",
+        "comparison_or_standard": "Source-measured statutory optical distance",
+        "target_value_or_branch": 505
+      },
+      "epsilon_used": {
+        "value": 5,
+        "unit": "ft",
+        "rationale": "Authored probe spacing, not a legal tolerance."
+      },
+      "paired_probe_id": "training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_2_comparison",
+      "deliberate_differences": [
+        "front_lamp_visibility"
+      ]
     },
     {
-      "case_id": "training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_3_2",
+      "case_id": "training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_3_0",
       "target_law_id": "NRS-484D-165-3",
-      "target_type": "above",
-      "rationale": "rear lamp visibility requested at 505 feet; actual measured value and uncertainty required",
+      "target_type": "boundary_probe",
+      "rationale": "rear lamp visibility requested at 495 feet; actual measured value and uncertainty required",
       "variable_assignments": {
+        "parked_lamp_display": {
+          "kind": "controller",
+          "value": "display",
+          "unit": "categorical"
+        },
+        "ambient_reveal_distance": {
+          "kind": "world_setup",
+          "value": 1000,
+          "unit": "feet"
+        },
+        "front_lamp_visibility": {
+          "kind": "world_setup",
+          "value": 500,
+          "unit": "feet"
+        },
         "rear_lamp_visibility": {
           "kind": "world_setup",
-          "value": 505.0,
+          "value": 495,
           "unit": "feet"
         }
       },
@@ -1321,7 +1485,379 @@
           "Requested numeric target is not a measured result"
         ]
       },
-      "sweep_measurements": []
+      "sweep_measurements": [],
+      "probe": {
+        "threshold_ref": "obligation.numeric_conditions[1]",
+        "operator": ">=",
+        "unit": "ft",
+        "test_value": 495,
+        "primary_variable": "rear_lamp_visibility",
+        "comparison_or_standard": "Source-measured statutory optical distance",
+        "target_value_or_branch": 495
+      },
+      "epsilon_used": {
+        "value": 5,
+        "unit": "ft",
+        "rationale": "Authored probe spacing, not a legal tolerance."
+      },
+      "paired_probe_id": "training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_3_comparison",
+      "deliberate_differences": [
+        "rear_lamp_visibility"
+      ]
+    },
+    {
+      "case_id": "training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_3_1",
+      "target_law_id": "NRS-484D-165-3",
+      "target_type": "boundary_probe",
+      "rationale": "rear lamp visibility requested at 500 feet; actual measured value and uncertainty required",
+      "variable_assignments": {
+        "parked_lamp_display": {
+          "kind": "controller",
+          "value": "display",
+          "unit": "categorical"
+        },
+        "ambient_reveal_distance": {
+          "kind": "world_setup",
+          "value": 1000,
+          "unit": "feet"
+        },
+        "front_lamp_visibility": {
+          "kind": "world_setup",
+          "value": 500,
+          "unit": "feet"
+        },
+        "rear_lamp_visibility": {
+          "kind": "world_setup",
+          "value": 500,
+          "unit": "feet"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          },
+          {
+            "name": "st.shoulder",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          },
+          {
+            "name": "drv.civil_night",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          },
+          {
+            "name": "env.visibility",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          },
+          {
+            "name": "sig.position_lamp",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          },
+          {
+            "name": "sig.headlamp",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          },
+          {
+            "name": "rel.bearing",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          },
+          {
+            "name": "st.lane",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          },
+          {
+            "name": "st.roadway",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "shoulder_lighting_survey",
+            "unit": "structured",
+            "method": "independent original map, clock and optical protocol survey"
+          }
+        ],
+        "limitations": [
+          "Commanded lamp bits do not prove colored emitted light",
+          "CARLA pixels do not establish calibrated 500-foot equipment visibility",
+          "Requested numeric target is not a measured result"
+        ]
+      },
+      "sweep_measurements": [],
+      "probe": {
+        "threshold_ref": "obligation.numeric_conditions[1]",
+        "operator": ">=",
+        "unit": "ft",
+        "test_value": 500,
+        "primary_variable": "rear_lamp_visibility",
+        "comparison_or_standard": "Source-measured statutory optical distance",
+        "target_value_or_branch": 500
+      },
+      "epsilon_used": {
+        "value": 5,
+        "unit": "ft",
+        "rationale": "Authored probe spacing, not a legal tolerance."
+      },
+      "paired_probe_id": "training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_3_comparison",
+      "deliberate_differences": [
+        "rear_lamp_visibility"
+      ]
+    },
+    {
+      "case_id": "training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_3_2",
+      "target_law_id": "NRS-484D-165-3",
+      "target_type": "boundary_probe",
+      "rationale": "rear lamp visibility requested at 505 feet; actual measured value and uncertainty required",
+      "variable_assignments": {
+        "parked_lamp_display": {
+          "kind": "controller",
+          "value": "display",
+          "unit": "categorical"
+        },
+        "ambient_reveal_distance": {
+          "kind": "world_setup",
+          "value": 1000,
+          "unit": "feet"
+        },
+        "front_lamp_visibility": {
+          "kind": "world_setup",
+          "value": 500,
+          "unit": "feet"
+        },
+        "rear_lamp_visibility": {
+          "kind": "world_setup",
+          "value": 505,
+          "unit": "feet"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          },
+          {
+            "name": "st.shoulder",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          },
+          {
+            "name": "drv.civil_night",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          },
+          {
+            "name": "env.visibility",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          },
+          {
+            "name": "sig.position_lamp",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          },
+          {
+            "name": "sig.headlamp",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          },
+          {
+            "name": "rel.bearing",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          },
+          {
+            "name": "st.lane",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          },
+          {
+            "name": "st.roadway",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Joined original Native survey, actor state, lamp bits and camera frame",
+            "time_window": "all 600 frames / 30 seconds",
+            "reference_frame": "original Native frame and elapsed time",
+            "uncertainty": "optical distance and actual pixels need independent review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "shoulder_lighting_survey",
+            "unit": "structured",
+            "method": "independent original map, clock and optical protocol survey"
+          }
+        ],
+        "limitations": [
+          "Commanded lamp bits do not prove colored emitted light",
+          "CARLA pixels do not establish calibrated 500-foot equipment visibility",
+          "Requested numeric target is not a measured result"
+        ]
+      },
+      "sweep_measurements": [],
+      "probe": {
+        "threshold_ref": "obligation.numeric_conditions[1]",
+        "operator": ">=",
+        "unit": "ft",
+        "test_value": 505,
+        "primary_variable": "rear_lamp_visibility",
+        "comparison_or_standard": "Source-measured statutory optical distance",
+        "target_value_or_branch": 505
+      },
+      "epsilon_used": {
+        "value": 5,
+        "unit": "ft",
+        "rationale": "Authored probe spacing, not a legal tolerance."
+      },
+      "paired_probe_id": "training__C183085__NRS-484D-165-3__motor_vehicle_driver__numeric_3_comparison",
+      "deliberate_differences": [
+        "rear_lamp_visibility"
+      ]
+    }
+  ],
+  "sweeps_expanded": true,
+  "sweep_specs": [
+    {
+      "sweep_id": "c183085-optical-sweep-1",
+      "target_law_id": "NRS-484D-165-3",
+      "judgment_refs": [
+        {
+          "phrase": "as near as practicable to the side of the vehicle which is closest to passing traffic",
+          "note": "Original lamp installation and passing traffic side require independent review."
+        }
+      ],
+      "rationale": "Three source-measured numeric probe cases.",
+      "status": "incomplete",
+      "missing_inputs": [
+        "Original optical calibration and pixels pending."
+      ]
+    },
+    {
+      "sweep_id": "c183085-optical-sweep-2",
+      "target_law_id": "NRS-484D-165-3",
+      "judgment_refs": [
+        {
+          "phrase": "as near as practicable to the side of the vehicle which is closest to passing traffic",
+          "note": "Original lamp installation and passing traffic side require independent review."
+        }
+      ],
+      "rationale": "Three source-measured numeric probe cases.",
+      "status": "incomplete",
+      "missing_inputs": [
+        "Original optical calibration and pixels pending."
+      ]
+    },
+    {
+      "sweep_id": "c183085-optical-sweep-3",
+      "target_law_id": "NRS-484D-165-3",
+      "judgment_refs": [
+        {
+          "phrase": "as near as practicable to the side of the vehicle which is closest to passing traffic",
+          "note": "Original lamp installation and passing traffic side require independent review."
+        }
+      ],
+      "rationale": "Three source-measured numeric probe cases.",
+      "status": "incomplete",
+      "missing_inputs": [
+        "Original optical calibration and pixels pending."
+      ]
     }
   ]
 }

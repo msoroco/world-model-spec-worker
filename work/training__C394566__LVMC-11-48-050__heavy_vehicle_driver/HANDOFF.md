@@ -1,6 +1,6 @@
 # C394566 / LVMC 11.48.050 delivery preparation (2026-11-27)
 
-Status: provisionally ready for exact CPU strict gate. The package selects 17 source-branch cases and eight controlled comparisons. It includes 7,999, 8,000 and 8,001 lb probes for the statutory “in excess of eight thousand pounds” threshold. The 19:00 and 06:00 boundary interpretation remains original-source review.
+Status: ready after the exact assignment CPU strict gate passed. The package selects 17 source-branch cases and eight controlled comparisons. It includes 7,999, 8,000 and 8,001 lb probes for the statutory “in excess of eight thousand pounds” threshold. The 19:00 and 06:00 boundary interpretation remains original-source review.
 
 All 33 exact primary/fallback inline Native constructions passed scoped offline checks and public compatibility with positive and missing-source negative probes. All 17 selected primary cases passed saved-only reprocessing; all 17 physical/lifecycle diagnostic validators and pinned semantic numeric validation passed. Eight independent source-fact comparison audits and missing-source negative checks passed. The selected manifest binds per-case receipts, source-hashed fixture recipes, measurement procedures, four-view 30-second capture, independent delivery audit self-tests and original-source acquisition requirements.
 

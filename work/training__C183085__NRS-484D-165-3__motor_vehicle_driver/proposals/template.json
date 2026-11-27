@@ -1,0 +1,72 @@
+{
+  "template_id": "NRS-484D-165-3@motor_vehicle_driver",
+  "law_id": "NRS-484D-165-3",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "Whenever a vehicle is parked or stopped upon the traveled portion of a highway or shoulder adjacent thereto, whether attended or unattended during the times mentioned in NRS 484D.100 [NRS-484D-100-1], and there is insufficient light to reveal any person or object within a distance of 1,000 feet upon such highway or roadway, such vehicle shall display lighted lamps meeting the requirements of subsection 1 [(1) appended below]. Every vehicle shall be equipped with one or more lamps which, when lighted, shall display a white or amber light visible from a distance of 500 feet to the front of the vehicle, and one or more lamps which, when lighted, shall display a red light visible from a distance of 500 feet to the rear of the vehicle. The location of such lamps shall be such that at least one such lamp is installed as near as practicable to the side of the vehicle which is closest to passing traffic.",
+  "structure": {
+    "activation": {
+      "condition": "Vehicle parked or stopped on traveled highway or adjacent shoulder during lighting hours with insufficient ambient reveal at 1,000 feet.",
+      "numeric_conditions": [
+        {
+          "variable": "ambient_reveal_distance_ft",
+          "operator": "<",
+          "value": 1000,
+          "unit": "ft"
+        }
+      ]
+    },
+    "obligation": {
+      "type": "must",
+      "description": "Display lighted front white or amber and rear red lamps while stopped under the activation conditions; equipment must satisfy 500-foot front and rear visibility and near-traffic-side installation.",
+      "source_clause": "such vehicle shall display lighted lamps meeting the requirements of subsection 1",
+      "numeric_conditions": [
+        {
+          "variable": "front_lamp_visibility_ft",
+          "operator": ">=",
+          "value": 500,
+          "unit": "ft"
+        },
+        {
+          "variable": "rear_lamp_visibility_ft",
+          "operator": ">=",
+          "value": 500,
+          "unit": "ft"
+        }
+      ]
+    },
+    "exceptions": [],
+    "timing": {
+      "description": "Continuous display for the full stopped interval during the hours specified in NRS 484D.100.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "as near as practicable to the side of the vehicle which is closest to passing traffic",
+        "note": "Original lamp installation and passing traffic side require independent review."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "parked_lamp_display",
+      "kind": "controller",
+      "range_or_domain": "display or omit over all 600 frames"
+    },
+    {
+      "name": "ambient_reveal_distance",
+      "kind": "world_setup",
+      "range_or_domain": "990, 1000 or 1010 feet requested; measured bracket required"
+    },
+    {
+      "name": "front_lamp_visibility",
+      "kind": "world_setup",
+      "range_or_domain": "495, 500 or 505 feet requested equipment probe"
+    },
+    {
+      "name": "rear_lamp_visibility",
+      "kind": "world_setup",
+      "range_or_domain": "495, 500 or 505 feet requested equipment probe"
+    }
+  ]
+}
