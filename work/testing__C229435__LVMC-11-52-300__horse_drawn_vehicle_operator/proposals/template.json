@@ -1,0 +1,60 @@
+{
+  "template_id": "LVMC-11-52-300@horse_drawn_vehicle_operator",
+  "law_id": "LVMC-11-52-300",
+  "actor": "horse_drawn_vehicle_operator",
+  "status": "draft",
+  "quote": "Except for a motor vehicle, no person shall park any vehicle on any street for a period of time longer than thirty minutes between the hours of one a.m. and six a.m. of any day.",
+  "structure": {
+    "law_id": "LVMC-11-52-300",
+    "activation": {
+      "condition": "A responsible person places a qualifying vehicle on a City street during the local 01:00\u201306:00 interval; original source review remains required.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "Retain actual nonmotor vehicle parking duration against the strict thirty-minute boundary for independent review.",
+      "type": "must_not",
+      "numeric_conditions": [
+        {
+          "name": "thirty_minute_boundary",
+          "value": 1800,
+          "unit": "s",
+          "operator": "greater_than",
+          "variable": "parking_duration_s"
+        }
+      ]
+    },
+    "exceptions": [
+      {
+        "source_clause": "Except for a motor vehicle",
+        "description": "Source-proven motor vehicle exception; a horse-drawn actor label does not establish classification."
+      }
+    ],
+    "timing": {
+      "description": "Measure original civil-time parking episode and overlap with 01:00\u201306:00; retain exact endpoint interpretation for independent review.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": []
+  },
+  "parameter_refs": [
+    {
+      "name": "parking_duration_s",
+      "kind": "world_setup",
+      "range_or_domain": "1799, 1800 or 1801 measured original seconds"
+    },
+    {
+      "name": "civil_start_local",
+      "kind": "world_setup",
+      "range_or_domain": "source-reviewed local date/time across 01:00 and 06:00 endpoints"
+    },
+    {
+      "name": "self_propelled_request",
+      "kind": "world_setup",
+      "range_or_domain": "source-reviewed nonmotor versus motor vehicle construction"
+    },
+    {
+      "name": "activity_kind",
+      "kind": "controller",
+      "range_or_domain": "actual parking or actual loading activity, independently observed"
+    }
+  ]
+}

@@ -102,6 +102,14 @@ class BeamMeasureTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "oncoming route"):
             measure(self.root, hashes, expected_frames=9)
 
+    def test_general_branch_rejects_oncoming_within_500_feet(self):
+        with self.assertRaisesRegex(ValueError, "general beam comparison"):
+            measure(self.root, self.hashes, expected_frames=9, case={"branch": "general"})
+
+    def test_oncoming_branch_records_measured_window(self):
+        value = measure(self.root, self.hashes, expected_frames=9, case={"branch": "oncoming"})
+        self.assertTrue(any(row["body_gap_within_500_ft"] for row in value["rows"]))
+
 
 if __name__ == "__main__":
     unittest.main()

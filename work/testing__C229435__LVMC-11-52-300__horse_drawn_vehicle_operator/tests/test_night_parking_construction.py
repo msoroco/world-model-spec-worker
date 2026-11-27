@@ -42,7 +42,9 @@ class SiteTests(unittest.TestCase):
             packet_path.write_text(json.dumps(packet) + "\n")
             self.assertEqual(MODULE.validate_site(packet_path, root), packet)
             case = {"case_id": "exact", "design": {"duration_s": 1801, "start_local": "02:00:00", "vehicle_class": "nonmotor", "purpose": "parking"}}
-            self.assertEqual(MODULE.plan_case(case, packet)["original_frame_count"], 36021)
+            self.assertEqual(MODULE.plan_case(case, packet)["original_frame_count"], 36101)
+            self.assertEqual(MODULE.plan_case(case, packet)["parked_first_index"], 40)
+            self.assertEqual(MODULE.plan_case(case, packet)["parked_last_index"], 36060)
             packet["geometry"]["other_vehicle_xy_m"] = [40, 5]
             packet_path.write_text(json.dumps(packet) + "\n")
             with self.assertRaisesRegex(ValueError, "street and city"):

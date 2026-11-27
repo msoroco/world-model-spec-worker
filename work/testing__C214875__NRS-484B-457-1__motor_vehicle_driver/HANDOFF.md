@@ -2,6 +2,10 @@
 
 Status: partial source inventory. No case or recording is proposed by this checkpoint.
 
+## 2026-11-27 14:12 UTC — selected right-curb boundary and source measurement
+
+Five exact cases select parked 17, 18 and 19 inch right-wheel distance, 17 inch skew, and stopped at 18 inches; four comparisons isolate the statutory boundary, alignment and activity. `curb_geometry.py` requires six source-hashed original site records, affirmative highway/adjacent-curb/default-branch facts and reviewed absence of left-curb and angle-parking ordinance exceptions. It measures both right-wheel centers against the surveyed curb in meters converted to inches, and retains a 900-frame 20 Hz original wheel/activity join with source seal. Six focused CPU tests pass, including boundary, skew, stale source, ordinance uncertainty and degenerate geometry rejection. This is a partial CPU checkpoint: Native capture, selected construction bundles, semantic proposals, compatibility, saved-only processing and independent delivery/comparison proofs remain to be built. No physical or legal acceptance is claimed.
+
 Exact law: NRS 484B.457(1); with 484B.457(2), 484B.457(3) — Except as otherwise provided in this section [(2) and (3) appended below], every vehicle stopped or parked upon a highway where there are adjacent curbs must be stopped or parked with the right-hand wheels of the vehicle parallel to and within 18 inches of the right-hand curb. Local authorities may by ordinance permit parking of vehicles with the left-hand wheels adjacent to and within 18 inches of the left-hand curb of a one-way highway. Local authorities may by ordinance permit angle parking on any highway, except that angle parking must not be permitted on any highway constructed and maintained by the Department of Transportation under the authority granted by chapter 408 of NRS unless the Department has determined that the highway is of sufficient width to permit angle parking without interfering with the free movement of traffic.
 Assigned branch(es): Default right-curb position.
 Cell: C214875 (residence_district, parallel_park, curb); actor: motor_vehicle_driver.

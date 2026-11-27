@@ -1,0 +1,28 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "LVMC-11-52-300",
+      "source": "LVMC 11.52.300 exact frozen text",
+      "output_key": "nighttime_parking_episode",
+      "method": "measure_night_parking",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "night-parking-sources.json",
+        "context.json",
+        "classification.json",
+        "activity.json",
+        "trace.jsonl",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "classification.json"
+    ],
+    "error_contains": "Missing required source: classification.json"
+  }
+}

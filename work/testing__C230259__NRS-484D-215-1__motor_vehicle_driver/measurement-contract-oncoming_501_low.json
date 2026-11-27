@@ -1,0 +1,84 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "testing__C230259__NRS-484D-215-1__motor_vehicle_driver__oncoming_501_low",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "motor vehicle operated on traveled highway or adjacent shoulder during NRS 484D.100 times",
+      "source": "NRS 484D.215(1)",
+      "kind": "sourced_context",
+      "method": "measure_qualifying",
+      "output_key": "beam_requirement_0",
+      "inputs": [
+        "site-packet.json",
+        "actor-state.jsonl",
+        "camera-frame-map.jsonl"
+      ],
+      "value_type": "object"
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "distribution high and intense enough to reveal persons and vehicles a safe distance ahead",
+      "source": "NRS 484D.215(1)",
+      "kind": "measured",
+      "method": "measure_revelation",
+      "output_key": "beam_requirement_1",
+      "inputs": [
+        "actor-state.jsonl",
+        "roi-frames.jsonl",
+        "approach.zip",
+        "camera-frame-map.jsonl"
+      ],
+      "value_type": "object"
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "oncoming approach within 500 feet, measured from original geometry",
+      "source": "NRS 484D.215(1)",
+      "kind": "measured",
+      "method": "measure_oncoming_distance",
+      "output_key": "beam_requirement_2",
+      "inputs": [
+        "actor-state.jsonl",
+        "camera-frame-map.jsonl",
+        "site-packet.json"
+      ],
+      "value_type": "object"
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "glaring rays not projected into eyes of oncoming driver",
+      "source": "NRS 484D.215(1)",
+      "kind": "measured",
+      "method": "measure_glare",
+      "output_key": "beam_requirement_3",
+      "inputs": [
+        "roi-frames.jsonl",
+        "driver_reference.zip",
+        "camera-frame-map.jsonl",
+        "actor-state.jsonl"
+      ],
+      "value_type": "object"
+    },
+    {
+      "disposition_index": 4,
+      "requirement": "lowermost distribution per NRS 484D.210(2), including contour and load",
+      "source": "NRS 484D.215(1)",
+      "kind": "sourced_context",
+      "method": "measure_lowermost",
+      "output_key": "beam_requirement_4",
+      "inputs": [
+        "site-packet.json",
+        "actor-state.jsonl",
+        "roi-frames.jsonl"
+      ],
+      "value_type": "object"
+    }
+  ],
+  "negative": {
+    "remove": [
+      "roi-frames.jsonl"
+    ],
+    "error_contains": "Missing required source: roi-frames.jsonl"
+  }
+}

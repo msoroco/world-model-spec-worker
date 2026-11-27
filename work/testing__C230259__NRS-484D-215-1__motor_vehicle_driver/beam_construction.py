@@ -28,6 +28,23 @@ def _route(value: object, label: str) -> list[list[float]]:
     return points
 
 
+def _polygon(value: object) -> list[list[float]]:
+    if not isinstance(value, list) or len(value) < 3:
+        raise ValueError("reviewed traveled-highway/shoulder polygon required")
+    points = []
+    for point in value:
+        if (not isinstance(point, list) or len(point) != 2 or
+                any(type(x) not in (int, float) or not math.isfinite(x) for x in point)):
+            raise ValueError("reviewed highway polygon coordinate invalid")
+        points.append([float(x) for x in point])
+    area = abs(sum(points[i][0] * points[(i + 1) % len(points)][1] -
+                   points[(i + 1) % len(points)][0] * points[i][1]
+                   for i in range(len(points))) / 2)
+    if area < 1:
+        raise ValueError("reviewed highway polygon degenerate")
+    return points
+
+
 def validate_site(packet_path: Path, case: dict, *, diagnostic: bool = False) -> dict:
     raw = Path(packet_path).read_bytes()
     site = json.loads(raw)
@@ -43,7 +60,7 @@ def validate_site(packet_path: Path, case: dict, *, diagnostic: bool = False) ->
         for field in ("source_reviewed", "nevada_highway_public_access_reviewed",
                       "lighting_time_source_reviewed", "lighting_time_qualifies",
                       "lamp_mounts_reviewed", "driver_eye_sources_reviewed",
-                      "contour_and_load_reviewed"):
+                      "contour_and_load_reviewed", "roi_projection_reviewed"):
             if site.get(field) is not True:
                 raise ValueError("missing source review: " + field)
     refs = site.get("source_refs")
@@ -68,6 +85,7 @@ def validate_site(packet_path: Path, case: dict, *, diagnostic: bool = False) ->
         raise ValueError("ego and oncoming reviewed routes required")
     ego = _route(routes["ego"], "ego")
     oncoming = _route(routes["oncoming"], "oncoming")
+    _polygon(site.get("highway_or_shoulder_polygon_xy_m"))
     ego_vector = [ego[-1][i] - ego[0][i] for i in range(2)]
     incoming_vector = [oncoming[-1][i] - oncoming[0][i] for i in range(2)]
     dot = sum(ego_vector[i] * incoming_vector[i] for i in range(2))
@@ -85,6 +103,16 @@ def validate_site(packet_path: Path, case: dict, *, diagnostic: bool = False) ->
     for value in site["blueprints"].values():
         if not isinstance(value, str) or not value.startswith("vehicle."):
             raise ValueError("motor vehicle blueprint required")
+    eye_offsets = site.get("driver_eye_offsets_m")
+    if not isinstance(eye_offsets, dict) or set(eye_offsets) != {"ego", "oncoming"}:
+        raise ValueError("source-reviewed driver-eye offsets required")
+    for role, offset in eye_offsets.items():
+        _point(offset, role + " driver eye offset")
+    speeds = site.get("speed_requests_mps")
+    if (not isinstance(speeds, dict) or set(speeds) != {"ego", "oncoming"} or
+            any(type(value) not in (int, float) or not math.isfinite(value) or value <= 0
+                for value in speeds.values())):
+        raise ValueError("positive motor vehicle speed requests required")
     cameras = site.get("cameras")
     if not isinstance(cameras, dict) or set(cameras) != set(VIEWS):
         raise ValueError("four reviewed camera poses required")
@@ -92,6 +120,12 @@ def validate_site(packet_path: Path, case: dict, *, diagnostic: bool = False) ->
         if spec.get("blueprint_id") != "sensor.camera.rgb":
             raise ValueError("camera blueprint differs: " + view)
         _point(spec.get("transform_m"), view)
+        fov = spec.get("fov_deg")
+        if type(fov) not in (int, float) or not 1 <= fov <= 120:
+            raise ValueError("reviewed camera field of view required: " + view)
+    if not diagnostic and (len(site.get("camera_calibration_sha256", "")) != 64 or
+                           len(site.get("projection_review_sha256", "")) != 64):
+        raise ValueError("source-reviewed camera calibration and projection required")
     if case["branch"] == "oncoming":
         feet = case["requested_start_separation_ft"]
         if type(feet) not in (int, float) or feet <= 0:
@@ -99,6 +133,13 @@ def validate_site(packet_path: Path, case: dict, *, diagnostic: bool = False) ->
         observed = math.dist(ego[0], oncoming[0]) / FEET_TO_METERS
         if abs(observed - feet) > 10:
             raise ValueError("reviewed initial oncoming separation differs from construction target")
+    elif case["branch"] == "general":
+        # Isolate the general illumination comparison from the special
+        # within-500-foot oncoming condition for the entire reviewed route.
+        if min(math.dist(ego[0], oncoming[0]), math.dist(ego[-1], oncoming[-1])) <= 500 * FEET_TO_METERS + 10:
+            raise ValueError("general beam case enters oncoming 500-foot condition")
+    else:
+        raise ValueError("unknown exact beam branch")
     return site
 
 

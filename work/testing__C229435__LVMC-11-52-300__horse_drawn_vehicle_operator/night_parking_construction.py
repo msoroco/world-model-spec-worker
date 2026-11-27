@@ -99,8 +99,11 @@ def plan_case(case, packet):
     if design["duration_s"] < 0 or design["duration_s"] > 3600:
         raise ValueError("unbounded parking duration")
     duration = design["duration_s"]
-    # Retain both boundary events and every original tick; 1801 s needs 36,021 ticks.
-    frames = round(duration * FPS) + 1
+    # Fixed 1805 s physical window isolates parked duration while retaining
+    # 2 s before and at least 2 s after the 1801 s longest episode.
+    frames = round(1805 * FPS) + 1
+    parked_first_index = 2 * FPS
+    parked_last_index = parked_first_index + round(duration * FPS)
     if frames < 2:
         raise ValueError("parking episode needs at least two frames")
     return {
@@ -110,7 +113,10 @@ def plan_case(case, packet):
         "native_opendrive_sha256": packet["native_opendrive_sha256"],
         "fps": FPS,
         "duration_s": duration,
+        "capture_duration_s": frames / FPS,
         "original_frame_count": frames,
+        "parked_first_index": parked_first_index,
+        "parked_last_index": parked_last_index,
         "civil_start_local_request": design["start_local"],
         "vehicle_class_request": design["vehicle_class"],
         "activity_request": design["purpose"],

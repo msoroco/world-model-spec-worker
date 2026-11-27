@@ -1,5 +1,11 @@
 # Return report
 
+## 2026-11-27 14:06 UTC — C228096 private-way package published
+
+- `testing__C228096__NRS-484B-260__motor_vehicle_driver` passed its exact scoped strict delivery gate and was added to the shared queue: nine exact cases, six comparison commands, 78 syntax-checked commands. Queue counts are now **233 ready assignments, 1,613 exact cases and 1,122 comparisons** (4,485,999 bytes). Nine results remain partial; the batch-wide strict gate is pending.
+- Its 18 primary/fallback offline and 18 pinned compatibility checks passed. Nine saved-only positive and nine missing-source replays, 27 physical outcome fixtures with Native owner-release lifecycle, nine independent delivery positive/negative audits, six comparison positive/negative audits, and 13 focused CPU tests passed. The semantic stage chain passed current runtime validation. The diagnostic fixtures do not claim original CARLA motion, actual pixel visibility or a legal yielding outcome.
+- The three independent owners continue C229435, C230259 and C233871. No frozen input, runtime or batch file was edited, and no Git command was run by the lead.
+
 ## 2026-11-27 13:55 UTC — three scoped packages published; C228096 compatibility underway
 
 - C213645 LVMC-11-20-060, C238432 LVMC-11-43-010-A and C227890 NRS-484B-410 each passed owner and independent lead scoped strict delivery gates. Their exact queue proposals were integrated after command syntax validation: 8/4, 2/1 and 6/5 case/comparison counts respectively. The shared queue is now 232 ready assignments, 1,604 exact cases and 1,116 comparison commands; 10 assignment results remain partial.

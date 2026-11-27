@@ -2,7 +2,125 @@
   "actor": "motor_vehicle_driver",
   "cases": [
     {
+      "case_id": "testing__C228096__NRS-484B-260__motor_vehicle_driver__baseline",
+      "deliberate_differences": [
+        "right-approaching highway vehicle; ego waits before connection"
+      ],
+      "paired_probe_id": "baseline",
+      "probe": {
+        "comparison_or_standard": "other exact private-way variants",
+        "primary_variable": "ego_control_policy",
+        "target_value_or_branch": "enter_right_wait"
+      },
+      "rationale": "Shared source-reviewed private-way and highway capture reference; baseline is not dispatched.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "source-hashed private ownership and access records",
+            "name": "private_way_ownership_and_access",
+            "reference_frame": "original Native frame/time and reviewed map",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "original physical and legal review pending",
+            "unit": "source record"
+          },
+          {
+            "method": "source-hashed public highway designation and boundary map",
+            "name": "public_highway_status_and_boundary",
+            "reference_frame": "original Native frame/time and reviewed map",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "original physical and legal review pending",
+            "unit": "source record"
+          },
+          {
+            "method": "source-hashed connection and ego body progression",
+            "name": "entry_or_crossing_connection",
+            "reference_frame": "original Native frame/time and reviewed map",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "original physical and legal review pending",
+            "unit": "source record"
+          },
+          {
+            "method": "complete original Native highway actor inventory and motion",
+            "name": "all_highway_vehicle_approaches",
+            "reference_frame": "original Native frame/time and reviewed map",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "original physical and legal review pending",
+            "unit": "source record"
+          },
+          {
+            "method": "original Native ego body motion against highway approaches",
+            "name": "ego_precedence_motion",
+            "reference_frame": "original Native frame/time and reviewed map",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "original physical and legal review pending",
+            "unit": "source record"
+          },
+          {
+            "method": "four original synchronized camera pixel streams",
+            "name": "four_camera_original_pixels",
+            "reference_frame": "original Native frame/time and reviewed map",
+            "sampling_rate_hz": 20,
+            "time_window": "45-second original episode",
+            "uncertainty": "original physical and legal review pending",
+            "unit": "source record"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "six source hashes and original OpenDRIVE map",
+            "name": "reviewed_private_way_site_packet",
+            "unit": "source record"
+          }
+        ],
+        "limitations": [
+          "Requested control policy is an engineering target.",
+          "Original highway approach and legal yielding require independent review."
+        ]
+      },
+      "target_law_id": "NRS-484B-260",
+      "target_type": "baseline",
+      "unresolved_judgment_calls": [
+        "about to enter or cross a highway from a private way",
+        "all vehicles approaching on such highway",
+        "yield the right-of-way"
+      ],
+      "variable_assignments": {
+        "approach_sides": {
+          "kind": "world_setup",
+          "value": [
+            "right"
+          ]
+        },
+        "ego_control_policy": {
+          "kind": "controller",
+          "value": "yield_all"
+        },
+        "maneuver": {
+          "kind": "world_setup",
+          "value": "enter"
+        },
+        "private_way_origin": {
+          "kind": "world_setup",
+          "value": true
+        }
+      }
+    },
+    {
       "case_id": "testing__C228096__NRS-484B-260__motor_vehicle_driver__enter_right_wait",
+      "deliberate_differences": [
+        "right-approaching highway vehicle; ego waits before connection"
+      ],
+      "paired_probe_id": "enter_right_wait",
+      "probe": {
+        "comparison_or_standard": "other exact private-way variants",
+        "primary_variable": "ego_control_policy",
+        "target_value_or_branch": "enter_right_wait"
+      },
       "rationale": "right-approaching highway vehicle; ego waits before connection",
       "recording_description": {
         "channels": [
@@ -74,43 +192,44 @@
         ]
       },
       "target_law_id": "NRS-484B-260",
-      "target_type": "delivery",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
-        "private way and public highway source sufficiency",
-        "all approaching highway vehicles and legal yielding"
+        "about to enter or cross a highway from a private way",
+        "all vehicles approaching on such highway",
+        "yield the right-of-way"
       ],
       "variable_assignments": {
         "approach_sides": {
           "kind": "world_setup",
-          "note": "engineering target; legal judgment unresolved",
           "value": [
             "right"
           ]
         },
         "ego_control_policy": {
           "kind": "controller",
-          "note": "engineering target; legal judgment unresolved",
           "value": "yield_all"
         },
         "maneuver": {
           "kind": "world_setup",
-          "note": "engineering target; legal judgment unresolved",
           "value": "enter"
-        },
-        "ordinary_motor_driver": {
-          "kind": "world_setup",
-          "note": "engineering target; legal judgment unresolved",
-          "value": true
         },
         "private_way_origin": {
           "kind": "world_setup",
-          "note": "engineering target; legal judgment unresolved",
           "value": true
         }
       }
     },
     {
       "case_id": "testing__C228096__NRS-484B-260__motor_vehicle_driver__enter_right_intrude",
+      "deliberate_differences": [
+        "right-approaching highway vehicle; ego enters ahead of its progression"
+      ],
+      "paired_probe_id": "enter_right_intrude",
+      "probe": {
+        "comparison_or_standard": "other exact private-way variants",
+        "primary_variable": "ego_control_policy",
+        "target_value_or_branch": "enter_right_intrude"
+      },
       "rationale": "right-approaching highway vehicle; ego enters ahead of its progression",
       "recording_description": {
         "channels": [
@@ -182,43 +301,44 @@
         ]
       },
       "target_law_id": "NRS-484B-260",
-      "target_type": "delivery",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
-        "private way and public highway source sufficiency",
-        "all approaching highway vehicles and legal yielding"
+        "about to enter or cross a highway from a private way",
+        "all vehicles approaching on such highway",
+        "yield the right-of-way"
       ],
       "variable_assignments": {
         "approach_sides": {
           "kind": "world_setup",
-          "note": "engineering target; legal judgment unresolved",
           "value": [
             "right"
           ]
         },
         "ego_control_policy": {
           "kind": "controller",
-          "note": "engineering target; legal judgment unresolved",
           "value": "continue"
         },
         "maneuver": {
           "kind": "world_setup",
-          "note": "engineering target; legal judgment unresolved",
           "value": "enter"
-        },
-        "ordinary_motor_driver": {
-          "kind": "world_setup",
-          "note": "engineering target; legal judgment unresolved",
-          "value": true
         },
         "private_way_origin": {
           "kind": "world_setup",
-          "note": "engineering target; legal judgment unresolved",
           "value": true
         }
       }
     },
     {
       "case_id": "testing__C228096__NRS-484B-260__motor_vehicle_driver__enter_left_wait",
+      "deliberate_differences": [
+        "left-approaching highway vehicle; ego waits before connection"
+      ],
+      "paired_probe_id": "enter_left_wait",
+      "probe": {
+        "comparison_or_standard": "other exact private-way variants",
+        "primary_variable": "ego_control_policy",
+        "target_value_or_branch": "enter_left_wait"
+      },
       "rationale": "left-approaching highway vehicle; ego waits before connection",
       "recording_description": {
         "channels": [
@@ -290,43 +410,44 @@
         ]
       },
       "target_law_id": "NRS-484B-260",
-      "target_type": "delivery",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
-        "private way and public highway source sufficiency",
-        "all approaching highway vehicles and legal yielding"
+        "about to enter or cross a highway from a private way",
+        "all vehicles approaching on such highway",
+        "yield the right-of-way"
       ],
       "variable_assignments": {
         "approach_sides": {
           "kind": "world_setup",
-          "note": "engineering target; legal judgment unresolved",
           "value": [
             "left"
           ]
         },
         "ego_control_policy": {
           "kind": "controller",
-          "note": "engineering target; legal judgment unresolved",
           "value": "yield_all"
         },
         "maneuver": {
           "kind": "world_setup",
-          "note": "engineering target; legal judgment unresolved",
           "value": "enter"
-        },
-        "ordinary_motor_driver": {
-          "kind": "world_setup",
-          "note": "engineering target; legal judgment unresolved",
-          "value": true
         },
         "private_way_origin": {
           "kind": "world_setup",
-          "note": "engineering target; legal judgment unresolved",
           "value": true
         }
       }
     },
     {
       "case_id": "testing__C228096__NRS-484B-260__motor_vehicle_driver__enter_left_intrude",
+      "deliberate_differences": [
+        "left-approaching highway vehicle; ego enters ahead of its progression"
+      ],
+      "paired_probe_id": "enter_left_intrude",
+      "probe": {
+        "comparison_or_standard": "other exact private-way variants",
+        "primary_variable": "ego_control_policy",
+        "target_value_or_branch": "enter_left_intrude"
+      },
       "rationale": "left-approaching highway vehicle; ego enters ahead of its progression",
       "recording_description": {
         "channels": [
@@ -398,43 +519,44 @@
         ]
       },
       "target_law_id": "NRS-484B-260",
-      "target_type": "delivery",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
-        "private way and public highway source sufficiency",
-        "all approaching highway vehicles and legal yielding"
+        "about to enter or cross a highway from a private way",
+        "all vehicles approaching on such highway",
+        "yield the right-of-way"
       ],
       "variable_assignments": {
         "approach_sides": {
           "kind": "world_setup",
-          "note": "engineering target; legal judgment unresolved",
           "value": [
             "left"
           ]
         },
         "ego_control_policy": {
           "kind": "controller",
-          "note": "engineering target; legal judgment unresolved",
           "value": "continue"
         },
         "maneuver": {
           "kind": "world_setup",
-          "note": "engineering target; legal judgment unresolved",
           "value": "enter"
-        },
-        "ordinary_motor_driver": {
-          "kind": "world_setup",
-          "note": "engineering target; legal judgment unresolved",
-          "value": true
         },
         "private_way_origin": {
           "kind": "world_setup",
-          "note": "engineering target; legal judgment unresolved",
           "value": true
         }
       }
     },
     {
       "case_id": "testing__C228096__NRS-484B-260__motor_vehicle_driver__cross_both_wait",
+      "deliberate_differences": [
+        "ego waits before crossing while vehicles approach from both highway directions"
+      ],
+      "paired_probe_id": "cross_both_wait",
+      "probe": {
+        "comparison_or_standard": "other exact private-way variants",
+        "primary_variable": "ego_control_policy",
+        "target_value_or_branch": "cross_both_wait"
+      },
       "rationale": "ego waits before crossing while vehicles approach from both highway directions",
       "recording_description": {
         "channels": [
@@ -506,15 +628,15 @@
         ]
       },
       "target_law_id": "NRS-484B-260",
-      "target_type": "delivery",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
-        "private way and public highway source sufficiency",
-        "all approaching highway vehicles and legal yielding"
+        "about to enter or cross a highway from a private way",
+        "all vehicles approaching on such highway",
+        "yield the right-of-way"
       ],
       "variable_assignments": {
         "approach_sides": {
           "kind": "world_setup",
-          "note": "engineering target; legal judgment unresolved",
           "value": [
             "left",
             "right"
@@ -522,28 +644,29 @@
         },
         "ego_control_policy": {
           "kind": "controller",
-          "note": "engineering target; legal judgment unresolved",
           "value": "yield_all"
         },
         "maneuver": {
           "kind": "world_setup",
-          "note": "engineering target; legal judgment unresolved",
           "value": "cross"
-        },
-        "ordinary_motor_driver": {
-          "kind": "world_setup",
-          "note": "engineering target; legal judgment unresolved",
-          "value": true
         },
         "private_way_origin": {
           "kind": "world_setup",
-          "note": "engineering target; legal judgment unresolved",
           "value": true
         }
       }
     },
     {
       "case_id": "testing__C228096__NRS-484B-260__motor_vehicle_driver__cross_both_intrude",
+      "deliberate_differences": [
+        "ego crosses ahead of an approaching highway vehicle"
+      ],
+      "paired_probe_id": "cross_both_intrude",
+      "probe": {
+        "comparison_or_standard": "other exact private-way variants",
+        "primary_variable": "ego_control_policy",
+        "target_value_or_branch": "cross_both_intrude"
+      },
       "rationale": "ego crosses ahead of an approaching highway vehicle",
       "recording_description": {
         "channels": [
@@ -615,15 +738,15 @@
         ]
       },
       "target_law_id": "NRS-484B-260",
-      "target_type": "delivery",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
-        "private way and public highway source sufficiency",
-        "all approaching highway vehicles and legal yielding"
+        "about to enter or cross a highway from a private way",
+        "all vehicles approaching on such highway",
+        "yield the right-of-way"
       ],
       "variable_assignments": {
         "approach_sides": {
           "kind": "world_setup",
-          "note": "engineering target; legal judgment unresolved",
           "value": [
             "left",
             "right"
@@ -631,28 +754,29 @@
         },
         "ego_control_policy": {
           "kind": "controller",
-          "note": "engineering target; legal judgment unresolved",
           "value": "continue"
         },
         "maneuver": {
           "kind": "world_setup",
-          "note": "engineering target; legal judgment unresolved",
           "value": "cross"
-        },
-        "ordinary_motor_driver": {
-          "kind": "world_setup",
-          "note": "engineering target; legal judgment unresolved",
-          "value": true
         },
         "private_way_origin": {
           "kind": "world_setup",
-          "note": "engineering target; legal judgment unresolved",
           "value": true
         }
       }
     },
     {
       "case_id": "testing__C228096__NRS-484B-260__motor_vehicle_driver__enter_both_wait",
+      "deliberate_differences": [
+        "ego yields to both approaching highway vehicles"
+      ],
+      "paired_probe_id": "enter_both_wait",
+      "probe": {
+        "comparison_or_standard": "other exact private-way variants",
+        "primary_variable": "ego_control_policy",
+        "target_value_or_branch": "enter_both_wait"
+      },
       "rationale": "ego yields to both approaching highway vehicles",
       "recording_description": {
         "channels": [
@@ -724,15 +848,15 @@
         ]
       },
       "target_law_id": "NRS-484B-260",
-      "target_type": "delivery",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
-        "private way and public highway source sufficiency",
-        "all approaching highway vehicles and legal yielding"
+        "about to enter or cross a highway from a private way",
+        "all vehicles approaching on such highway",
+        "yield the right-of-way"
       ],
       "variable_assignments": {
         "approach_sides": {
           "kind": "world_setup",
-          "note": "engineering target; legal judgment unresolved",
           "value": [
             "left",
             "right"
@@ -740,28 +864,29 @@
         },
         "ego_control_policy": {
           "kind": "controller",
-          "note": "engineering target; legal judgment unresolved",
           "value": "yield_all"
         },
         "maneuver": {
           "kind": "world_setup",
-          "note": "engineering target; legal judgment unresolved",
           "value": "enter"
-        },
-        "ordinary_motor_driver": {
-          "kind": "world_setup",
-          "note": "engineering target; legal judgment unresolved",
-          "value": true
         },
         "private_way_origin": {
           "kind": "world_setup",
-          "note": "engineering target; legal judgment unresolved",
           "value": true
         }
       }
     },
     {
       "case_id": "testing__C228096__NRS-484B-260__motor_vehicle_driver__enter_both_yield_one",
+      "deliberate_differences": [
+        "ego yields to one approach but enters ahead of the other"
+      ],
+      "paired_probe_id": "enter_both_yield_one",
+      "probe": {
+        "comparison_or_standard": "other exact private-way variants",
+        "primary_variable": "ego_control_policy",
+        "target_value_or_branch": "enter_both_yield_one"
+      },
       "rationale": "ego yields to one approach but enters ahead of the other",
       "recording_description": {
         "channels": [
@@ -833,15 +958,15 @@
         ]
       },
       "target_law_id": "NRS-484B-260",
-      "target_type": "delivery",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
-        "private way and public highway source sufficiency",
-        "all approaching highway vehicles and legal yielding"
+        "about to enter or cross a highway from a private way",
+        "all vehicles approaching on such highway",
+        "yield the right-of-way"
       ],
       "variable_assignments": {
         "approach_sides": {
           "kind": "world_setup",
-          "note": "engineering target; legal judgment unresolved",
           "value": [
             "left",
             "right"
@@ -849,28 +974,29 @@
         },
         "ego_control_policy": {
           "kind": "controller",
-          "note": "engineering target; legal judgment unresolved",
           "value": "yield_one_only"
         },
         "maneuver": {
           "kind": "world_setup",
-          "note": "engineering target; legal judgment unresolved",
           "value": "enter"
-        },
-        "ordinary_motor_driver": {
-          "kind": "world_setup",
-          "note": "engineering target; legal judgment unresolved",
-          "value": true
         },
         "private_way_origin": {
           "kind": "world_setup",
-          "note": "engineering target; legal judgment unresolved",
           "value": true
         }
       }
     },
     {
       "case_id": "testing__C228096__NRS-484B-260__motor_vehicle_driver__enter_no_approach",
+      "deliberate_differences": [
+        "no highway vehicle approaches in the reviewed original interval"
+      ],
+      "paired_probe_id": "enter_no_approach",
+      "probe": {
+        "comparison_or_standard": "other exact private-way variants",
+        "primary_variable": "ego_control_policy",
+        "target_value_or_branch": "enter_no_approach"
+      },
       "rationale": "no highway vehicle approaches in the reviewed original interval",
       "recording_description": {
         "channels": [
@@ -942,35 +1068,27 @@
         ]
       },
       "target_law_id": "NRS-484B-260",
-      "target_type": "delivery",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
-        "private way and public highway source sufficiency",
-        "all approaching highway vehicles and legal yielding"
+        "about to enter or cross a highway from a private way",
+        "all vehicles approaching on such highway",
+        "yield the right-of-way"
       ],
       "variable_assignments": {
         "approach_sides": {
           "kind": "world_setup",
-          "note": "engineering target; legal judgment unresolved",
           "value": []
         },
         "ego_control_policy": {
           "kind": "controller",
-          "note": "engineering target; legal judgment unresolved",
           "value": "continue"
         },
         "maneuver": {
           "kind": "world_setup",
-          "note": "engineering target; legal judgment unresolved",
           "value": "enter"
-        },
-        "ordinary_motor_driver": {
-          "kind": "world_setup",
-          "note": "engineering target; legal judgment unresolved",
-          "value": true
         },
         "private_way_origin": {
           "kind": "world_setup",
-          "note": "engineering target; legal judgment unresolved",
           "value": true
         }
       }
@@ -978,6 +1096,52 @@
   ],
   "cell_id": "C228096",
   "status": "draft",
-  "sweep_specs": [],
+  "sweep_specs": [
+    {
+      "judgment_refs": [
+        {
+          "note": "Confirm original private ownership and access, public highway designation, feasible route and driver control.",
+          "phrase": "about to enter or cross a highway from a private way"
+        }
+      ],
+      "missing_inputs": [
+        "Original physical and legal review."
+      ],
+      "rationale": "No accepted original measurement or exact judgment range supplied.",
+      "status": "incomplete",
+      "sweep_id": "legal_phrase_1",
+      "target_law_id": "NRS-484B-260"
+    },
+    {
+      "judgment_refs": [
+        {
+          "note": "Inventory every highway actor on both source-reviewed approach directions at each original frame.",
+          "phrase": "all vehicles approaching on such highway"
+        }
+      ],
+      "missing_inputs": [
+        "Original physical and legal review."
+      ],
+      "rationale": "No accepted original measurement or exact judgment range supplied.",
+      "status": "incomplete",
+      "sweep_id": "legal_phrase_2",
+      "target_law_id": "NRS-484B-260"
+    },
+    {
+      "judgment_refs": [
+        {
+          "note": "Measure original vehicle trajectories, times and precedence; legal yielding has no invented numeric cutoff.",
+          "phrase": "yield the right-of-way"
+        }
+      ],
+      "missing_inputs": [
+        "Original physical and legal review."
+      ],
+      "rationale": "No accepted original measurement or exact judgment range supplied.",
+      "status": "incomplete",
+      "sweep_id": "legal_phrase_3",
+      "target_law_id": "NRS-484B-260"
+    }
+  ],
   "sweeps_expanded": true
 }

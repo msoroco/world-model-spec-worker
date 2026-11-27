@@ -1,6 +1,10 @@
 # testing__C228096__NRS-484B-260__motor_vehicle_driver
 
-Status: partial CPU construction. Nine cases and six comparisons are selected; the Native delivery package remains in progress.
+Status: ready for local GPU delivery after exact scoped strict CPU gate; original physical and legal acceptance remain pending.
+
+## 2026-11-27 14:06 UTC — scoped delivery gate passed
+
+Nine selected exact cases and six controlled comparisons are bound to `execution-manifest.json` and `queue-proposal.json`. Eighteen primary/fallback offline checks, 18 pinned positive/negative compatibility checks, nine saved-only positive and nine missing-motion feedback replays, 27 synthetic physical outcome fixtures with owner-release lifecycle checks, nine independent delivery positive/negative audits, and six independent comparison positive/negative audits passed. The canonical semantic stage chain passed current runtime validation. The focused suite passed 13 tests with the materialized bundle check. `.venv-cpu/bin/python worker_check.py --assignment testing__C228096__NRS-484B-260__motor_vehicle_driver --complete --require-delivery-ready` passed after final test-log binding. The exact queue proposal was integrated: nine cases, six comparison commands and 78 syntax-checked commands. These CPU diagnostics do not prove actual CARLA geometry, original pixel visibility, highway status or legal yielding; local Native capture and independent source review remain.
 
 ## 2026-11-27 exact offline and compatibility checkpoint
 

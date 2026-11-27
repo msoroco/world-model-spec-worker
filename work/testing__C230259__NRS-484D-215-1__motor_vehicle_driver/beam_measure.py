@@ -52,7 +52,8 @@ def _body_gap(a: tuple[float, float, float], b: tuple[float, float, float], ra: 
     return max(0.0, _distance(a, b) - ra - rb)
 
 
-def measure(root: Path, source_hashes: dict[str, str], *, expected_frames: int = 900) -> dict:
+def measure(root: Path, source_hashes: dict[str, str], *, expected_frames: int = 900,
+            case: dict | None = None) -> dict:
     """Validate original 20 Hz joins and report distance/beam observations.
 
     actor-state.jsonl requires original positions for ego, oncoming, a person
@@ -136,6 +137,15 @@ def measure(root: Path, source_hashes: dict[str, str], *, expected_frames: int =
                      "target_vehicle_center_distance_m": round(_distance(centers["ego"], centers["target_vehicle"]), 4),
                      "lamp_command_bits": ego["lamp_command_bits"],
                      "lamp_state_bits": ego["lamp_state_bits"]})
+    if case is not None:
+        if case.get("branch") == "general":
+            if any(row["body_gap_within_500_ft"] or row["eye_gap_within_500_ft"] for row in rows):
+                raise ValueError("general beam comparison entered oncoming 500-foot condition")
+        elif case.get("branch") == "oncoming":
+            if not any(row["body_gap_within_500_ft"] or row["eye_gap_within_500_ft"] for row in rows):
+                raise ValueError("oncoming case never reached 500-foot condition")
+        else:
+            raise ValueError("unknown exact beam case branch")
     return {"format": "beam-road-original-measurement-v1", "frame_count": expected_frames,
             "first_original_frame": base_frame, "last_original_frame": base_frame + expected_frames - 1,
             "actor_ids": ids, "source_hashes": source_hashes, "rows": rows,

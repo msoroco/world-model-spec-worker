@@ -42,7 +42,11 @@ def main():
         case("motor_vehicle_30m01s", 1801, "02:00:00", vehicle_class="motor"),
         case("loading_30m01s", 1801, "02:00:00", purpose="actual_loading"),
         case("boundary_01m", 1801, "00:59:59"),
-        case("boundary_06m", 1801, "05:59:59"),
+        case("boundary_01_at", 1801, "01:00:00"),
+        case("boundary_01_after", 1801, "01:00:01"),
+        case("boundary_06_before", 1801, "05:29:58"),
+        case("boundary_06_at", 1801, "05:29:59"),
+        case("boundary_06m", 1801, "05:30:00"),
     ]
     plan["comparisons"] = [
         comparison("duration_below_at", "night_29m59s", "night_30m00s", ["measured parked duration 1799 versus 1800 seconds"]),
@@ -50,8 +54,10 @@ def main():
         comparison("night_vs_day", "night_30m01s", "outside_window_30m01s", ["civil clock interval"]),
         comparison("nonmotor_exception", "night_30m01s", "motor_vehicle_30m01s", ["source-proven vehicle classification and motive power"]),
         comparison("parking_vs_loading", "night_30m01s", "loading_30m01s", ["actual loading activity and parking purpose"]),
-        comparison("one_am_boundary", "night_30m01s", "boundary_01m", ["civil clock entry across 01:00"]),
-        comparison("six_am_boundary", "night_30m01s", "boundary_06m", ["civil clock exit across 06:00"]),
+        comparison("one_am_below_at", "boundary_01m", "boundary_01_at", ["parking episode start 00:59:59 versus 01:00:00 local"]),
+        comparison("one_am_at_above", "boundary_01_at", "boundary_01_after", ["parking episode start 01:00:00 versus 01:00:01 local"]),
+        comparison("six_am_below_at", "boundary_06_before", "boundary_06_at", ["parking episode end 05:59:59 versus 06:00:00 local"]),
+        comparison("six_am_at_above", "boundary_06_at", "boundary_06m", ["parking episode end 06:00:00 versus 06:00:01 local"]),
     ]
     plan["observations"] = [
         {"name": "original_body_state", "mandatory": True, "source": "Native per-frame body, velocity, street intersection"},
@@ -65,7 +71,7 @@ def main():
         "requirement": "LVMC-11-52-300",
         "source": "LVMC 11.52.300 exact frozen text",
         "status": "selected_required",
-        "evidence_or_gap": "No accepted recording; eight source-bound proposed episodes cover duration, time window, nonmotor scope, and parking activity. Physical classification remains unverified.",
+        "evidence_or_gap": "No accepted recording; twelve source-bound proposed episodes cover duration below/at/above, each civil-time endpoint below/at/above, nonmotor scope, and parking activity. Physical classification remains unverified.",
         "case_ids": [x["case_id"] for x in plan["cases"]],
         "disposition_index": 0,
     }]
@@ -76,10 +82,21 @@ def main():
         "why_existing_insufficient": "The frozen accepted-recording inventory is empty; no original parking duration, time, vehicle classification, or street source is available.",
     }]
     plan["source_observation_mapping"] = {}
+    plan["camera_plan"] = {
+        "profile": "overview1080-capability",
+        "duration_s": 1805.05,
+        "composition": "synchronized_four_view_primary",
+        "coverage": [
+            {"view": "overview", "subject": "both vehicle full bodies and qualifying street", "interval": "full original 1805.05-second window"},
+            {"view": "approach", "subject": "subject approach, stop and departure", "interval": "full original 1805.05-second window"},
+            {"view": "reference_corner", "subject": "subject and other vehicle geometry at parking place", "interval": "full original 1805.05-second window"},
+            {"view": "driver_reference", "subject": "responsible person and carriage context", "interval": "full original 1805.05-second window"},
+        ],
+    }
     plan["planning_status"] = "source_bound_exact_cases_pending_construction"
     plan["runtime_uncertainties"] = [
         "Carriage qualification, jurisdiction, parking rather than actual temporary loading, and vehicle definition exclusions require external source dossiers and independent review.",
-        "Actual 1801-second continuous capture at 20 Hz with four views is a physical cost and retention risk; no original recording exists yet.",
+        "Actual 1805.05-second continuous capture at 20 Hz with four views is a physical cost and retention risk; no original recording exists yet.",
         "Meaning of statutory endpoints at exactly 01:00 and 06:00 and cross-window counting remains a legal review question; engineering measurements do not decide it.",
     ]
     (ROOT / "case-plan.json").write_text(json.dumps(plan, indent=2) + "\n")

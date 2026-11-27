@@ -83,10 +83,10 @@ def build() -> dict:
         ])
     ]
     current["camera_plan"] = {"profile": "overview1080-capability", "duration_s": 45, "fps": 20, "composition": "synchronized_four_view_primary", "coverage": [
-        {"view": "overview", "subject": "ego/oncoming bodies, highway and sampled 500-foot approach"},
-        {"view": "approach", "subject": "person and vehicle ahead, physical road illumination"},
-        {"view": "reference_corner", "subject": "contour, original body/eye positions and lamp installation"},
-        {"view": "driver_reference", "subject": "original oncoming driver-eye region and glare rays"},
+        {"view": "overview", "interval": "all 900 frames", "subject": "ego/oncoming bodies, highway and sampled 500-foot approach"},
+        {"view": "approach", "interval": "all 900 frames", "subject": "person and vehicle ahead, physical road illumination"},
+        {"view": "reference_corner", "interval": "all 900 frames", "subject": "contour, original body/eye positions and lamp installation"},
+        {"view": "driver_reference", "interval": "all 900 frames", "subject": "original oncoming driver-eye region and glare rays"},
     ]}
     current["source_observation_mapping"] = {}
     current["planning_status"] = "exact_cases_with_source_requirements"

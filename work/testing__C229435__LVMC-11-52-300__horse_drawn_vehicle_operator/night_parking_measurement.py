@@ -56,9 +56,14 @@ def measure(source_dir, contract):
     trace_path = source_dir / files["trace"]["path"]
     if _sha(trace_path) != files["trace"]["sha256"]:
         raise ValueError("original trace SHA256 mismatch")
+    frame_map_path = source_dir / files["frame_map"]["path"]
+    if _sha(frame_map_path) != files["frame_map"]["sha256"]:
+        raise ValueError("original frame map SHA256 mismatch")
     if context.get("iana_timezone") != "America/Los_Angeles" or not context.get("municipal_jurisdiction_source") or not context.get("street_source"):
         raise ValueError("qualifying street and civil timezone sources required")
-    if not all(classification.get(key) is not None for key in ("transport_capable", "self_propelled", "vehicle_exclusions_checked", "physical_source")):
+    if (not all(type(classification.get(key)) is bool for key in
+                ("transport_capable", "self_propelled", "vehicle_exclusions_checked")) or
+            not classification.get("physical_source")):
         raise ValueError("physical vehicle classification source required")
     if not activity.get("responsible_person_source") or not activity.get("activity_source"):
         raise ValueError("parking activity and responsible person sources required")
@@ -66,11 +71,15 @@ def measure(source_dir, contract):
     with trace_path.open() as handle:
         for line in handle:
             frames.append(json.loads(line))
+    with frame_map_path.open() as handle:
+        mapping = [json.loads(line) for line in handle]
     if len(frames) < 2:
         raise ValueError("original frame history too short")
+    if len(frames) != len(mapping):
+        raise ValueError("original trace/frame count mismatch")
     prior_number = None
     prior_time = None
-    for frame in frames:
+    for index, frame in enumerate(frames):
         number = frame.get("frame")
         time = frame.get("utc_time")
         if type(number) is not int or not isinstance(time, str):
@@ -79,6 +88,11 @@ def measure(source_dir, contract):
         if instant.tzinfo is None:
             raise ValueError("UTC frame time must be timezone aware")
         instant = instant.astimezone(dt.timezone.utc)
+        mapped = mapping[index]
+        if (mapped.get("carla_frame") != number or mapped.get("video_frame") != index or
+                type(mapped.get("time_s")) not in (int, float) or
+                not math.isclose(mapped["time_s"], index / FPS, abs_tol=.001)):
+            raise ValueError("original video/frame/time join mismatch")
         if prior_number is not None:
             if number != prior_number + 1 or not math.isclose((instant - prior_time).total_seconds(), 1 / FPS, abs_tol=.001):
                 raise ValueError("original 20 Hz frame/time discontinuity")
@@ -90,26 +104,41 @@ def measure(source_dir, contract):
                 raise ValueError(f"nonfinite original {actor} body")
         if type(frame.get("subject", {}).get("on_street")) is not bool or type(frame.get("subject", {}).get("parked")) is not bool:
             raise ValueError("original street/parking state required")
+        speed = frame["subject"].get("speed_m_s")
+        if type(speed) not in (int, float) or not math.isfinite(speed) or speed < 0:
+            raise ValueError("original body speed must be finite and nonnegative")
         prior_number = number
         prior_time = instant
-    start = dt.datetime.fromisoformat(frames[0]["utc_time"].replace("Z", "+00:00")).astimezone(dt.timezone.utc)
-    end = dt.datetime.fromisoformat(frames[-1]["utc_time"].replace("Z", "+00:00")).astimezone(dt.timezone.utc)
-    if not all(f["subject"]["on_street"] and f["subject"]["parked"] for f in frames):
+    parked = [index for index, frame in enumerate(frames) if frame["subject"]["on_street"] and frame["subject"]["parked"]]
+    if len(parked) < 2 or parked != list(range(parked[0], parked[-1] + 1)):
         raise ValueError("incomplete continuously parked street episode")
+    episode = frames[parked[0]:parked[-1] + 1]
+    if any(frame["subject"]["speed_m_s"] > .15 for frame in episode):
+        raise ValueError("original parked body must have stationary engineering speed")
+    start = dt.datetime.fromisoformat(episode[0]["utc_time"].replace("Z", "+00:00")).astimezone(dt.timezone.utc)
+    end = dt.datetime.fromisoformat(episode[-1]["utc_time"].replace("Z", "+00:00")).astimezone(dt.timezone.utc)
+    initial_body = episode[0]["subject"]["body_vertices_xy_m"]
+    if any(max(math.dist(a, b) for a, b in zip(initial_body, frame["subject"]["body_vertices_xy_m"])) > .2 for frame in episode):
+        raise ValueError("original parked body displaced beyond engineering stationary tolerance")
     if not activity.get("episode_start_event_source") or not activity.get("episode_end_event_source"):
         raise ValueError("independent parking boundary events required")
     # Endpoint events must correspond to retained original samples, not a narrated target.
-    if activity.get("start_frame") != frames[0]["frame"] or activity.get("end_frame") != frames[-1]["frame"]:
+    if activity.get("start_frame") != episode[0]["frame"] or activity.get("end_frame") != episode[-1]["frame"]:
         raise ValueError("episode event/frame join mismatch")
     elapsed = (end - start).total_seconds()
     return {
-        "first_frame": frames[0]["frame"],
-        "last_frame": frames[-1]["frame"],
+        "first_frame": episode[0]["frame"],
+        "last_frame": episode[-1]["frame"],
         "frame_count": len(frames),
+        "parked_frame_count": len(episode),
         "elapsed_s": elapsed,
         "night_overlap_s": night_overlap_seconds(start, end, context["iana_timezone"]),
         "start_local": start.astimezone(ZoneInfo(context["iana_timezone"])).isoformat(),
         "end_local": end.astimezone(ZoneInfo(context["iana_timezone"])).isoformat(),
+        "subject_body_start_xy_m": initial_body,
+        "subject_body_end_xy_m": episode[-1]["subject"]["body_vertices_xy_m"],
+        "other_vehicle_body_start_xy_m": episode[0]["other_vehicle"]["body_vertices_xy_m"],
+        "other_vehicle_body_end_xy_m": episode[-1]["other_vehicle"]["body_vertices_xy_m"],
         "transport_capable": classification["transport_capable"],
         "self_propelled": classification["self_propelled"],
         "vehicle_exclusions_checked": classification["vehicle_exclusions_checked"],

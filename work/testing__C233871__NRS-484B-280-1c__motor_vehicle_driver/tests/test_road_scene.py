@@ -1,6 +1,7 @@
 import hashlib
 import importlib.util
 import json
+import os
 import tempfile
 import unittest
 from pathlib import Path
@@ -19,7 +20,9 @@ def body(x, y):
 class RoadSceneTests(unittest.TestCase):
     def setUp(self):
         # All scratch stays outside the checkpointed work tree.
-        self.tmp = tempfile.TemporaryDirectory(dir=Path.cwd() / ".runtime-work")
+        scratch = Path(os.environ["SCENARIO_PIPELINE_OUTPUT_ROOT"])
+        scratch.mkdir(parents=True, exist_ok=True)
+        self.tmp = tempfile.TemporaryDirectory(dir=scratch)
         self.addCleanup(self.tmp.cleanup)
         self.root = Path(self.tmp.name)
         (self.root / "map.xodr").write_text("<OpenDRIVE/>")
