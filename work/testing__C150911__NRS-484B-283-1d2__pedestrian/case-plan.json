@@ -118,9 +118,29 @@
   ],
   "comparisons": [
     {
-      "comparison_id": "completion_boundary",
+      "comparison_id": "completion_before_at",
       "case_ids": [
         "testing__C150911__NRS-484B-283-1d2__pedestrian__before_zero_dont_walk",
+        "testing__C150911__NRS-484B-283-1d2__pedestrian__at_zero_dont_walk"
+      ],
+      "fixed_conditions": [
+        "one-way public road geometry",
+        "marked crosswalk",
+        "pedestrian actor",
+        "official facing signal",
+        "flashing illuminated indication",
+        "same countdown progression",
+        "20 Hz original frame identity",
+        "four cameras",
+        "referenced exception inventory"
+      ],
+      "deliberate_differences": [
+        "observed crossing completion before versus at first displayed zero"
+      ]
+    },
+    {
+      "comparison_id": "completion_at_after",
+      "case_ids": [
         "testing__C150911__NRS-484B-283-1d2__pedestrian__at_zero_dont_walk",
         "testing__C150911__NRS-484B-283-1d2__pedestrian__after_zero_dont_walk"
       ],
@@ -136,7 +156,7 @@
         "referenced exception inventory"
       ],
       "deliberate_differences": [
-        "observed crossing completion before, at, or after first displayed zero"
+        "observed crossing completion at versus after first displayed zero"
       ]
     },
     {
@@ -204,10 +224,26 @@
     }
   ],
   "observations": [
-    "original pedestrian signal form, illumination, flashing, facing and displayed countdown value each frame",
-    "original pedestrian pose and highway boundary entry/completion each frame",
-    "original one-way public highway and crossing route geometry",
-    "separate unresolved cited exception context"
+    {
+      "name": "signal_countdown",
+      "mandatory": true,
+      "description": "original illuminated flashing facing indication and displayed integer countdown"
+    },
+    {
+      "name": "pedestrian_crossing",
+      "mandatory": true,
+      "description": "original pose, highway entry and complete crossing"
+    },
+    {
+      "name": "highway_context",
+      "mandatory": true,
+      "description": "source-hashed one-way public highway and routes"
+    },
+    {
+      "name": "exception_context",
+      "mandatory": true,
+      "description": "source-hashed cited exception context"
+    }
   ],
   "sources": [
     {
@@ -334,5 +370,33 @@
       ],
       "evidence_or_gap": "No accepted original crossing or countdown evidence"
     }
-  ]
+  ],
+  "source_observation_mapping": {},
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "one-way highway, crossing and pedestrian",
+        "interval": "full 45 seconds"
+      },
+      {
+        "view": "approach",
+        "subject": "pedestrian crossing entry and complete exit",
+        "interval": "full 45 seconds"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "facing illuminated flashing signal and legible countdown",
+        "interval": "full 45 seconds"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "one-way vehicular direction and crossing context",
+        "interval": "full 45 seconds"
+      }
+    ]
+  }
 }

@@ -63,9 +63,7 @@ def build(case):
         ego_y=3 if case["ego_lane_action_request"]=="outside" else 0
         ebody,obody=body(ego_x,ego_y),body(other_x,0)
         row={"frame":i,"time_s":i/20,"ego_actor_id":1,"participant_actor_id":2,
-             "rider_actor_id":3 if not case["road_user_kind"].endswith("pedestrian") else None,
              "ego_body_polygon":ebody,"participant_body_polygon":obody,
-             "ego_lane_action_request":case["ego_lane_action_request"],
              "ego_control":{},"participant_control":{}}
         history.append(row)
         trace.append({"frame":i,"time_s":i/20,"position_m":[ego_x,ego_y,0],
@@ -87,7 +85,7 @@ def build(case):
             "original_observations":observed})
         rel=f"graphs/base/{i:08d}.adapter.json"
         graphs.append({"path":"capture/native/"+rel,
-                       "attributes":{"frame":i,"time_s":i/20,"observed_evidence":observed},
+                       "attributes":{"frame":i,"observed_evidence":observed},
                        "nodes":[],"edges":[]})
         index.append({"frame":i,"simulation_time":i/20,"adapter_graph":rel})
     road_sha=sha(ROOT/"diagnostic-map.xodr")

@@ -146,9 +146,15 @@ def capture(client, packet, case_id, source_root, output, *, carla_module=None,
                           "left_side_rays": [ray], "commands": step["commands"]}
                 history.write(json.dumps(record, sort_keys=True) + "\n")
                 ego = participants["ego"]
+                ego_transform = scene.actors["ego"].get_transform()
+                ego_location = ego_transform.location
                 trace.write(json.dumps({"video_frame": index, "frame": world_frame,
                                         "carla_frame": world_frame,
                                         "native_frame": world_frame, "time_s": timestamp,
+                                        "position": {"x": ego_location.x,
+                                                     "y": ego_location.y,
+                                                     "z": ego_location.z},
+                                        "heading_deg": ego_transform.rotation.yaw,
                                         "position_m": [ego["station_m"], ego["lateral_m"]],
                                         "speed_mps": ego["speed_mps"]}, sort_keys=True) + "\n")
                 graph.capture(world_frame, timestamp)

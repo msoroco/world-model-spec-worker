@@ -63,7 +63,7 @@ class CycleLane2703Tests(unittest.TestCase):
                 result = prepare(case["case_id"], *packet)
                 self.assertEqual(case["case_id"], result["case_id"])
                 self.assertEqual(case["road_user_kind"], result["participant_kind"])
-                self.assertIsNone(result["legal_verdict"])
+                self.assertNotIn("legal_verdict", result)
 
     def test_rejects_stale_source_and_wrong_qualifier(self):
         case = self.plan["cases"][4]

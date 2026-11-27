@@ -127,7 +127,6 @@ def measure_original(rows: list[Mapping], site: Mapping, case: Case) -> dict:
     require(type(first_frame) is int, "original frame identity missing")
     identity = None
     entry = completion = first_zero = None
-    prior_display = None
     prior_countdown = None
     seen_flashing = False
     route = site["crossing_routes"][case.direction]["waypoints_xy"]
@@ -142,9 +141,8 @@ def measure_original(rows: list[Mapping], site: Mapping, case: Case) -> dict:
             require(bool(row.get(name)), "original source missing: " + name)
         require(row.get("site_source_sha256") == site["signal_source_sha256"],
                 "original signal site changed")
-        require(row.get("signal_facing_direction") in (case.direction, "both") and
-                row.get("signal_form") == case.signal_form,
-                "facing signal/form differs from case")
+        require(row.get("signal_facing_direction") in (case.direction, "both"),
+                "facing signal differs from case")
         ped_id = row.get("pedestrian_id")
         require(bool(ped_id), "original pedestrian identity missing")
         if identity is None:
@@ -155,30 +153,34 @@ def measure_original(rows: list[Mapping], site: Mapping, case: Case) -> dict:
                 type(row.get("countdown_present")) is bool,
                 "original signal state readback missing")
         value = row.get("countdown_value")
-        require(type(value) is int and value >= 0 and
-                row["countdown_present"],
-                "legible original countdown value missing")
-        if prior_countdown is not None:
-            require(value <= prior_countdown and value >= prior_countdown - 1,
-                    "original countdown sequence invalid")
-        prior_countdown = value
+        if row["countdown_present"]:
+            require(type(value) is int and value >= 0,
+                    "legible original countdown value missing")
+            if prior_countdown is not None:
+                require(value <= prior_countdown and value >= prior_countdown - 1,
+                        "original countdown sequence invalid")
+            prior_countdown = value
+        else:
+            require(first_zero is not None and not row["flashing"] and value is None,
+                    "countdown disappeared before displayed zero")
         if row["flashing"]:
-            require(row["illuminated"], "flashing indication was not illuminated")
+            require(row["illuminated"] and row["countdown_present"] and
+                    row.get("signal_form") == case.signal_form,
+                    "flashing indication or legible countdown differs from case")
             seen_flashing = True
-        elif seen_flashing and value > 0:
+        elif seen_flashing and value is not None and value > 0:
             raise ValueError("flashing ended before countdown zero")
         if value == 0 and first_zero is None:
             first_zero = frame
         position = row.get("pedestrian_xy")
         if in_polygon(position, site["highway_polygon_xy"]) and entry is None:
-            require(row["flashing"] and row["illuminated"] and value > 0,
+            require(row["flashing"] and row["illuminated"] and value is not None and value > 0,
                     "pedestrian entered outside flashing countdown")
             entry = frame
         if (entry is not None and
                 not in_polygon(position, site["highway_polygon_xy"]) and
                 near(position, route[-1]) and completion is None):
             completion = frame
-        prior_display = row["signal_form"]
     require(seen_flashing and entry is not None and completion is not None and
             first_zero is not None and entry < completion,
             "original flashing entry, zero or highway completion missing")
@@ -191,6 +193,6 @@ def measure_original(rows: list[Mapping], site: Mapping, case: Case) -> dict:
             "frame_count": len(rows), "entry_original_frame": entry,
             "completion_original_frame": completion,
             "first_zero_original_frame": first_zero,
-            "completion_relation": relation, "signal_form": prior_display,
+            "completion_relation": relation, "signal_form": case.signal_form,
             "crossing_direction": case.direction,
             "exception_applicability": "unresolved", "legal_judgment": None}
