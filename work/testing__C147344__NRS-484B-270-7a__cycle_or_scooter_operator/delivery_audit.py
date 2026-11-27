@@ -82,7 +82,7 @@ def original(attempt, processing_path, case_id, review_path,
              recording_id):
     attempt = Path(attempt).resolve()
     receipt, result = saved(attempt, processing_path, case_id)
-    provenance = read(attempt / 'acquisition-provenance.json')
+    provenance = read(attempt / 'capture-seal.json')
     require(provenance.get('provenance_kind') == 'native' and
             provenance.get('diagnostic_fixture') is False and
             result.get('diagnostic_fixture') is False,
@@ -101,6 +101,11 @@ def original(attempt, processing_path, case_id, review_path,
     for name in required:
         require(source_hashes.get(name) == sha(attempt / name),
                 'independent original source review absent or stale: ' + name)
+    from worker_exchange.native_output import physical_result
+    assessed = physical_result(Path(receipt['analysis_directory']), result)
+    require(assessed.get('physical_checks', {}).get('maneuver', {}).get('status') == 'met',
+            'original physical completion assessment did not pass')
+    result = assessed
     observation = result.get('measured_values', {})
     require(observation.get('frame_count') == 600 and
             observation.get('bicycle_id') and

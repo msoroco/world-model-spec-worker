@@ -1,0 +1,52 @@
+{
+  "format": "worker-measurement-contract",
+  "negative": {
+    "remove": [
+      "original-motion.json"
+    ],
+    "error_contains": "Missing required source: original-motion.json"
+  },
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "inputs": [
+        "original-motion.json",
+        "original-relation.json",
+        "original-frame-map.json"
+      ],
+      "kind": "measured",
+      "method": "build_report",
+      "output_key": "following_motion_measurement",
+      "requirement": "Slow driving impedes forward movement of traffic proceeding immediately behind",
+      "source": "NRS 484B.627(1)(a)",
+      "value_type": "object"
+    },
+    {
+      "disposition_index": 1,
+      "inputs": [
+        "original-motion.json",
+        "original-relation.json",
+        "original-frame-map.json",
+        "original-site.json"
+      ],
+      "kind": "measured",
+      "method": "build_report",
+      "output_key": "right_side_and_obstruction_measurement",
+      "requirement": "One lane each direction and paved width permits drive to extreme right side",
+      "source": "NRS 484B.627(1)(a)",
+      "value_type": "object"
+    },
+    {
+      "disposition_index": 2,
+      "inputs": [
+        "original-site.json"
+      ],
+      "kind": "sourced_context",
+      "method": "build_report",
+      "output_key": "nrs_484b_630_context",
+      "requirement": "If applicable comply with NRS 484B.630",
+      "source": "NRS 484B.627(1)(a) cross-reference",
+      "value_type": "object"
+    }
+  ]
+}

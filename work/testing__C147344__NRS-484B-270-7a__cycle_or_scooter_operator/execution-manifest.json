@@ -23,7 +23,20 @@
           },
           "changed_knobs": [
             "source-approved second bicycle route waypoint for spawn and remaining route; no new waypoint or scenario identity"
-          ]
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "69cdae2e5a9508e11bcb9e2a0550b2bd7ccb777df30b7e0625640d302a7639a7",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator/execution-manifest.json --case testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__planned_merge_braking --candidate fallback1 --output .runtime-work/c147344-owner/offline-fallback1-planned_merge_braking-v1",
+            "log": "proof-offline-fallback1-planned_merge_braking.log",
+            "log_sha256": "89d100b75900761e99761092f04910435a441b5da5484d86c83b3aa569b69dbd"
+          },
+          "compatibility": {
+            "receipt": "cases/planned_merge_braking/fallback1-compatibility.json",
+            "sha256": "e76899c5259f213a999ae47d29566bd63677e5bfd0b43491bbfb4f3abf373ec1",
+            "log": "cases/planned_merge_braking/fallback1-analysis.log",
+            "negative_log": "cases/planned_merge_braking/fallback1-negative-analysis.log"
+          }
         }
       ],
       "fixture_recipe": "work/testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator/diagnostics/planned_merge_braking-recipe.json",
@@ -81,9 +94,49 @@
         "log": "proof-offline-planned_merge_braking.log",
         "log_sha256": "5e8b0161a8cf1e0266386313b1cbacba06684eb0bb2a22ca9de9e7469b3921fb"
       },
-      "physical_preparation": {},
-      "post_capture": {},
-      "delivery_acceptance": {}
+      "physical_preparation": {
+        "receipt": "cases/planned_merge_braking/physical-receipt.json",
+        "sha256": "a792ae63f31b233ac4a7875756e7c3c92a8f6718aa57c3beac6b7601b73e41a6"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator/diagnostic-execution-manifest.json --case testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__planned_merge_braking --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147344-owner/saved-attempt-planned_merge_braking-v1 --output .runtime-work/c147344-owner/saved-processing-planned_merge_braking-v1 --library runtime/library --validator .runtime-work/c147344-owner/validator-current/.lake/build/bin/adapterCheck",
+        "receipt": "cases/planned_merge_braking/saved-processing.json",
+        "receipt_sha256": "99bd116684a9106fa35d0a68663c3ae6595efd4897d7bcf6b6e7badaa4639068",
+        "test_exit_code": 0,
+        "test_log": "proof-saved-planned_merge_braking.log",
+        "test_log_sha256": "99bd116684a9106fa35d0a68663c3ae6595efd4897d7bcf6b6e7badaa4639068",
+        "scope": "synthetic diagnostic saved-only replay; no original motion or pixel acceptance",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator/execution-manifest.json --case testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__planned_merge_braking --attempt \"$MISSING_SOURCE_ATTEMPT\" --output \"$FEEDBACK_OUTPUT\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_log": "proof-saved-missing-source.log",
+        "feedback_log_sha256": "4f2039b91a60505360963980d3d0128ccfbe46705950ed3a660216c799c2871e"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__planned_merge_braking",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "complete exact recorded-only processing receipt required",
+        "command": ".venv-cpu/bin/python work/testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator/delivery_audit.py --diagnostic --case testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__planned_merge_braking --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147344-owner/saved-attempt-planned_merge_braking-v1 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator/cases/planned_merge_braking/saved-processing.json",
+        "negative_command": ".venv-cpu/bin/python work/testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator/delivery_audit.py --diagnostic --case testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__planned_merge_braking --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147344-owner/saved-attempt-planned_merge_braking-v1 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator/cases/planned_merge_braking/saved-missing-source.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "d53de70792c77d16c601d6d0c716ff39bb3119040759a7d2db9ac2e4c0ea497f",
+        "test_log": "proof-delivery-planned_merge_braking-positive.log",
+        "test_log_sha256": "723a194af4f76431f16df16ca6235d71ca281d1b53cc9ce03fb16241f4030a2f",
+        "negative_log": "proof-delivery-planned_merge_braking-negative.log",
+        "negative_log_sha256": "a239b5972ec9be85de171403e990802b5b0bf7831815754f8f49cebf6a4f1511",
+        "scope": "synthetic diagnostic wiring only; original source/pixel/physical acceptance remains local"
+      }
     },
     {
       "case_id": "testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__planned_merge_no_braking",
@@ -105,7 +158,20 @@
           },
           "changed_knobs": [
             "source-approved second bicycle route waypoint for spawn and remaining route; no new waypoint or scenario identity"
-          ]
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "7cc0a794311e1e1eea2f87b842631b132110d4a689290341fc12426c21328aaa",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator/execution-manifest.json --case testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__planned_merge_no_braking --candidate fallback1 --output .runtime-work/c147344-owner/offline-fallback1-planned_merge_no_braking-v1",
+            "log": "proof-offline-fallback1-planned_merge_no_braking.log",
+            "log_sha256": "42e099dea59184d34d9b263e8b6473ed044b440d733bf6468a1062df9fe15064"
+          },
+          "compatibility": {
+            "receipt": "cases/planned_merge_no_braking/fallback1-compatibility.json",
+            "sha256": "f13426c70ed2b9f3c8cc2546c52483fa427fedf2299741b0295373ff8e099734",
+            "log": "cases/planned_merge_no_braking/fallback1-analysis.log",
+            "negative_log": "cases/planned_merge_no_braking/fallback1-negative-analysis.log"
+          }
         }
       ],
       "fixture_recipe": "work/testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator/diagnostics/planned_merge_no_braking-recipe.json",
@@ -163,9 +229,49 @@
         "log": "proof-offline-planned_merge_no_braking.log",
         "log_sha256": "de1172e76fd0d47aed63d3d4e0d69d605f29f6151eacb7a8c8dcf322580bfb5b"
       },
-      "physical_preparation": {},
-      "post_capture": {},
-      "delivery_acceptance": {}
+      "physical_preparation": {
+        "receipt": "cases/planned_merge_no_braking/physical-receipt.json",
+        "sha256": "2df4f9b90135c273d15fc8d57eaed789334915e04aee86bfe25cbaec0f8642a6"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator/diagnostic-execution-manifest.json --case testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__planned_merge_no_braking --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147344-owner/saved-attempt-planned_merge_no_braking-v1 --output .runtime-work/c147344-owner/saved-processing-planned_merge_no_braking-v1 --library runtime/library --validator .runtime-work/c147344-owner/validator-current/.lake/build/bin/adapterCheck",
+        "receipt": "cases/planned_merge_no_braking/saved-processing.json",
+        "receipt_sha256": "879accf4a74b640c7ce671f896301cc4b684fcf3713413cdbed4dadc76cac077",
+        "test_exit_code": 0,
+        "test_log": "proof-saved-planned_merge_no_braking.log",
+        "test_log_sha256": "879accf4a74b640c7ce671f896301cc4b684fcf3713413cdbed4dadc76cac077",
+        "scope": "synthetic diagnostic saved-only replay; no original motion or pixel acceptance",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator/execution-manifest.json --case testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__planned_merge_no_braking --attempt \"$MISSING_SOURCE_ATTEMPT\" --output \"$FEEDBACK_OUTPUT\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_log": "proof-saved-missing-source.log",
+        "feedback_log_sha256": "4f2039b91a60505360963980d3d0128ccfbe46705950ed3a660216c799c2871e"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__planned_merge_no_braking",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "complete exact recorded-only processing receipt required",
+        "command": ".venv-cpu/bin/python work/testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator/delivery_audit.py --diagnostic --case testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__planned_merge_no_braking --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147344-owner/saved-attempt-planned_merge_no_braking-v1 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator/cases/planned_merge_no_braking/saved-processing.json",
+        "negative_command": ".venv-cpu/bin/python work/testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator/delivery_audit.py --diagnostic --case testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__planned_merge_no_braking --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147344-owner/saved-attempt-planned_merge_no_braking-v1 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator/cases/planned_merge_braking/saved-missing-source.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "d53de70792c77d16c601d6d0c716ff39bb3119040759a7d2db9ac2e4c0ea497f",
+        "test_log": "proof-delivery-planned_merge_no_braking-positive.log",
+        "test_log_sha256": "ecafee0115f417d8b9d893c2bc57f2b1bafe8622ad3d8542ada372305f2ed482",
+        "negative_log": "proof-delivery-planned_merge_no_braking-negative.log",
+        "negative_log_sha256": "a239b5972ec9be85de171403e990802b5b0bf7831815754f8f49cebf6a4f1511",
+        "scope": "synthetic diagnostic wiring only; original source/pixel/physical acceptance remains local"
+      }
     },
     {
       "case_id": "testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__ordinary_merge_braking",
@@ -187,7 +293,20 @@
           },
           "changed_knobs": [
             "source-approved second bicycle route waypoint for spawn and remaining route; no new waypoint or scenario identity"
-          ]
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "e780b5ffb9c7691fb8fe79f581d6717ca403696c6a460b6066158ce5608eae85",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator/execution-manifest.json --case testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__ordinary_merge_braking --candidate fallback1 --output .runtime-work/c147344-owner/offline-fallback1-ordinary_merge_braking-v1",
+            "log": "proof-offline-fallback1-ordinary_merge_braking.log",
+            "log_sha256": "68a1ea1a56d374f6b97da74b2e73e00c24a47e3012ebc1208de23891a4d7c865"
+          },
+          "compatibility": {
+            "receipt": "cases/ordinary_merge_braking/fallback1-compatibility.json",
+            "sha256": "59a0d944817938f63a2929e69a290730962e20d15c3ce44aa4911ec4e1846175",
+            "log": "cases/ordinary_merge_braking/fallback1-analysis.log",
+            "negative_log": "cases/ordinary_merge_braking/fallback1-negative-analysis.log"
+          }
         }
       ],
       "fixture_recipe": "work/testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator/diagnostics/ordinary_merge_braking-recipe.json",
@@ -245,9 +364,49 @@
         "log": "proof-offline-ordinary_merge_braking.log",
         "log_sha256": "dbd2339eed723f07bcd057a7fc59e618f2395b274aea2ef98ca47866e0f73efc"
       },
-      "physical_preparation": {},
-      "post_capture": {},
-      "delivery_acceptance": {}
+      "physical_preparation": {
+        "receipt": "cases/ordinary_merge_braking/physical-receipt.json",
+        "sha256": "6811a32e64387c65fd0fff75b966468318e2956eaddff3339965e114249b19e8"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator/diagnostic-execution-manifest.json --case testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__ordinary_merge_braking --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147344-owner/saved-attempt-ordinary_merge_braking-v1 --output .runtime-work/c147344-owner/saved-processing-ordinary_merge_braking-v1 --library runtime/library --validator .runtime-work/c147344-owner/validator-current/.lake/build/bin/adapterCheck",
+        "receipt": "cases/ordinary_merge_braking/saved-processing.json",
+        "receipt_sha256": "ad63fd655b1295df61c074269b4fcd4409d92f385e4d523b3b5468b1d9f41514",
+        "test_exit_code": 0,
+        "test_log": "proof-saved-ordinary_merge_braking.log",
+        "test_log_sha256": "ad63fd655b1295df61c074269b4fcd4409d92f385e4d523b3b5468b1d9f41514",
+        "scope": "synthetic diagnostic saved-only replay; no original motion or pixel acceptance",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator/execution-manifest.json --case testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__ordinary_merge_braking --attempt \"$MISSING_SOURCE_ATTEMPT\" --output \"$FEEDBACK_OUTPUT\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_log": "proof-saved-missing-source.log",
+        "feedback_log_sha256": "4f2039b91a60505360963980d3d0128ccfbe46705950ed3a660216c799c2871e"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__ordinary_merge_braking",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "complete exact recorded-only processing receipt required",
+        "command": ".venv-cpu/bin/python work/testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator/delivery_audit.py --diagnostic --case testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__ordinary_merge_braking --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147344-owner/saved-attempt-ordinary_merge_braking-v1 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator/cases/ordinary_merge_braking/saved-processing.json",
+        "negative_command": ".venv-cpu/bin/python work/testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator/delivery_audit.py --diagnostic --case testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__ordinary_merge_braking --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147344-owner/saved-attempt-ordinary_merge_braking-v1 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator/cases/planned_merge_braking/saved-missing-source.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "d53de70792c77d16c601d6d0c716ff39bb3119040759a7d2db9ac2e4c0ea497f",
+        "test_log": "proof-delivery-ordinary_merge_braking-positive.log",
+        "test_log_sha256": "801219a944c1dd73a880e8d146726983cb2eb33e61745ceaa013b68350867423",
+        "negative_log": "proof-delivery-ordinary_merge_braking-negative.log",
+        "negative_log_sha256": "a239b5972ec9be85de171403e990802b5b0bf7831815754f8f49cebf6a4f1511",
+        "scope": "synthetic diagnostic wiring only; original source/pixel/physical acceptance remains local"
+      }
     },
     {
       "case_id": "testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__hold_lane_braking",
@@ -269,7 +428,20 @@
           },
           "changed_knobs": [
             "source-approved second bicycle route waypoint for spawn and remaining route; no new waypoint or scenario identity"
-          ]
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "1b1b495e393926b30579d7ea63380c218180f020f930e09b49f7150808007977",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator/execution-manifest.json --case testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__hold_lane_braking --candidate fallback1 --output .runtime-work/c147344-owner/offline-fallback1-hold_lane_braking-v1",
+            "log": "proof-offline-fallback1-hold_lane_braking.log",
+            "log_sha256": "79e27e01445bac6630c20030e4c7ba84c2b6dae86ab08541534ce45cb2ba5398"
+          },
+          "compatibility": {
+            "receipt": "cases/hold_lane_braking/fallback1-compatibility.json",
+            "sha256": "50d236c48599a138ac5ae704bce5e5014859a7e62a71dc0d1a633bef364ebd91",
+            "log": "cases/hold_lane_braking/fallback1-analysis.log",
+            "negative_log": "cases/hold_lane_braking/fallback1-negative-analysis.log"
+          }
         }
       ],
       "fixture_recipe": "work/testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator/diagnostics/hold_lane_braking-recipe.json",
@@ -327,9 +499,49 @@
         "log": "proof-offline-hold_lane_braking.log",
         "log_sha256": "7a8b17312fbf15a30ce01766d51d962c787a9d91c71cff50f8194a7904e214f3"
       },
-      "physical_preparation": {},
-      "post_capture": {},
-      "delivery_acceptance": {}
+      "physical_preparation": {
+        "receipt": "cases/hold_lane_braking/physical-receipt.json",
+        "sha256": "3e41e87914157cd0a3456edd18db453c08d426f35bc3cbc8643a95ef23355201"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator/diagnostic-execution-manifest.json --case testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__hold_lane_braking --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147344-owner/saved-attempt-hold_lane_braking-v1 --output .runtime-work/c147344-owner/saved-processing-hold_lane_braking-v1 --library runtime/library --validator .runtime-work/c147344-owner/validator-current/.lake/build/bin/adapterCheck",
+        "receipt": "cases/hold_lane_braking/saved-processing.json",
+        "receipt_sha256": "e6d805aef02d4766326405fdd21071be50538035a1f7dea60771d9c4f808a49b",
+        "test_exit_code": 0,
+        "test_log": "proof-saved-hold_lane_braking.log",
+        "test_log_sha256": "e6d805aef02d4766326405fdd21071be50538035a1f7dea60771d9c4f808a49b",
+        "scope": "synthetic diagnostic saved-only replay; no original motion or pixel acceptance",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator/execution-manifest.json --case testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__hold_lane_braking --attempt \"$MISSING_SOURCE_ATTEMPT\" --output \"$FEEDBACK_OUTPUT\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_log": "proof-saved-missing-source.log",
+        "feedback_log_sha256": "4f2039b91a60505360963980d3d0128ccfbe46705950ed3a660216c799c2871e"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__hold_lane_braking",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "complete exact recorded-only processing receipt required",
+        "command": ".venv-cpu/bin/python work/testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator/delivery_audit.py --diagnostic --case testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__hold_lane_braking --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147344-owner/saved-attempt-hold_lane_braking-v1 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator/cases/hold_lane_braking/saved-processing.json",
+        "negative_command": ".venv-cpu/bin/python work/testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator/delivery_audit.py --diagnostic --case testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__hold_lane_braking --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c147344-owner/saved-attempt-hold_lane_braking-v1 --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator/cases/planned_merge_braking/saved-missing-source.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "d53de70792c77d16c601d6d0c716ff39bb3119040759a7d2db9ac2e4c0ea497f",
+        "test_log": "proof-delivery-hold_lane_braking-positive.log",
+        "test_log_sha256": "e31ae3b3219430dc738c8d1286d1626e8ce91e1b81da90d36b73f3095b1877db",
+        "negative_log": "proof-delivery-hold_lane_braking-negative.log",
+        "negative_log_sha256": "a239b5972ec9be85de171403e990802b5b0bf7831815754f8f49cebf6a4f1511",
+        "scope": "synthetic diagnostic wiring only; original source/pixel/physical acceptance remains local"
+      }
     }
   ],
   "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",

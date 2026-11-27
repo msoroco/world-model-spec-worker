@@ -17,9 +17,156 @@
         {
           "id": "fallback1",
           "construction": "cases/destination_follower_halts/fallback1/construction.json",
-          "construction_sha256": "b397a96b100319a445c24720d06f4cd2359d1f2c27a23d70e75be4e95918b3c6"
+          "construction_sha256": "b397a96b100319a445c24720d06f4cd2359d1f2c27a23d70e75be4e95918b3c6",
+          "trigger": {
+            "source": "original stop-history.jsonl and reviewed stop station",
+            "metric": "ego stopping-footprint longitudinal overshoot in metres",
+            "failure_condition": "Original footprint exceeds the reviewed stop target by more than 2 m; engineering tolerance only"
+          },
+          "changed_knobs": [
+            "engineering.stop_trigger_frame: 200 to 170"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150640__NRS-484B-627-2__motor_vehicle_driver/diagnostic-execution-manifest.json --case testing__C150640__NRS-484B-627-2__motor_vehicle_driver__destination_follower_halts --candidate fallback1 --output .runtime-work/c150640-6272/offline5-destination_follower_halts-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "b397a96b100319a445c24720d06f4cd2359d1f2c27a23d70e75be4e95918b3c6",
+            "log": "cpu-offline-destination_follower_halts-fallback1.log",
+            "log_sha256": "1610c3bf995b9d322d7c27f9fa68be69c8a70e60ec73a4d4b4baf0d7cb0db490"
+          },
+          "compatibility": {
+            "receipt": "proofs/destination_follower_halts/fallback1/receipt.json",
+            "sha256": "04f542d0012ca1daef0d7f7a2938aadb15ee812c72cd4c33f87e2c4841ac604b",
+            "log": "proofs/destination_follower_halts/fallback1/analysis.log",
+            "negative_log": "proofs/destination_follower_halts/fallback1/negative.log"
+          }
         }
-      ]
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150640__NRS-484B-627-2__motor_vehicle_driver/diagnostic-execution-manifest.json --case testing__C150640__NRS-484B-627-2__motor_vehicle_driver__destination_follower_halts --output .runtime-work/c150640-6272/offline5-destination_follower_halts-primary",
+        "exit_code": 0,
+        "construction_sha256": "004b549dac78afa6b709224384a963566d0d50db51c0dda411b92babd32ad2b9",
+        "log": "cpu-offline-destination_follower_halts.log",
+        "log_sha256": "512be2f10360d3fbc8ff4c75bd39de8b1fde68b150142cdc5abd0dca4534b331"
+      },
+      "compatibility": {
+        "receipt": "proofs/destination_follower_halts/primary/receipt.json",
+        "sha256": "1236858b921bffe1598a3d15250eba30559e85daffa6b05642bdbebf88429d65",
+        "log": "proofs/destination_follower_halts/primary/analysis.log",
+        "negative_log": "proofs/destination_follower_halts/primary/negative.log"
+      },
+      "negative": {
+        "log": "proofs/destination_follower_halts/primary/negative.log"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original stopping footprint may overshoot the reviewed target; earlier braking is a common engineering fallback across linked comparisons."
+      },
+      "physical_preparation": {
+        "receipt": "proofs/destination_follower_halts/physical-preparation.json",
+        "sha256": "9a2578b0d550dd7c07592282a0a9bc5b52cce6b41dcd8b8a415f5c1a5c443a98"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150640__NRS-484B-627-2__motor_vehicle_driver__destination_follower_halts",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "d527ad6b6353b670bf3784d87c03c48a2c85b7a69c69c497a83ad26214093cd3",
+        "command": ".venv-cpu/bin/python work/testing__C150640__NRS-484B-627-2__motor_vehicle_driver/delivery_probe.py --case testing__C150640__NRS-484B-627-2__motor_vehicle_driver__destination_follower_halts --fixture .runtime-work/c150640-6272/compat5-destination_follower_halts-primary --output .runtime-work/c150640-6272/delivery5-destination_follower_halts --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-destination_follower_halts-positive.log",
+        "test_log_sha256": "d921c6dcf5c6aff6c6da0085f36f48f91e863214327c28e6e4f170ed56f0e722",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150640__NRS-484B-627-2__motor_vehicle_driver/delivery_probe.py --case testing__C150640__NRS-484B-627-2__motor_vehicle_driver__destination_follower_halts --fixture .runtime-work/c150640-6272/compat5-destination_follower_halts-primary --output .runtime-work/c150640-6272/delivery5-destination_follower_halts --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original stop source missing or changed: stop-scene.json",
+        "negative_log": "delivery-destination_follower_halts-negative.log",
+        "negative_log_sha256": "befe7c6174e961ee8cc051a3f831298e3afde18eb337db5c46de7ce820849187",
+        "scope": "Synthetic CPU protocol proof; original physical delivery pending"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150640__NRS-484B-627-2__motor_vehicle_driver/execution-manifest.json --case testing__C150640__NRS-484B-627-2__motor_vehicle_driver__destination_follower_halts --attempt $ATTEMPT --output $DERIVED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150640__NRS-484B-627-2__motor_vehicle_driver/execution-manifest.json --case testing__C150640__NRS-484B-627-2__motor_vehicle_driver__destination_follower_halts --attempt $ATTEMPT --output $DERIVED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-destination_follower_halts.log",
+        "test_log_sha256": "5a46f0ba003c165a3e85ac4a18d588709add37a4c26c2535ae7e0015a6efc424"
+      },
+      "acquisition": {
+        "scene_source": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "one_way_route": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "ego_driver_and_vehicle": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "ego_motion": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "roadway_footprint": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "follower_motion": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "passing_space": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "stop_purpose": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "conflict_context": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "official_direction_context": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "camera_frame_map": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        }
+      },
+      "pending_original_sources": [
+        "reviewed original one-way map and roadway/shoulder polygons",
+        "source-hashed jurisdiction, stop purpose, conflict and official direction",
+        "released Native four-camera attempt and actual pixel review"
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "status": "source_gated_cpu_preparation"
     },
     {
       "case_id": "testing__C150640__NRS-484B-627-2__motor_vehicle_driver__destination_follower_passes",
@@ -35,9 +182,156 @@
         {
           "id": "fallback1",
           "construction": "cases/destination_follower_passes/fallback1/construction.json",
-          "construction_sha256": "1b852142ac0b00f1fc35f1c543e121c894cf81a61d1a3bd9a413d39df6022507"
+          "construction_sha256": "1b852142ac0b00f1fc35f1c543e121c894cf81a61d1a3bd9a413d39df6022507",
+          "trigger": {
+            "source": "original stop-history.jsonl and reviewed stop station",
+            "metric": "ego stopping-footprint longitudinal overshoot in metres",
+            "failure_condition": "Original footprint exceeds the reviewed stop target by more than 2 m; engineering tolerance only"
+          },
+          "changed_knobs": [
+            "engineering.stop_trigger_frame: 200 to 170"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150640__NRS-484B-627-2__motor_vehicle_driver/diagnostic-execution-manifest.json --case testing__C150640__NRS-484B-627-2__motor_vehicle_driver__destination_follower_passes --candidate fallback1 --output .runtime-work/c150640-6272/offline5-destination_follower_passes-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "1b852142ac0b00f1fc35f1c543e121c894cf81a61d1a3bd9a413d39df6022507",
+            "log": "cpu-offline-destination_follower_passes-fallback1.log",
+            "log_sha256": "3389eb72e5deb4e91df73ca38c0f82e28a29cc290960bfe406f98b4db2541271"
+          },
+          "compatibility": {
+            "receipt": "proofs/destination_follower_passes/fallback1/receipt.json",
+            "sha256": "d7e5e122c1749d58a319085cdbacf11ecbf035999f10aa3e7d1c062ca278b57b",
+            "log": "proofs/destination_follower_passes/fallback1/analysis.log",
+            "negative_log": "proofs/destination_follower_passes/fallback1/negative.log"
+          }
         }
-      ]
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150640__NRS-484B-627-2__motor_vehicle_driver/diagnostic-execution-manifest.json --case testing__C150640__NRS-484B-627-2__motor_vehicle_driver__destination_follower_passes --output .runtime-work/c150640-6272/offline5-destination_follower_passes-primary",
+        "exit_code": 0,
+        "construction_sha256": "ff99c328184735ff59912212bb92afe992abf9d671bd70ae57961517633f4685",
+        "log": "cpu-offline-destination_follower_passes.log",
+        "log_sha256": "ebcba1124c63e4f764a8d62be9614d58e2d919706e44784079f11755756a1f39"
+      },
+      "compatibility": {
+        "receipt": "proofs/destination_follower_passes/primary/receipt.json",
+        "sha256": "0b881f44175fd03895513ff71fb63dbf49513b1eeafafa8715b0d374fbc2d2b3",
+        "log": "proofs/destination_follower_passes/primary/analysis.log",
+        "negative_log": "proofs/destination_follower_passes/primary/negative.log"
+      },
+      "negative": {
+        "log": "proofs/destination_follower_passes/primary/negative.log"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original stopping footprint may overshoot the reviewed target; earlier braking is a common engineering fallback across linked comparisons."
+      },
+      "physical_preparation": {
+        "receipt": "proofs/destination_follower_passes/physical-preparation.json",
+        "sha256": "c69f767a2c81086fa7e210557cba8619533cb6dd78f34aebd82888d2d4ef9547"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150640__NRS-484B-627-2__motor_vehicle_driver__destination_follower_passes",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "d527ad6b6353b670bf3784d87c03c48a2c85b7a69c69c497a83ad26214093cd3",
+        "command": ".venv-cpu/bin/python work/testing__C150640__NRS-484B-627-2__motor_vehicle_driver/delivery_probe.py --case testing__C150640__NRS-484B-627-2__motor_vehicle_driver__destination_follower_passes --fixture .runtime-work/c150640-6272/compat5-destination_follower_passes-primary --output .runtime-work/c150640-6272/delivery5-destination_follower_passes --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-destination_follower_passes-positive.log",
+        "test_log_sha256": "09fe6627caad89b0fab4bcb0df413a2a6590f9ddb4e21f802cae97f2aa778256",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150640__NRS-484B-627-2__motor_vehicle_driver/delivery_probe.py --case testing__C150640__NRS-484B-627-2__motor_vehicle_driver__destination_follower_passes --fixture .runtime-work/c150640-6272/compat5-destination_follower_passes-primary --output .runtime-work/c150640-6272/delivery5-destination_follower_passes --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original stop source missing or changed: stop-scene.json",
+        "negative_log": "delivery-destination_follower_passes-negative.log",
+        "negative_log_sha256": "befe7c6174e961ee8cc051a3f831298e3afde18eb337db5c46de7ce820849187",
+        "scope": "Synthetic CPU protocol proof; original physical delivery pending"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150640__NRS-484B-627-2__motor_vehicle_driver/execution-manifest.json --case testing__C150640__NRS-484B-627-2__motor_vehicle_driver__destination_follower_passes --attempt $ATTEMPT --output $DERIVED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150640__NRS-484B-627-2__motor_vehicle_driver/execution-manifest.json --case testing__C150640__NRS-484B-627-2__motor_vehicle_driver__destination_follower_passes --attempt $ATTEMPT --output $DERIVED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-destination_follower_passes.log",
+        "test_log_sha256": "fe82e826d9fe03f08015b1c99bb88fb43f68ae9a5f758195c24b5113e3f91c10"
+      },
+      "acquisition": {
+        "scene_source": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "one_way_route": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "ego_driver_and_vehicle": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "ego_motion": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "roadway_footprint": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "follower_motion": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "passing_space": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "stop_purpose": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "conflict_context": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "official_direction_context": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "camera_frame_map": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        }
+      },
+      "pending_original_sources": [
+        "reviewed original one-way map and roadway/shoulder polygons",
+        "source-hashed jurisdiction, stop purpose, conflict and official direction",
+        "released Native four-camera attempt and actual pixel review"
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "status": "source_gated_cpu_preparation"
     },
     {
       "case_id": "testing__C150640__NRS-484B-627-2__motor_vehicle_driver__safety_conflict_stop",
@@ -53,9 +347,156 @@
         {
           "id": "fallback1",
           "construction": "cases/safety_conflict_stop/fallback1/construction.json",
-          "construction_sha256": "094f044df1f24ac2c179e1d335a85b30c550970e786c8458d897615fe91701b9"
+          "construction_sha256": "094f044df1f24ac2c179e1d335a85b30c550970e786c8458d897615fe91701b9",
+          "trigger": {
+            "source": "original stop-history.jsonl and reviewed stop station",
+            "metric": "ego stopping-footprint longitudinal overshoot in metres",
+            "failure_condition": "Original footprint exceeds the reviewed stop target by more than 2 m; engineering tolerance only"
+          },
+          "changed_knobs": [
+            "engineering.stop_trigger_frame: 200 to 170"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150640__NRS-484B-627-2__motor_vehicle_driver/diagnostic-execution-manifest.json --case testing__C150640__NRS-484B-627-2__motor_vehicle_driver__safety_conflict_stop --candidate fallback1 --output .runtime-work/c150640-6272/offline5-safety_conflict_stop-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "094f044df1f24ac2c179e1d335a85b30c550970e786c8458d897615fe91701b9",
+            "log": "cpu-offline-safety_conflict_stop-fallback1.log",
+            "log_sha256": "4f82597f7c0ef51aa4ad7145c160acc014212aa562d5c0aba938077fe0c63c9f"
+          },
+          "compatibility": {
+            "receipt": "proofs/safety_conflict_stop/fallback1/receipt.json",
+            "sha256": "87840392d2c7459d16d80d33983c7338a7231d0b429c1accbb46e0723bcca421",
+            "log": "proofs/safety_conflict_stop/fallback1/analysis.log",
+            "negative_log": "proofs/safety_conflict_stop/fallback1/negative.log"
+          }
         }
-      ]
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150640__NRS-484B-627-2__motor_vehicle_driver/diagnostic-execution-manifest.json --case testing__C150640__NRS-484B-627-2__motor_vehicle_driver__safety_conflict_stop --output .runtime-work/c150640-6272/offline5-safety_conflict_stop-primary",
+        "exit_code": 0,
+        "construction_sha256": "f3ea6aec817c00586a67b0da22738d398cc47a76efb7dc4c69672b306fdd7a0a",
+        "log": "cpu-offline-safety_conflict_stop.log",
+        "log_sha256": "48d22c955220e838da296fbad92e05e90e9351bbac4a60cf5fbaaf4c35fac080"
+      },
+      "compatibility": {
+        "receipt": "proofs/safety_conflict_stop/primary/receipt.json",
+        "sha256": "5bfad616cd2ca7491f33fd9113d5464e403f15f4c7e4bebc4baa9b9b3972e79a",
+        "log": "proofs/safety_conflict_stop/primary/analysis.log",
+        "negative_log": "proofs/safety_conflict_stop/primary/negative.log"
+      },
+      "negative": {
+        "log": "proofs/safety_conflict_stop/primary/negative.log"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original stopping footprint may overshoot the reviewed target; earlier braking is a common engineering fallback across linked comparisons."
+      },
+      "physical_preparation": {
+        "receipt": "proofs/safety_conflict_stop/physical-preparation.json",
+        "sha256": "4a02ca17acd8e81fa8257384f31d9ee5caf08fb433b64cb73fd1ba0f5a8e92db"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150640__NRS-484B-627-2__motor_vehicle_driver__safety_conflict_stop",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "d527ad6b6353b670bf3784d87c03c48a2c85b7a69c69c497a83ad26214093cd3",
+        "command": ".venv-cpu/bin/python work/testing__C150640__NRS-484B-627-2__motor_vehicle_driver/delivery_probe.py --case testing__C150640__NRS-484B-627-2__motor_vehicle_driver__safety_conflict_stop --fixture .runtime-work/c150640-6272/compat5-safety_conflict_stop-primary --output .runtime-work/c150640-6272/delivery5-safety_conflict_stop --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-safety_conflict_stop-positive.log",
+        "test_log_sha256": "7e96b91de337b6ad31ea54ccf21bae5bcb6715db7c38ccdbfde2bba690c3376e",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150640__NRS-484B-627-2__motor_vehicle_driver/delivery_probe.py --case testing__C150640__NRS-484B-627-2__motor_vehicle_driver__safety_conflict_stop --fixture .runtime-work/c150640-6272/compat5-safety_conflict_stop-primary --output .runtime-work/c150640-6272/delivery5-safety_conflict_stop --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original stop source missing or changed: stop-scene.json",
+        "negative_log": "delivery-safety_conflict_stop-negative.log",
+        "negative_log_sha256": "befe7c6174e961ee8cc051a3f831298e3afde18eb337db5c46de7ce820849187",
+        "scope": "Synthetic CPU protocol proof; original physical delivery pending"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150640__NRS-484B-627-2__motor_vehicle_driver/execution-manifest.json --case testing__C150640__NRS-484B-627-2__motor_vehicle_driver__safety_conflict_stop --attempt $ATTEMPT --output $DERIVED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150640__NRS-484B-627-2__motor_vehicle_driver/execution-manifest.json --case testing__C150640__NRS-484B-627-2__motor_vehicle_driver__safety_conflict_stop --attempt $ATTEMPT --output $DERIVED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-safety_conflict_stop.log",
+        "test_log_sha256": "b509f9fb0bef9d008e31c8da41454a11b3ab2d3e23cd240d9b0025638fb41668"
+      },
+      "acquisition": {
+        "scene_source": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "one_way_route": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "ego_driver_and_vehicle": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "ego_motion": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "roadway_footprint": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "follower_motion": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "passing_space": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "stop_purpose": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "conflict_context": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "official_direction_context": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "camera_frame_map": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        }
+      },
+      "pending_original_sources": [
+        "reviewed original one-way map and roadway/shoulder polygons",
+        "source-hashed jurisdiction, stop purpose, conflict and official direction",
+        "released Native four-camera attempt and actual pixel review"
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "status": "source_gated_cpu_preparation"
     },
     {
       "case_id": "testing__C150640__NRS-484B-627-2__motor_vehicle_driver__law_direction_stop",
@@ -71,9 +512,156 @@
         {
           "id": "fallback1",
           "construction": "cases/law_direction_stop/fallback1/construction.json",
-          "construction_sha256": "613bb86aa1c524dd08cfc9df654d4cb85f1ee14bb7eef430ce1cdd93c4b7a24f"
+          "construction_sha256": "613bb86aa1c524dd08cfc9df654d4cb85f1ee14bb7eef430ce1cdd93c4b7a24f",
+          "trigger": {
+            "source": "original stop-history.jsonl and reviewed stop station",
+            "metric": "ego stopping-footprint longitudinal overshoot in metres",
+            "failure_condition": "Original footprint exceeds the reviewed stop target by more than 2 m; engineering tolerance only"
+          },
+          "changed_knobs": [
+            "engineering.stop_trigger_frame: 200 to 170"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150640__NRS-484B-627-2__motor_vehicle_driver/diagnostic-execution-manifest.json --case testing__C150640__NRS-484B-627-2__motor_vehicle_driver__law_direction_stop --candidate fallback1 --output .runtime-work/c150640-6272/offline5-law_direction_stop-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "613bb86aa1c524dd08cfc9df654d4cb85f1ee14bb7eef430ce1cdd93c4b7a24f",
+            "log": "cpu-offline-law_direction_stop-fallback1.log",
+            "log_sha256": "f8f5e25b50ccef21568a2cb909578832165c17cad6a23b76ff6f4b9ad7d69f07"
+          },
+          "compatibility": {
+            "receipt": "proofs/law_direction_stop/fallback1/receipt.json",
+            "sha256": "6b6c06c949c2a5abce4ed20b6bb8525a9af5b40ca1145034d89fb7ad2fc55041",
+            "log": "proofs/law_direction_stop/fallback1/analysis.log",
+            "negative_log": "proofs/law_direction_stop/fallback1/negative.log"
+          }
         }
-      ]
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150640__NRS-484B-627-2__motor_vehicle_driver/diagnostic-execution-manifest.json --case testing__C150640__NRS-484B-627-2__motor_vehicle_driver__law_direction_stop --output .runtime-work/c150640-6272/offline5-law_direction_stop-primary",
+        "exit_code": 0,
+        "construction_sha256": "1926ec14a3f62217cdb6e407dd0c306badd01f05c83aa082190abcc6050b35bc",
+        "log": "cpu-offline-law_direction_stop.log",
+        "log_sha256": "ccbc5738027ab7a9515b619335b75c8055f29ba1c2f76276cfc5891f40562c5f"
+      },
+      "compatibility": {
+        "receipt": "proofs/law_direction_stop/primary/receipt.json",
+        "sha256": "26e7291e8a1edbc102b17227ce987f4778f33e1bf0412bc25ca338014d9e8fdf",
+        "log": "proofs/law_direction_stop/primary/analysis.log",
+        "negative_log": "proofs/law_direction_stop/primary/negative.log"
+      },
+      "negative": {
+        "log": "proofs/law_direction_stop/primary/negative.log"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original stopping footprint may overshoot the reviewed target; earlier braking is a common engineering fallback across linked comparisons."
+      },
+      "physical_preparation": {
+        "receipt": "proofs/law_direction_stop/physical-preparation.json",
+        "sha256": "73821e42ac21a7ba432e169476ed083a12260025a7b030c4ec831af3bbf413a1"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150640__NRS-484B-627-2__motor_vehicle_driver__law_direction_stop",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "d527ad6b6353b670bf3784d87c03c48a2c85b7a69c69c497a83ad26214093cd3",
+        "command": ".venv-cpu/bin/python work/testing__C150640__NRS-484B-627-2__motor_vehicle_driver/delivery_probe.py --case testing__C150640__NRS-484B-627-2__motor_vehicle_driver__law_direction_stop --fixture .runtime-work/c150640-6272/compat5-law_direction_stop-primary --output .runtime-work/c150640-6272/delivery5-law_direction_stop --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-law_direction_stop-positive.log",
+        "test_log_sha256": "19302f826f6abde5099180bd4c39c2a4902af48a87231f24f72e3bb6096f50d3",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150640__NRS-484B-627-2__motor_vehicle_driver/delivery_probe.py --case testing__C150640__NRS-484B-627-2__motor_vehicle_driver__law_direction_stop --fixture .runtime-work/c150640-6272/compat5-law_direction_stop-primary --output .runtime-work/c150640-6272/delivery5-law_direction_stop --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original stop source missing or changed: stop-scene.json",
+        "negative_log": "delivery-law_direction_stop-negative.log",
+        "negative_log_sha256": "befe7c6174e961ee8cc051a3f831298e3afde18eb337db5c46de7ce820849187",
+        "scope": "Synthetic CPU protocol proof; original physical delivery pending"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150640__NRS-484B-627-2__motor_vehicle_driver/execution-manifest.json --case testing__C150640__NRS-484B-627-2__motor_vehicle_driver__law_direction_stop --attempt $ATTEMPT --output $DERIVED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150640__NRS-484B-627-2__motor_vehicle_driver/execution-manifest.json --case testing__C150640__NRS-484B-627-2__motor_vehicle_driver__law_direction_stop --attempt $ATTEMPT --output $DERIVED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-law_direction_stop.log",
+        "test_log_sha256": "343b1ce6cde5a69bf48517f28bad9c9b47678ea43b9574ddff18388ae9f998b5"
+      },
+      "acquisition": {
+        "scene_source": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "one_way_route": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "ego_driver_and_vehicle": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "ego_motion": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "roadway_footprint": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "follower_motion": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "passing_space": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "stop_purpose": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "conflict_context": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "official_direction_context": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "camera_frame_map": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        }
+      },
+      "pending_original_sources": [
+        "reviewed original one-way map and roadway/shoulder polygons",
+        "source-hashed jurisdiction, stop purpose, conflict and official direction",
+        "released Native four-camera attempt and actual pixel review"
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "status": "source_gated_cpu_preparation"
     },
     {
       "case_id": "testing__C150640__NRS-484B-627-2__motor_vehicle_driver__destination_off_roadway",
@@ -89,9 +677,156 @@
         {
           "id": "fallback1",
           "construction": "cases/destination_off_roadway/fallback1/construction.json",
-          "construction_sha256": "d91f64793c4dba672aa902addf877fd0e1d600e34f2460aaa3b1b454c76e5cd3"
+          "construction_sha256": "d91f64793c4dba672aa902addf877fd0e1d600e34f2460aaa3b1b454c76e5cd3",
+          "trigger": {
+            "source": "original stop-history.jsonl and reviewed stop station",
+            "metric": "ego stopping-footprint longitudinal overshoot in metres",
+            "failure_condition": "Original footprint exceeds the reviewed stop target by more than 2 m; engineering tolerance only"
+          },
+          "changed_knobs": [
+            "engineering.stop_trigger_frame: 200 to 170"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150640__NRS-484B-627-2__motor_vehicle_driver/diagnostic-execution-manifest.json --case testing__C150640__NRS-484B-627-2__motor_vehicle_driver__destination_off_roadway --candidate fallback1 --output .runtime-work/c150640-6272/offline5-destination_off_roadway-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "d91f64793c4dba672aa902addf877fd0e1d600e34f2460aaa3b1b454c76e5cd3",
+            "log": "cpu-offline-destination_off_roadway-fallback1.log",
+            "log_sha256": "130bb332c2a97974734cde380b032e04b51d54a0e4ec15424546927847ed541a"
+          },
+          "compatibility": {
+            "receipt": "proofs/destination_off_roadway/fallback1/receipt.json",
+            "sha256": "6c83121d9ad1e48836c9831df1339119336349e9616f2aa77e133f9cf2f67411",
+            "log": "proofs/destination_off_roadway/fallback1/analysis.log",
+            "negative_log": "proofs/destination_off_roadway/fallback1/negative.log"
+          }
         }
-      ]
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150640__NRS-484B-627-2__motor_vehicle_driver/diagnostic-execution-manifest.json --case testing__C150640__NRS-484B-627-2__motor_vehicle_driver__destination_off_roadway --output .runtime-work/c150640-6272/offline5-destination_off_roadway-primary",
+        "exit_code": 0,
+        "construction_sha256": "73031ce2f10948d89da39b38b4445b0a16c74dc5b985b07d385aa60fb6d49f12",
+        "log": "cpu-offline-destination_off_roadway.log",
+        "log_sha256": "75808fbc029140670ffbbf97b817faa5bd4a6eb814dc3ee074a404abf3621fcf"
+      },
+      "compatibility": {
+        "receipt": "proofs/destination_off_roadway/primary/receipt.json",
+        "sha256": "f2fbccdac5f314bc118b1300436ee5fa3ef3559819852ce8c1642ef48cb361ad",
+        "log": "proofs/destination_off_roadway/primary/analysis.log",
+        "negative_log": "proofs/destination_off_roadway/primary/negative.log"
+      },
+      "negative": {
+        "log": "proofs/destination_off_roadway/primary/negative.log"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original stopping footprint may overshoot the reviewed target; earlier braking is a common engineering fallback across linked comparisons."
+      },
+      "physical_preparation": {
+        "receipt": "proofs/destination_off_roadway/physical-preparation.json",
+        "sha256": "24fb7dcd02b495179e390ca4477cabb52b95b449d3dd5c8b7fcfccdba264b15b"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150640__NRS-484B-627-2__motor_vehicle_driver__destination_off_roadway",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "d527ad6b6353b670bf3784d87c03c48a2c85b7a69c69c497a83ad26214093cd3",
+        "command": ".venv-cpu/bin/python work/testing__C150640__NRS-484B-627-2__motor_vehicle_driver/delivery_probe.py --case testing__C150640__NRS-484B-627-2__motor_vehicle_driver__destination_off_roadway --fixture .runtime-work/c150640-6272/compat5-destination_off_roadway-primary --output .runtime-work/c150640-6272/delivery5-destination_off_roadway --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-destination_off_roadway-positive.log",
+        "test_log_sha256": "c5239b52b9c1d0e6d47a9b9a61373afb1ca61c9bc76ae316b35c852be410c760",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150640__NRS-484B-627-2__motor_vehicle_driver/delivery_probe.py --case testing__C150640__NRS-484B-627-2__motor_vehicle_driver__destination_off_roadway --fixture .runtime-work/c150640-6272/compat5-destination_off_roadway-primary --output .runtime-work/c150640-6272/delivery5-destination_off_roadway --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original stop source missing or changed: stop-scene.json",
+        "negative_log": "delivery-destination_off_roadway-negative.log",
+        "negative_log_sha256": "befe7c6174e961ee8cc051a3f831298e3afde18eb337db5c46de7ce820849187",
+        "scope": "Synthetic CPU protocol proof; original physical delivery pending"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150640__NRS-484B-627-2__motor_vehicle_driver/execution-manifest.json --case testing__C150640__NRS-484B-627-2__motor_vehicle_driver__destination_off_roadway --attempt $ATTEMPT --output $DERIVED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150640__NRS-484B-627-2__motor_vehicle_driver/execution-manifest.json --case testing__C150640__NRS-484B-627-2__motor_vehicle_driver__destination_off_roadway --attempt $ATTEMPT --output $DERIVED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-destination_off_roadway.log",
+        "test_log_sha256": "59fb4fcb70cec56d5156e62c17b23ccf817e9905b73c47da204c128636f00aa5"
+      },
+      "acquisition": {
+        "scene_source": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "one_way_route": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "ego_driver_and_vehicle": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "ego_motion": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "roadway_footprint": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "follower_motion": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "passing_space": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "stop_purpose": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "conflict_context": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "official_direction_context": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "camera_frame_map": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        }
+      },
+      "pending_original_sources": [
+        "reviewed original one-way map and roadway/shoulder polygons",
+        "source-hashed jurisdiction, stop purpose, conflict and official direction",
+        "released Native four-camera attempt and actual pixel review"
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "status": "source_gated_cpu_preparation"
     },
     {
       "case_id": "testing__C150640__NRS-484B-627-2__motor_vehicle_driver__destination_slow_roll",
@@ -107,9 +842,156 @@
         {
           "id": "fallback1",
           "construction": "cases/destination_slow_roll/fallback1/construction.json",
-          "construction_sha256": "7b5c04a6e0b5e622939b65b70b6270cb8dabda49ad8e105afcf96e4f8785174e"
+          "construction_sha256": "7b5c04a6e0b5e622939b65b70b6270cb8dabda49ad8e105afcf96e4f8785174e",
+          "trigger": {
+            "source": "original stop-history.jsonl and reviewed stop station",
+            "metric": "ego stopping-footprint longitudinal overshoot in metres",
+            "failure_condition": "Original footprint exceeds the reviewed stop target by more than 2 m; engineering tolerance only"
+          },
+          "changed_knobs": [
+            "engineering.stop_trigger_frame: 200 to 170"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150640__NRS-484B-627-2__motor_vehicle_driver/diagnostic-execution-manifest.json --case testing__C150640__NRS-484B-627-2__motor_vehicle_driver__destination_slow_roll --candidate fallback1 --output .runtime-work/c150640-6272/offline5-destination_slow_roll-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "7b5c04a6e0b5e622939b65b70b6270cb8dabda49ad8e105afcf96e4f8785174e",
+            "log": "cpu-offline-destination_slow_roll-fallback1.log",
+            "log_sha256": "a0d7ff2903db1f81b729025df954f1bc7795d6fe73734c05d99f8be7e491ddda"
+          },
+          "compatibility": {
+            "receipt": "proofs/destination_slow_roll/fallback1/receipt.json",
+            "sha256": "082762b60854032f37031822b0d68ba6f988abed45288a6899025e112d697cac",
+            "log": "proofs/destination_slow_roll/fallback1/analysis.log",
+            "negative_log": "proofs/destination_slow_roll/fallback1/negative.log"
+          }
         }
-      ]
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C150640__NRS-484B-627-2__motor_vehicle_driver/diagnostic-execution-manifest.json --case testing__C150640__NRS-484B-627-2__motor_vehicle_driver__destination_slow_roll --output .runtime-work/c150640-6272/offline5-destination_slow_roll-primary",
+        "exit_code": 0,
+        "construction_sha256": "3458091b0e4b73068f4857944e6b9eb653f1932bd3b032647bca74d22a730a3b",
+        "log": "cpu-offline-destination_slow_roll.log",
+        "log_sha256": "9b8707771dbf1b16fd30df0d0fe768976e115cc1a40d775e82cc31adb64ac8bc"
+      },
+      "compatibility": {
+        "receipt": "proofs/destination_slow_roll/primary/receipt.json",
+        "sha256": "9c93dc0a133dc76dc09734d35547130126b5a12c69778e176fc84909c6812463",
+        "log": "proofs/destination_slow_roll/primary/analysis.log",
+        "negative_log": "proofs/destination_slow_roll/primary/negative.log"
+      },
+      "negative": {
+        "log": "proofs/destination_slow_roll/primary/negative.log"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original stopping footprint may overshoot the reviewed target; earlier braking is a common engineering fallback across linked comparisons."
+      },
+      "physical_preparation": {
+        "receipt": "proofs/destination_slow_roll/physical-preparation.json",
+        "sha256": "faa43e425405659fe47d7751542686c691d41f61e9c9df144ec9ef44cdc25e6e"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C150640__NRS-484B-627-2__motor_vehicle_driver__destination_slow_roll",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "d527ad6b6353b670bf3784d87c03c48a2c85b7a69c69c497a83ad26214093cd3",
+        "command": ".venv-cpu/bin/python work/testing__C150640__NRS-484B-627-2__motor_vehicle_driver/delivery_probe.py --case testing__C150640__NRS-484B-627-2__motor_vehicle_driver__destination_slow_roll --fixture .runtime-work/c150640-6272/compat5-destination_slow_roll-primary --output .runtime-work/c150640-6272/delivery5-destination_slow_roll --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-destination_slow_roll-positive.log",
+        "test_log_sha256": "7ae4981b06e96b43285182cc5d89e1e294103819c748903f3ab9664064e9e379",
+        "negative_command": ".venv-cpu/bin/python work/testing__C150640__NRS-484B-627-2__motor_vehicle_driver/delivery_probe.py --case testing__C150640__NRS-484B-627-2__motor_vehicle_driver__destination_slow_roll --fixture .runtime-work/c150640-6272/compat5-destination_slow_roll-primary --output .runtime-work/c150640-6272/delivery5-destination_slow_roll --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original stop source missing or changed: stop-scene.json",
+        "negative_log": "delivery-destination_slow_roll-negative.log",
+        "negative_log_sha256": "befe7c6174e961ee8cc051a3f831298e3afde18eb337db5c46de7ce820849187",
+        "scope": "Synthetic CPU protocol proof; original physical delivery pending"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150640__NRS-484B-627-2__motor_vehicle_driver/execution-manifest.json --case testing__C150640__NRS-484B-627-2__motor_vehicle_driver__destination_slow_roll --attempt $ATTEMPT --output $DERIVED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C150640__NRS-484B-627-2__motor_vehicle_driver/execution-manifest.json --case testing__C150640__NRS-484B-627-2__motor_vehicle_driver__destination_slow_roll --attempt $ATTEMPT --output $DERIVED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-destination_slow_roll.log",
+        "test_log_sha256": "7c03d5359d3830e666319c1c4b12f873297e820b468b07316f7a0c3fcde00971"
+      },
+      "acquisition": {
+        "scene_source": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "one_way_route": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "ego_driver_and_vehicle": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "ego_motion": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "roadway_footprint": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "follower_motion": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "passing_space": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "stop_purpose": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "conflict_context": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "official_direction_context": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        },
+        "camera_frame_map": {
+          "entrypoint": "native_stop.py",
+          "method": "capture",
+          "evidence": "original source-gated Native actor/map/camera readback"
+        }
+      },
+      "pending_original_sources": [
+        "reviewed original one-way map and roadway/shoulder polygons",
+        "source-hashed jurisdiction, stop purpose, conflict and official direction",
+        "released Native four-camera attempt and actual pixel review"
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "status": "source_gated_cpu_preparation"
     }
   ]
 }

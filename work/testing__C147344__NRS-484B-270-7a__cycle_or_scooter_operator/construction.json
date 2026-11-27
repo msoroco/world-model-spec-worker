@@ -113,6 +113,42 @@
         "time_window": "all 600 original frames",
         "reference_frame": "original Native frame/time",
         "uncertainty": "physical and legal review remain open"
+      },
+      {
+        "name": "electric_bicycle_classification",
+        "unit": "source fact",
+        "sampling_rate_hz": null,
+        "method": "reviewed original electric bicycle classification, hash-bound before capture",
+        "time_window": "source qualification before spawn",
+        "reference_frame": "original Native frame/time and reviewed source hash",
+        "uncertainty": "physical and legal review remain open; motion does not prove intent"
+      },
+      {
+        "name": "motor_vehicle_identity_and_movement",
+        "unit": "vehicle ID and m/s",
+        "sampling_rate_hz": 20,
+        "method": "reviewed distinct motor vehicle identity joined to original synchronized speed readback",
+        "time_window": "all 600 original frames",
+        "reference_frame": "original Native frame/time and reviewed source hash",
+        "uncertainty": "physical and legal review remain open; motion does not prove intent"
+      },
+      {
+        "name": "bicycle_and_motor_motion",
+        "unit": "lane, route, m/s, brake fraction, m",
+        "sampling_rate_hz": 20,
+        "method": "original synchronized bicycle and motor vehicle actor and controller readback",
+        "time_window": "all 600 original frames",
+        "reference_frame": "original Native frame/time and reviewed source hash",
+        "uncertainty": "physical and legal review remain open; motion does not prove intent"
+      },
+      {
+        "name": "authored_intention_declaration",
+        "unit": "source fact and original frame interval",
+        "sampling_rate_hz": null,
+        "method": "reviewed pre-run authored plan, source hash-bound before capture",
+        "time_window": "declared original frame interval or documented absence",
+        "reference_frame": "original Native frame/time and reviewed source hash",
+        "uncertainty": "physical and legal review remain open; motion does not prove intent"
       }
     ],
     "context_inputs": [
@@ -139,5 +175,12 @@
   "termination_rules": {
     "duration_s": 30,
     "missing_original_source": "reject capture"
-  }
+  },
+  "static_checks": [
+    "source-qualified electric bicycle and distinct motor vehicle identity",
+    "reviewed OpenDRIVE and route readback before spawn",
+    "600 joined original frames and four camera frame counts",
+    "owned actor cleanup and world restoration",
+    "original source hashes and recorded-only analysis"
+  ]
 }

@@ -1,0 +1,173 @@
+{
+  "law_id": "NRS-484B-127-3",
+  "cell_id": "C160013",
+  "actor": "motor_vehicle_driver",
+  "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_middle_combination_entrant",
+  "entrypoint": "runner.py",
+  "diagnostic_only": true,
+  "files": [
+    {
+      "path": "runner.py",
+      "content": "\"\"\"Exact Native caravan or motorcade spacing construction entry point.\"\"\"\nfrom __future__ import annotations\n\nimport argparse\nimport hashlib\nimport importlib.util\nimport json\nimport os\nfrom pathlib import Path\n\nfrom motorcade_spacing import CASES, execute_case, validate_source_packet\n\nROOT = Path(__file__).resolve().parent\nAID = 'testing__C160013__NRS-484B-127-3__motor_vehicle_driver'\n\n\ndef check(root=ROOT):\n    config = json.loads((Path(root) / 'config.json').read_text())\n    selected = config.get('selected_case_id')\n    if (config.get('assignment_id'), config.get('law_id'), config.get('cell_id'),\n            config.get('actor')) != (AID, 'NRS-484B-127-3', 'C160013',\n                                     'motor_vehicle_driver'):\n        raise ValueError('exact caravan/motorcade identity mismatch')\n    if (config.get('rate_hz'), config.get('duration_s'), config.get('frame_count')) != (20, 30, 600):\n        raise ValueError('original capture clock mismatch')\n    if selected not in {AID + '__' + case.suffix for case in CASES}:\n        raise ValueError('selected exact case missing')\n    if set(config.get('supported_case_ids', [])) != {AID + '__' + case.suffix for case in CASES}:\n        raise ValueError('exact case inventory mismatch')\n    if config.get('required_atoms') != [] or config.get('source_packets') != []:\n        raise ValueError('unsupported ontology or packet mapping')\n    return selected\n\n\ndef main():\n    parser = argparse.ArgumentParser()\n    parser.add_argument('--check', action='store_true')\n    parser.add_argument('--reviewed-packet', default=os.environ.get('C160013_REVIEWED_PACKET'))\n    parser.add_argument('--adapter-module', default=os.environ.get('C160013_NATIVE_ADAPTER_MODULE'))\n    parser.add_argument('--output-dir', type=Path)\n    parser.add_argument('--host', default=os.environ.get('CARLA_HOST'))\n    parser.add_argument('--port', type=int, default=os.environ.get('CARLA_PORT'))\n    args = parser.parse_args()\n    selected = check()\n    if args.check:\n        print('exact caravan/motorcade bundle passed: ' + selected)\n        return\n    if not all((args.reviewed_packet, args.adapter_module, args.output_dir,\n                args.host, args.port)):\n        raise ValueError('reviewed Native packet, adapter and endpoint required')\n    packet_path = Path(args.reviewed_packet)\n    if not packet_path.is_file() or packet_path.is_symlink():\n        raise ValueError('reviewed Native packet file required')\n    packet = json.loads(packet_path.read_text())\n    case = next(item for item in CASES if selected == AID + '__' + item.suffix)\n    validate_source_packet(packet, case)\n    adapter_path = Path(args.adapter_module)\n    if not adapter_path.is_file() or adapter_path.is_symlink():\n        raise ValueError('reviewed Native adapter file required')\n    adapter_binding = packet.get('native_adapter') or {}\n    if (adapter_binding.get('sha256') != hashlib.sha256(adapter_path.read_bytes()).hexdigest()\n            or not adapter_binding.get('reviewer') or not adapter_binding.get('citation')):\n        raise ValueError('hash-bound reviewed Native adapter required')\n    sources = packet.get('sources')\n    if not isinstance(sources, list) or not sources:\n        raise ValueError('reviewed map, assets and legal context source inventory required')\n    for source in sources:\n        item = Path(source.get('path', ''))\n        if (not item.is_file() or item.is_symlink() or not source.get('reviewer')\n                or not source.get('citation')\n                or source.get('sha256') != hashlib.sha256(item.read_bytes()).hexdigest()):\n            raise ValueError('reviewed original source hash/citation mismatch')\n    spec = importlib.util.spec_from_file_location('motorcade_native_adapter', adapter_path)\n    if spec is None or spec.loader is None:\n        raise ValueError('Native adapter cannot load')\n    module = importlib.util.module_from_spec(spec)\n    spec.loader.exec_module(module)\n    adapter = module.open_native_adapter(args.host, args.port)\n    try:\n        execute_case(adapter, packet, case)\n        args.output_dir.mkdir(parents=True, exist_ok=True)\n        adapter.seal_original(args.output_dir)\n    finally:\n        adapter.close()\n\n\nif __name__ == '__main__':\n    main()\n"
+    },
+    {
+      "path": "motorcade_spacing.py",
+      "content": "\"\"\"Source-gated group spacing construction and original-frame measurements.\n\nRequested geometry is an engineering target. This module makes no judgment about\nwhether the space is sufficient or an entry would be without danger.\n\"\"\"\nfrom __future__ import annotations\n\nimport math\nfrom dataclasses import dataclass\n\n\n@dataclass(frozen=True)\nclass Case:\n    suffix: str\n    group_kind: str\n    gap_target_m: float\n    towing: bool = False\n    combination_entrant: bool = False\n\n\nCASES = tuple(\n    Case(f'{group}_none_{level}', group, gap)\n    for group in ('caravan', 'motorcade')\n    for level, gap in (('near', 18.0), ('middle', 60.0), ('far', 103.0))\n) + tuple(\n    Case(f'{group}_towing_middle', group, 60.0, towing=True)\n    for group in ('caravan', 'motorcade')\n) + tuple(\n    Case(f'{group}_none_middle_combination_entrant', group, 60.0,\n         combination_entrant=True)\n    for group in ('caravan', 'motorcade')\n)\n\n\ndef require(condition, message):\n    if not condition:\n        raise ValueError(message)\n\n\ndef number(value, label):\n    require(isinstance(value, (int, float)) and not isinstance(value, bool)\n            and math.isfinite(value), label + ' must be a finite Native number')\n    return float(value)\n\n\ndef validate_source_packet(packet, case):\n    \"\"\"Check reviewed route, legal assumptions, roles, assets and view survey.\"\"\"\n    require(packet.get('case_suffix') == case.suffix, 'exact case source mismatch')\n    route = packet.get('route') or {}\n    require(route.get('native_road_id') and route.get('directed_driving_lane_id'),\n            'Native highway route identity required')\n    require(number(route.get('surveyed_length_m'), 'route length') >= 350,\n            'surveyed route too short for group and entrant')\n    require(route.get('public_highway_review') and route.get('outside_business_district_review'),\n            'external highway and district context required')\n    membership = packet.get('membership') or {}\n    require(membership.get('group_kind') == case.group_kind,\n            'independent caravan or motorcade source required')\n    require(membership.get('reviewer') and membership.get('coordination_source')\n            and membership.get('ordered_roles') == ['front', 'ego', 'rear'],\n            'reviewed ordered group membership required')\n    require(membership.get('driver_relationships') and membership.get('group_purpose'),\n            'group relationship cannot be inferred from common motion')\n    assets = packet.get('assets') or {}\n    for role in ('front', 'ego', 'rear', 'entrant'):\n        vehicle = assets.get(role) or {}\n        require(vehicle.get('blueprint_id') and vehicle.get('native_vehicle_class') == 'motor_vehicle',\n                'Native qualifying motor vehicle source required: ' + role)\n        require(number(vehicle.get('body_length_m'), role + ' body length') > 2,\n                'body length must be positive: ' + role)\n    require(bool(assets.get('group_towed_vehicle')) == case.towing,\n            'group towing alternative mismatch')\n    require(bool(assets.get('entrant_towed_vehicle')) == case.combination_entrant,\n            'entrant combination alternative mismatch')\n    views = packet.get('camera_survey') or []\n    require([view.get('name') for view in views] ==\n            ['overview', 'approach', 'reference_corner', 'driver_reference'],\n            'four-camera source survey required')\n    require(all(view.get('native_pose') and view.get('reviewer') for view in views),\n            'reviewed Native camera poses required')\n    return packet\n\n\ndef planned_spawn(packet, case):\n    \"\"\"Derive four spawn stations from surveyed Native body lengths and gaps.\"\"\"\n    validate_source_packet(packet, case)\n    assets = packet['assets']\n    lengths = {role: float(assets[role]['body_length_m'])\n               for role in ('front', 'ego', 'rear', 'entrant')}\n    if case.towing:\n        lengths['ego'] += float(assets['group_towed_vehicle']['body_length_m'])\n    if case.combination_entrant:\n        lengths['entrant'] += float(assets['entrant_towed_vehicle']['body_length_m'])\n    centre = 175.0\n    ego = centre\n    front = ego + 0.5 * (lengths['ego'] + lengths['front']) + case.gap_target_m\n    rear = ego - 0.5 * (lengths['ego'] + lengths['rear']) - case.gap_target_m\n    require(front < float(packet['route']['surveyed_length_m']) - 20 and rear > 20,\n            'surveyed route cannot fit requested body gaps')\n    entrant = ego - 12.0\n    return {'front': front, 'ego': ego, 'rear': rear, 'entrant': entrant,\n            'body_lengths_m': lengths, 'gap_target_m': case.gap_target_m,\n            'entrant_lateral_source': packet['route'].get('entrant_adjacent_lane_id')}\n\n\ndef execute_case(adapter, packet, case):\n    \"\"\"Request concrete actors and 600 synchronized ticks from a Native adapter.\"\"\"\n    spawn = planned_spawn(packet, case)\n    require(spawn['entrant_lateral_source'], 'Native entrant adjacent lane required')\n    adapter.open_route(packet['route'])\n    for role in ('front', 'ego', 'rear'):\n        adapter.spawn_group_vehicle(role, packet['assets'][role], spawn[role],\n                                    packet['route']['directed_driving_lane_id'])\n    if case.towing:\n        adapter.attach_towed_vehicle('ego', packet['assets']['group_towed_vehicle'])\n    adapter.spawn_entrant(packet['assets']['entrant'], spawn['entrant'],\n                          spawn['entrant_lateral_source'])\n    if case.combination_entrant:\n        adapter.attach_towed_vehicle('entrant', packet['assets']['entrant_towed_vehicle'])\n    adapter.set_group_motion(9.1, case.gap_target_m)\n    adapter.schedule_entrant_entry(start_s=14.0, end_s=20.0,\n                                   target_gap_roles=('front', 'ego'))\n    adapter.capture_original(case.suffix, 600, packet['camera_survey'])\n    return spawn\n\n\ndef body_interval(body, role):\n    vertices = body.get('route_station_vertices_m')\n    require(isinstance(vertices, list) and len(vertices) == 8,\n            'all eight Native body vertices required: ' + role)\n    values = [number(v, role + ' route vertex') for v in vertices]\n    return min(values), max(values)\n\n\ndef measure_original_frames(frames, case):\n    \"\"\"Measure body clear spaces and entry history from all original frames.\"\"\"\n    require(len(frames) == 600, 'all 600 original frames required')\n    before = []\n    after = []\n    for index, frame in enumerate(frames):\n        require(frame.get('frame') == index and\n                abs(number(frame.get('time_s'), 'frame time') - index / 20.0) < 1e-6,\n                'original frame/time join mismatch')\n        bodies = frame.get('bodies') or {}\n        require(set(bodies) >= {'front', 'ego', 'rear', 'entrant'},\n                'all group and outsider bodies required')\n        interval = {role: body_interval(bodies[role], role)\n                    for role in ('front', 'ego', 'rear', 'entrant')}\n        front_gap = interval['front'][0] - interval['ego'][1]\n        rear_gap = interval['ego'][0] - interval['rear'][1]\n        sample = {'time_s': index / 20.0, 'front_group_clear_gap_m': front_gap,\n                  'rear_group_clear_gap_m': rear_gap,\n                  'entrant_route_interval_m': interval['entrant'],\n                  'entrant_lane_id': bodies['entrant'].get('native_lane_id'),\n                  'collision_events': frame.get('collision_events', []),\n                  'group_role_ids': frame.get('group_role_ids'),\n                  'controls': frame.get('controls')}\n        require(sample['group_role_ids'] and sample['controls'] is not None,\n                'group identities and controls must be retained independently')\n        (before if 8 <= sample['time_s'] < 14 else after).append(sample)\n    require(len(before) == 120, 'steady source window incomplete')\n    return {\n        'steady_front_mean_m': sum(x['front_group_clear_gap_m'] for x in before) / 120,\n        'steady_rear_mean_m': sum(x['rear_group_clear_gap_m'] for x in before) / 120,\n        'steady_source': before,\n        'later_source': after,\n        'requested_gap_m': case.gap_target_m,\n        'legal_sufficiency': None,\n        'without_danger': None,\n    }\n"
+    },
+    {
+      "path": "config.json",
+      "content": "{\n  \"assignment_id\": \"testing__C160013__NRS-484B-127-3__motor_vehicle_driver\",\n  \"law_id\": \"NRS-484B-127-3\",\n  \"cell_id\": \"C160013\",\n  \"actor\": \"motor_vehicle_driver\",\n  \"selected_case_id\": \"testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_middle_combination_entrant\",\n  \"supported_case_ids\": [\n    \"testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_near\",\n    \"testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_middle\",\n    \"testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_far\",\n    \"testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_towing_middle\",\n    \"testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_middle_combination_entrant\",\n    \"testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_near\",\n    \"testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_middle\",\n    \"testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_far\",\n    \"testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_towing_middle\",\n    \"testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_middle_combination_entrant\"\n  ],\n  \"rate_hz\": 20,\n  \"duration_s\": 30,\n  \"frame_count\": 600,\n  \"required_atoms\": [],\n  \"source_packets\": [],\n  \"cameras\": [\n    {\n      \"name\": \"overview\",\n      \"width\": 1920,\n      \"height\": 1080,\n      \"fov_deg\": 90,\n      \"pose_strategy\": \"reviewed Native group and entrant four-view survey\"\n    },\n    {\n      \"name\": \"approach\",\n      \"width\": 1280,\n      \"height\": 720,\n      \"fov_deg\": 90,\n      \"pose_strategy\": \"reviewed Native group and entrant four-view survey\"\n    },\n    {\n      \"name\": \"reference_corner\",\n      \"width\": 1280,\n      \"height\": 720,\n      \"fov_deg\": 90,\n      \"pose_strategy\": \"reviewed Native group and entrant four-view survey\"\n    },\n    {\n      \"name\": \"driver_reference\",\n      \"width\": 1280,\n      \"height\": 720,\n      \"fov_deg\": 90,\n      \"pose_strategy\": \"reviewed Native group and entrant four-view survey\"\n    }\n  ],\n  \"case\": {\n    \"case_id\": \"testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_middle_combination_entrant\",\n    \"recording_description\": {\n      \"channels\": [\n        {\n          \"name\": \"sealed_native_original_frames\",\n          \"unit\": \"frame identity\",\n          \"method\": \"sequential 20 Hz Native frame and seal\",\n          \"sampling_rate_hz\": 20,\n          \"time_window\": \"all 600 original frames\",\n          \"reference_frame\": \"source-reviewed directed highway route\",\n          \"uncertainty\": \"physical realization and legal judgment remain unverified\"\n        },\n        {\n          \"name\": \"group_role_ids\",\n          \"unit\": \"Native identity\",\n          \"method\": \"independent ordered group membership roster and active role IDs\",\n          \"sampling_rate_hz\": 20,\n          \"time_window\": \"all 600 original frames\",\n          \"reference_frame\": \"source-reviewed directed highway route\",\n          \"uncertainty\": \"physical realization and legal judgment remain unverified\"\n        },\n        {\n          \"name\": \"vehicle_inventory\",\n          \"unit\": \"Native identity\",\n          \"method\": \"all group, entrant, towing and outsider actor IDs/classes\",\n          \"sampling_rate_hz\": 20,\n          \"time_window\": \"all 600 original frames\",\n          \"reference_frame\": \"source-reviewed directed highway route\",\n          \"uncertainty\": \"physical realization and legal judgment remain unverified\"\n        },\n        {\n          \"name\": \"original_body_vertices\",\n          \"unit\": \"metres\",\n          \"method\": \"all eight Native body vertices of every vehicle and trailer projected on directed route\",\n          \"sampling_rate_hz\": 20,\n          \"time_window\": \"all 600 original frames\",\n          \"reference_frame\": \"source-reviewed directed highway route\",\n          \"uncertainty\": \"physical realization and legal judgment remain unverified\"\n        },\n        {\n          \"name\": \"front_group_clear_gap_m\",\n          \"unit\": \"metres\",\n          \"method\": \"Native body front-to-ego clear gap computed per original frame\",\n          \"sampling_rate_hz\": 20,\n          \"time_window\": \"all 600 original frames\",\n          \"reference_frame\": \"source-reviewed directed highway route\",\n          \"uncertainty\": \"physical realization and legal judgment remain unverified\"\n        },\n        {\n          \"name\": \"rear_group_clear_gap_m\",\n          \"unit\": \"metres\",\n          \"method\": \"Native body ego-to-rear clear gap computed per original frame\",\n          \"sampling_rate_hz\": 20,\n          \"time_window\": \"all 600 original frames\",\n          \"reference_frame\": \"source-reviewed directed highway route\",\n          \"uncertainty\": \"physical realization and legal judgment remain unverified\"\n        },\n        {\n          \"name\": \"velocity_history\",\n          \"unit\": \"m/s\",\n          \"method\": \"native actual velocity vector norms of every group and entrant actor\",\n          \"sampling_rate_hz\": 20,\n          \"time_window\": \"all 600 original frames\",\n          \"reference_frame\": \"source-reviewed directed highway route\",\n          \"uncertainty\": \"physical realization and legal judgment remain unverified\"\n        },\n        {\n          \"name\": \"entrant_entry_occupancy\",\n          \"unit\": \"interval and lane\",\n          \"method\": \"outsider lane and longitudinal interval over 14..20 s\",\n          \"sampling_rate_hz\": 20,\n          \"time_window\": \"all 600 original frames\",\n          \"reference_frame\": \"source-reviewed directed highway route\",\n          \"uncertainty\": \"physical realization and legal judgment remain unverified\"\n        },\n        {\n          \"name\": \"coupling_history\",\n          \"unit\": \"Native identity\",\n          \"method\": \"native towing attachments and positions, including no-tow readback\",\n          \"sampling_rate_hz\": 20,\n          \"time_window\": \"all 600 original frames\",\n          \"reference_frame\": \"source-reviewed directed highway route\",\n          \"uncertainty\": \"physical realization and legal judgment remain unverified\"\n        },\n        {\n          \"name\": \"collision_history\",\n          \"unit\": \"Native event\",\n          \"method\": \"native collision events over full trace\",\n          \"sampling_rate_hz\": 20,\n          \"time_window\": \"all 600 original frames\",\n          \"reference_frame\": \"source-reviewed directed highway route\",\n          \"uncertainty\": \"physical realization and legal judgment remain unverified\"\n        },\n        {\n          \"name\": \"controller_commands\",\n          \"unit\": \"command\",\n          \"method\": \"group and entrant requested controls retained separately from actual motion\",\n          \"sampling_rate_hz\": 20,\n          \"time_window\": \"all 600 original frames\",\n          \"reference_frame\": \"source-reviewed directed highway route\",\n          \"uncertainty\": \"physical realization and legal judgment remain unverified\"\n        },\n        {\n          \"name\": \"video_four_views\",\n          \"unit\": \"frame identity\",\n          \"method\": \"four synchronized Native camera views and composed primary video\",\n          \"sampling_rate_hz\": 20,\n          \"time_window\": \"all 600 original frames\",\n          \"reference_frame\": \"source-reviewed directed highway route\",\n          \"uncertainty\": \"physical realization and legal judgment remain unverified\"\n        }\n      ],\n      \"context_inputs\": [\n        {\n          \"name\": \"public_highway_assumption\",\n          \"method\": \"external legal-source review\"\n        },\n        {\n          \"name\": \"outside_business_district_assumption\",\n          \"method\": \"external legal-region review including frontage/building-use definition\"\n        },\n        {\n          \"name\": \"group_membership_coordination\",\n          \"method\": \"authored source-reviewed purpose/driver relationship, independent of common motion\"\n        }\n      ],\n      \"limitations\": [\n        \"Engineering gap targets and collision proxies do not decide sufficient space or without danger.\",\n        \"Actual group identity, entry/occupancy, motion and visibility require independent source review.\"\n      ]\n    }\n  },\n  \"requested_group_gap_m\": 60.0,\n  \"group_kind\": \"motorcade\",\n  \"group_towing\": false,\n  \"entrant_kind\": \"combination\"\n}\n"
+    },
+    {
+      "path": "tests/test_construction.py",
+      "content": "\"\"\"Exercise source gating, Native construction calls and original measurements.\"\"\"\nimport json\nimport sys\nimport unittest\nfrom pathlib import Path\n\nsys.path.insert(0, str(Path(__file__).resolve().parents[1]))\nfrom motorcade_spacing import CASES, execute_case, measure_original_frames, planned_spawn\nfrom runner import check\n\n\ndef packet(case):\n    vehicle = lambda length: {'blueprint_id': 'vehicle.synthetic',\n                              'native_vehicle_class': 'motor_vehicle',\n                              'body_length_m': length}\n    assets = {'front': vehicle(4.8), 'ego': vehicle(4.8),\n              'rear': vehicle(4.8), 'entrant': vehicle(5.9)}\n    if case.towing:\n        assets['group_towed_vehicle'] = {'body_length_m': 4.0}\n    if case.combination_entrant:\n        assets['entrant_towed_vehicle'] = {'body_length_m': 4.0}\n    return {'case_suffix': case.suffix,\n            'route': {'native_road_id': 1, 'directed_driving_lane_id': -1,\n                      'entrant_adjacent_lane_id': -2, 'surveyed_length_m': 360,\n                      'public_highway_review': 'explicit external assumption',\n                      'outside_business_district_review': 'explicit external assumption'},\n            'membership': {'group_kind': case.group_kind, 'reviewer': 'synthetic test',\n                           'coordination_source': 'test roster',\n                           'ordered_roles': ['front', 'ego', 'rear'],\n                           'driver_relationships': 'separate drivers',\n                           'group_purpose': 'organized shared journey'},\n            'assets': assets,\n            'camera_survey': [{'name': name, 'native_pose': [1, 2, 3],\n                               'reviewer': 'synthetic test'}\n                              for name in ('overview', 'approach',\n                                           'reference_corner', 'driver_reference')]}\n\n\nclass Adapter:\n    def __init__(self):\n        self.calls = []\n\n    def __getattr__(self, name):\n        def call(*args, **kwargs):\n            self.calls.append((name, args, kwargs))\n        return call\n\n\nclass ConstructionTest(unittest.TestCase):\n    def test_exact_case_inventory(self):\n        self.assertEqual(len(CASES), 10)\n        self.assertIn(check(), {'testing__C160013__NRS-484B-127-3__motor_vehicle_driver__' + case.suffix for case in CASES})\n\n    def test_all_alternatives_construct_native_actors(self):\n        for case in CASES:\n            with self.subTest(case=case.suffix):\n                source = packet(case)\n                station = planned_spawn(source, case)\n                self.assertAlmostEqual(station['front'] - station['ego'] - 4.8,\n                                       case.gap_target_m + (2 if case.towing else 0))\n                adapter = Adapter()\n                execute_case(adapter, source, case)\n                names = [item[0] for item in adapter.calls]\n                self.assertEqual(names.count('spawn_group_vehicle'), 3)\n                self.assertIn('spawn_entrant', names)\n                self.assertIn('schedule_entrant_entry', names)\n                self.assertEqual(names.count('attach_towed_vehicle'),\n                                 int(case.towing) + int(case.combination_entrant))\n                self.assertIn('capture_original', names)\n\n    def test_missing_membership_and_route_sources_rejected(self):\n        case = CASES[0]\n        source = packet(case)\n        source['membership']['coordination_source'] = ''\n        with self.assertRaisesRegex(ValueError, 'membership'):\n            planned_spawn(source, case)\n        source = packet(case)\n        source['route']['outside_business_district_review'] = ''\n        with self.assertRaisesRegex(ValueError, 'district'):\n            planned_spawn(source, case)\n\n    def test_original_body_gap_and_frame_join(self):\n        case = CASES[0]\n        def body(center, lane):\n            return {'route_station_vertices_m': [center - 2.4] * 4 + [center + 2.4] * 4,\n                    'native_lane_id': lane}\n        frames = [\n            {'frame': index, 'time_s': index / 20,\n             'bodies': {'front': body(100, -1), 'ego': body(77.2, -1),\n                        'rear': body(54.4, -1), 'entrant': body(60, -2)},\n             'group_role_ids': {'front': 1, 'ego': 2, 'rear': 3},\n             'controls': {}}\n            for index in range(600)\n        ]\n        measured = measure_original_frames(frames, case)\n        self.assertAlmostEqual(measured['steady_front_mean_m'], 18.0)\n        self.assertAlmostEqual(measured['steady_rear_mean_m'], 18.0)\n        self.assertIsNone(measured['without_danger'])\n        frames[160]['bodies']['entrant'].pop('route_station_vertices_m')\n        with self.assertRaisesRegex(ValueError, 'eight Native body vertices'):\n            measure_original_frames(frames, case)\n\n\nif __name__ == '__main__':\n    unittest.main()\n"
+    }
+  ],
+  "recording_description": {
+    "channels": [
+      {
+        "name": "sealed_native_original_frames",
+        "unit": "frame identity",
+        "method": "sequential 20 Hz Native frame and seal",
+        "sampling_rate_hz": 20,
+        "time_window": "all 600 original frames",
+        "reference_frame": "source-reviewed directed highway route",
+        "uncertainty": "physical realization and legal judgment remain unverified"
+      },
+      {
+        "name": "group_role_ids",
+        "unit": "Native identity",
+        "method": "independent ordered group membership roster and active role IDs",
+        "sampling_rate_hz": 20,
+        "time_window": "all 600 original frames",
+        "reference_frame": "source-reviewed directed highway route",
+        "uncertainty": "physical realization and legal judgment remain unverified"
+      },
+      {
+        "name": "vehicle_inventory",
+        "unit": "Native identity",
+        "method": "all group, entrant, towing and outsider actor IDs/classes",
+        "sampling_rate_hz": 20,
+        "time_window": "all 600 original frames",
+        "reference_frame": "source-reviewed directed highway route",
+        "uncertainty": "physical realization and legal judgment remain unverified"
+      },
+      {
+        "name": "original_body_vertices",
+        "unit": "metres",
+        "method": "all eight Native body vertices of every vehicle and trailer projected on directed route",
+        "sampling_rate_hz": 20,
+        "time_window": "all 600 original frames",
+        "reference_frame": "source-reviewed directed highway route",
+        "uncertainty": "physical realization and legal judgment remain unverified"
+      },
+      {
+        "name": "front_group_clear_gap_m",
+        "unit": "metres",
+        "method": "Native body front-to-ego clear gap computed per original frame",
+        "sampling_rate_hz": 20,
+        "time_window": "all 600 original frames",
+        "reference_frame": "source-reviewed directed highway route",
+        "uncertainty": "physical realization and legal judgment remain unverified"
+      },
+      {
+        "name": "rear_group_clear_gap_m",
+        "unit": "metres",
+        "method": "Native body ego-to-rear clear gap computed per original frame",
+        "sampling_rate_hz": 20,
+        "time_window": "all 600 original frames",
+        "reference_frame": "source-reviewed directed highway route",
+        "uncertainty": "physical realization and legal judgment remain unverified"
+      },
+      {
+        "name": "velocity_history",
+        "unit": "m/s",
+        "method": "native actual velocity vector norms of every group and entrant actor",
+        "sampling_rate_hz": 20,
+        "time_window": "all 600 original frames",
+        "reference_frame": "source-reviewed directed highway route",
+        "uncertainty": "physical realization and legal judgment remain unverified"
+      },
+      {
+        "name": "entrant_entry_occupancy",
+        "unit": "interval and lane",
+        "method": "outsider lane and longitudinal interval over 14..20 s",
+        "sampling_rate_hz": 20,
+        "time_window": "all 600 original frames",
+        "reference_frame": "source-reviewed directed highway route",
+        "uncertainty": "physical realization and legal judgment remain unverified"
+      },
+      {
+        "name": "coupling_history",
+        "unit": "Native identity",
+        "method": "native towing attachments and positions, including no-tow readback",
+        "sampling_rate_hz": 20,
+        "time_window": "all 600 original frames",
+        "reference_frame": "source-reviewed directed highway route",
+        "uncertainty": "physical realization and legal judgment remain unverified"
+      },
+      {
+        "name": "collision_history",
+        "unit": "Native event",
+        "method": "native collision events over full trace",
+        "sampling_rate_hz": 20,
+        "time_window": "all 600 original frames",
+        "reference_frame": "source-reviewed directed highway route",
+        "uncertainty": "physical realization and legal judgment remain unverified"
+      },
+      {
+        "name": "controller_commands",
+        "unit": "command",
+        "method": "group and entrant requested controls retained separately from actual motion",
+        "sampling_rate_hz": 20,
+        "time_window": "all 600 original frames",
+        "reference_frame": "source-reviewed directed highway route",
+        "uncertainty": "physical realization and legal judgment remain unverified"
+      },
+      {
+        "name": "video_four_views",
+        "unit": "frame identity",
+        "method": "four synchronized Native camera views and composed primary video",
+        "sampling_rate_hz": 20,
+        "time_window": "all 600 original frames",
+        "reference_frame": "source-reviewed directed highway route",
+        "uncertainty": "physical realization and legal judgment remain unverified"
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "public_highway_assumption",
+        "method": "external legal-source review"
+      },
+      {
+        "name": "outside_business_district_assumption",
+        "method": "external legal-region review including frontage/building-use definition"
+      },
+      {
+        "name": "group_membership_coordination",
+        "method": "authored source-reviewed purpose/driver relationship, independent of common motion"
+      }
+    ],
+    "limitations": [
+      "Engineering gap targets and collision proxies do not decide sufficient space or without danger.",
+      "Actual group identity, entry/occupancy, motion and visibility require independent source review."
+    ]
+  },
+  "measurement_plan": "600 original 20 Hz frames, 8..14 s pre-entry front/rear body clear gaps, 14..20 s outsider entry and occupancy, full-history coupling/identity/motion/collision and four-view video",
+  "static_checks": [
+    "source-reviewed road and legal-region assumptions",
+    "independent group membership and towing context",
+    "Native body and camera source readbacks",
+    "all original frame joins and body clear intervals"
+  ],
+  "termination_rules": [
+    "600 synchronized Native ticks",
+    "stop on confirmed hard physics failure",
+    "restore owned actors and world settings"
+  ],
+  "mechanisms": [
+    "source-gated group and outsider Native construction",
+    "three independent group actors plus entrant and optional trailers",
+    "20 Hz four-view capture and original-body gap measurement"
+  ]
+}

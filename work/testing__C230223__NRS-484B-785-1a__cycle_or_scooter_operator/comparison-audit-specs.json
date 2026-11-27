@@ -1,0 +1,59 @@
+{
+  "format": "worker-comparison-audit-specs",
+  "assignment_id": "testing__C230223__NRS-484B-785-1a__cycle_or_scooter_operator",
+  "comparisons": [
+    {
+      "comparison_id": "speed_below_at_above",
+      "case_ids": [
+        "testing__C230223__NRS-484B-785-1a__cycle_or_scooter_operator__lane_14_5_mph",
+        "testing__C230223__NRS-484B-785-1a__cycle_or_scooter_operator__lane_15_mph",
+        "testing__C230223__NRS-484B-785-1a__cycle_or_scooter_operator__lane_15_5_mph"
+      ],
+      "fixed_conditions": "Same C230223 reviewed lane geometry, jurisdiction, qualifying scooter, no ordinance, four cameras, 45 seconds, 20 Hz and original trajectory controller apart from requested speed.",
+      "deliberate_differences": [
+        "Requested operating speed 14.5, 15.0, 15.5 mph; measured 900-frame original speed history determines actual boundary coverage."
+      ],
+      "positive_cpu_proof": "proof-comparison-speed_below_at_above-positive.log",
+      "negative_cpu_proof": "proof-comparison-speed_below_at_above-negative.log"
+    },
+    {
+      "comparison_id": "ordinance_context",
+      "case_ids": [
+        "testing__C230223__NRS-484B-785-1a__cycle_or_scooter_operator__lane_14_5_mph",
+        "testing__C230223__NRS-484B-785-1a__cycle_or_scooter_operator__lane_14_5_ordinance"
+      ],
+      "fixed_conditions": "Same qualifying scooter, designated lane, controller speed request 14.5 mph, route, timing and cameras.",
+      "deliberate_differences": [
+        "Official reviewed ordinance applicability/context differs; legal effect is not assumed from the existence of a local definition."
+      ],
+      "positive_cpu_proof": "proof-comparison-ordinance_context-positive.log",
+      "negative_cpu_proof": "proof-comparison-ordinance_context-negative.log"
+    },
+    {
+      "comparison_id": "scooter_qualification",
+      "case_ids": [
+        "testing__C230223__NRS-484B-785-1a__cycle_or_scooter_operator__lane_14_5_mph",
+        "testing__C230223__NRS-484B-785-1a__cycle_or_scooter_operator__lane_14_5_nonqualifying"
+      ],
+      "fixed_conditions": "Same 14.5 mph request, route, lane and ordinance absence.",
+      "deliberate_differences": [
+        "Reviewed manufacturer/device specifications determine whether electric scooter definition is met."
+      ],
+      "positive_cpu_proof": "proof-comparison-scooter_qualification-positive.log",
+      "negative_cpu_proof": "proof-comparison-scooter_qualification-negative.log"
+    },
+    {
+      "comparison_id": "bicycle_lane_occupancy",
+      "case_ids": [
+        "testing__C230223__NRS-484B-785-1a__cycle_or_scooter_operator__lane_14_5_mph",
+        "testing__C230223__NRS-484B-785-1a__cycle_or_scooter_operator__outside_lane_14_5"
+      ],
+      "fixed_conditions": "Same qualifying scooter, 14.5 mph request, jurisdiction, ordinance absence, original scooter route, roadway and cameras.",
+      "deliberate_differences": [
+        "Official designated bicycle lane polygon shifts relative to the fixed original scooter route; measured original body occupancy varies."
+      ],
+      "positive_cpu_proof": "proof-comparison-bicycle_lane_occupancy-positive.log",
+      "negative_cpu_proof": "proof-comparison-bicycle_lane_occupancy-negative.log"
+    }
+  ]
+}
