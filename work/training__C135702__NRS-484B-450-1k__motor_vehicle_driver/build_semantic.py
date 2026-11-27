@@ -11,6 +11,12 @@ CELL = "C135702"
 ACTOR = "motor_vehicle_driver"
 PHRASE = "when stopping, standing or parking would obstruct traffic"
 NOTE = "Original same-time traffic movement and obstruction effects require independent review."
+EXCEPTION_JUDGMENTS = (
+    ("except when necessary to avoid conflict with other traffic", "Original traffic conflict and necessity require review."),
+    ("in compliance with law", "The applicable original law and direction require review."),
+    ("the directions of a police officer", "Original officer authority, instruction and time require review."),
+    ("official traffic-control device", "Original device authority, indication and applicability require review."),
+)
 
 
 def write(name, value):
@@ -44,10 +50,12 @@ def build():
                                   {"source_clause": "the directions of a police officer", "description": "Retain original officer direction and timing."},
                                   {"source_clause": "official traffic-control device", "description": "Retain original official device identity and indication."}],
                               "timing": {"description": "Observe the whole stopping, standing or parking interval with same-time traffic response.", "numeric_conditions": []},
-                              "judgment_calls_needed": [{"phrase": PHRASE, "note": NOTE}]},
+                              "judgment_calls_needed": [{"phrase": PHRASE, "note": NOTE}] +
+                                  [{"phrase": phrase, "note": note} for phrase, note in EXCEPTION_JUDGMENTS]},
                 "parameter_refs": [
                     {"name": "obstruction_kind", "kind": "world_setup", "range_or_domain": "source-reviewed excavation or physical obstruction"},
                     {"name": "park_y_m", "kind": "controller", "range_or_domain": "authored parked vehicle transverse position in m"},
+                    {"name": "police_direction_source_request", "kind": "controller", "range_or_domain": "source-gated police direction request absent 0 or present 1"},
                     {"name": "observed_open_width_m", "kind": "subject_behavior", "range_or_domain": "same-frame measured free transverse opening or unknown"},
                     {"name": "observed_passing_response", "kind": "subject_behavior", "range_or_domain": "original traffic response or unknown"}]}
     refs["template"] = write("template.json", template)
@@ -62,6 +70,18 @@ def build():
                                         {"name": "drv.hard_deceleration", "unit": "structured", "description": "Measured passing response without a legal cutoff"}],
                     "limitations": ["A finite authored opening and synthetic response do not decide whether traffic would be obstructed."]}}
     refs["judgment_observables"] = [write("judgment-0.json", judgment)]
+    for index, (phrase, note) in enumerate(EXCEPTION_JUDGMENTS, 1):
+        requirement = {"template_id": template["template_id"], "phrase": phrase,
+                       "note": note, "status": "draft", "observable_requirements": {
+                           "observables": [{"name": "exception_authority", "unit": "structured",
+                                            "description": "Original source record and event scope for the named exception"}],
+                           "context_inputs": [{"name": "exception_authority", "unit": "structured",
+                                               "description": "Original separately hashed authority and applicability record"}],
+                           "sweep_dimensions": [], "landmarks": [],
+                           "recording_needs": [{"name": "drv.standing_or_parked", "unit": "structured",
+                                                "description": "Same-time activity and operator source context"}],
+                           "limitations": ["A source record or authored request does not establish that an exception legally applies."]}}
+        refs["judgment_observables"].append(write(f"judgment-{index}.json", requirement))
     binding = {"cell_id": CELL, "actor": ACTOR, "status": "draft",
                "established_contexts": [],
                "law_refs": [{"template_id": template["template_id"], "binding_kind": "direct"}],
@@ -76,6 +96,13 @@ def build():
                              "status": "incomplete",
                              "rationale": "The existing two parked positions sample opening geometry, but do not establish physically feasible response coverage for an exact traffic-obstruction sweep.",
                              "missing_inputs": ["Original Native passing response across a calibrated, fixed geometry range and reviewed source exception authority."]}]
+    for index, (phrase, note) in enumerate(EXCEPTION_JUDGMENTS, 1):
+        cases["sweep_specs"].append({"sweep_id": f"exception-source-coverage-{index}",
+                                     "target_law_id": LAW,
+                                     "judgment_refs": [{"phrase": phrase, "note": note}],
+                                     "status": "incomplete",
+                                     "rationale": "The selected parking pair holds every source exception absent; a distinct authority branch comparison requires source-gated construction.",
+                                     "missing_inputs": ["An exact selected and proven source-gated exception comparison, with original authority identity, time and place scope."]})
     refs["cases"] = write("cases.json", cases)
     write("semantic-index.json", {"format": "worker-semantic-delivery",
                                   "assignment_id": AID, "stages": refs})

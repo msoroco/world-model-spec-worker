@@ -30,7 +30,8 @@ def main():
     result['reason'] = ('CPU delivery preparation proved for all fourteen exact selected hydrant cases and '
                         'source-preserving fallbacks. Original Native parking motion, premises/permission '
                         'and hydrant sources, independent pixels, physical completion and legal judgment '
-                        'remain pending local execution.')
+                        'remain pending local execution. The current runner holds the vehicle at its spawn '
+                        'position and does not establish an original parking approach.')
     result['readiness_kind'] = 'delivery_prepared'
     result['planned_case_count'] = 14
     result['comparison_count'] = 6
@@ -51,8 +52,9 @@ def main():
         'execute-delivery --repo . --batch full-train-delivery --db $DB --assignment ' + ROOT.name +
         ' --case ' + manifest['cases'][0]['case_id'] +
         ' --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT')
-    result_path.write_text(json.dumps(result, indent=2) + '\n')
-    print(json.dumps({'result_sha256': sha(result_path), 'status': result['status']}))
+    candidate_path = REPO / '.runtime-work/c200568-ready-candidate.json'
+    candidate_path.write_text(json.dumps(result, indent=2) + '\n')
+    print(json.dumps({'candidate_sha256': sha(candidate_path), 'status': result['status']}))
 
 
 if __name__ == '__main__':

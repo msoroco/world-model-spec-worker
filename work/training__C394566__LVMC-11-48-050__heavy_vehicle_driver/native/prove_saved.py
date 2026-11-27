@@ -33,8 +33,8 @@ def main():
     if ROOT / '.runtime-work' not in output_root.parents:
         raise ValueError('Set the pipeline output root under .runtime-work')
     suffix = args.case.removeprefix(PACKAGE.name + '__')
-    if suffix not in ('truck_route', 'non_truck_route'):
-        raise ValueError('Selected route case required')
+    if not (PACKAGE / ('fixture-recipe-' + suffix + '.json')).is_file():
+        raise ValueError('Selected case fixture recipe required')
     scratch = Path(args.scratch).resolve()
     if ROOT / '.runtime-work' not in scratch.parents or scratch.exists():
         raise ValueError('Fresh scratch under .runtime-work required')

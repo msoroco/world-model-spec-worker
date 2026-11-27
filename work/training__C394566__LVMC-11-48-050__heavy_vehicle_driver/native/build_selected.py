@@ -36,7 +36,8 @@ def build():
                                        candidate_id=candidate,target_speed_mps=speed,
                                        requested_truck_route=route)
             cfg['case']={'case_id':case,'requested_setting':suffix}
-            cfg['supported_case_ids']=[AID+'__truck_route',AID+'__non_truck_route']
+            plan=json.loads((FOLDER/'case-plan.json').read_text())
+            cfg['supported_case_ids']=[item['case_id'] for item in plan['cases']]
             files=[{'path':name,'content':content} for name,content in fixed.items()]
             files += [{'path':'config.json','content':json.dumps(cfg,indent=2)+'\n'},
                       {'path':'tests/test_bundle.py','content':test}]

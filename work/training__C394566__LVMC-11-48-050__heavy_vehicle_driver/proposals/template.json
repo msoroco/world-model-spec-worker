@@ -1,0 +1,77 @@
+{
+  "template_id": "LVMC-11-48-050@heavy_vehicle_driver",
+  "law_id": "LVMC-11-48-050",
+  "actor": "heavy_vehicle_driver",
+  "status": "draft",
+  "quote": "No vehicle in excess of eight thousand pounds unladen weight shall be operated or moved upon any street (other than a truck route), in any residence district between the hours of seven p.m. and six a.m.; provided, however, that the Department of Public Works may, at its discretion, upon application in writing, issue a special permit in writing authorizing the applicant to operate or move such vehicle between the hours of seven p.m. and six a.m. In issuing such permit, the Department may impose such conditions thereon, such as routes to be followed, time of operation or movement, or other matters, as it deems necessary or desirable.",
+  "structure": {
+    "law_id": "LVMC-11-48-050",
+    "activation": {
+      "condition": "Vehicle over 8000 lb unladen on a non-truck-route street in a residence district during the 7 p.m. to 6 a.m. window.",
+      "numeric_conditions": [
+        {
+          "variable": "unladen_weight_lb",
+          "operator": ">",
+          "value": 8000,
+          "unit": "lb"
+        }
+      ]
+    },
+    "obligation": {
+      "type": "must_not",
+      "description": "Do not operate or move such vehicle under all specified activation conditions, subject to a written special permit.",
+      "source_clause": "shall be operated or moved",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "trigger": "Special written DPW permit issued upon written application",
+        "effect": "The permit may authorize operation or movement in the restricted hours only within actual authority and attached conditions.",
+        "replacement_obligation": "Retain original permit, applicant, vehicle, route, time and attached conditions for independent review.",
+        "source_clause": "issue a special permit in writing"
+      }
+    ],
+    "timing": {
+      "description": "Between seven p.m. and six a.m.; exact 19:00 and 06:00 endpoints remain unresolved source interpretation.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": []
+  },
+  "parameter_refs": [
+    {
+      "name": "unladen_weight_lb",
+      "kind": "world_setup",
+      "range_or_domain": "original certified unladen vehicle weight in lb"
+    },
+    {
+      "name": "truck_route_designation",
+      "kind": "world_setup",
+      "range_or_domain": "original authoritative route designation"
+    },
+    {
+      "name": "residence_district",
+      "kind": "world_setup",
+      "range_or_domain": "original district authority"
+    },
+    {
+      "name": "civil_clock_time",
+      "kind": "world_setup",
+      "range_or_domain": "original civil timestamp and UTC offset"
+    },
+    {
+      "name": "written_permit_status",
+      "kind": "world_setup",
+      "range_or_domain": "original written DPW permit status"
+    },
+    {
+      "name": "permit_scope_claim",
+      "kind": "world_setup",
+      "range_or_domain": "original permit route, time and conditions claim; authority unverified"
+    },
+    {
+      "name": "requested_motion",
+      "kind": "controller",
+      "range_or_domain": "requested move or stationary contrast"
+    }
+  ]
+}

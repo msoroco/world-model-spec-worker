@@ -16,16 +16,18 @@ from physical_check import EVENTS, assess, lifecycle
 def run_fixture(suffix, kind):
     with tempfile.TemporaryDirectory(dir=REPO / ".runtime-work", prefix="c135702-physical-") as temp:
         folder = Path(temp)
-        source = ROOT / "selected-source" / ("condition_" + suffix)
+        source = ROOT / "selected-source" / (("condition_" + suffix) if suffix in ("a", "b") else suffix)
         for name in ("native_samples.jsonl", "video_frames.jsonl",
                      "camera-frames.jsonl", "obstruction-inventory.json"):
             shutil.copyfile(source / name, folder / name)
         if suffix == "a":
             cfg = json.loads((ROOT / "config.json").read_text())
-        else:
+        elif suffix == "b":
             construction = json.loads((ROOT / "cases/condition_b/construction.json").read_text())
             cfg = json.loads(next(item["content"] for item in construction["files"]
                                   if item["path"] == "config.json"))
+        else:
+            cfg = json.loads((ROOT / "cases" / suffix / "config.json").read_text())
         (folder / "config.json").write_text(json.dumps(cfg) + "\n")
         if kind == "incomplete_motion":
             path = folder / "native_samples.jsonl"
@@ -65,7 +67,7 @@ def run_lifecycle():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--case-suffix", choices=("a", "b"))
+    parser.add_argument("--case-suffix", choices=("a", "b", "police_absent", "police_present"))
     parser.add_argument("--kind", choices=("complete_motion", "incomplete_motion", "missing_evidence"))
     parser.add_argument("--lifecycle", action="store_true")
     args = parser.parse_args()

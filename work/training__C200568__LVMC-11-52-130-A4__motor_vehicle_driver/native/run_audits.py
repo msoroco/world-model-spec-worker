@@ -9,9 +9,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 REPO = ROOT.parent.parent
 NATIVE = ROOT / 'native'
-SCRATCH = REPO / '.runtime-work/c200568-audits'
+SCRATCH = REPO / '.runtime-work/c200568-audits-v3'
 SCRATCH.mkdir(exist_ok=True)
-PYTHON = REPO / '.venv-cpu/bin/python'
+PYTHON = '.venv-cpu/bin/python'
 env = dict(os.environ, PYTHONDONTWRITEBYTECODE='1')
 
 
@@ -30,7 +30,7 @@ def main():
     manifest = json.loads(manifest_path.read_text())
     plan = json.loads((ROOT / 'case-plan.json').read_text())
     script = ROOT / 'delivery_audit.py'
-    base = [str(PYTHON), str(script)]
+    base = [PYTHON, str(script.relative_to(REPO))]
     proofs = {}
     for entry in manifest['cases']:
         case = entry['case_id']
@@ -38,8 +38,10 @@ def main():
         attempt = REPO / ('.runtime-work/c200568-reproof-v3-primary-compat-' + suffix)
         processing = ROOT / ('native/selected-' + suffix + '-saved-processing.json')
         output = SCRATCH / (suffix + '-delivery.json')
-        command = base + ['--case', case, '--candidate', 'primary', '--attempt', str(attempt),
-                          '--processing', str(processing), '--output', str(output), '--diagnostic']
+        command = base + ['--case', case, '--candidate', 'primary',
+                          '--attempt', str(attempt.relative_to(REPO)),
+                          '--processing', str(processing.relative_to(REPO)),
+                          '--output', str(output.relative_to(REPO)), '--diagnostic']
         positive_log = NATIVE / ('selected-' + suffix + '-delivery-positive.log')
         negative_log = NATIVE / ('selected-' + suffix + '-delivery-negative.log')
         positive = execute(command, positive_log)
@@ -64,12 +66,14 @@ def main():
     for comparison in plan['comparisons']:
         comparison_id = comparison['comparison_id']
         name = comparison_id.split('__')[-1]
-        command = [str(PYTHON), str(comparison_script), '--comparison-id', comparison_id]
+        command = [PYTHON, str(comparison_script.relative_to(REPO)),
+                   '--comparison-id', comparison_id]
         for label, case in zip('abc', comparison['case_ids']):
             processing, audit = proofs[case]
-            command += ['--' + label + '-processing', str(processing),
-                        '--' + label + '-audit', str(audit)]
-        command += ['--output', str(SCRATCH / (name + '-comparison.json')), '--diagnostic']
+            command += ['--' + label + '-processing', str(processing.relative_to(REPO)),
+                        '--' + label + '-audit', str(audit.relative_to(REPO))]
+        command += ['--output', str((SCRATCH / (name + '-comparison.json')).relative_to(REPO)),
+                    '--diagnostic']
         positive_log = NATIVE / (name + '-comparison-positive.log')
         negative_log = NATIVE / (name + '-comparison-negative.log')
         positive = execute(command, positive_log)
