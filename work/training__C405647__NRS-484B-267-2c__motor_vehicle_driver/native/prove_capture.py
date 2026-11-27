@@ -46,10 +46,11 @@ def main():
              "native_body_xy_m": [[-1.0, -1.0], [1.0, -1.0],
                                   [1.0, 1.0], [-1.0, 1.0]],
              "native_speed_mps": 0.0}
-    observed = [{"frame": i, "native_frame": i + 30,
+    observed = [{"frame": i, "native_frame": i + 30, "time_s": i / 20,
                  "source_kind": "original_native_motion",
                  "actors": {"ego": actor, "emergency": actor},
-                 "ego_brake_observed": 0.0, "lamp_state_observed": True}
+                 "ego_brake_request": 0.0, "ego_brake_observed": 0.0,
+                 "lamp_request": True, "lamp_state_observed": True}
                 for i in range(600)]
     frames = [{"video_frame": i, "native_frame": i + 30, "time_s": i / 20}
               for i in range(600)]
@@ -74,8 +75,18 @@ def main():
         lambda: frame_path.write_text("".join(json.dumps(row) + "\n" for row in bad)),
         lambda: frame_path.write_text("".join(json.dumps(row) + "\n" for row in frames)))
     bad_actors = copy.deepcopy(observed)
+    bad_actors[100]["time_s"] += .1
+    failures["native_cadence"] = reject("native_cadence", "Native cadence differs",
+        lambda: actor_path.write_text("".join(json.dumps(row) + "\n" for row in bad_actors)),
+        lambda: actor_path.write_text("".join(json.dumps(row) + "\n" for row in observed)))
+    bad_actors = copy.deepcopy(observed)
     bad_actors[100]["actors"]["emergency"]["native_body_xy_m"] = []
     failures["missing_body"] = reject("missing_body", "geometry or speed readback missing",
+        lambda: actor_path.write_text("".join(json.dumps(row) + "\n" for row in bad_actors)),
+        lambda: actor_path.write_text("".join(json.dumps(row) + "\n" for row in observed)))
+    bad_actors = copy.deepcopy(observed)
+    bad_actors[100]["lamp_state_observed"] = False
+    failures["lamp_readback"] = reject("lamp_readback", "request/readback mismatch",
         lambda: actor_path.write_text("".join(json.dumps(row) + "\n" for row in bad_actors)),
         lambda: actor_path.write_text("".join(json.dumps(row) + "\n" for row in observed)))
     wrong = request(CASES[1])

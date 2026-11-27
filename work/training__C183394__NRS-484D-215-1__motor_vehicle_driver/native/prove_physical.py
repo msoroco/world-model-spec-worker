@@ -74,7 +74,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--kind', choices=('complete_motion', 'incomplete_motion',
                                            'missing_evidence', 'lifecycle'), required=True)
-    parser.add_argument('--case', choices=('condition_a', 'condition_b'))
+    parser.add_argument('--case', choices=('condition_a', 'condition_b',
+        'distance_below_500ft', 'distance_at_500ft', 'distance_above_500ft'))
     args = parser.parse_args()
     if args.kind != 'lifecycle' and not args.case:
         parser.error('--case is required for motion fixtures')

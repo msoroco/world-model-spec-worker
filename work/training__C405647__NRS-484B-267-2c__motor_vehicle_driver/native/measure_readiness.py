@@ -121,6 +121,17 @@ def measure(root):
         raise ValueError('No frame-bound flashing and moving/preparing indication')
     if not review['visible_to_approaching_driver']:
         raise ValueError('Qualifying indication not independently reviewed as visible')
+    indication_kinds = []
+    if moving[trigger] > 0:
+        indication_kinds.append('vehicle_moving')
+    if motion_visible[trigger]:
+        indication_kinds.append('visible_movement')
+    if hand_visible[trigger]:
+        indication_kinds.append('visible_driver_hand_signal')
+    if not indication_kinds:
+        raise ValueError('No reviewed moving or preparing indication at trigger')
+    if hand_visible[trigger] and not review.get('hand_signal_source'):
+        raise ValueError('Missing independent reviewed hand_signal_source')
     brake = next((i for i in range(trigger, FRAMES) if brakes[i] > 0), None)
     stopped = next((i for i in range(trigger, FRAMES) if speeds[i] == 0), None)
     decels = [(speeds[i-1] - speeds[i]) / (times[i] - times[i-1]) for i in range(trigger+1, FRAMES)]
@@ -135,6 +146,12 @@ def measure(root):
         'sample_count': FRAMES, 'sample_span_s': times[-1] - times[0],
         'trigger_frame': trigger, 'trigger_time_s': times[trigger],
         'trigger_gap_m': gaps[trigger], 'trigger_ego_speed_mps': speeds[trigger],
+        'indication_kinds_at_trigger': indication_kinds,
+        'statutory_light_qualification_reviewed': review['lights_meet_484A_480_3'],
+        'officer_direction_exception_reviewed': review['officer_direction_present'],
+        'application_review_state': ('officer_direction_exception' if review['officer_direction_present']
+                                     else 'light_qualification_pending_or_negative' if not review['lights_meet_484A_480_3']
+                                     else 'qualifying_indication_reviewed'),
         'emergency_moving_at_trigger': moving[trigger] > 0,
         'emergency_motion_visible_at_trigger': motion_visible[trigger],
         'hand_signal_visible_at_trigger': hand_visible[trigger],

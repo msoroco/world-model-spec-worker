@@ -385,6 +385,579 @@
         "receipt": "native/physical-condition_b-receipt.json",
         "sha256": "7d3ab93bb801eeb454b2530805960f1b3cce660a8adedaeaed46d1284fa2f79f"
       }
+    },
+    {
+      "case_id": "training__C183394__NRS-484D-215-1__motor_vehicle_driver__distance_below_500ft",
+      "kind": "delivery",
+      "id": "primary",
+      "construction": "constructions/distance_below_500ft/primary/construction.json",
+      "construction_sha256": "f663783b3a3103500cd7364286ae9c2e55240c6b58c3bfc41bd01fa3f8848423",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original Native actor placement and 20 Hz movement may miss the authored one-foot probe window; alternate gain retains the exact case and capture contract."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "constructions/distance_below_500ft/fallback1/construction.json",
+          "construction_sha256": "e493d2efa609c6921eb38e990f8141bc1455f715e0658d1eec5d4cea756a9dd9",
+          "trigger": {
+            "source": "original Native actor centre positions and timestamp",
+            "metric": "observed_oncoming_separation_ft",
+            "failure_condition": "original trace does not enter the requested one-foot physical probe band"
+          },
+          "changed_knobs": [
+            "vehicle acceleration gain 0.20 to 0.26; exact starting geometry held fixed"
+          ],
+          "offline": {
+            "case_id": "training__C183394__NRS-484D-215-1__motor_vehicle_driver__distance_below_500ft",
+            "candidate_id": "fallback1",
+            "construction_sha256": "e493d2efa609c6921eb38e990f8141bc1455f715e0658d1eec5d4cea756a9dd9",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C183394__NRS-484D-215-1__motor_vehicle_driver/execution-manifest.json --case training__C183394__NRS-484D-215-1__motor_vehicle_driver__distance_below_500ft --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c183394/offline-distance_below_500ft-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "offline/distance_below_500ft-fallback1.log",
+            "log_sha256": "c453d473596355f7340a89a19eed05450d917c5e0395ce4183d2a7a00b227e9d"
+          },
+          "compatibility": {
+            "receipt": "compatibility/distance_below_500ft-fallback1/compatibility.json",
+            "sha256": "fd4f5d2d2db927003eee1c4e6330ea46d14308df349b2b43571a1ccf79863b61",
+            "log": "compatibility/distance_below_500ft-fallback1/analysis.log",
+            "negative_log": "compatibility/distance_below_500ft-fallback1/negative.log"
+          }
+        }
+      ],
+      "fixture_recipe": "work/training__C183394__NRS-484D-215-1__motor_vehicle_driver/fixture-recipe-distance_below_500ft.json",
+      "measurement_contract": "measurement-distance_below_500ft.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-oncoming-beam-measurement"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "negative": {
+        "log": "compatibility/distance_below_500ft-primary/negative.log"
+      },
+      "acquisition": {
+        "sig.headlamp": {
+          "entrypoint": "beam_capture.py",
+          "method": "Original 20 Hz CARLA actor, lamp and four camera source join",
+          "evidence": [
+            "beam-rows.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "rel.oncoming": {
+          "entrypoint": "beam_capture.py",
+          "method": "Original 20 Hz CARLA actor, lamp and four camera source join",
+          "evidence": [
+            "beam-rows.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "rel.centre_distance": {
+          "entrypoint": "beam_capture.py",
+          "method": "Original 20 Hz CARLA actor, lamp and four camera source join",
+          "evidence": [
+            "beam-rows.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "drv.approaching": {
+          "entrypoint": "beam_capture.py",
+          "method": "Original 20 Hz CARLA actor, lamp and four camera source join",
+          "evidence": [
+            "beam-rows.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "drv.civil_night": {
+          "entrypoint": "beam_capture.py",
+          "method": "Original 20 Hz CARLA actor, lamp and four camera source join",
+          "evidence": [
+            "beam-rows.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "env.civil_time": {
+          "entrypoint": "beam_capture.py",
+          "method": "Original 20 Hz CARLA actor, lamp and four camera source join",
+          "evidence": [
+            "beam-rows.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "st.roadway": {
+          "entrypoint": "beam_capture.py",
+          "method": "Original 20 Hz CARLA actor, lamp and four camera source join",
+          "evidence": [
+            "beam-rows.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "st.shoulder": {
+          "entrypoint": "beam_capture.py",
+          "method": "Original 20 Hz CARLA actor, lamp and four camera source join",
+          "evidence": [
+            "beam-rows.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "env.visibility": {
+          "entrypoint": "beam_capture.py",
+          "method": "Original 20 Hz CARLA actor, lamp and four camera source join",
+          "evidence": [
+            "beam-rows.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        }
+      },
+      "offline": {
+        "case_id": "training__C183394__NRS-484D-215-1__motor_vehicle_driver__distance_below_500ft",
+        "candidate_id": "primary",
+        "construction_sha256": "f663783b3a3103500cd7364286ae9c2e55240c6b58c3bfc41bd01fa3f8848423",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C183394__NRS-484D-215-1__motor_vehicle_driver/execution-manifest.json --case training__C183394__NRS-484D-215-1__motor_vehicle_driver__distance_below_500ft --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c183394/offline-distance_below_500ft-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "offline/distance_below_500ft-primary.log",
+        "log_sha256": "c453d473596355f7340a89a19eed05450d917c5e0395ce4183d2a7a00b227e9d"
+      },
+      "compatibility": {
+        "receipt": "compatibility/distance_below_500ft-primary/compatibility.json",
+        "sha256": "ffb876b928f7f1fcf8ab7d17e231b80bc7765da54bf4e93392b8ac8c66941469",
+        "log": "compatibility/distance_below_500ft-primary/analysis.log",
+        "negative_log": "compatibility/distance_below_500ft-primary/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "native/physical-distance_below_500ft-receipt.json",
+        "sha256": "fdedb6234f62f1db8a216326ee9c55eb8bb2df34c7b3b585f6b0260984aaa5c6"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C183394__NRS-484D-215-1__motor_vehicle_driver__distance_below_500ft",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "2e2bf07f2029e9e95065aa4ec852c0e0a2bf408f688cc884e801e0a554cae8a8",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C183394__NRS-484D-215-1__motor_vehicle_driver/delivery_audit.py --case training__C183394__NRS-484D-215-1__motor_vehicle_driver__distance_below_500ft --self-test",
+        "test_exit_code": 0,
+        "test_log": "native/delivery-distance_below_500ft-positive.log",
+        "test_log_sha256": "bbc2b47aa4cd0198d9a00038a9543feaf74af39463046540f8441e44b09bd119",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C183394__NRS-484D-215-1__motor_vehicle_driver/delivery_audit.py --case training__C183394__NRS-484D-215-1__motor_vehicle_driver__distance_below_500ft --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing exact original Native beam result",
+        "negative_log": "native/delivery-distance_below_500ft-negative.log",
+        "negative_log_sha256": "5bcbd43c539dee410e1ff153a9f30748042c4eb685739ff9553ec92058d5694e"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C183394__NRS-484D-215-1__motor_vehicle_driver/execution-manifest.json --case training__C183394__NRS-484D-215-1__motor_vehicle_driver__distance_below_500ft --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_scope": "Public source-shaped diagnostic saved-only processing; no Native or optical acceptance",
+        "test_exit_code": 0,
+        "test_log": "saved-proof/distance_below_500ft/processing.json",
+        "test_log_sha256": "850a86eb02da8cbba913708a8468fd56eba420593c9e0bc778b15ede09b6296b"
+      }
+    },
+    {
+      "case_id": "training__C183394__NRS-484D-215-1__motor_vehicle_driver__distance_at_500ft",
+      "kind": "delivery",
+      "id": "primary",
+      "construction": "constructions/distance_at_500ft/primary/construction.json",
+      "construction_sha256": "ba07c902726791395570c7fe71205449c8a3e1f33a0ae65283d4e3fef50b71f4",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original Native actor placement and 20 Hz movement may miss the authored one-foot probe window; alternate gain retains the exact case and capture contract."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "constructions/distance_at_500ft/fallback1/construction.json",
+          "construction_sha256": "c8a36d11dac4ed1552833a154086d8b4bc76d8c5ce19939c502a3624005342bd",
+          "trigger": {
+            "source": "original Native actor centre positions and timestamp",
+            "metric": "observed_oncoming_separation_ft",
+            "failure_condition": "original trace does not enter the requested one-foot physical probe band"
+          },
+          "changed_knobs": [
+            "vehicle acceleration gain 0.20 to 0.26; exact starting geometry held fixed"
+          ],
+          "offline": {
+            "case_id": "training__C183394__NRS-484D-215-1__motor_vehicle_driver__distance_at_500ft",
+            "candidate_id": "fallback1",
+            "construction_sha256": "c8a36d11dac4ed1552833a154086d8b4bc76d8c5ce19939c502a3624005342bd",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C183394__NRS-484D-215-1__motor_vehicle_driver/execution-manifest.json --case training__C183394__NRS-484D-215-1__motor_vehicle_driver__distance_at_500ft --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c183394/offline-distance_at_500ft-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "offline/distance_at_500ft-fallback1.log",
+            "log_sha256": "a3c2240800b81d21966debb0eb7932cec165005a9c4b52ba56fa6c37075f45b0"
+          },
+          "compatibility": {
+            "receipt": "compatibility/distance_at_500ft-fallback1/compatibility.json",
+            "sha256": "c349a490886eeb065c2355f048e3362a8a99a106efa1ec49a95d73384a55e318",
+            "log": "compatibility/distance_at_500ft-fallback1/analysis.log",
+            "negative_log": "compatibility/distance_at_500ft-fallback1/negative.log"
+          }
+        }
+      ],
+      "fixture_recipe": "work/training__C183394__NRS-484D-215-1__motor_vehicle_driver/fixture-recipe-distance_at_500ft.json",
+      "measurement_contract": "measurement-distance_at_500ft.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-oncoming-beam-measurement"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "negative": {
+        "log": "compatibility/distance_at_500ft-primary/negative.log"
+      },
+      "acquisition": {
+        "sig.headlamp": {
+          "entrypoint": "beam_capture.py",
+          "method": "Original 20 Hz CARLA actor, lamp and four camera source join",
+          "evidence": [
+            "beam-rows.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "rel.oncoming": {
+          "entrypoint": "beam_capture.py",
+          "method": "Original 20 Hz CARLA actor, lamp and four camera source join",
+          "evidence": [
+            "beam-rows.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "rel.centre_distance": {
+          "entrypoint": "beam_capture.py",
+          "method": "Original 20 Hz CARLA actor, lamp and four camera source join",
+          "evidence": [
+            "beam-rows.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "drv.approaching": {
+          "entrypoint": "beam_capture.py",
+          "method": "Original 20 Hz CARLA actor, lamp and four camera source join",
+          "evidence": [
+            "beam-rows.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "drv.civil_night": {
+          "entrypoint": "beam_capture.py",
+          "method": "Original 20 Hz CARLA actor, lamp and four camera source join",
+          "evidence": [
+            "beam-rows.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "env.civil_time": {
+          "entrypoint": "beam_capture.py",
+          "method": "Original 20 Hz CARLA actor, lamp and four camera source join",
+          "evidence": [
+            "beam-rows.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "st.roadway": {
+          "entrypoint": "beam_capture.py",
+          "method": "Original 20 Hz CARLA actor, lamp and four camera source join",
+          "evidence": [
+            "beam-rows.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "st.shoulder": {
+          "entrypoint": "beam_capture.py",
+          "method": "Original 20 Hz CARLA actor, lamp and four camera source join",
+          "evidence": [
+            "beam-rows.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "env.visibility": {
+          "entrypoint": "beam_capture.py",
+          "method": "Original 20 Hz CARLA actor, lamp and four camera source join",
+          "evidence": [
+            "beam-rows.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        }
+      },
+      "offline": {
+        "case_id": "training__C183394__NRS-484D-215-1__motor_vehicle_driver__distance_at_500ft",
+        "candidate_id": "primary",
+        "construction_sha256": "ba07c902726791395570c7fe71205449c8a3e1f33a0ae65283d4e3fef50b71f4",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C183394__NRS-484D-215-1__motor_vehicle_driver/execution-manifest.json --case training__C183394__NRS-484D-215-1__motor_vehicle_driver__distance_at_500ft --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c183394/offline-distance_at_500ft-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "offline/distance_at_500ft-primary.log",
+        "log_sha256": "a3c2240800b81d21966debb0eb7932cec165005a9c4b52ba56fa6c37075f45b0"
+      },
+      "compatibility": {
+        "receipt": "compatibility/distance_at_500ft-primary/compatibility.json",
+        "sha256": "ee87d246b35c348f595907cac5199f7ca735ced150d78327409644fc5f8208b7",
+        "log": "compatibility/distance_at_500ft-primary/analysis.log",
+        "negative_log": "compatibility/distance_at_500ft-primary/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "native/physical-distance_at_500ft-receipt.json",
+        "sha256": "a27a3852bd8ffedd4675c155db0c2eee5101ca4ff46b8cdca04ddbe32ff251d7"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C183394__NRS-484D-215-1__motor_vehicle_driver__distance_at_500ft",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "2e2bf07f2029e9e95065aa4ec852c0e0a2bf408f688cc884e801e0a554cae8a8",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C183394__NRS-484D-215-1__motor_vehicle_driver/delivery_audit.py --case training__C183394__NRS-484D-215-1__motor_vehicle_driver__distance_at_500ft --self-test",
+        "test_exit_code": 0,
+        "test_log": "native/delivery-distance_at_500ft-positive.log",
+        "test_log_sha256": "41b6b69ee8b17c3252d296f7e9b833d09637a2c22338bde10c18dee4847bc9ef",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C183394__NRS-484D-215-1__motor_vehicle_driver/delivery_audit.py --case training__C183394__NRS-484D-215-1__motor_vehicle_driver__distance_at_500ft --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing exact original Native beam result",
+        "negative_log": "native/delivery-distance_at_500ft-negative.log",
+        "negative_log_sha256": "5bcbd43c539dee410e1ff153a9f30748042c4eb685739ff9553ec92058d5694e"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C183394__NRS-484D-215-1__motor_vehicle_driver/execution-manifest.json --case training__C183394__NRS-484D-215-1__motor_vehicle_driver__distance_at_500ft --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_scope": "Public source-shaped diagnostic saved-only processing; no Native or optical acceptance",
+        "test_exit_code": 0,
+        "test_log": "saved-proof/distance_at_500ft/processing.json",
+        "test_log_sha256": "07afa310cb8e40f1cdfd1a9008d58638bb3945896709736957d2f1f9f4a751ea"
+      }
+    },
+    {
+      "case_id": "training__C183394__NRS-484D-215-1__motor_vehicle_driver__distance_above_500ft",
+      "kind": "delivery",
+      "id": "primary",
+      "construction": "constructions/distance_above_500ft/primary/construction.json",
+      "construction_sha256": "c8fc5bf2765442402d7e65aa1191258354731d132b8b8add214aa2cecba666ea",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original Native actor placement and 20 Hz movement may miss the authored one-foot probe window; alternate gain retains the exact case and capture contract."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "constructions/distance_above_500ft/fallback1/construction.json",
+          "construction_sha256": "bbb73e958b9c41e22811e13b7e022d8c3335417a68633878f645202c94e36b11",
+          "trigger": {
+            "source": "original Native actor centre positions and timestamp",
+            "metric": "observed_oncoming_separation_ft",
+            "failure_condition": "original trace does not enter the requested one-foot physical probe band"
+          },
+          "changed_knobs": [
+            "vehicle acceleration gain 0.20 to 0.26; exact starting geometry held fixed"
+          ],
+          "offline": {
+            "case_id": "training__C183394__NRS-484D-215-1__motor_vehicle_driver__distance_above_500ft",
+            "candidate_id": "fallback1",
+            "construction_sha256": "bbb73e958b9c41e22811e13b7e022d8c3335417a68633878f645202c94e36b11",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C183394__NRS-484D-215-1__motor_vehicle_driver/execution-manifest.json --case training__C183394__NRS-484D-215-1__motor_vehicle_driver__distance_above_500ft --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c183394/offline-distance_above_500ft-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "offline/distance_above_500ft-fallback1.log",
+            "log_sha256": "c57b587bd801c63df2a335d28445b277c7486045cffd3da2f4a0fd44057056e9"
+          },
+          "compatibility": {
+            "receipt": "compatibility/distance_above_500ft-fallback1/compatibility.json",
+            "sha256": "598264215e9416400a22790f2e0849bf72bffc7b2205aae2f3096ba9a6ad3ec5",
+            "log": "compatibility/distance_above_500ft-fallback1/analysis.log",
+            "negative_log": "compatibility/distance_above_500ft-fallback1/negative.log"
+          }
+        }
+      ],
+      "fixture_recipe": "work/training__C183394__NRS-484D-215-1__motor_vehicle_driver/fixture-recipe-distance_above_500ft.json",
+      "measurement_contract": "measurement-distance_above_500ft.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-oncoming-beam-measurement"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "negative": {
+        "log": "compatibility/distance_above_500ft-primary/negative.log"
+      },
+      "acquisition": {
+        "sig.headlamp": {
+          "entrypoint": "beam_capture.py",
+          "method": "Original 20 Hz CARLA actor, lamp and four camera source join",
+          "evidence": [
+            "beam-rows.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "rel.oncoming": {
+          "entrypoint": "beam_capture.py",
+          "method": "Original 20 Hz CARLA actor, lamp and four camera source join",
+          "evidence": [
+            "beam-rows.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "rel.centre_distance": {
+          "entrypoint": "beam_capture.py",
+          "method": "Original 20 Hz CARLA actor, lamp and four camera source join",
+          "evidence": [
+            "beam-rows.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "drv.approaching": {
+          "entrypoint": "beam_capture.py",
+          "method": "Original 20 Hz CARLA actor, lamp and four camera source join",
+          "evidence": [
+            "beam-rows.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "drv.civil_night": {
+          "entrypoint": "beam_capture.py",
+          "method": "Original 20 Hz CARLA actor, lamp and four camera source join",
+          "evidence": [
+            "beam-rows.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "env.civil_time": {
+          "entrypoint": "beam_capture.py",
+          "method": "Original 20 Hz CARLA actor, lamp and four camera source join",
+          "evidence": [
+            "beam-rows.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "st.roadway": {
+          "entrypoint": "beam_capture.py",
+          "method": "Original 20 Hz CARLA actor, lamp and four camera source join",
+          "evidence": [
+            "beam-rows.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "st.shoulder": {
+          "entrypoint": "beam_capture.py",
+          "method": "Original 20 Hz CARLA actor, lamp and four camera source join",
+          "evidence": [
+            "beam-rows.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "env.visibility": {
+          "entrypoint": "beam_capture.py",
+          "method": "Original 20 Hz CARLA actor, lamp and four camera source join",
+          "evidence": [
+            "beam-rows.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        }
+      },
+      "offline": {
+        "case_id": "training__C183394__NRS-484D-215-1__motor_vehicle_driver__distance_above_500ft",
+        "candidate_id": "primary",
+        "construction_sha256": "c8fc5bf2765442402d7e65aa1191258354731d132b8b8add214aa2cecba666ea",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C183394__NRS-484D-215-1__motor_vehicle_driver/execution-manifest.json --case training__C183394__NRS-484D-215-1__motor_vehicle_driver__distance_above_500ft --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c183394/offline-distance_above_500ft-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "offline/distance_above_500ft-primary.log",
+        "log_sha256": "c57b587bd801c63df2a335d28445b277c7486045cffd3da2f4a0fd44057056e9"
+      },
+      "compatibility": {
+        "receipt": "compatibility/distance_above_500ft-primary/compatibility.json",
+        "sha256": "280fd44b95ec71e93477a7cb72620fdd1d424d8ec96116b706991febe99271a3",
+        "log": "compatibility/distance_above_500ft-primary/analysis.log",
+        "negative_log": "compatibility/distance_above_500ft-primary/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "native/physical-distance_above_500ft-receipt.json",
+        "sha256": "5dcef8c6c5abef37b1c4aaa9951d5d856b55faff777ebae798ff0cd689169f1e"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C183394__NRS-484D-215-1__motor_vehicle_driver__distance_above_500ft",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "2e2bf07f2029e9e95065aa4ec852c0e0a2bf408f688cc884e801e0a554cae8a8",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C183394__NRS-484D-215-1__motor_vehicle_driver/delivery_audit.py --case training__C183394__NRS-484D-215-1__motor_vehicle_driver__distance_above_500ft --self-test",
+        "test_exit_code": 0,
+        "test_log": "native/delivery-distance_above_500ft-positive.log",
+        "test_log_sha256": "b361cbf655e5804ceaf7cdbf2c4d008b2fbc93e74d22cd36a8aa2975376cdd9b",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C183394__NRS-484D-215-1__motor_vehicle_driver/delivery_audit.py --case training__C183394__NRS-484D-215-1__motor_vehicle_driver__distance_above_500ft --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing exact original Native beam result",
+        "negative_log": "native/delivery-distance_above_500ft-negative.log",
+        "negative_log_sha256": "5bcbd43c539dee410e1ff153a9f30748042c4eb685739ff9553ec92058d5694e"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C183394__NRS-484D-215-1__motor_vehicle_driver/execution-manifest.json --case training__C183394__NRS-484D-215-1__motor_vehicle_driver__distance_above_500ft --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_scope": "Public source-shaped diagnostic saved-only processing; no Native or optical acceptance",
+        "test_exit_code": 0,
+        "test_log": "saved-proof/distance_above_500ft/processing.json",
+        "test_log_sha256": "155e76b1e343a91052d033b674bc29e10a01c280ffd56c77330713787e994688"
+      }
     }
   ]
 }

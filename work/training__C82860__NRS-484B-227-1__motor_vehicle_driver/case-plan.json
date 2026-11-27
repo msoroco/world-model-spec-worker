@@ -52,20 +52,6 @@
         "training__C82860__NRS-484B-227-1__motor_vehicle_driver__authorized_opening",
         "training__C82860__NRS-484B-227-1__motor_vehicle_driver__barrier_crossing"
       ]
-    },
-    {
-      "requirement": "reviewed-scope-0",
-      "source": "inputs/coverage/branch-sources.json",
-      "status": "exception_pending",
-      "evidence_or_gap": "reviewed_scope: Left turn through a physical median opening; exception scope remains unresolved. | Planned definitions only; physical realization, source authority, Native evidence and acceptance unverified.",
-      "case_ids": []
-    },
-    {
-      "requirement": "reviewed-scope-1",
-      "source": "inputs/coverage/branch-sources.json",
-      "status": "exception_pending",
-      "evidence_or_gap": "reviewed_scope: Left turn through a physical median opening; exception scope remains unresolved. | Planned definitions only; physical realization, source authority, Native evidence and acceptance unverified.",
-      "case_ids": []
     }
   ],
   "cases": [
@@ -81,11 +67,12 @@
       "case_description": "divided highway; same U-turn intent; genuine barrier and public-authority-established opening/crossover",
       "fixed_context": "Keep cell C82860, actor motor_vehicle_driver, source law and all unmentioned scene/controller/capture settings fixed. divided highway; same U-turn intent; genuine barrier and public-authority-established opening/crossover",
       "source_topic_ids": [
-        "text-0",
-        "reviewed-scope-0",
-        "reviewed-scope-1"
+        "text-0"
       ],
-      "selected": true
+      "selected": true,
+      "gap_ids": [
+        "gap-original-opening"
+      ]
     },
     {
       "case_id": "training__C82860__NRS-484B-227-1__motor_vehicle_driver__barrier_crossing",
@@ -99,11 +86,12 @@
       "case_description": "divided highway; same U-turn intent; genuine barrier and public-authority-established opening/crossover",
       "fixed_context": "Keep cell C82860, actor motor_vehicle_driver, source law and all unmentioned scene/controller/capture settings fixed. divided highway; same U-turn intent; genuine barrier and public-authority-established opening/crossover",
       "source_topic_ids": [
-        "text-0",
-        "reviewed-scope-0",
-        "reviewed-scope-1"
+        "text-0"
       ],
-      "selected": true
+      "selected": true,
+      "gap_ids": [
+        "gap-original-barrier"
+      ]
     }
   ],
   "comparisons": [
@@ -267,5 +255,68 @@
   "selection_targets": [
     "demo-train",
     "full-train"
-  ]
+  ],
+  "evidence_review": {
+    "reviewer": "worker-source-inventory-review",
+    "method": "Compared both frozen accepted membership rows with supplied review-context JSON and README, then checked whether their referenced video, trace, metadata and Core receipt bytes exist in the export. The rows identify attempted labels only; absent original sources cannot establish equivalent geometry, public authority, movement or camera visibility. Source hashes and missing paths are recorded in analysis/accepted-source-inventory.json.",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "gap-original-opening",
+        "requirement": "Original-authority and full-body U-turn through an established opening",
+        "source": "inputs/training__C82860__NRS-484B-227-1__motor_vehicle_driver/review-context/review.json",
+        "why_existing_insufficient": "Accepted membership has no accessible original video, trace, metadata or Core receipt; the opened review cannot verify public authority or complete motion."
+      },
+      {
+        "id": "gap-original-barrier",
+        "requirement": "Original full-body divider crossing outside an opening under fixed conditions",
+        "source": "inputs/training__C82860__NRS-484B-227-1__motor_vehicle_driver/review-context/review.json",
+        "why_existing_insufficient": "Accepted membership has no accessible original acquisition and cannot establish measured divider overlap or a controlled contrast."
+      },
+      {
+        "id": "gap-other-branches",
+        "requirement": "Other NRS 484B.227(1) roadway, turning and public-authority exception alternatives",
+        "source": "inputs/coverage/branch-sources.json",
+        "why_existing_insufficient": "The supplied accepted membership rows name only the two U-turn attempts and their original source bytes are unavailable."
+      }
+    ]
+  },
+  "out_of_cell_statutory_alternatives": [
+    {
+      "topic_ids": [
+        "reviewed-scope-0",
+        "reviewed-scope-1"
+      ],
+      "alternative": "Left turn through physical opening",
+      "reason": "The frozen C82860 cell maneuver is u_turn. A U-turn capture cannot demonstrate a left-turn event. Separate actor-matched NRS 484B.227(1) C124163 left-turn delivery has two selected opening/divider cases; this C82860 package makes no left-turn realization claim.",
+      "source": "work/training__C124163__NRS-484B-227-1__motor_vehicle_driver/case-plan.json"
+    }
+  ],
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "both divided roadways, median gap, entire U-turn trajectory",
+        "interval": "0-30 s"
+      },
+      {
+        "view": "approach",
+        "subject": "ego body and approach roadway",
+        "interval": "0-30 s"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "median gap, barrier sections and full-body crossing",
+        "interval": "0-30 s"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "opposing roadway arrival and turn completion",
+        "interval": "0-30 s"
+      }
+    ]
+  }
 }

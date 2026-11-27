@@ -20,7 +20,9 @@ from scene import ASSIGNMENT, CASES, CAMERA_DIMENSIONS, check_pair, request
 
 
 HERE = Path(__file__).resolve().parent
-REPO = HERE.parents[2]
+REPO = next((parent for parent in HERE.parents if (parent / 'runtime.py').is_file()), None)
+if REPO is None:
+    raise RuntimeError('Worker repository root not found')
 
 
 def sha(data):
@@ -78,6 +80,23 @@ def _speed(actor):
 def _body_xy(actor):
     vertices = actor.bounding_box.get_world_vertices(actor.get_transform())
     return [[vertex.x, vertex.y] for vertex in vertices]
+
+
+def emergency_light_state(light_state, active):
+    """Request both special lamp channels named by the exact scene."""
+    if not active:
+        return light_state.NONE
+    return light_state.Special1 | light_state.Special2
+
+
+def emergency_motion_control(speed_mps, target_mps, active):
+    """Bound the requested moving subject near its exact low-speed target."""
+    if not active:
+        return 0.0, 1.0
+    error = target_mps - speed_mps
+    if error <= 0:
+        return 0.0, min(.2, max(0.0, -error * .2))
+    return min(.2, .05 + .2 * error), 0.0
 
 
 def execute(case, output, host, port):
@@ -172,13 +191,14 @@ def execute(case, output, host, port):
                 cruise_error = item["ego_cruise_speed_mps"] - _speed(ego)
                 throttle = 0 if brake else max(0, min(.45, .15 + .25 * cruise_error))
                 ego.apply_control(carla.VehicleControl(throttle=throttle, brake=brake))
+                emergency_throttle, emergency_brake = emergency_motion_control(
+                    _speed(emergency), item["emergency_target_speed_mps"],
+                    index >= item["emergency_motion_start_frame"])
                 emergency.apply_control(carla.VehicleControl(
-                    throttle=.15 if index >= item["emergency_motion_start_frame"] else 0,
-                    brake=0 if index >= item["emergency_motion_start_frame"] else 1))
+                    throttle=emergency_throttle, brake=emergency_brake))
                 requested_lamp = index % 10 < 5
                 emergency.set_light_state(carla.VehicleLightState(
-                    carla.VehicleLightState.Special1 if requested_lamp else
-                    carla.VehicleLightState.NONE))
+                    emergency_light_state(carla.VehicleLightState, requested_lamp)))
                 native_frame = world.tick()
                 timestamp = world.get_snapshot().timestamp.elapsed_seconds
                 observed = {name: {"native_center_xy_m": [actor.get_location().x,
@@ -195,7 +215,9 @@ def execute(case, output, host, port):
                     "ego_brake_observed": ego.get_control().brake,
                     "lamp_request": requested_lamp,
                     "lamp_state_observed": bool(emergency.get_light_state() &
-                                                carla.VehicleLightState.Special1),
+                                                carla.VehicleLightState.Special1) and
+                                           bool(emergency.get_light_state() &
+                                                carla.VehicleLightState.Special2),
                     "light_qualification": "pending_independent_source_review"}) + "\n")
                 for spec in item["cameras"]:
                     name = spec["name"]
@@ -246,12 +268,20 @@ def execute(case, output, host, port):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--case", choices=CASES, required=True)
+    parser.add_argument("--case", choices=CASES)
     parser.add_argument("--check", action="store_true")
     parser.add_argument("--output-dir")
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=2000)
     args = parser.parse_args()
+    if args.case is None:
+        config_path = HERE / 'config.json'
+        if not config_path.is_file():
+            parser.error('--case is required outside a materialized exact bundle')
+        bundled = json.loads(config_path.read_text())
+        args.case = bundled.get('requested_setting')
+        if args.case not in CASES or bundled.get('selected_case_id') != ASSIGNMENT + '__' + args.case:
+            parser.error('Materialized config does not select an exact case')
     if args.check:
         print(json.dumps(check(args.case), sort_keys=True))
     else:

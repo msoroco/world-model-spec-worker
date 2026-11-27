@@ -45,11 +45,11 @@ def audit(directory, condition):
     frames = lines(paths["video_frames.jsonl"])
     if len(observed) != FRAMES or len(frames) != FRAMES:
         raise ValueError("Original Native and video frame counts must be 600")
-    previous_native = -1
+    previous_native, previous_actor_time = -1, None
     for i, (row, frame) in enumerate(zip(observed, frames)):
         native = frame.get("native_frame")
         if (row.get("frame") != i or frame.get("video_frame") != i or
-                type(native) is not int or native <= previous_native or
+                type(native) is not int or (i and native != previous_native + 1) or
                 row.get("native_frame") != native or
                 row.get("source_kind") != "original_native_motion"):
             raise ValueError("Original Native and video frame join failed")
@@ -67,14 +67,25 @@ def audit(directory, condition):
                     type(actor.get("native_speed_mps")) not in (int, float) or
                     not math.isfinite(actor["native_speed_mps"]) or actor["native_speed_mps"] < 0):
                 raise ValueError("Original actor geometry or speed readback missing")
-        brake = row.get("ego_brake_observed")
+        brake, requested_brake = row.get("ego_brake_observed"), row.get("ego_brake_request")
         if (type(brake) not in (int, float) or not math.isfinite(brake) or
-                not 0 <= brake <= 1 or type(row.get("lamp_state_observed")) is not bool):
+                not 0 <= brake <= 1 or type(requested_brake) not in (int, float) or
+                not math.isfinite(requested_brake) or not 0 <= requested_brake <= 1 or
+                type(row.get("lamp_state_observed")) is not bool or
+                type(row.get("lamp_request")) is not bool):
             raise ValueError("Original brake or lamp readback missing")
+        if abs(brake - requested_brake) > .001 or row["lamp_state_observed"] != row["lamp_request"]:
+            raise ValueError("Original brake or lamp request/readback mismatch")
         t = frame.get("time_s")
         if type(t) not in (int, float) or not math.isfinite(t) or abs(t - i / 20) > .005:
             raise ValueError("Original video cadence differs from 20 Hz")
+        actor_time = row.get("time_s")
+        if (type(actor_time) not in (int, float) or not math.isfinite(actor_time) or
+                (previous_actor_time is not None and
+                 abs(actor_time - previous_actor_time - .05) > .005)):
+            raise ValueError("Original Native cadence differs from 20 Hz")
         previous_native = native
+        previous_actor_time = actor_time
     return {"format": "original-capture-lifecycle-audit", "case_id": exact["case_id"],
             "sample_count": FRAMES, "restoration_passed": True,
             "source_sha256": {name: sha(path) for name, path in paths.items()},

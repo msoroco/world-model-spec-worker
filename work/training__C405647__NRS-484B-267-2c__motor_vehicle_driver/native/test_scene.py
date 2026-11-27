@@ -1,6 +1,7 @@
 """Verify the controlled physical request before any CARLA acquisition."""
 
 import copy
+from enum import IntFlag
 import hashlib
 import json
 from pathlib import Path
@@ -10,9 +11,28 @@ import unittest
 from scene import CASES, check_pair, request
 from measure_readiness import CAMERA_DIMENSIONS
 from from_original import convert, process
+from runner import emergency_light_state, emergency_motion_control
 
 
 class SceneTest(unittest.TestCase):
+    def test_exact_requested_lamp_channels(self):
+        class Lamps(IntFlag):
+            NONE = 0
+            Special1 = 1
+            Special2 = 2
+
+        self.assertEqual(emergency_light_state(Lamps, True), Lamps.Special1 | Lamps.Special2)
+        self.assertEqual(emergency_light_state(Lamps, False), Lamps.NONE)
+
+    def test_emergency_motion_target_feedback(self):
+        self.assertEqual(emergency_motion_control(0.0, .5, False), (0.0, 1.0))
+        throttle, brake = emergency_motion_control(0.0, .5, True)
+        self.assertGreater(throttle, 0)
+        self.assertEqual(brake, 0)
+        throttle, brake = emergency_motion_control(1.0, .5, True)
+        self.assertEqual(throttle, 0)
+        self.assertGreater(brake, 0)
+
     def test_exact_pair_and_profile(self):
         first, second = (request(case) for case in CASES)
         self.assertTrue(check_pair(first, second)["passed"])
@@ -45,9 +65,11 @@ class SceneTest(unittest.TestCase):
                            "time_s": index / 20})
             ego_x = -80 + index * .1
             actors.append({"frame": index, "native_frame": native,
+                           "time_s": index / 20,
                            "source_kind": "original_native_motion",
                            "ego_brake_request": .8 if index >= 180 else 0,
                            "ego_brake_observed": .8 if index >= 180 else 0,
+                           "lamp_request": index % 10 < 5,
                            "lamp_state_observed": index % 10 < 5,
                            "actors": {
                                "ego": {"native_speed_mps": 2,

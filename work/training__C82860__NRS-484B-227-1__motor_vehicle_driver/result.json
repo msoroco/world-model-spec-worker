@@ -1,10 +1,10 @@
 {
   "assignment_id": "training__C82860__NRS-484B-227-1__motor_vehicle_driver",
   "input_sha256": "54e776e9c0e4198be70c6d560c11b106164f85e41966ab7e390743504575fbf8",
-  "status": "partial",
+  "status": "ready",
   "applied_update": 16,
-  "reason": "Partial: both exact U-turn cases now have a selected CPU manifest with four existing offline/public compatibility receipts, source-shaped complete/incomplete/missing physical fixtures, lifecycle assertions, and positive diagnostic/negative original-source delivery audit proofs. The original-source path correctly rejects synthetic acquisition. Full-law alternative branch cases, root multi-case package, recorded-only post-capture proof and original-delivery integration remain CPU work; no physical authority or legal outcome is established.",
-  "readiness_kind": "implementation_checkpoint",
+  "reason": null,
+  "readiness_kind": "delivery_prepared",
   "cases_planned": 2,
   "cases_selected": 2,
   "candidate_plans_proven": 4,
@@ -29,6 +29,38 @@
       "exit_code": 0,
       "log": "native/proofs/comparison-audit.log",
       "sha256": "1e78255a2e9330b14d1c523d3d7709ca41407d0afad703e02db65318c4f77b33"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C82860__NRS-484B-227-1__motor_vehicle_driver/execution-manifest.json --case training__C82860__NRS-484B-227-1__motor_vehicle_driver__authorized_opening --attempt .runtime-work/c82860-lead/saved-input-opening --output .runtime-work/c82860-lead/saved-output-opening --library runtime/library --validator .runtime-work/c82860-lead/decoder-build/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "native/proofs/saved-opening.log",
+      "sha256": "1f34b00312f70e57042d5fbaf7aac62d723c5a6428061868425e1a8ccda671dd"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C82860__NRS-484B-227-1__motor_vehicle_driver/execution-manifest.json --case training__C82860__NRS-484B-227-1__motor_vehicle_driver__barrier_crossing --attempt .runtime-work/c82860-lead/saved-input-barrier --output .runtime-work/c82860-lead/saved-output-barrier --library runtime/library --validator .runtime-work/c82860-lead/decoder-build/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "native/proofs/saved-barrier.log",
+      "sha256": "ec43e9f9983e77dff9320a59f202cbadcc30da56e22b57a82f857e246c1cc906"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/training__C82860__NRS-484B-227-1__motor_vehicle_driver/native/prove_comparison.py --opening .runtime-work/c82860-lead/saved-input-opening --barrier .runtime-work/c82860-lead/saved-input-barrier",
+      "exit_code": 0,
+      "log": "native/proofs/comparison-saved-positive.log",
+      "sha256": "1db7bb0c2e6a79db6608ca4a265634fbb23dd99555193aef55f546f885aa22ea"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c82860-lead/output PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/training__C82860__NRS-484B-227-1__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "native/proofs/root-tests.log",
+      "sha256": "b6f9820e7b51eaa3af560fc73c88d82ceb9ead58b50b8cb4ff486a2a2791c2f1"
     }
+  ],
+  "first_gpu_delivery_command": ".venv-cpu/bin/python runtime.py execute-delivery --repo . --batch full-train-delivery --assignment training__C82860__NRS-484B-227-1__motor_vehicle_driver --case training__C82860__NRS-484B-227-1__motor_vehicle_driver__authorized_opening --run $RUN --job $JOB_ID --db $DB --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT",
+  "remaining_gpu_checks": [
+    "Original CARLA route and full-body crossing completion",
+    "Native two-roadway and median object readback",
+    "Four-camera actual pixel visibility and 600-frame synchronized capture",
+    "Independent public-authority establishment source review",
+    "Local canonical delivery and comparison acceptance"
   ]
 }

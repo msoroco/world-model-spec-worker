@@ -15,7 +15,7 @@ def read(path):
 
 
 proposal = PACKAGE / 'proposals'
-existing = read(proposal / 'cases.json')
+existing = read(proposal / 'delivery_candidates.json')
 binding = read(proposal / 'bindings.json')
 template = read(proposal / 'template.json')
 for index, judgment in enumerate(template['structure']['judgment_calls_needed']):
@@ -30,6 +30,18 @@ base['rationale'] = 'Shared opposed-vehicle shoulder and beam request reference;
 base['unresolved_judgment_calls'] = [j['phrase'] for j in template['structure']['judgment_calls_needed']]
 base.pop('sweep_measurements', None)
 cases = [base]
+for original, policy in zip(existing['cases'], ('dim_within_500', 'retain_high')):
+    case = deepcopy(original)
+    case['variable_assignments']['oncoming_centre_distance_ft'] = {'kind': 'subject_behavior', 'value': None}
+    case['target_type'] = 'judgment_sweep'
+    case['paired_probe_id'] = f'{PACKAGE.name}__beam_contrast'
+    case['deliberate_differences'] = ['beam_request_policy']
+    case['rationale'] = 'Physical low/high beam-request contrast with all legal judgment phrases unresolved.'
+    case['probe'] = {'primary_variable': 'beam_request_policy',
+                     'comparison_or_standard': 'fixed original road and trajectory beam-request contrast',
+                     'target_value_or_branch': policy}
+    case['unresolved_judgment_calls'] = base['unresolved_judgment_calls']
+    cases.append(case)
 for branch, value in [('below', 499), ('at', 500), ('above', 501)]:
     case = deepcopy(base)
     case.update(case_id=f'{PACKAGE.name}__distance_{branch}_500ft', target_law_id=template['law_id'],
@@ -56,10 +68,11 @@ for index, judgment in enumerate(template['structure']['judgment_calls_needed'])
                       'Measured source-backed recording and landmark evidence']})
 
 result = {'cell_id': existing['cell_id'], 'actor': existing['actor'], 'status': 'draft',
-          'sweeps_expanded': [], 'sweep_specs': specs, 'cases': cases}
+          'sweeps_expanded': True, 'sweep_specs': specs, 'cases': cases}
 request = {'cell': read(REPO / 'inputs' / PACKAGE.name / 'assignment.json')['cell'],
            'actor': existing['actor']}
 stages.validate('cases', result, {'request': request, 'dependencies': [binding], 'templates': [template]})
 destination = proposal / 'canonical_cases.json'
 destination.write_text(json.dumps(result, indent=2, ensure_ascii=False) + '\n')
-print(f'PASS: canonical baseline, linked 499/500/501 ft probes, and three explicit incomplete judgment sweep plans; {destination.relative_to(PACKAGE)}')
+(proposal / 'cases.json').write_text(json.dumps(result, indent=2, ensure_ascii=False) + '\n')
+print(f'PASS: canonical baseline, two physical beam contrast cases, linked 499/500/501 ft probes, and three explicit incomplete judgment sweep plans; {destination.relative_to(PACKAGE)}')

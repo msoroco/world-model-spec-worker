@@ -10,6 +10,7 @@ import beam_scene as base
 MODES = {name: 'dim_within_500' for name in
          ('distance_below_500ft', 'distance_at_500ft', 'distance_above_500ft')}
 CAMERAS = base.CAMERAS
+beam_request = base.beam_request
 FEET = {'distance_below_500ft': 499,
         'distance_at_500ft': 500,
         'distance_above_500ft': 501}

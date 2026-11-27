@@ -68,6 +68,37 @@ def main():
     assert response['trigger_frame'] == 50 and response['first_brake_frame'] == 55
     assert response['brake_delay_s'] == .25 and response['stopped_frame'] == 205
     assert response['braked_approaching_frame_count'] > 0
+    assert response['application_review_state'] == 'qualifying_indication_reviewed'
+    assert 'vehicle_moving' in response['indication_kinds_at_trigger']
+    hand_trace = copy.deepcopy(trace)
+    for row in hand_trace:
+        row['emergency_speed_mps'] = 0
+        row['emergency_motion_visible'] = False
+        row['hand_signal_visible'] = row['video_frame'] >= 50
+    hand_review = copy.deepcopy(review)
+    hand_review['hand_signal_source'] = 'synthetic hand-signal fixture'
+    write_lines(trace_path, hand_trace)
+    write(review_path, hand_review)
+    hand_response = module.measure(ROOT)
+    assert hand_response['trigger_frame'] == 50
+    assert hand_response['indication_kinds_at_trigger'] == ['visible_driver_hand_signal']
+    absent_hand_source = copy.deepcopy(hand_review)
+    absent_hand_source.pop('hand_signal_source')
+    hand_source_error = reject('missing_hand_source', 'hand_signal_source',
+        lambda: write(review_path, absent_hand_source),
+        lambda: write(review_path, hand_review))
+    officer_review = copy.deepcopy(hand_review)
+    officer_review['officer_direction_present'] = True
+    write(review_path, officer_review)
+    officer_response = module.measure(ROOT)
+    assert officer_response['application_review_state'] == 'officer_direction_exception'
+    unqualified_review = copy.deepcopy(hand_review)
+    unqualified_review['lights_meet_484A_480_3'] = False
+    write(review_path, unqualified_review)
+    unqualified_response = module.measure(ROOT)
+    assert unqualified_response['application_review_state'] == 'light_qualification_pending_or_negative'
+    write(review_path, review)
+    write_lines(trace_path, trace)
     no_brake = copy.deepcopy(trace)
     for row in no_brake:
         row['ego_speed_mps'] = 15
@@ -77,7 +108,7 @@ def main():
     assert absent['first_brake_frame'] is None and absent['stopped_frame'] is None
     assert absent['braked_approaching_frame_count'] == 0
     write_lines(trace_path, trace)
-    failures = {}
+    failures = {'missing_hand_source': hand_source_error}
     failures['missing_trace'] = reject('missing_trace', 'Missing required saved source',
         lambda: trace_path.unlink(), lambda: write_lines(trace_path, trace))
     bad = copy.deepcopy(trace)
@@ -118,6 +149,9 @@ def main():
         'trigger_frame':response['trigger_frame'], 'brake_delay_s':response['brake_delay_s'],
         'stop_distance_m':response['observed_stop_distance_m'],
         'unbraked_first_brake':absent['first_brake_frame'],
+        'hand_signal_trigger_frame':hand_response['trigger_frame'],
+        'officer_direction_review_state':officer_response['application_review_state'],
+        'unqualified_light_review_state':unqualified_response['application_review_state'],
         'negative_rejections':failures, 'source_kind':'synthetic_native_sample',
         'physical_acceptance_claimed':False, 'legal_verdict_claimed':False}, indent=2))
 

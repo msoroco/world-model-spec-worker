@@ -1,6 +1,6 @@
 # training__C82860__NRS-484B-227-1__motor_vehicle_driver
 
-Status: partial. No selected delivery case, accepted recording or legal verdict is claimed.
+Status: ready for CPU prepared delivery. Two exact U-turn cases are selected; no accepted recording or legal verdict is claimed.
 
 ## Source and scope
 
@@ -47,10 +47,24 @@ The frozen accepted-recording review context was checked independently. `analysi
 The frozen supplemental-cell catalog was reviewed for divided-road left-turn, U-turn and travel alternatives. `analysis/candidate-scope-review.json` (SHA-256 `dcd7384784c5912e14dc9f6d900ec3a8888cfb105d77064e3b83cd31b8421613`) hashes `inputs/coverage/candidate-cells.json` and records the relevant cells. All 1,243 catalog cells have empty `candidate_ego_parties`; no motor-vehicle supplemental binding is actor-eligible under the current catalog. The existing U-turn pair remains a partial CPU package. A future source-approved actor-eligible binding would require a distinct scope review before selecting left-turn or travel branches.
 ## 2026-11-27 selected CPU proof checkpoint
 
-`execution-manifest.json` selects the two exact U-turn constructions and their spawn-height fallbacks while retaining status `selected_cpu_partial`. Its offline and public compatibility bindings reuse the four final-byte receipts. Pinned `execution_manifest.validate` and `delivery_handoff.validate_case` pass for both entries. The manifest is not a readiness claim.
+`execution-manifest.json` selects the two exact U-turn constructions and their spawn-height fallbacks while retaining status `selected_delivery_prepared`. Its offline and public compatibility bindings reuse the four final-byte receipts. Pinned `execution_manifest.validate` and `delivery_handoff.validate_case` pass for both entries. The manifest is not a readiness claim.
 
 `native/prove_physical.py` executes the pinned `native_output.assess_physical` on source-shaped complete, incomplete and missing-body diagnostic histories for each exact case. The complete fixture changes only synthetic heading observations to a measured 180-degree turn; the incomplete fixture has zero heading change, and the missing fixture removes body history. The resulting statuses are `met`, `not_met`, and `unverified` respectively. `native/proofs/physical-*.json` bind every result and log to the selected construction hash. The lifecycle receipt records a synthetic ordering assertion through owner release and saved processing. These fixtures do not establish actual CARLA completion.
 
 `native/prove_delivery.py` runs the independent `native/delivery_audit.py` against both synthetic saved sources. Diagnostic source joins pass, while original-source mode rejects each fixture with `Saved provenance differs from audit mode`. Positive and negative command, exit and hash bindings are in each manifest `delivery_acceptance` block. `native/proofs/comparison-audit.log` records three passing tests for fixed road, authority, cameras and duration plus the geometric contrast. It is a source-shaped comparison audit, not original-delivery acceptance.
 
 Remaining CPU: expand the frozen law branches beyond U-turn through physical opening/barrier; bind every compatible alternative to exact cases and controlled comparisons; add source-reviewed evidence gaps to `case-plan.json`; create the root multi-case construction/config/runner and tests; run exact recorded-only processing proofs; integrate original-source audit commands and local queue through the lead; then stage ready only for the final strict gate. Physical public-authority establishment and Native capture remain unverified.
+
+## 2026-11-27 recorded-only and saved comparison checkpoint
+
+The pinned Lean adapter was built in `.runtime-work/c82860-lead/decoder-build/`. Exact `runtime.py process-saved` runs for `authorized_opening` and `barrier_crossing` passed on fresh copies of the matching public compatibility attempts. Both receipts report 600 joined frames, `recorded_only: true`, preserved acquisition hashes, completed law analysis and final media decode. `native/proofs/saved-opening.log` and `native/proofs/saved-barrier.log` are hash-bound in `execution-manifest.json.post_capture` and `result.json`. The first attempt used a relative `lake` validator path and failed; it was corrected to the pinned built `adapterCheck` executable, with the successful log replacing the transient failure log.
+
+`native/prove_comparison.py` independently audits the two saved source copies. `native/proofs/comparison-saved-positive.log` records the exact opening/barrier geometry contrast and fixed context. `native/proofs/comparison-saved-negative.log` records rejection of a changed 29-second duration (`Fixed camera, duration or physical criterion differs`). These are synthetic fixture acquisitions and do not prove original Native motion, public-authority establishment or legal compliance.
+
+The two `reviewed-scope-*` source topics describe a left turn through an opening. This frozen C82860 cell is a U-turn cell. The actor-matched `training__C124163__NRS-484B-227-1__motor_vehicle_driver` package already selects the left-turn opening/divider pair, so this assignment records that out-of-cell branch explicitly and retains `text-0` as its selected U-turn requirement. It does not label either U-turn as a left turn. The separate statutory branch matrix must still bind these branches and other alternatives at batch level.
+
+Root `construction.json`, `config.json`, `runner.py` and `tests/test_root_package.py` now provide the two-case handoff required by the scoped ready validator. The root test binds both selected manifest cases to exact request crossing coordinates x=0 and x=10, the shared authored map, common cameras and 30-second duration; `native/proofs/root-tests.log` passed. `case-plan.json.camera_plan` names all four view subjects and the synchronized primary composition. The root construction is a first-case entrypoint whose config supports both exact case IDs; each selected manifest entry still provides its own immutable case-specific bundle.
+
+## 2026-11-27 strict assignment gate
+
+The exact scoped command `.venv-cpu/bin/python worker_check.py --assignment training__C82860__NRS-484B-227-1__motor_vehicle_driver --complete --require-delivery-ready` passed with exit code 0. Log: `native/proofs/scoped-strict-final.log` (SHA-256 `acfdd6d5d67a1d9250101a5989f5d23837c6184e330a141fe96f5e96fd30267c`). This is CPU delivery preparation only. The two original captures, original public-authority source review, independent physical audit and local canonical acceptance remain pending.
