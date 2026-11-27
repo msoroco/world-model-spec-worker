@@ -56,6 +56,7 @@ def make(suffix, feet):
         trace.append({'frame': index, 'time_s': t, 'position_m': [x, y, .5],
                       'position': {'x': x, 'y': y, 'z': .5},
                       'velocity_mps': [0, 0, 0], 'speed_mps': 0,
+                      'speed_mph': 0,
                       'heading_deg': 0, 'control': {'throttle': 0, 'brake': 1,
                                                    'hand_brake': True}})
         evidence.append({'actor_id': 10, 'original_frame': index,

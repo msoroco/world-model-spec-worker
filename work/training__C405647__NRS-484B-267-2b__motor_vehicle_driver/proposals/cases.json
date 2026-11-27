@@ -1,0 +1,802 @@
+{
+  "cell_id": "C405647",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweep_specs": [
+    {
+      "sweep_id": "training__C405647__NRS-484B-267-2b__motor_vehicle_driver__source_judgments",
+      "target_law_id": "NRS-484B-267-2b",
+      "status": "incomplete",
+      "judgment_refs": [
+        {
+          "phrase": "authorized emergency vehicle or an official vehicle of a regulatory agency",
+          "note": "Blueprint identity alone does not prove authorization or regulatory agency status."
+        },
+        {
+          "phrase": "moving or preparing to move in any direction",
+          "note": "Original motion or a hand signal visible to the approaching driver is required; 0.05 m/s is only a sensor convention."
+        },
+        {
+          "phrase": "making use of flashing lights meeting the requirements of subsection 3 of NRS 484A.480",
+          "note": "Original equipment qualification and full-frame pixel review are distinct sources."
+        },
+        {
+          "phrase": "Proceed with caution",
+          "note": "Speed, surface clearance, time to conflict and braking are diagnostics; no numeric legal caution cutoff is supplied."
+        },
+        {
+          "phrase": "except when otherwise directed by a law enforcement officer",
+          "note": "Officer identity, direction content, recipient, visibility and time require original review."
+        }
+      ],
+      "rationale": "Source qualification, visible preparation, qualitative caution and officer direction remain original-review judgments; selected speed/clearance probes do not create legal cutoffs.",
+      "missing_inputs": [
+        "Original agency authorization, lamp equipment and pixels, approach, caution and officer-direction review."
+      ]
+    }
+  ],
+  "sweeps_expanded": true,
+  "cases": [
+    {
+      "case_id": "training__C405647__NRS-484B-267-2b__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Unselected neutral emergency-road context.",
+      "variable_assignments": {
+        "requested_response": {
+          "kind": "controller",
+          "value": null,
+          "unit": "categorical"
+        },
+        "requested_source_mode": {
+          "kind": "world_setup",
+          "value": null,
+          "unit": "categorical"
+        },
+        "requested_role": {
+          "kind": "world_setup",
+          "value": null,
+          "unit": "categorical"
+        },
+        "officer_direction_requested": {
+          "kind": "world_setup",
+          "value": null,
+          "unit": "categorical"
+        }
+      },
+      "unresolved_judgment_calls": [],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.responding_emergency",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          },
+          {
+            "name": "rel.visible",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          },
+          {
+            "name": "drv.time_to_conflict",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          },
+          {
+            "name": "rel.surface_gap",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          },
+          {
+            "name": "drv.hard_deceleration",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          },
+          {
+            "name": "dev.human_direction",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Speed, gap, time to conflict and deceleration are diagnostics, not a legal caution cutoff",
+          "Requested hand pose is not proof of visible driver or officer signaling",
+          "Synthetic source packets establish software compatibility only"
+        ]
+      }
+    },
+    {
+      "case_id": "training__C405647__NRS-484B-267-2b__motor_vehicle_driver__probe_01",
+      "target_law_id": "NRS-484B-267-2b",
+      "target_type": "judgment_sweep",
+      "rationale": "Exact requested speed/clearance, official-role, visibly preparing or officer-direction alternative; qualification and caution remain for original review.",
+      "variable_assignments": {
+        "requested_response": {
+          "kind": "controller",
+          "value": "slow_wide",
+          "unit": "categorical"
+        },
+        "requested_source_mode": {
+          "kind": "world_setup",
+          "value": "moving_vehicle",
+          "unit": "categorical"
+        },
+        "requested_role": {
+          "kind": "world_setup",
+          "value": "authorized_emergency",
+          "unit": "categorical"
+        },
+        "officer_direction_requested": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "authorized emergency vehicle or an official vehicle of a regulatory agency",
+        "moving or preparing to move in any direction",
+        "making use of flashing lights meeting the requirements of subsection 3 of NRS 484A.480",
+        "Proceed with caution",
+        "except when otherwise directed by a law enforcement officer"
+      ],
+      "paired_probe_id": "training__C405647__NRS-484B-267-2b__motor_vehicle_driver__caution_response",
+      "deliberate_differences": [
+        "requested_response",
+        "requested_source_mode",
+        "requested_role",
+        "officer_direction_requested"
+      ],
+      "probe": {
+        "primary_variable": "requested_response",
+        "comparison_or_standard": "Four controlled comparisons in case-plan.json; original source activation and qualitative caution review required",
+        "target_value_or_branch": "slow_wide"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.responding_emergency",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          },
+          {
+            "name": "rel.visible",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          },
+          {
+            "name": "drv.time_to_conflict",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          },
+          {
+            "name": "rel.surface_gap",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          },
+          {
+            "name": "drv.hard_deceleration",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          },
+          {
+            "name": "dev.human_direction",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Speed, gap, time to conflict and deceleration are diagnostics, not a legal caution cutoff",
+          "Requested hand pose is not proof of visible driver or officer signaling",
+          "Synthetic source packets establish software compatibility only"
+        ]
+      },
+      "selection_rank": 1
+    },
+    {
+      "case_id": "training__C405647__NRS-484B-267-2b__motor_vehicle_driver__probe_02",
+      "target_law_id": "NRS-484B-267-2b",
+      "target_type": "judgment_sweep",
+      "rationale": "Exact requested speed/clearance, official-role, visibly preparing or officer-direction alternative; qualification and caution remain for original review.",
+      "variable_assignments": {
+        "requested_response": {
+          "kind": "controller",
+          "value": "fast_narrow",
+          "unit": "categorical"
+        },
+        "requested_source_mode": {
+          "kind": "world_setup",
+          "value": "moving_vehicle",
+          "unit": "categorical"
+        },
+        "requested_role": {
+          "kind": "world_setup",
+          "value": "authorized_emergency",
+          "unit": "categorical"
+        },
+        "officer_direction_requested": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "authorized emergency vehicle or an official vehicle of a regulatory agency",
+        "moving or preparing to move in any direction",
+        "making use of flashing lights meeting the requirements of subsection 3 of NRS 484A.480",
+        "Proceed with caution",
+        "except when otherwise directed by a law enforcement officer"
+      ],
+      "paired_probe_id": "training__C405647__NRS-484B-267-2b__motor_vehicle_driver__caution_response",
+      "deliberate_differences": [
+        "requested_response",
+        "requested_source_mode",
+        "requested_role",
+        "officer_direction_requested"
+      ],
+      "probe": {
+        "primary_variable": "requested_response",
+        "comparison_or_standard": "Four controlled comparisons in case-plan.json; original source activation and qualitative caution review required",
+        "target_value_or_branch": "fast_narrow"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.responding_emergency",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          },
+          {
+            "name": "rel.visible",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          },
+          {
+            "name": "drv.time_to_conflict",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          },
+          {
+            "name": "rel.surface_gap",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          },
+          {
+            "name": "drv.hard_deceleration",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          },
+          {
+            "name": "dev.human_direction",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Speed, gap, time to conflict and deceleration are diagnostics, not a legal caution cutoff",
+          "Requested hand pose is not proof of visible driver or officer signaling",
+          "Synthetic source packets establish software compatibility only"
+        ]
+      },
+      "selection_rank": 2
+    },
+    {
+      "case_id": "training__C405647__NRS-484B-267-2b__motor_vehicle_driver__probe_03",
+      "target_law_id": "NRS-484B-267-2b",
+      "target_type": "judgment_sweep",
+      "rationale": "Exact requested speed/clearance, official-role, visibly preparing or officer-direction alternative; qualification and caution remain for original review.",
+      "variable_assignments": {
+        "requested_response": {
+          "kind": "controller",
+          "value": "slow_wide",
+          "unit": "categorical"
+        },
+        "requested_source_mode": {
+          "kind": "world_setup",
+          "value": "moving_vehicle",
+          "unit": "categorical"
+        },
+        "requested_role": {
+          "kind": "world_setup",
+          "value": "official_regulatory",
+          "unit": "categorical"
+        },
+        "officer_direction_requested": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "authorized emergency vehicle or an official vehicle of a regulatory agency",
+        "moving or preparing to move in any direction",
+        "making use of flashing lights meeting the requirements of subsection 3 of NRS 484A.480",
+        "Proceed with caution",
+        "except when otherwise directed by a law enforcement officer"
+      ],
+      "paired_probe_id": "training__C405647__NRS-484B-267-2b__motor_vehicle_driver__caution_response",
+      "deliberate_differences": [
+        "requested_response",
+        "requested_source_mode",
+        "requested_role",
+        "officer_direction_requested"
+      ],
+      "probe": {
+        "primary_variable": "requested_response",
+        "comparison_or_standard": "Four controlled comparisons in case-plan.json; original source activation and qualitative caution review required",
+        "target_value_or_branch": "slow_wide"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.responding_emergency",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          },
+          {
+            "name": "rel.visible",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          },
+          {
+            "name": "drv.time_to_conflict",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          },
+          {
+            "name": "rel.surface_gap",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          },
+          {
+            "name": "drv.hard_deceleration",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          },
+          {
+            "name": "dev.human_direction",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Speed, gap, time to conflict and deceleration are diagnostics, not a legal caution cutoff",
+          "Requested hand pose is not proof of visible driver or officer signaling",
+          "Synthetic source packets establish software compatibility only"
+        ]
+      },
+      "selection_rank": 3
+    },
+    {
+      "case_id": "training__C405647__NRS-484B-267-2b__motor_vehicle_driver__probe_04",
+      "target_law_id": "NRS-484B-267-2b",
+      "target_type": "judgment_sweep",
+      "rationale": "Exact requested speed/clearance, official-role, visibly preparing or officer-direction alternative; qualification and caution remain for original review.",
+      "variable_assignments": {
+        "requested_response": {
+          "kind": "controller",
+          "value": "slow_wide",
+          "unit": "categorical"
+        },
+        "requested_source_mode": {
+          "kind": "world_setup",
+          "value": "visible_hand_signal",
+          "unit": "categorical"
+        },
+        "requested_role": {
+          "kind": "world_setup",
+          "value": "authorized_emergency",
+          "unit": "categorical"
+        },
+        "officer_direction_requested": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "authorized emergency vehicle or an official vehicle of a regulatory agency",
+        "moving or preparing to move in any direction",
+        "making use of flashing lights meeting the requirements of subsection 3 of NRS 484A.480",
+        "Proceed with caution",
+        "except when otherwise directed by a law enforcement officer"
+      ],
+      "paired_probe_id": "training__C405647__NRS-484B-267-2b__motor_vehicle_driver__caution_response",
+      "deliberate_differences": [
+        "requested_response",
+        "requested_source_mode",
+        "requested_role",
+        "officer_direction_requested"
+      ],
+      "probe": {
+        "primary_variable": "requested_response",
+        "comparison_or_standard": "Four controlled comparisons in case-plan.json; original source activation and qualitative caution review required",
+        "target_value_or_branch": "slow_wide"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.responding_emergency",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          },
+          {
+            "name": "rel.visible",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          },
+          {
+            "name": "drv.time_to_conflict",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          },
+          {
+            "name": "rel.surface_gap",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          },
+          {
+            "name": "drv.hard_deceleration",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          },
+          {
+            "name": "dev.human_direction",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Speed, gap, time to conflict and deceleration are diagnostics, not a legal caution cutoff",
+          "Requested hand pose is not proof of visible driver or officer signaling",
+          "Synthetic source packets establish software compatibility only"
+        ]
+      },
+      "selection_rank": 4
+    },
+    {
+      "case_id": "training__C405647__NRS-484B-267-2b__motor_vehicle_driver__probe_05",
+      "target_law_id": "NRS-484B-267-2b",
+      "target_type": "judgment_sweep",
+      "rationale": "Exact requested speed/clearance, official-role, visibly preparing or officer-direction alternative; qualification and caution remain for original review.",
+      "variable_assignments": {
+        "requested_response": {
+          "kind": "controller",
+          "value": "slow_wide",
+          "unit": "categorical"
+        },
+        "requested_source_mode": {
+          "kind": "world_setup",
+          "value": "moving_vehicle",
+          "unit": "categorical"
+        },
+        "requested_role": {
+          "kind": "world_setup",
+          "value": "authorized_emergency",
+          "unit": "categorical"
+        },
+        "officer_direction_requested": {
+          "kind": "world_setup",
+          "value": true,
+          "unit": "boolean"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "authorized emergency vehicle or an official vehicle of a regulatory agency",
+        "moving or preparing to move in any direction",
+        "making use of flashing lights meeting the requirements of subsection 3 of NRS 484A.480",
+        "Proceed with caution",
+        "except when otherwise directed by a law enforcement officer"
+      ],
+      "paired_probe_id": "training__C405647__NRS-484B-267-2b__motor_vehicle_driver__caution_response",
+      "deliberate_differences": [
+        "requested_response",
+        "requested_source_mode",
+        "requested_role",
+        "officer_direction_requested"
+      ],
+      "probe": {
+        "primary_variable": "requested_response",
+        "comparison_or_standard": "Four controlled comparisons in case-plan.json; original source activation and qualitative caution review required",
+        "target_value_or_branch": "slow_wide"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.responding_emergency",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          },
+          {
+            "name": "rel.visible",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          },
+          {
+            "name": "drv.time_to_conflict",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          },
+          {
+            "name": "rel.surface_gap",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          },
+          {
+            "name": "drv.hard_deceleration",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          },
+          {
+            "name": "dev.human_direction",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native body, speed, lamp and pixel frames joined to independently hashed emergency, visibility and officer sources",
+            "time_window": "all 600 original approach frames",
+            "reference_frame": "authored road 405647 with Native lane readback",
+            "uncertainty": "Qualitative caution, visible qualification and officer override require independent original review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Speed, gap, time to conflict and deceleration are diagnostics, not a legal caution cutoff",
+          "Requested hand pose is not proof of visible driver or officer signaling",
+          "Synthetic source packets establish software compatibility only"
+        ]
+      },
+      "selection_rank": 5
+    }
+  ]
+}

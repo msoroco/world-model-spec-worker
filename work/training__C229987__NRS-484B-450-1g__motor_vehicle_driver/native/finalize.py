@@ -109,6 +109,26 @@ def finalize(attempt, output):
               'diagnostic_fixture': diagnostic, 'physical_or_legal_acceptance': False}
     observed_gap_m = observed['frames'][-1]['front_edge_to_signal_station_m']
     requested_gap_m = float(config['requested_front_gap_ft'])*.3048
+    final_samples = observed['frames'][-100:]
+    rest_samples = [sample for sample in final_samples
+                    if sample['speed_mps'] <= .15]
+    sustained_requested_halt = (len(rest_samples) >= 80 and
+        all(abs(sample['front_edge_to_signal_station_m']-requested_gap_m) <= .2
+            for sample in rest_samples))
+    original = not diagnostic
+    physical_sources = {name: source_hashes[name] for name in
+                        ('signal_raw.json', 'trace.jsonl', 'video_frames.jsonl', 'road.xodr')}
+    physical_checks = {
+        'setup': {'status': 'met' if original else 'unverified',
+                  'method': 'full 600-frame signal, lane, pose and time join',
+                  'sources': physical_sources},
+        'maneuver': {'status': ('met' if sustained_requested_halt else 'not_met')
+                     if original else 'unverified',
+                     'method': 'at least 80 of final 100 original samples at rest and within engineering requested gap window',
+                     'sources': physical_sources,
+                     'observed_final_rest_samples': len(rest_samples),
+                     'requested_gap_m': requested_gap_m,
+                     'observed_final_gap_m': observed_gap_m}}
     result = {'case_id': case, 'measured_values': observed_without_verdict,
               'target_checks': [{'target': 'observed signal approach stopping gap',
                                  'requested': requested_gap_m, 'measured': observed_gap_m,
@@ -116,15 +136,17 @@ def finalize(attempt, output):
                                  'tolerance': .2, 'matched': abs(observed_gap_m-requested_gap_m) <= .2,
                                  'physical_cause_confirmed': False,
                                  'cause_evidence': list(SOURCES)}],
-              'setup_confirmed': False, 'behavior_attempted': False,
-              'maneuver_completed': False,
-              'termination_reason': 'Saved source processed; original halt and official signal require independent review',
+              'setup_confirmed': original, 'behavior_attempted': original,
+              'maneuver_completed': original and sustained_requested_halt,
+              'physical_checks': physical_checks,
+              'termination_reason': 'Saved source measured; original halt purpose and official status require independent review',
               'physical_failure_flags': ['Original signal, halt cause, camera pixels and exception status unverified'],
               'trace_reference': 'trace.jsonl', 'video_references': list(VIDEOS),
               'video_frame_map_reference': 'video_frames.jsonl',
               'recording_description': construction['recording_description'],
               'recording_evidence': evidence, 'realized_observables': {},
-              'provenance_kind': 'synthetic_local_diagnostic' if diagnostic else 'original_source_review',
+              'provenance_kind': 'synthetic_fixture' if diagnostic else 'native',
+              'diagnostic_fixture': diagnostic, 'physical_acceptance_claimed': False,
               'accepted': False}
     from worker_exchange.native_output import write_result
     write_result(attempt, result)

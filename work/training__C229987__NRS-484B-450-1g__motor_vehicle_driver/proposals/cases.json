@@ -2,6 +2,146 @@
   "actor": "motor_vehicle_driver",
   "cases": [
     {
+      "case_id": "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "cell_id": "C229987",
+      "actor": "motor_vehicle_driver",
+      "rationale": "Unselected shared roadside-signal approach and driver context.",
+      "variable_assignments": {
+        "requested_front_gap_ft": {
+          "kind": "controller",
+          "value": null,
+          "unit": "ft"
+        },
+        "activity_mode": {
+          "kind": "controller",
+          "value": null,
+          "unit": "category"
+        },
+        "exception_context_request": {
+          "kind": "controller",
+          "value": null,
+          "unit": "category"
+        },
+        "observed_signal_approach_state": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "original Native pose and four-corner body footprint",
+            "name": "ego_pose",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "footprint projection onto surveyed approach",
+            "name": "stop_distance_on_signal_approach",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "post-tick Native velocity norm",
+            "name": "kin.speed",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m/s"
+          },
+          {
+            "method": "per-frame low speed, cause separately reviewed",
+            "name": "drv.standing_or_parked",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "boolean proxy"
+          },
+          {
+            "method": "Native signal actor and governed lane readback",
+            "name": "dev.traffic_signal",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "identifier"
+          },
+          {
+            "method": "Native roadside signal transform",
+            "name": "dev.position",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "vehicle centre projection to signal station",
+            "name": "rel.centre_distance",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "front/rear approach-side geometry",
+            "name": "drv.approaching",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "classification"
+          },
+          {
+            "method": "front edge projection to signal station",
+            "name": "rel.occupies",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "m"
+          },
+          {
+            "method": "traffic conflict in original survey",
+            "name": "drv.forced_halt",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "review source"
+          },
+          {
+            "method": "officer direction in original survey",
+            "name": "dev.human_direction",
+            "reference_frame": "authored roadside-signal approach, Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; 0.05 m synthetic geometry allowance is not legal tolerance",
+            "unit": "review source"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Requested 25/30/35 ft controller settings are not observed distances",
+          "Signal official/highway status and every statutory exception require original source review",
+          "No legal, physical or pixel acceptance from CPU fixtures"
+        ]
+      },
+      "unresolved_judgment_calls": []
+    },
+    {
       "case_id": "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__25",
       "rationale": "Exact requested 25 ft signal-approach stop attempt; actual four-corner distance, official signal/highway status and all exceptions require source review.",
       "recording_description": {
@@ -114,15 +254,48 @@
         ]
       },
       "target_law_id": "NRS-484B-450-1g",
-      "target_type": "controlled_attempt",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
         "Official signal and highway status need original source review",
         "Stop/stand/park classification and each statutory exception need original review",
         "Actual footprint, camera pixels and physical stop need Native review"
       ],
       "variable_assignments": {
-        "requested_front_gap_ft": 25
-      }
+        "requested_front_gap_ft": {
+          "kind": "controller",
+          "value": 25,
+          "unit": "ft"
+        },
+        "activity_mode": {
+          "kind": "controller",
+          "value": "stop_requested",
+          "unit": "category"
+        },
+        "exception_context_request": {
+          "kind": "controller",
+          "value": "none_requested",
+          "unit": "category"
+        },
+        "observed_signal_approach_state": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        }
+      },
+      "paired_probe_id": "c229987-signal-approach-distance",
+      "deliberate_differences": [
+        "requested_front_gap_ft"
+      ],
+      "probe": {
+        "primary_variable": "requested_front_gap_ft",
+        "comparison_or_standard": "30 feet on approach to official roadside signal",
+        "target_value_or_branch": "25 ft requested",
+        "threshold_ref": "activation.numeric_conditions[0]",
+        "operator": "<",
+        "unit": "ft",
+        "test_value": 25
+      },
+      "epsilon_used": "5 ft engineering probe spacing, not legal tolerance"
     },
     {
       "case_id": "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__30",
@@ -237,15 +410,48 @@
         ]
       },
       "target_law_id": "NRS-484B-450-1g",
-      "target_type": "controlled_attempt",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
         "Official signal and highway status need original source review",
         "Stop/stand/park classification and each statutory exception need original review",
         "Actual footprint, camera pixels and physical stop need Native review"
       ],
       "variable_assignments": {
-        "requested_front_gap_ft": 30
-      }
+        "requested_front_gap_ft": {
+          "kind": "controller",
+          "value": 30,
+          "unit": "ft"
+        },
+        "activity_mode": {
+          "kind": "controller",
+          "value": "stop_requested",
+          "unit": "category"
+        },
+        "exception_context_request": {
+          "kind": "controller",
+          "value": "none_requested",
+          "unit": "category"
+        },
+        "observed_signal_approach_state": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        }
+      },
+      "paired_probe_id": "c229987-signal-approach-distance",
+      "deliberate_differences": [
+        "requested_front_gap_ft"
+      ],
+      "probe": {
+        "primary_variable": "requested_front_gap_ft",
+        "comparison_or_standard": "30 feet on approach to official roadside signal",
+        "target_value_or_branch": "30 ft requested",
+        "threshold_ref": "activation.numeric_conditions[0]",
+        "operator": "<",
+        "unit": "ft",
+        "test_value": 30
+      },
+      "epsilon_used": "5 ft engineering probe spacing, not legal tolerance"
     },
     {
       "case_id": "training__C229987__NRS-484B-450-1g__motor_vehicle_driver__35",
@@ -360,15 +566,48 @@
         ]
       },
       "target_law_id": "NRS-484B-450-1g",
-      "target_type": "controlled_attempt",
+      "target_type": "boundary_probe",
       "unresolved_judgment_calls": [
         "Official signal and highway status need original source review",
         "Stop/stand/park classification and each statutory exception need original review",
         "Actual footprint, camera pixels and physical stop need Native review"
       ],
       "variable_assignments": {
-        "requested_front_gap_ft": 35
-      }
+        "requested_front_gap_ft": {
+          "kind": "controller",
+          "value": 35,
+          "unit": "ft"
+        },
+        "activity_mode": {
+          "kind": "controller",
+          "value": "stop_requested",
+          "unit": "category"
+        },
+        "exception_context_request": {
+          "kind": "controller",
+          "value": "none_requested",
+          "unit": "category"
+        },
+        "observed_signal_approach_state": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        }
+      },
+      "paired_probe_id": "c229987-signal-approach-distance",
+      "deliberate_differences": [
+        "requested_front_gap_ft"
+      ],
+      "probe": {
+        "primary_variable": "requested_front_gap_ft",
+        "comparison_or_standard": "30 feet on approach to official roadside signal",
+        "target_value_or_branch": "35 ft requested",
+        "threshold_ref": "activation.numeric_conditions[0]",
+        "operator": "<",
+        "unit": "ft",
+        "test_value": 35
+      },
+      "epsilon_used": "5 ft engineering probe spacing, not legal tolerance"
     }
   ],
   "cell_id": "C229987",

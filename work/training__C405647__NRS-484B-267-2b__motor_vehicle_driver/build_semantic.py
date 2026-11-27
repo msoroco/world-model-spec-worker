@@ -26,7 +26,7 @@ def main():
                  "relevant_laws": [{"law_id": LAW_ID, "quote": LAW["text"],
                                     "applies_to": [ACTOR], "relevance_type": "direct",
                                     "confidence": "high",
-                                    "notes": "The emergency-vehicle travel cell can request an approach and lane response; qualification, possibility, safety and officer direction need original source review."}],
+                                    "notes": "The emergency-vehicle travel cell can request a passing approach; official role, flashing qualification, visible preparation, officer direction and qualitative caution need original source review."}],
                  "borderline_excluded": []}
     r1 = put("relevance_batch.json", relevance)
     r2 = put("relevance.json", relevance)
@@ -37,18 +37,18 @@ def main():
          "note": "Original motion or a hand signal visible to the approaching driver is required; 0.05 m/s is only a sensor convention."},
         {"phrase": "making use of flashing lights meeting the requirements of subsection 3 of NRS 484A.480",
          "note": "Original equipment qualification and full-frame pixel review are distinct sources."},
-        {"phrase": "If possible, drive in a lane that is not adjacent",
-         "note": "Lane topology, traffic, roadway, weather and other conditions inform possibility and safety; no numeric legal cutoff is supplied."},
+        {"phrase": "Proceed with caution",
+         "note": "Speed, surface clearance, time to conflict and braking are diagnostics; no numeric legal caution cutoff is supplied."},
         {"phrase": "except when otherwise directed by a law enforcement officer",
          "note": "Officer identity, direction content, recipient, visibility and time require original review."},
     ]
     parameters = [
         {"name": "requested_response", "kind": "controller",
-         "range_or_domain": ["move_nonadjacent", "stay_adjacent"]},
+         "range_or_domain": ["slow_wide", "fast_narrow"]},
         {"name": "requested_source_mode", "kind": "world_setup",
          "range_or_domain": ["moving_vehicle", "visible_hand_signal"]},
-        {"name": "adverse_traffic_and_rain_requested", "kind": "world_setup",
-         "range_or_domain": [True, False]},
+        {"name": "requested_role", "kind": "world_setup",
+         "range_or_domain": ["authorized_emergency", "official_regulatory"]},
         {"name": "officer_direction_requested", "kind": "world_setup",
          "range_or_domain": [True, False]},
     ]
@@ -57,7 +57,7 @@ def main():
                     "law_id": LAW_ID,
                     "activation": {"condition": "A qualifying authorized emergency or regulatory official vehicle is moving or visibly preparing to move with qualifying flashing lights as another driver approaches.",
                                    "numeric_conditions": []},
-                    "obligation": {"description": "If possible, drive in a lane not adjacent to the lane in which the source vehicle moves, unless roadway, traffic, weather or other conditions make that unsafe or impossible.",
+                    "obligation": {"description": "Proceed with caution while approaching the qualifying moving or visibly preparing vehicle, unless otherwise directed by a law enforcement officer.",
                                    "type": "must", "numeric_conditions": []},
                     "exceptions": [{"source_clause": "except when otherwise directed by a law enforcement officer",
                                     "description": "Original officer direction may change the required response."}],
@@ -67,8 +67,8 @@ def main():
                 "parameter_refs": parameters}
     r3 = put("template.json", template)
     observed = []
-    channels = ("drv.responding_emergency", "st.lane",
-                "drv.responding_emergency", "drv.lane_change_feasible",
+    channels = ("drv.responding_emergency", "rel.visible",
+                "drv.responding_emergency", "kin.speed",
                 "dev.human_direction")
     for i, judgment in enumerate(judgments):
         observed.append(put(f"judgment_observables_{i}.json", {
@@ -98,11 +98,11 @@ def main():
               "unresolved_judgment_calls": [],
               "recording_description": recording}]
     configurations = [
-        ("move_nonadjacent", "moving_vehicle", False, False),
-        ("stay_adjacent", "moving_vehicle", False, False),
-        ("stay_adjacent", "moving_vehicle", True, False),
-        ("stay_adjacent", "visible_hand_signal", False, False),
-        ("stay_adjacent", "moving_vehicle", False, True),
+        ("slow_wide", "moving_vehicle", "authorized_emergency", False),
+        ("fast_narrow", "moving_vehicle", "authorized_emergency", False),
+        ("slow_wide", "moving_vehicle", "official_regulatory", False),
+        ("slow_wide", "visible_hand_signal", "authorized_emergency", False),
+        ("slow_wide", "moving_vehicle", "authorized_emergency", True),
     ]
     for i, values in enumerate(configurations, 1):
         names = [p["name"] for p in parameters]
@@ -111,22 +111,22 @@ def main():
                        for name, value, p in zip(names, values, parameters)}
         cases.append({"case_id": HERE.name + f"__probe_0{i}",
                       "target_law_id": LAW_ID, "target_type": "judgment_sweep",
-                      "rationale": "Exact requested response and moving, adverse-condition, visibly preparing or officer-direction alternative; original qualification and safety remain for review.",
+                      "rationale": "Exact requested speed/clearance, official-role, visibly preparing or officer-direction alternative; qualification and caution remain for original review.",
                       "variable_assignments": assignments,
                       "unresolved_judgment_calls": [j["phrase"] for j in judgments],
-                      "paired_probe_id": HERE.name + "__move_vs_adjacent",
+                      "paired_probe_id": HERE.name + "__caution_response",
                       "deliberate_differences": ["requested_response", "requested_source_mode",
-                                                "adverse_traffic_and_rain_requested",
+                                                "requested_role",
                                                 "officer_direction_requested"],
                       "probe": {"primary_variable": "requested_response",
-                                "comparison_or_standard": "Four controlled comparisons in case-plan.json; original source activation and conditional safety review required",
+                                "comparison_or_standard": "Four controlled comparisons in case-plan.json; original source activation and qualitative caution review required",
                                 "target_value_or_branch": values[0]},
                       "recording_description": recording, "selection_rank": i})
     sweep = {"sweep_id": HERE.name + "__source_judgments",
              "target_law_id": LAW_ID, "status": "incomplete",
              "judgment_refs": judgments,
-             "rationale": "Source qualification, visibility, possibility, safety and officer direction remain original-review judgments; selected categorical probes do not create legal cutoffs.",
-             "missing_inputs": ["Original agency authorization, lamp equipment and pixels, approach, lane/traffic/weather safety and officer-direction review."]}
+             "rationale": "Source qualification, visible preparation, qualitative caution and officer direction remain original-review judgments; selected speed/clearance probes do not create legal cutoffs.",
+             "missing_inputs": ["Original agency authorization, lamp equipment and pixels, approach, caution and officer-direction review."]}
     r5 = put("cases.json", {"cell_id": "C405647", "actor": ACTOR,
                              "status": "draft", "sweep_specs": [sweep],
                              "sweeps_expanded": True, "cases": cases})

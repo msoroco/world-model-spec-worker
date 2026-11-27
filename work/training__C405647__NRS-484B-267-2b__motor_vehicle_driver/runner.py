@@ -84,7 +84,7 @@ def requested_velocities(suffix, frame):
     require(0 <= frame < COUNT, "Frame outside capture")
     ego = (6.0 if suffix == "02" else 4.0, 0.0)
     emergency = (0.0 if suffix == "04" else 1.2, 0.0)
-    traffic = (2.0, 0.0) if suffix == "03" else None
+    traffic = None
     return {"ego": ego, "emergency": emergency, "traffic": traffic,
             "qualifying_approach_claimed": False, "lane_change_safe_claimed": False}
 
@@ -101,6 +101,7 @@ def execute(config, output, host, port):
     require(output.is_dir() and not (output / "emergency-native.jsonl").exists() and
             not (output / "video_frames.jsonl").exists(),
             "Original output already exists or was not materialized")
+    (output / "road.xodr").write_text(road_xml() + "\n")
     client = carla.Client(host, port)
     client.set_timeout(120)
     saved = snapshot(client)
@@ -129,15 +130,6 @@ def execute(config, output, host, port):
             observed = _record(actor, mapping, carla)
             require(observed["lane_id"] == lane, "Authored lane Native readback differs")
         traffic = None
-        if suffix == "03":
-            traffic = world.try_spawn_actor(lib.find(config["traffic_blueprint"]),
-                                            _pose(carla, [-65, lane_centers()[NONADJACENT_LANE], 1]))
-            require(traffic is not None, "Adverse traffic actor spawn failed")
-            actors.append(traffic)
-            weather = world.get_weather()
-            weather.precipitation = 75
-            weather.wetness = 80
-            world.set_weather(weather)
         signal_actor = None
         if suffix == "04":
             signal_actor = spawn_source_driver_proxy(carla, world, emergency,

@@ -1,0 +1,85 @@
+{
+  "template_id": "NRS-484B-267-2b@motor_vehicle_driver",
+  "law_id": "NRS-484B-267-2b",
+  "actor": "motor_vehicle_driver",
+  "quote": "Upon approaching an authorized emergency vehicle or an official vehicle of a regulatory agency which is moving or preparing to move in any direction, including, without limitation, arriving at or leaving the scene of a crash or other incident, and making use of flashing lights meeting the requirements of subsection 3 of NRS 484A.480 [DEF-NRS-484A-480-3], the driver of any other vehicle shall, except when otherwise directed by a law enforcement officer: Proceed with caution. As used in this section, “preparing to move” means any indication that is visible to an approaching driver that an authorized emergency vehicle or an official vehicle of a regulatory agency is about to move, including, without limitation: (a) A movement of the vehicle; or (b) The use of hand signals by the driver of the vehicle.",
+  "status": "draft",
+  "structure": {
+    "law_id": "NRS-484B-267-2b",
+    "activation": {
+      "condition": "A qualifying authorized emergency or regulatory official vehicle is moving or visibly preparing to move with qualifying flashing lights as another driver approaches.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "Proceed with caution while approaching the qualifying moving or visibly preparing vehicle, unless otherwise directed by a law enforcement officer.",
+      "type": "must",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "source_clause": "except when otherwise directed by a law enforcement officer",
+        "description": "Original officer direction may change the required response."
+      }
+    ],
+    "timing": {
+      "description": "Review the source-defined approach and response interval; 30 seconds is a recording requirement, not a statutory deadline.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "authorized emergency vehicle or an official vehicle of a regulatory agency",
+        "note": "Blueprint identity alone does not prove authorization or regulatory agency status."
+      },
+      {
+        "phrase": "moving or preparing to move in any direction",
+        "note": "Original motion or a hand signal visible to the approaching driver is required; 0.05 m/s is only a sensor convention."
+      },
+      {
+        "phrase": "making use of flashing lights meeting the requirements of subsection 3 of NRS 484A.480",
+        "note": "Original equipment qualification and full-frame pixel review are distinct sources."
+      },
+      {
+        "phrase": "Proceed with caution",
+        "note": "Speed, surface clearance, time to conflict and braking are diagnostics; no numeric legal caution cutoff is supplied."
+      },
+      {
+        "phrase": "except when otherwise directed by a law enforcement officer",
+        "note": "Officer identity, direction content, recipient, visibility and time require original review."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "requested_response",
+      "kind": "controller",
+      "range_or_domain": [
+        "slow_wide",
+        "fast_narrow"
+      ]
+    },
+    {
+      "name": "requested_source_mode",
+      "kind": "world_setup",
+      "range_or_domain": [
+        "moving_vehicle",
+        "visible_hand_signal"
+      ]
+    },
+    {
+      "name": "requested_role",
+      "kind": "world_setup",
+      "range_or_domain": [
+        "authorized_emergency",
+        "official_regulatory"
+      ]
+    },
+    {
+      "name": "officer_direction_requested",
+      "kind": "world_setup",
+      "range_or_domain": [
+        true,
+        false
+      ]
+    }
+  ]
+}

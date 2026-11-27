@@ -76,9 +76,10 @@ def finalize(attempt, output):
                 'rel.visible': {'vehicle': lamp['vehicle_visible'],
                                 'flashing_lamps': lamp['qualifying_flashes_visible'],
                                 'preparing_signal': signal['hand_signal_visible']},
-                'drv.time_to_conflict': ttc,
+                'drv.time_to_conflict': {'seconds': ttc, 'applicable': ttc is not None},
                 'rel.surface_gap': gap, 'kin.speed': speed,
-                'drv.hard_deceleration': None,
+                'drv.hard_deceleration': {'deceleration_mps2': max(0, (native[p['frame'] - 1]['ego']['speed_mps'] - speed) * 20) if p['frame'] else 0,
+                                           'legal_threshold_assessed': False},
                 'dev.human_direction': signal['officer_direction']}
     for channel in channels:
         name = channel['name']
@@ -112,6 +113,7 @@ def finalize(attempt, output):
                     'measured': {'speed_mps': measurement['ego_speed_at_first_pass_mps'],
                                  'surface_gap_m': measurement['minimum_passing_surface_gap_m']},
                     'method': 'original saved actor and full-body source review',
+                    'tolerance': None,
                     'matched': None, 'physical_cause_confirmed': False,
                     'cause_evidence': list(source_names)}],
               'setup_confirmed': False, 'behavior_attempted': False,

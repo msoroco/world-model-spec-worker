@@ -11,7 +11,7 @@ import os
 from pathlib import Path
 import tempfile
 
-from saved_measure import VIDEOS, measure, rows
+from saved_measure import VIDEOS, measure_saved, rows
 
 
 AID = "training__C405647__NRS-484B-267-2b__motor_vehicle_driver"
@@ -37,7 +37,7 @@ def sha(path):
 def inspect_sources(case, attempt):
     config = read(attempt / "config.json")
     require(config.get("case_id") == case, "Exact original emergency case differs")
-    measurements = measure(attempt, case, diagnostic=False)
+    measurements = measure_saved(attempt, case, diagnostic=False)['measurement']
     native = rows(attempt / "emergency-native.jsonl")
     mapping = rows(attempt / "video_frames.jsonl")
     require(len(native) == len(mapping) == 600, "Original 600-frame source join incomplete")
@@ -46,28 +46,23 @@ def inspect_sources(case, attempt):
                 all(frame["camera_native_frames"][view] == row["native_frame"]
                     for view in VIEWS), "Original camera frame joins differ")
     suffix = case[-2:]
-    if suffix == "01":
-        require(measurements["active_nonadjacent_frames"],
-                "Requested nonadjacent lane physically unobserved")
-    else:
-        require(measurements["active_adjacent_frames"],
-                "Requested adjacent lane physically unobserved")
+    require(measurements['first_passing_frame'] > measurements['first_approach_frame'],
+            'Original approach and passing sequence unobserved')
     if suffix == "03":
-        require(any(row.get("traffic") is not None for row in native) and
-                any(row.get("weather_precipitation", 0) > 0 for row in native),
-                "Original adverse traffic/weather request unobserved")
+        require(measurements['qualifying_role'] == 'official_regulatory',
+                'Original official regulatory role unverified')
     if suffix == "04":
-        require(measurements["visible_hand_signal_frames"],
+        require(measurements['activation_mode'] == 'visible_hand_signal',
                 "Original visible driver preparation missing")
     if suffix == "05":
-        require(measurements["visible_officer_direction_frames"],
+        require(any(s != 'none' for s in measurements['officer_direction_states']),
                 "Original officer direction missing")
-    return {"active_approach_frames": len(measurements["active_approach_frames"]),
-            "active_adjacent_frames": len(measurements["active_adjacent_frames"]),
-            "active_nonadjacent_frames": len(measurements["active_nonadjacent_frames"]),
-            "source_join": measurements["source_join"],
-            "lane_change_possible": None, "lane_change_safe": None,
-            "officer_override_applies": None, "legal_result": None}
+    return {'first_approach_frame': measurements['first_approach_frame'],
+            'first_passing_frame': measurements['first_passing_frame'],
+            'qualifying_role': measurements['qualifying_role'],
+            'speed_mps': measurements['ego_speed_at_first_pass_mps'],
+            'surface_gap_m': measurements['minimum_passing_surface_gap_m'],
+            'officer_override_applies': None, 'legal_result': None}
 
 
 def audit(case, attempt, saved, output):

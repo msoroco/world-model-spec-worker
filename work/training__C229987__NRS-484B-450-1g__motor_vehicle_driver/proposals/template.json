@@ -1,0 +1,80 @@
+{
+  "template_id": "NRS-484B-450-1g@motor_vehicle_driver",
+  "law_id": "NRS-484B-450-1g",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "A person shall not stop, stand or park a vehicle, except when necessary to avoid conflict with other traffic or in compliance with law or the directions of a police officer or official traffic-control device, in any of the following places: Within 30 feet upon the approach to any official traffic-control signal located at the side of a highway.",
+  "structure": {
+    "law_id": "NRS-484B-450-1g",
+    "activation": {
+      "condition": "Vehicle stops, stands or parks within 30 feet upon the approach to an official traffic-control signal located at the side of a highway.",
+      "numeric_conditions": [
+        {
+          "variable": "approach distance to signal",
+          "operator": "<",
+          "value": 30,
+          "unit": "ft",
+          "source_clause": "Within 30 feet upon the approach"
+        }
+      ]
+    },
+    "obligation": {
+      "description": "Do not stop, stand or park in the specified approach zone unless a source exception applies.",
+      "type": "must_not",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "trigger": "Necessary to avoid conflict with other traffic",
+        "effect": "Exception when necessity is established from original traffic evidence.",
+        "replacement_obligation": "Retain original traffic evidence for independent review.",
+        "source_clause": "except when necessary to avoid conflict with other traffic"
+      },
+      {
+        "trigger": "In compliance with law",
+        "effect": "Exception when another law actually governs the activity.",
+        "replacement_obligation": "Retain source authority for independent review.",
+        "source_clause": "in compliance with law"
+      },
+      {
+        "trigger": "Directions of a police officer",
+        "effect": "Exception when an actual police direction applies.",
+        "replacement_obligation": "Retain original officer direction evidence for review.",
+        "source_clause": "the directions of a police officer"
+      },
+      {
+        "trigger": "Official traffic-control device",
+        "effect": "Exception when an official device direction applies.",
+        "replacement_obligation": "Retain original device authority and indication evidence for review.",
+        "source_clause": "official traffic-control device"
+      }
+    ],
+    "timing": {
+      "description": "Observe the complete interval of stop, stand or park on the signal approach.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": []
+  },
+  "parameter_refs": [
+    {
+      "name": "requested_front_gap_ft",
+      "kind": "controller",
+      "range_or_domain": "25, 30 or 35 feet requested; actual footprint independently measured"
+    },
+    {
+      "name": "activity_mode",
+      "kind": "controller",
+      "range_or_domain": "stop, stand or park attempt; original classification independently reviewed"
+    },
+    {
+      "name": "exception_context_request",
+      "kind": "controller",
+      "range_or_domain": "none, necessary conflict, other law, police direction or official device direction"
+    },
+    {
+      "name": "observed_signal_approach_state",
+      "kind": "subject_behavior",
+      "range_or_domain": "original footprint, velocity, signal location and source context or unknown"
+    }
+  ]
+}

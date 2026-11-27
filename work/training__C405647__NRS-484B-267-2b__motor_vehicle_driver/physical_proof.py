@@ -4,7 +4,7 @@ import hashlib
 import json
 from pathlib import Path
 
-from saved_measure import measure, rows
+from saved_measure import measure_saved, rows
 
 
 ORDER = ("capture_finished", "encoders_closed", "restoration_verified",
@@ -37,32 +37,30 @@ def evaluate(attempt, kind):
     if kind == "missing_evidence":
         status, observables = "unverified", {}
     else:
-        measurement = measure(attempt, case, diagnostic=True)
+        measurement = measure_saved(attempt, case, diagnostic=True)['measurement']
         suffix = case[-2:]
-        if suffix == "01":
-            expected = bool(measurement["active_nonadjacent_frames"])
-        elif suffix == "03":
-            expected = any(row.get("traffic") for row in trace) and any(
-                row.get("weather_precipitation", 0) > 0 for row in trace)
-        elif suffix == "04":
-            expected = bool(measurement["visible_hand_signal_frames"])
-        elif suffix == "05":
-            expected = bool(measurement["visible_officer_direction_frames"])
-        else:
-            expected = bool(measurement["active_adjacent_frames"])
+        expected = bool(measurement['first_passing_frame'] >
+                        measurement['first_approach_frame'])
+        if suffix == '03':
+            expected &= measurement['qualifying_role'] == 'official_regulatory'
+        if suffix == '04':
+            expected &= measurement['activation_mode'] == 'visible_hand_signal'
+        if suffix == '05':
+            expected &= 'proceed' in measurement['officer_direction_states']
         status = ("met" if expected else "not_met") if kind == "complete_motion" else "not_met"
-        observables = {"active_approach_frames": len(measurement["active_approach_frames"]),
-                       "active_adjacent_frames": len(measurement["active_adjacent_frames"]),
-                       "active_nonadjacent_frames": len(measurement["active_nonadjacent_frames"]),
+        observables = {"first_approach_frame": measurement['first_approach_frame'],
+                       "first_passing_frame": measurement['first_passing_frame'],
+                       "ego_speed_at_first_pass_mps": measurement['ego_speed_at_first_pass_mps'],
+                       "minimum_passing_surface_gap_m": measurement['minimum_passing_surface_gap_m'],
                        "source_branch": suffix,
                        "original_native_observed": False}
-        sources.update(measurement["source_sha256"])
+        sources.update(measure_saved(attempt, case, diagnostic=True)["source_sha256"])
     return {"case_id": case, "fixture_kind": kind,
             "diagnostic_fixture": True, "provenance_kind": "synthetic_fixture",
             "original_native_observed": False, "physical_acceptance_claimed": False,
             "legal_verdict_claimed": False,
             "physical_checks": {"maneuver": {"status": status,
-                "method": "synthetic source-joined emergency approach, lane and conditional branch with controlled incomplete/missing mutations",
+                "method": "synthetic source-joined emergency approach, speed/clearance and conditional branch with controlled incomplete/missing mutations",
                 "sources": sources}},
             "maneuver_completed": status == "met",
             "realized_observables": observables}
