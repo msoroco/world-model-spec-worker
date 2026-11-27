@@ -20,6 +20,11 @@ def required(root, name):
     return path
 
 
+def measure_freight_zone(rows, case, scene):
+    """Bind the case-specific synthetic source rows to the shared measurement."""
+    return measure_history([{**row, "case_id": case.name} for row in rows], case, scene)
+
+
 def analyze(attempt):
     root = Path(attempt)
     config = json.loads(required(root, "config.json").read_text())
@@ -39,7 +44,7 @@ def analyze(attempt):
         raise ValueError("900 synthetic freight rows required")
     # Only the case label differs between the exact recipe and original-history
     # measurement API. All source and frame fields are checked by that API.
-    measured = measure_history([{**row, "case_id": case.name} for row in rows], case, scene)
+    measured = measure_freight_zone(rows, case, scene)
     sources = {"freight-rows.json": sha(row_path), "diagnostic-source-note.json": sha(note_path)}
     channels = config["case"]["recording_description"]["channels"]
     values = {
@@ -89,7 +94,7 @@ def analyze(attempt):
     return {"format": "worker-analysis-report", "case_id": config["selected_case_id"],
             "analysis_complete": True, "diagnostic_fixture": True,
             "physical_acceptance_claimed": False, "legal_verdict_claimed": False,
-            "measurements": {"freight_curb_zone": {"method": "measure_history",
+            "measurements": {"freight_curb_zone": {"method": "measure_freight_zone",
                                                     "value": measured, "sources": sources}},
             "physical_checks": result["physical_checks"], "realized_observables": {},
             "limitations": ["Synthetic fixture proves software compatibility only; original freight marking, materials transfer, passenger exception and legal review remain open."]}

@@ -10,7 +10,7 @@ import sys
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-SCRATCH = ROOT / ".runtime-work" / "c399695-4001-owner" / "physical-fixtures-v1"
+SCRATCH = ROOT / ".runtime-work" / "c399695-4001-owner" / "physical-fixtures-v3"
 PROOFS = HERE / "proofs" / "physical"
 
 
@@ -47,7 +47,8 @@ def outcome(config, suffix, kind):
     if kind != "missing_evidence":
         progress = 200 if kind == "complete_motion" else 1
         trace = [{"frame": 100 + i, "time_s": i / 20,
-                  "position_m": [-10 + progress * i / 899, 0]}
+                  "position_m": [-10 + progress * i / 899, 0],
+                  "heading_deg": -90 * i / 899 if kind == "complete_motion" else 0}
                  for i in range(900)]
         (root / "trace.jsonl").write_text(
             "".join(json.dumps(row) + "\n" for row in trace), encoding="utf-8")

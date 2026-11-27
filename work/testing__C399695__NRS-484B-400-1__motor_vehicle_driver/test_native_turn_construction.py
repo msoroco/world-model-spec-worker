@@ -1,8 +1,11 @@
 """CPU construction checks for both lane phases and the conditional alternative."""
 
 import importlib.util
-import unittest
+import hashlib
+import json
 from pathlib import Path
+import tempfile
+import unittest
 
 from test_turn_position import example
 
@@ -58,6 +61,42 @@ class NativeTurnConstructionTests(unittest.TestCase):
         site["trajectories"]["turn"]["source_ref"] = ""
         with self.assertRaisesRegex(ValueError, "trajectory"):
             MODULE.construct(site, MODULE.AID + "__lane_both_intervals")
+
+    def test_reviewed_original_site_hashes_and_connector_source(self):
+        runner_spec = importlib.util.spec_from_file_location("turn_runner", Path(__file__).with_name("runner.py"))
+        runner = importlib.util.module_from_spec(runner_spec)
+        runner_spec.loader.exec_module(runner)
+        scratch = Path(__file__).resolve().parents[2] / ".runtime-work" / "c399695-4001-owner"
+        scratch.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=scratch, prefix="site-review-") as temporary:
+            root = Path(temporary)
+            site = site_with_routes()
+            case = MODULE.AID + "__lane_both_intervals"
+            site.update({"assignment_id": MODULE.AID, "case_id": case,
+                         "source_kind": "original_native_map_geometry",
+                         "reviewed_original_native_site": True,
+                         "rate_hz": 20, "duration_frames": 900,
+                         "cameras": ["overview", "approach", "reference_corner", "driver_reference"],
+                         "map_name": "reviewed-map"})
+            roles = ("map", "public_highway", "non_alley_intersection", "lane_design",
+                     "qualification_223_4", "connected_right_exit", "driver_identity",
+                     "intended_right_turn", "vehicle_spawn", "approach_trajectory",
+                     "turn_trajectory", "turn_lane_connectors")
+            site["source_refs"] = []
+            for role in roles:
+                path = root / (role + ".txt")
+                path.write_text("synthetic test source for " + role + "\n")
+                site["source_refs"].append({"role": role, "path": path.name,
+                                            "sha256": hashlib.sha256(path.read_bytes()).hexdigest()})
+            site["map_sha256"] = site["source_refs"][0]["sha256"]
+            packet = root / "site.json"
+            packet.write_text(json.dumps(site) + "\n")
+            reviewed, request = runner.reviewed_site(packet, case)
+            self.assertEqual(request["turn_phase_lane_refs"], [[12, -1], [18, -5]])
+            self.assertEqual(len(reviewed["reviewed_site_sha256"]), 64)
+            (root / "turn_lane_connectors.txt").write_text("changed connector source\n")
+            with self.assertRaisesRegex(ValueError, "source hash changed"):
+                runner.reviewed_site(packet, case)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,146 @@
+{
+  "assignment_id": "testing__C399695__NRS-484B-400-1__motor_vehicle_driver",
+  "law_id": "NRS-484B-400-1",
+  "cell_id": "C399695",
+  "actor": "motor_vehicle_driver",
+  "selected_case_id": "testing__C399695__NRS-484B-400-1__motor_vehicle_driver__lane_both_intervals",
+  "candidate_id": "primary",
+  "rate_hz": 20,
+  "duration_s": 45,
+  "physical_completion": {
+    "criterion": "turn",
+    "motion_source": "trace.jsonl",
+    "heading_key": "heading_deg",
+    "turn_degrees": 90,
+    "turn_tolerance_deg": 30,
+    "turn_sign": -1,
+    "minimum_progress_m": 1
+  },
+  "required_atoms": [],
+  "source_packets": [],
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fov_deg": 75,
+      "pose_strategy": "reviewed T-junction approach, turn-lane boundary and connected exit"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 75,
+      "pose_strategy": "reviewed T-junction approach, turn-lane boundary and connected exit"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 75,
+      "pose_strategy": "reviewed T-junction approach, turn-lane boundary and connected exit"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fov_deg": 75,
+      "pose_strategy": "reviewed T-junction approach, turn-lane boundary and connected exit"
+    }
+  ],
+  "supported_case_ids": [
+    "testing__C399695__NRS-484B-400-1__motor_vehicle_driver__lane_both_intervals",
+    "testing__C399695__NRS-484B-400-1__motor_vehicle_driver__approach_from_other_lane",
+    "testing__C399695__NRS-484B-400-1__motor_vehicle_driver__turn_from_other_lane",
+    "testing__C399695__NRS-484B-400-1__motor_vehicle_driver__other_lane_both_intervals",
+    "testing__C399695__NRS-484B-400-1__motor_vehicle_driver__extreme_right_no_qualifying_lane"
+  ],
+  "case": {
+    "case_id": "testing__C399695__NRS-484B-400-1__motor_vehicle_driver__lane_both_intervals",
+    "kind": "delivery",
+    "branch": "Right-turn lane at a terminating-road intersection.",
+    "gap_ids": [
+      "no-accepted-recording"
+    ],
+    "new_capture_selected": true,
+    "target_law_id": "NRS-484B-400-1",
+    "qualifying_right_turn_lane": true,
+    "approach_lane_request": "turn",
+    "turn_lane_request": "turn",
+    "construction_probe": "turn_position.py",
+    "construction_status": "source_gated_native_bundle_cpu_preparation",
+    "candidate_risk": {
+      "status": "physical",
+      "reason": "Actual Native lane geometry, 20 Hz lane identity and connected right exit may differ from the reviewed source packet; a surveyed alternate spawn/controller is needed only if the first run shows this failure."
+    },
+    "recording_description": {
+      "channels": [
+        {
+          "name": "intersection_and_highway",
+          "unit": "source record",
+          "method": "sealed public-highway, non-alley T-junction and connected-exit survey",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second approach, turn and connected exit",
+          "reference_frame": "source-surveyed Native T junction, road and lane IDs",
+          "uncertainty": "Lane occupancy and a planned route do not establish legal compliance"
+        },
+        {
+          "name": "conditional_lane_qualification",
+          "unit": "source record",
+          "method": "independent reviewed NRS 484B.223(4) lane-design packet",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second approach, turn and connected exit",
+          "reference_frame": "source-surveyed Native T junction, road and lane IDs",
+          "uncertainty": "Lane occupancy and a planned route do not establish legal compliance"
+        },
+        {
+          "name": "driver_and_intention",
+          "unit": "source record",
+          "method": "original driver identity and independently declared right-turn route",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second approach, turn and connected exit",
+          "reference_frame": "source-surveyed Native T junction, road and lane IDs",
+          "uncertainty": "Lane occupancy and a planned route do not establish legal compliance"
+        },
+        {
+          "name": "approach_lane_position",
+          "unit": "lane/frame",
+          "method": "joined original Native body pose and lane/road ID during approach",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second approach, turn and connected exit",
+          "reference_frame": "source-surveyed Native T junction, road and lane IDs",
+          "uncertainty": "Lane occupancy and a planned route do not establish legal compliance"
+        },
+        {
+          "name": "turn_lane_position",
+          "unit": "lane/frame",
+          "method": "joined original Native body pose and junction/lane ID during right turn",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second approach, turn and connected exit",
+          "reference_frame": "source-surveyed Native T junction, road and lane IDs",
+          "uncertainty": "Lane occupancy and a planned route do not establish legal compliance"
+        },
+        {
+          "name": "connected_departure",
+          "unit": "road/frame",
+          "method": "joined original Native right-exit road and body pose",
+          "sampling_rate_hz": 20,
+          "time_window": "45-second approach, turn and connected exit",
+          "reference_frame": "source-surveyed Native T junction, road and lane IDs",
+          "uncertainty": "Lane occupancy and a planned route do not establish legal compliance"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "reviewed_t_junction_site",
+          "unit": "source record",
+          "method": "sealed highway, lane qualification, geometry and connected-right-exit packet"
+        }
+      ],
+      "limitations": [
+        "No numeric lane-entry deadline or legal lateral threshold is supplied.",
+        "Synthetic diagnostics prove software behavior only."
+      ]
+    }
+  }
+}

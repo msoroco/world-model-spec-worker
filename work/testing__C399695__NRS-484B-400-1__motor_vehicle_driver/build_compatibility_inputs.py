@@ -46,6 +46,8 @@ def build():
                 "right_lane_design_source": "synthetic-lane-design",
                 "qualification_223_4_source": "synthetic-reviewed-223-4",
                 "connected_right_exit_source": "synthetic-connected-exit",
+                "turn_phase_lane_source": "synthetic-junction-connectors",
+                "turn_phase_lane_refs": {"turn": [[1, -1]], "extreme": [[1, -2]]},
                 "driver_identity_source": "synthetic-driver", "driver_id": "driver",
                 "entry_road_id": 1, "right_exit_road_id": 2, "junction_id": 3,
                 "turn_lane_id": -1, "extreme_right_lane_id": -2,

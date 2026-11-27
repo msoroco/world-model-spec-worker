@@ -19,9 +19,12 @@ def example():
         "right_lane_design_source": "original-lane-design",
         "qualification_223_4_source": "reviewed-223-4-source",
         "connected_right_exit_source": "original-road-graph",
+        "turn_phase_lane_source": "original-junction-connectors",
         "driver_identity_source": "original-driver-packet", "driver_id": "driver-1",
         "entry_road_id": 12, "right_exit_road_id": 14, "junction_id": 8,
         "turn_lane_id": -1, "extreme_right_lane_id": -2,
+        "turn_phase_lane_refs": {"turn": [[12, -1], [18, -5]],
+                                 "extreme": [[12, -2], [19, -6]]},
         "public_highway": True, "non_alley_intersection": True,
         "t_intersection": True, "connected_right_exit": True,
         "right_turn_lane_qualified_under_223_4": True,
@@ -69,6 +72,15 @@ class TurnPositionTests(unittest.TestCase):
         self.assertEqual(measured["conditional_lane_id"], -2)
         self.assertTrue(measured["approach_entirely_from_required_lane"])
         self.assertTrue(measured["turn_entirely_from_required_lane"])
+
+    def test_source_mapped_junction_connector_lane(self):
+        site, frames, intention = example()
+        frames[3]["road_id"] = 18
+        frames[3]["lane_id"] = -5
+        measured = MODULE.measure(site, frames, intention)
+        self.assertTrue(measured["turn_entirely_from_required_lane"])
+        frames[3]["road_id"] = 21
+        self.assertFalse(MODULE.measure(site, frames, intention)["turn_entirely_from_required_lane"])
 
     def test_missing_qualification_and_timing_rejected(self):
         site, frames, intention = example()

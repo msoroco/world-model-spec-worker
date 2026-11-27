@@ -29,7 +29,8 @@ def source_packet(path, case_id):
     refs = packet.get("source_refs")
     roles = {"map", "public_highway", "non_alley_intersection", "lane_design",
              "qualification_223_4", "connected_right_exit", "driver_identity",
-             "intended_right_turn", "vehicle_spawn", "approach_trajectory", "turn_trajectory"}
+             "intended_right_turn", "vehicle_spawn", "approach_trajectory",
+             "turn_trajectory", "turn_lane_connectors"}
     if not isinstance(refs, list) or roles - {item.get("role") for item in refs}:
         raise ValueError("independent original site sources missing")
     for item in refs:
@@ -79,6 +80,7 @@ def construct(site, case_id):
             "turn_lane_id": site["turn_lane_id"] if turn_key == "turn" else site["extreme_right_lane_id"],
             "approach_trajectory_xy": paths[approach_key]["xy"],
             "turn_trajectory_xy": paths[turn_key]["xy"],
+            "turn_phase_lane_refs": site["turn_phase_lane_refs"][turn_key],
             "trajectory_sources": [paths[approach_key]["source_ref"], paths[turn_key]["source_ref"]],
             "intention_source": intention["source_ref"],
             "native_map_sha256": site["map_sha256"], "driver_id": site["driver_id"],

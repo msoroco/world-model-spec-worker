@@ -79,6 +79,8 @@ def capture(adapter, site, case, destination):
                    "right_lane_design_source": site["right_lane_design_source"],
                    "qualification_223_4_source": site["qualification_223_4_source"],
                    "connected_right_exit_source": site["connected_right_exit_source"],
+                   "turn_phase_lane_source": site["turn_phase_lane_source"],
+                   "turn_phase_lane_refs": site["turn_phase_lane_refs"],
                    "driver_identity_source": site["driver_identity_source"],
                    "driver_actor_id": site["driver_id"], "ego_actor_id": rows[0]["actor_ids"][0],
                    "public_highway": site["public_highway"],
@@ -95,7 +97,8 @@ def capture(adapter, site, case, destination):
         probe_site = {key: history[key] for key in
                       ("map_sha256", "public_highway_source", "intersection_source",
                        "right_lane_design_source", "qualification_223_4_source",
-                       "connected_right_exit_source", "driver_identity_source",
+                       "connected_right_exit_source", "turn_phase_lane_source",
+                       "turn_phase_lane_refs", "driver_identity_source",
                        "entry_road_id", "right_exit_road_id", "junction_id",
                        "turn_lane_id", "extreme_right_lane_id", "public_highway",
                        "non_alley_intersection", "t_intersection", "connected_right_exit",

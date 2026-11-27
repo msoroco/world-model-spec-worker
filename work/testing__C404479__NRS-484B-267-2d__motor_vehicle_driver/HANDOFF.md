@@ -13,3 +13,47 @@ Next CPU actions: complete all 22 primary/fallback compatibility receipts; run p
 Strict command: .venv-cpu/bin/python worker_check.py --assignment testing__C404479__NRS-484B-267-2d__motor_vehicle_driver --complete --require-delivery-ready
 
 Remaining local GPU checks: actual target authority and equipment, moving/visible preparation, ego approach, actor body extents and lane clearance, camera pixels, complete overtaking episode, officer context and independent legal review.
+
+## Exact identities and reproducible CPU commands
+
+Cases:
+
+- `testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__moving_hold_behind`
+- `testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__moving_overtake`
+- `testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__moving_abreast`
+- `testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__unit_overtakes_ego`
+- `testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__preparing_visible_hand_signal`
+- `testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__preparing_visible_vehicle_movement`
+- `testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__lights_inactive`
+- `testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__lights_unqualified`
+- `testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__officer_directs_otherwise`
+- `testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__regulatory_official_hold_behind`
+- `testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__no_approach`
+
+Comparisons:
+
+- `testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__hold_vs_moving_overtake`
+- `testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__hold_vs_moving_abreast`
+- `testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__hold_vs_unit_overtakes_ego`
+- `testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__hold_vs_preparing_visible_hand_signal`
+- `testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__hold_vs_preparing_visible_vehicle_movement`
+- `testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__hold_vs_lights_inactive`
+- `testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__hold_vs_lights_unqualified`
+- `testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__hold_vs_officer_directs_otherwise`
+- `testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__hold_vs_regulatory_official_hold_behind`
+- `testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__hold_vs_no_approach`
+
+Run from the repository root with `SCENARIO_PIPELINE_OUTPUT_ROOT="$PWD/.runtime-work/c404479-2d/output-root"`, `TMPDIR="$PWD/.runtime-work/c404479-2d/tmp"` and `PYTHONDONTWRITEBYTECODE=1` exported:
+
+- `.venv-cpu/bin/python work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/build_diagnostics.py`
+- `.venv-cpu/bin/python work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/build_constructions.py`
+- `.venv-cpu/bin/python work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/build_semantic_proposals.py`
+- `.venv-cpu/bin/python work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/prove_offline.py`
+- `.venv-cpu/bin/python work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/prove_fallback.py`
+- `.venv-cpu/bin/python work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/prove_physical.py`
+- `.venv-cpu/bin/python work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/prove_compatibility.py`
+- `.venv-cpu/bin/python work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/prove_saved.py`
+- `.venv-cpu/bin/python work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/prove_audits.py`
+- `.venv-cpu/bin/python work/testing__C404479__NRS-484B-267-2d__motor_vehicle_driver/build_queue_proposal.py`
+
+The positive and missing-source compatibility receipts are in `cpu-compat-*`; saved-only positive/negative logs are in `cpu-saved-*`; independent source/video audits are in `cpu-delivery-*` and `cpu-comparison-*`. The source-gated four-camera local commands are proposed in `gpu-queue-proposal.json` and are unexecuted here.

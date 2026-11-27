@@ -35,6 +35,10 @@ def build():
         config = {"assignment_id": AID, "law_id": LAW, "cell_id": CELL,
                   "actor": ACTOR, "selected_case_id": case["case_id"],
                   "candidate_id": "primary", "rate_hz": 20, "duration_s": 45,
+                  "physical_completion": {"criterion": "turn", "motion_source": "trace.jsonl",
+                                          "heading_key": "heading_deg", "turn_degrees": 90,
+                                          "turn_tolerance_deg": 30, "turn_sign": -1,
+                                          "minimum_progress_m": 1},
                   "required_atoms": [], "source_packets": [],
                   "cameras": CAMERAS, "supported_case_ids": ids,
                   "case": {**case, "recording_description": RECORDING}}

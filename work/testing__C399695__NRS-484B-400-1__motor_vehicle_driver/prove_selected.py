@@ -10,7 +10,7 @@ import sys
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 MANIFEST = HERE / "execution-manifest.selected-draft.json"
-SCRATCH = ROOT / ".runtime-work/c399695-4001-owner/selected-v1"
+SCRATCH = ROOT / ".runtime-work/c399695-4001-owner/selected-v3"
 VALIDATOR = ROOT / ".runtime-work/c110969-decoder/.lake/build/bin/adapterCheck"
 
 

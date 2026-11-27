@@ -68,7 +68,8 @@ def analyze(attempt):
     site = {key: history[key] for key in
             ("map_sha256", "public_highway_source", "intersection_source",
              "right_lane_design_source", "qualification_223_4_source",
-             "connected_right_exit_source", "driver_identity_source", "entry_road_id",
+             "connected_right_exit_source", "turn_phase_lane_source",
+             "turn_phase_lane_refs", "driver_identity_source", "entry_road_id",
              "right_exit_road_id", "junction_id", "turn_lane_id", "extreme_right_lane_id",
              "public_highway", "non_alley_intersection", "t_intersection",
              "connected_right_exit", "right_turn_lane_qualified_under_223_4")}
@@ -82,7 +83,8 @@ def analyze(attempt):
                                      "non_alley_intersection": history["non_alley_intersection"],
                                      "connected_right_exit": history["connected_right_exit"]},
         "conditional_lane_qualification": {"qualifying_right_turn_lane": measured["qualifying_right_turn_lane"],
-                                           "conditional_lane_id": measured["conditional_lane_id"]},
+                                           "conditional_lane_id": measured["conditional_lane_id"],
+                                           "required_turn_phase_lane_refs": measured["required_turn_phase_lane_refs"]},
         "extreme_right_alternative": {"qualifying_right_turn_lane": measured["qualifying_right_turn_lane"],
                                        "extreme_right_lane_id": history["extreme_right_lane_id"],
                                        "conditional_lane_id": measured["conditional_lane_id"]},

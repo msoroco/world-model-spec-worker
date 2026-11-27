@@ -19,7 +19,8 @@ def reviewed_site(path, case):
     refs = site.get("source_refs")
     roles = {"map", "public_highway", "non_alley_intersection", "lane_design",
              "qualification_223_4", "connected_right_exit", "driver_identity",
-             "intended_right_turn", "vehicle_spawn", "approach_trajectory", "turn_trajectory"}
+             "intended_right_turn", "vehicle_spawn", "approach_trajectory",
+             "turn_trajectory", "turn_lane_connectors"}
     if not isinstance(refs, list) or not roles <= {item.get("role") for item in refs}:
         raise ValueError("complete separately sourced highway, conditional lane and route facts required")
     for ref in refs:

@@ -63,7 +63,7 @@ def build():
             "exceptions": [],
             "timing": {"description": "Observe source-joined approach and turn intervals separately; no numeric entry deadline is supplied.",
                        "numeric_conditions": []},
-            "judgment_calls_needed": ["NRS 484B.223(4) lane qualification requires independent source review"]},
+            "judgment_calls_needed": []},
         "parameter_refs": parameters})
     bindings_ref = put("bindings.json", {"cell_id": plan["cell_id"], "actor": plan["actor"],
         "status": "draft", "law_refs": [{"template_id": template_id, "binding_kind": "direct"}],
@@ -91,7 +91,9 @@ def build():
                                      "turn_lane_request": assign(turn)},
             "unresolved_judgment_calls": ["Original lane qualification and physical realization remain for review"],
             "recording_description": RECORDING,
-            "probe": {"primary_variable": "conditional_lane_and_phase_position",
+            "probe": {"primary_variable": "qualifying_right_turn_lane" if not qualified else
+                                     "approach_lane_request" if approach != "turn" else
+                                     "turn_lane_request",
                       "comparison_or_standard": "source-reviewed T junction, driver, right-turn intention, cameras and duration",
                       "target_value_or_branch": str(qualified) + "/" + approach + "/" + turn}})
     cases_ref = put("cases.json", {"cell_id": plan["cell_id"], "actor": plan["actor"],

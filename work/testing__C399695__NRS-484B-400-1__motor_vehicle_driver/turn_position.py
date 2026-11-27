@@ -20,7 +20,8 @@ def _finite(value):
 def validate_site(site):
     for key in ("source_id", "map_sha256", "public_highway_source", "intersection_source",
                 "right_lane_design_source", "qualification_223_4_source",
-                "connected_right_exit_source", "driver_identity_source", "driver_id",
+                "connected_right_exit_source", "turn_phase_lane_source",
+                "driver_identity_source", "driver_id",
                 "entry_road_id", "right_exit_road_id", "junction_id", "turn_lane_id"):
         _need(site.get(key), "missing original site source: " + key)
     _need(site.get("public_highway") is True and site.get("non_alley_intersection") is True,
@@ -36,6 +37,18 @@ def validate_site(site):
     if site["right_turn_lane_qualified_under_223_4"]:
         _need(site["extreme_right_lane_id"] != site["turn_lane_id"],
               "separate extreme-right lane required for the controlled comparison")
+    refs = site.get("turn_phase_lane_refs")
+    _need(isinstance(refs, dict) and set(refs) == {"turn", "extreme"},
+          "source-surveyed junction connector lane references required")
+    for key, lane_id in (("turn", site["turn_lane_id"]),
+                         ("extreme", site["extreme_right_lane_id"])):
+        pairs = refs[key]
+        _need(isinstance(pairs, list) and pairs and all(
+            isinstance(pair, list) and len(pair) == 2 and
+            all(type(value) is int for value in pair) for pair in pairs),
+            "invalid original junction connector road/lane references")
+        _need([site["entry_road_id"], lane_id] in pairs,
+              "junction connector map omits source-selected lane entry")
 
 
 def measure(site, frames, intention):
@@ -74,19 +87,23 @@ def measure(site, frames, intention):
           all(r["road_id"] == site["right_exit_road_id"] for r in departure),
           "T-junction road and connected exit trace mismatch")
     required_lane = site["turn_lane_id"] if site["right_turn_lane_qualified_under_223_4"] else site["extreme_right_lane_id"]
+    connector_key = "turn" if site["right_turn_lane_qualified_under_223_4"] else "extreme"
+    allowed_turn_refs = site["turn_phase_lane_refs"][connector_key]
     return {
         "qualifying_right_turn_lane": site["right_turn_lane_qualified_under_223_4"],
         "conditional_lane_id": required_lane,
         "approach_lane_ids": [r["lane_id"] for r in approach],
         "turn_lane_ids": [r["lane_id"] for r in turn],
         "approach_entirely_from_required_lane": all(r["lane_id"] == required_lane for r in approach),
-        "turn_entirely_from_required_lane": all(r["lane_id"] == required_lane for r in turn),
+        "turn_entirely_from_required_lane": all([r["road_id"], r["lane_id"]] in allowed_turn_refs for r in turn),
+        "required_turn_phase_lane_refs": allowed_turn_refs,
         "approach_original_frames": [r["original_frame"] for r in approach],
         "turn_original_frames": [r["original_frame"] for r in turn],
         "intention_source": intention["source_ref"],
         "site_sources": {key: site[key] for key in
                          ("public_highway_source", "intersection_source", "right_lane_design_source",
                           "qualification_223_4_source", "connected_right_exit_source",
+                          "turn_phase_lane_source",
                           "driver_identity_source")},
         "frame_sources": list(dict.fromkeys(r["source_ref"] for r in frames)),
         "legal_verdict": None,
