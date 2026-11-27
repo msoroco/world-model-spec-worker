@@ -1,0 +1,876 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C229405__NRS-484B-450-1k__motor_vehicle_driver",
+  "status": "source_gated_draft",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "case_id": "testing__C229405__NRS-484B-450-1k__motor_vehicle_driver__alongside_park_narrow",
+      "kind": "delivery",
+      "construction": "construction.json",
+      "construction_sha256": "9f541b0df1b0ac73c47eb30b17e843732481dfd34039547c762be2ad431e5e8f",
+      "fixture_recipe": "work/testing__C229405__NRS-484B-450-1k__motor_vehicle_driver/diagnostic-alongside_park_narrow-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "original reviewed highway excavation and authority source packet required",
+      "acquisition": {
+        "site_source": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-site_source.jsonl"
+        },
+        "excavation_extent": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-excavation_extent.jsonl"
+        },
+        "vehicle_body_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_body_history.jsonl"
+        },
+        "vehicle_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_motion_history.jsonl"
+        },
+        "traffic_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-traffic_motion_history.jsonl"
+        },
+        "passage_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-passage_history.jsonl"
+        },
+        "halt_activity_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-halt_activity_history.jsonl"
+        },
+        "exception_context": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-exception_context.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-camera_frame_map.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Tight excavation-side approach may fail to reach a stable terminal halt or preserve the designed passage in Native motion."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/alongside_park_narrow/fallback1-construction.json",
+          "construction_sha256": "2ce0d1afdbee1313252f1d2d13d57fb93ba3445af1039bbbe1e10ea0cf4fcd1b",
+          "trigger": {
+            "source": "original Native trace.jsonl and excavation-history.jsonl",
+            "metric": "terminal halt readback and source-bound body passage width",
+            "failure_condition": "primary does not reach a stable terminal halt or source-bound passage is not observable"
+          },
+          "changed_knobs": [
+            "engineering_throttle: 0.25 to 0.18",
+            "engineering_braking_factor: 5.0 to 4.0"
+          ],
+          "offline": {
+            "construction_sha256": "2ce0d1afdbee1313252f1d2d13d57fb93ba3445af1039bbbe1e10ea0cf4fcd1b",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229405__NRS-484B-450-1k__motor_vehicle_driver/execution-manifest.json --case testing__C229405__NRS-484B-450-1k__motor_vehicle_driver__alongside_park_narrow --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229405-offline-v4-fallback1-alongside_park_narrow",
+            "exit_code": 0,
+            "log": "offline-v4-fallback1-alongside_park_narrow.log",
+            "log_sha256": "13c2fe35254899eba01ea01a154b39c21950a3b89108e59a5ecf7bc18a97c4f1"
+          },
+          "compatibility": {
+            "receipt": "proofs/fallback1-alongside_park_narrow/receipt.json",
+            "sha256": "ba2af2df9dc5280a5ab9e9e667e1f568bebdc97ecb2701d20981c9549d6d3c8e",
+            "log": "proofs/fallback1-alongside_park_narrow/analysis.log",
+            "negative_log": "proofs/fallback1-alongside_park_narrow/negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "construction_sha256": "9f541b0df1b0ac73c47eb30b17e843732481dfd34039547c762be2ad431e5e8f",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229405__NRS-484B-450-1k__motor_vehicle_driver/execution-manifest.json --case testing__C229405__NRS-484B-450-1k__motor_vehicle_driver__alongside_park_narrow --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229405-offline-v4-primary-alongside_park_narrow",
+        "exit_code": 0,
+        "log": "offline-v4-primary-alongside_park_narrow.log",
+        "log_sha256": "8a0521c2580119b153e14203e22c75905c11cbc9e8af4587476f69ab48ffc22d"
+      },
+      "compatibility": {
+        "receipt": "proofs/primary-alongside_park_narrow/receipt.json",
+        "sha256": "867f34f010dfac360d793f1729defbd658b3f8ba464c5dd2a1575ccb9fe32acc",
+        "log": "proofs/primary-alongside_park_narrow/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/primary-alongside_park_narrow/negative.log"
+      }
+    },
+    {
+      "case_id": "testing__C229405__NRS-484B-450-1k__motor_vehicle_driver__opposite_park_narrow",
+      "kind": "delivery",
+      "construction": "cases/opposite_park_narrow/construction.json",
+      "construction_sha256": "ab95f1b991829087af7142d43eb6e4d0b631d9a18cceec32385b8594c182bc1b",
+      "fixture_recipe": "work/testing__C229405__NRS-484B-450-1k__motor_vehicle_driver/diagnostic-opposite_park_narrow-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "original reviewed highway excavation and authority source packet required",
+      "acquisition": {
+        "site_source": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-site_source.jsonl"
+        },
+        "excavation_extent": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-excavation_extent.jsonl"
+        },
+        "vehicle_body_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_body_history.jsonl"
+        },
+        "vehicle_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_motion_history.jsonl"
+        },
+        "traffic_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-traffic_motion_history.jsonl"
+        },
+        "passage_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-passage_history.jsonl"
+        },
+        "halt_activity_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-halt_activity_history.jsonl"
+        },
+        "exception_context": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-exception_context.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-camera_frame_map.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Tight excavation-side approach may fail to reach a stable terminal halt or preserve the designed passage in Native motion."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/opposite_park_narrow/fallback1-construction.json",
+          "construction_sha256": "8c74094aab2c3693c7577facf50ab94a7729ea676cf00537a9072ec7f95e4cff",
+          "trigger": {
+            "source": "original Native trace.jsonl and excavation-history.jsonl",
+            "metric": "terminal halt readback and source-bound body passage width",
+            "failure_condition": "primary does not reach a stable terminal halt or source-bound passage is not observable"
+          },
+          "changed_knobs": [
+            "engineering_throttle: 0.25 to 0.18",
+            "engineering_braking_factor: 5.0 to 4.0"
+          ],
+          "offline": {
+            "construction_sha256": "8c74094aab2c3693c7577facf50ab94a7729ea676cf00537a9072ec7f95e4cff",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229405__NRS-484B-450-1k__motor_vehicle_driver/execution-manifest.json --case testing__C229405__NRS-484B-450-1k__motor_vehicle_driver__opposite_park_narrow --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229405-offline-v4-fallback1-opposite_park_narrow",
+            "exit_code": 0,
+            "log": "offline-v4-fallback1-opposite_park_narrow.log",
+            "log_sha256": "918d9884d280b7910847b0643d4930edd72410b4ca99bd499a09bc252ed22dea"
+          },
+          "compatibility": {
+            "receipt": "proofs/fallback1-opposite_park_narrow/receipt.json",
+            "sha256": "1c00cc6a8ffc31ef2962a40dbf297bdae3420bb228cd8c69fbc69722e6cb5a74",
+            "log": "proofs/fallback1-opposite_park_narrow/analysis.log",
+            "negative_log": "proofs/fallback1-opposite_park_narrow/negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "construction_sha256": "ab95f1b991829087af7142d43eb6e4d0b631d9a18cceec32385b8594c182bc1b",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229405__NRS-484B-450-1k__motor_vehicle_driver/execution-manifest.json --case testing__C229405__NRS-484B-450-1k__motor_vehicle_driver__opposite_park_narrow --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229405-offline-v4-primary-opposite_park_narrow",
+        "exit_code": 0,
+        "log": "offline-v4-primary-opposite_park_narrow.log",
+        "log_sha256": "d7295d59dde1090ceb1a8ac0ce095eba46c3d78629435de88fd22eb107a625c1"
+      },
+      "compatibility": {
+        "receipt": "proofs/primary-opposite_park_narrow/receipt.json",
+        "sha256": "ba75dcb29eb557656d52e5e21bb651cd30ca3b77b3f5fe11993ecd600428295c",
+        "log": "proofs/primary-opposite_park_narrow/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/primary-opposite_park_narrow/negative.log"
+      }
+    },
+    {
+      "case_id": "testing__C229405__NRS-484B-450-1k__motor_vehicle_driver__alongside_park_open",
+      "kind": "delivery",
+      "construction": "cases/alongside_park_open/construction.json",
+      "construction_sha256": "3413ec7ae97d2472459baca0bf5ddc9b17ef9c584dc578883792e5f1784d8475",
+      "fixture_recipe": "work/testing__C229405__NRS-484B-450-1k__motor_vehicle_driver/diagnostic-alongside_park_open-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "original reviewed highway excavation and authority source packet required",
+      "acquisition": {
+        "site_source": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-site_source.jsonl"
+        },
+        "excavation_extent": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-excavation_extent.jsonl"
+        },
+        "vehicle_body_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_body_history.jsonl"
+        },
+        "vehicle_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_motion_history.jsonl"
+        },
+        "traffic_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-traffic_motion_history.jsonl"
+        },
+        "passage_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-passage_history.jsonl"
+        },
+        "halt_activity_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-halt_activity_history.jsonl"
+        },
+        "exception_context": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-exception_context.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-camera_frame_map.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Tight excavation-side approach may fail to reach a stable terminal halt or preserve the designed passage in Native motion."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/alongside_park_open/fallback1-construction.json",
+          "construction_sha256": "42caa92b6ccbaab0a26e49d46f2322a313da5ec42c85dfcfbdfc628b72dd338d",
+          "trigger": {
+            "source": "original Native trace.jsonl and excavation-history.jsonl",
+            "metric": "terminal halt readback and source-bound body passage width",
+            "failure_condition": "primary does not reach a stable terminal halt or source-bound passage is not observable"
+          },
+          "changed_knobs": [
+            "engineering_throttle: 0.25 to 0.18",
+            "engineering_braking_factor: 5.0 to 4.0"
+          ],
+          "offline": {
+            "construction_sha256": "42caa92b6ccbaab0a26e49d46f2322a313da5ec42c85dfcfbdfc628b72dd338d",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229405__NRS-484B-450-1k__motor_vehicle_driver/execution-manifest.json --case testing__C229405__NRS-484B-450-1k__motor_vehicle_driver__alongside_park_open --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229405-offline-v4-fallback1-alongside_park_open",
+            "exit_code": 0,
+            "log": "offline-v4-fallback1-alongside_park_open.log",
+            "log_sha256": "9c1fba9b944aa7fd91abd1e0e388306faae757110705a4b90e6a9d8672e977b2"
+          },
+          "compatibility": {
+            "receipt": "proofs/fallback1-alongside_park_open/receipt.json",
+            "sha256": "e30408302695332db6eba690bf2480ca2e2c590bbf6059afb67b12b30d2ebe92",
+            "log": "proofs/fallback1-alongside_park_open/analysis.log",
+            "negative_log": "proofs/fallback1-alongside_park_open/negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "construction_sha256": "3413ec7ae97d2472459baca0bf5ddc9b17ef9c584dc578883792e5f1784d8475",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229405__NRS-484B-450-1k__motor_vehicle_driver/execution-manifest.json --case testing__C229405__NRS-484B-450-1k__motor_vehicle_driver__alongside_park_open --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229405-offline-v4-primary-alongside_park_open",
+        "exit_code": 0,
+        "log": "offline-v4-primary-alongside_park_open.log",
+        "log_sha256": "71e5c8363666868e02da00189afe1af485009f84ee243587b0e3705bdadad83d"
+      },
+      "compatibility": {
+        "receipt": "proofs/primary-alongside_park_open/receipt.json",
+        "sha256": "735058efb99c83e3faf0490a66763f6f118b51fea9875801cc9c28674e638ac7",
+        "log": "proofs/primary-alongside_park_open/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/primary-alongside_park_open/negative.log"
+      }
+    },
+    {
+      "case_id": "testing__C229405__NRS-484B-450-1k__motor_vehicle_driver__alongside_stop_conflict",
+      "kind": "delivery",
+      "construction": "cases/alongside_stop_conflict/construction.json",
+      "construction_sha256": "40d1b64bb9d3bb89bf7895b03c43e80dfa87893fdb0e76cfa529b358c2e4a015",
+      "fixture_recipe": "work/testing__C229405__NRS-484B-450-1k__motor_vehicle_driver/diagnostic-alongside_stop_conflict-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "original reviewed highway excavation and authority source packet required",
+      "acquisition": {
+        "site_source": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-site_source.jsonl"
+        },
+        "excavation_extent": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-excavation_extent.jsonl"
+        },
+        "vehicle_body_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_body_history.jsonl"
+        },
+        "vehicle_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_motion_history.jsonl"
+        },
+        "traffic_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-traffic_motion_history.jsonl"
+        },
+        "passage_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-passage_history.jsonl"
+        },
+        "halt_activity_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-halt_activity_history.jsonl"
+        },
+        "exception_context": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-exception_context.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-camera_frame_map.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Tight excavation-side approach may fail to reach a stable terminal halt or preserve the designed passage in Native motion."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/alongside_stop_conflict/fallback1-construction.json",
+          "construction_sha256": "11ca9fe68529f461ca81082fb8bd4e5554285646c0f9713e301567a9ccba513a",
+          "trigger": {
+            "source": "original Native trace.jsonl and excavation-history.jsonl",
+            "metric": "terminal halt readback and source-bound body passage width",
+            "failure_condition": "primary does not reach a stable terminal halt or source-bound passage is not observable"
+          },
+          "changed_knobs": [
+            "engineering_throttle: 0.25 to 0.18",
+            "engineering_braking_factor: 5.0 to 4.0"
+          ],
+          "offline": {
+            "construction_sha256": "11ca9fe68529f461ca81082fb8bd4e5554285646c0f9713e301567a9ccba513a",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229405__NRS-484B-450-1k__motor_vehicle_driver/execution-manifest.json --case testing__C229405__NRS-484B-450-1k__motor_vehicle_driver__alongside_stop_conflict --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229405-offline-v4-fallback1-alongside_stop_conflict",
+            "exit_code": 0,
+            "log": "offline-v4-fallback1-alongside_stop_conflict.log",
+            "log_sha256": "ceffce511e78963dcd3de841a47fa76d77c545e51816c19926cf3a2468d2573f"
+          },
+          "compatibility": {
+            "receipt": "proofs/fallback1-alongside_stop_conflict/receipt.json",
+            "sha256": "2f20480fb74063de9f86c8e713fd49818ba0f3b38ec1ed9b0a64df3c5038de3c",
+            "log": "proofs/fallback1-alongside_stop_conflict/analysis.log",
+            "negative_log": "proofs/fallback1-alongside_stop_conflict/negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "construction_sha256": "40d1b64bb9d3bb89bf7895b03c43e80dfa87893fdb0e76cfa529b358c2e4a015",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229405__NRS-484B-450-1k__motor_vehicle_driver/execution-manifest.json --case testing__C229405__NRS-484B-450-1k__motor_vehicle_driver__alongside_stop_conflict --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229405-offline-v4-primary-alongside_stop_conflict",
+        "exit_code": 0,
+        "log": "offline-v4-primary-alongside_stop_conflict.log",
+        "log_sha256": "41d7a708f1017081cedf57dd8d7e0f5ce6a90f7f13a3a995ff65e695f9b4f73e"
+      },
+      "compatibility": {
+        "receipt": "proofs/primary-alongside_stop_conflict/receipt.json",
+        "sha256": "b951421abf522c28c93dce1d1419a7a9a36ac967f05dea9634b1f4631f85f951",
+        "log": "proofs/primary-alongside_stop_conflict/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/primary-alongside_stop_conflict/negative.log"
+      }
+    },
+    {
+      "case_id": "testing__C229405__NRS-484B-450-1k__motor_vehicle_driver__alongside_stand_officer",
+      "kind": "delivery",
+      "construction": "cases/alongside_stand_officer/construction.json",
+      "construction_sha256": "943cbac8de4a89f4b38043fea5c1465041132debc0cea2d0d0cf3eadb8af4cfc",
+      "fixture_recipe": "work/testing__C229405__NRS-484B-450-1k__motor_vehicle_driver/diagnostic-alongside_stand_officer-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "original reviewed highway excavation and authority source packet required",
+      "acquisition": {
+        "site_source": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-site_source.jsonl"
+        },
+        "excavation_extent": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-excavation_extent.jsonl"
+        },
+        "vehicle_body_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_body_history.jsonl"
+        },
+        "vehicle_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_motion_history.jsonl"
+        },
+        "traffic_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-traffic_motion_history.jsonl"
+        },
+        "passage_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-passage_history.jsonl"
+        },
+        "halt_activity_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-halt_activity_history.jsonl"
+        },
+        "exception_context": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-exception_context.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-camera_frame_map.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Tight excavation-side approach may fail to reach a stable terminal halt or preserve the designed passage in Native motion."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/alongside_stand_officer/fallback1-construction.json",
+          "construction_sha256": "273ce2c05f519978b15e2403267b337c3f2629a96325535eab2cb22d03430a75",
+          "trigger": {
+            "source": "original Native trace.jsonl and excavation-history.jsonl",
+            "metric": "terminal halt readback and source-bound body passage width",
+            "failure_condition": "primary does not reach a stable terminal halt or source-bound passage is not observable"
+          },
+          "changed_knobs": [
+            "engineering_throttle: 0.25 to 0.18",
+            "engineering_braking_factor: 5.0 to 4.0"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C229405__NRS-484B-450-1k__motor_vehicle_driver__alongside_park_device",
+      "kind": "delivery",
+      "construction": "cases/alongside_park_device/construction.json",
+      "construction_sha256": "f5d92d757572b98ef95a34f789bc79feaba55bbd64250d7a561c343a656ea599",
+      "fixture_recipe": "work/testing__C229405__NRS-484B-450-1k__motor_vehicle_driver/diagnostic-alongside_park_device-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "original reviewed highway excavation and authority source packet required",
+      "acquisition": {
+        "site_source": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-site_source.jsonl"
+        },
+        "excavation_extent": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-excavation_extent.jsonl"
+        },
+        "vehicle_body_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_body_history.jsonl"
+        },
+        "vehicle_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_motion_history.jsonl"
+        },
+        "traffic_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-traffic_motion_history.jsonl"
+        },
+        "passage_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-passage_history.jsonl"
+        },
+        "halt_activity_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-halt_activity_history.jsonl"
+        },
+        "exception_context": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-exception_context.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-camera_frame_map.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Tight excavation-side approach may fail to reach a stable terminal halt or preserve the designed passage in Native motion."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/alongside_park_device/fallback1-construction.json",
+          "construction_sha256": "bde8ce91b57f1cea9ff5b8815ef6eb2ae7d7cf304283076631730c99da56287b",
+          "trigger": {
+            "source": "original Native trace.jsonl and excavation-history.jsonl",
+            "metric": "terminal halt readback and source-bound body passage width",
+            "failure_condition": "primary does not reach a stable terminal halt or source-bound passage is not observable"
+          },
+          "changed_knobs": [
+            "engineering_throttle: 0.25 to 0.18",
+            "engineering_braking_factor: 5.0 to 4.0"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C229405__NRS-484B-450-1k__motor_vehicle_driver__alongside_park_law",
+      "kind": "delivery",
+      "construction": "cases/alongside_park_law/construction.json",
+      "construction_sha256": "ac47ffd09c5b17f6bd052936b0f4b2a8d35a1f431d41cbb75dedadd577e67195",
+      "fixture_recipe": "work/testing__C229405__NRS-484B-450-1k__motor_vehicle_driver/diagnostic-alongside_park_law-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "original reviewed highway excavation and authority source packet required",
+      "acquisition": {
+        "site_source": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-site_source.jsonl"
+        },
+        "excavation_extent": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-excavation_extent.jsonl"
+        },
+        "vehicle_body_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_body_history.jsonl"
+        },
+        "vehicle_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_motion_history.jsonl"
+        },
+        "traffic_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-traffic_motion_history.jsonl"
+        },
+        "passage_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-passage_history.jsonl"
+        },
+        "halt_activity_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-halt_activity_history.jsonl"
+        },
+        "exception_context": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-exception_context.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-camera_frame_map.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Tight excavation-side approach may fail to reach a stable terminal halt or preserve the designed passage in Native motion."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/alongside_park_law/fallback1-construction.json",
+          "construction_sha256": "ea610d8d0ecdb8b249987f28dd85b11ae16e925a07c445172257b1ac772f1278",
+          "trigger": {
+            "source": "original Native trace.jsonl and excavation-history.jsonl",
+            "metric": "terminal halt readback and source-bound body passage width",
+            "failure_condition": "primary does not reach a stable terminal halt or source-bound passage is not observable"
+          },
+          "changed_knobs": [
+            "engineering_throttle: 0.25 to 0.18",
+            "engineering_braking_factor: 5.0 to 4.0"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C229405__NRS-484B-450-1k__motor_vehicle_driver__alongside_stop_ordinary",
+      "kind": "delivery",
+      "construction": "cases/alongside_stop_ordinary/construction.json",
+      "construction_sha256": "c00497971616b1d78789887cada6b7c44409b6b2344f27c9aeb294a41b2c2292",
+      "fixture_recipe": "work/testing__C229405__NRS-484B-450-1k__motor_vehicle_driver/diagnostic-alongside_stop_ordinary-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "original reviewed highway excavation and authority source packet required",
+      "acquisition": {
+        "site_source": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-site_source.jsonl"
+        },
+        "excavation_extent": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-excavation_extent.jsonl"
+        },
+        "vehicle_body_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_body_history.jsonl"
+        },
+        "vehicle_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_motion_history.jsonl"
+        },
+        "traffic_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-traffic_motion_history.jsonl"
+        },
+        "passage_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-passage_history.jsonl"
+        },
+        "halt_activity_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-halt_activity_history.jsonl"
+        },
+        "exception_context": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-exception_context.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-camera_frame_map.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Tight excavation-side approach may fail to reach a stable terminal halt or preserve the designed passage in Native motion."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/alongside_stop_ordinary/fallback1-construction.json",
+          "construction_sha256": "00b495b42ebd987bf6767abb011a0517304b60b20acebbf8b20fb069de8156d4",
+          "trigger": {
+            "source": "original Native trace.jsonl and excavation-history.jsonl",
+            "metric": "terminal halt readback and source-bound body passage width",
+            "failure_condition": "primary does not reach a stable terminal halt or source-bound passage is not observable"
+          },
+          "changed_knobs": [
+            "engineering_throttle: 0.25 to 0.18",
+            "engineering_braking_factor: 5.0 to 4.0"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "testing__C229405__NRS-484B-450-1k__motor_vehicle_driver__alongside_stand_ordinary",
+      "kind": "delivery",
+      "construction": "cases/alongside_stand_ordinary/construction.json",
+      "construction_sha256": "582125cd11678c20819d18e360d68371fe18e7f8b421fe4e494773f690f8f02f",
+      "fixture_recipe": "work/testing__C229405__NRS-484B-450-1k__motor_vehicle_driver/diagnostic-alongside_stand_ordinary-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "original reviewed highway excavation and authority source packet required",
+      "acquisition": {
+        "site_source": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-site_source.jsonl"
+        },
+        "excavation_extent": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-excavation_extent.jsonl"
+        },
+        "vehicle_body_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_body_history.jsonl"
+        },
+        "vehicle_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_motion_history.jsonl"
+        },
+        "traffic_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-traffic_motion_history.jsonl"
+        },
+        "passage_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-passage_history.jsonl"
+        },
+        "halt_activity_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-halt_activity_history.jsonl"
+        },
+        "exception_context": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-exception_context.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-camera_frame_map.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Tight excavation-side approach may fail to reach a stable terminal halt or preserve the designed passage in Native motion."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/alongside_stand_ordinary/fallback1-construction.json",
+          "construction_sha256": "0cfd6e47befa9a679096a3d8499731445646ddb02d72622eb0a148356356da40",
+          "trigger": {
+            "source": "original Native trace.jsonl and excavation-history.jsonl",
+            "metric": "terminal halt readback and source-bound body passage width",
+            "failure_condition": "primary does not reach a stable terminal halt or source-bound passage is not observable"
+          },
+          "changed_knobs": [
+            "engineering_throttle: 0.25 to 0.18",
+            "engineering_braking_factor: 5.0 to 4.0"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -26,7 +26,7 @@ def build():
         row = {'assignment_id': ASSIGNMENT, 'case_id': cid, 'order': order,
                'prepare_command': prep, 'execute_command': execute,
                'capture_command': execute,
-               'owner_release_command': ('PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py owner-released'
+               'owner_release_command': ('CASE_ID=' + cid + ' PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py owner-released'
                                          ' --attempt "$ATTEMPT_DIR" --receipt "$ATTEMPT_DIR/owner-release.json"'
                                          ' --acknowledge-owner-released'),
                'postprocessing_command': ('PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py process-saved'

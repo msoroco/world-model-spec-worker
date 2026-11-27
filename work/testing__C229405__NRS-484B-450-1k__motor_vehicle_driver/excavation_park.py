@@ -21,6 +21,8 @@ CASES = (
     Case('alongside_stand_officer', 'alongside', 'stand', 'narrow', 'officer_direction'),
     Case('alongside_park_device', 'alongside', 'park', 'narrow', 'official_device'),
     Case('alongside_park_law', 'alongside', 'park', 'narrow', 'law'),
+    Case('alongside_stop_ordinary', 'alongside', 'stop', 'narrow', 'none'),
+    Case('alongside_stand_ordinary', 'alongside', 'stand', 'narrow', 'none'),
 )
 
 
@@ -45,6 +47,25 @@ def separation(a, b):
     dx = max(a[0] - b[2], b[0] - a[2], 0)
     dy = max(a[1] - b[3], b[1] - a[3], 0)
     return (dx * dx + dy * dy) ** .5
+
+
+def available_passage_width(lane_span_y, body_rect, excavation_rect):
+    """Largest lateral open span after conservative obstacle projection."""
+    require(isinstance(lane_span_y, (list, tuple)) and len(lane_span_y) == 2 and
+            all(number(v) for v in lane_span_y) and lane_span_y[0] < lane_span_y[1],
+            'traffic lane cross-section missing')
+    require(rect(body_rect) and rect(excavation_rect),
+            'original obstruction geometry missing')
+    low, high = lane_span_y
+    blocked = sorted((max(low, item[1]), min(high, item[3]))
+                     for item in (body_rect, excavation_rect)
+                     if item[3] > low and item[1] < high)
+    cursor, widths = low, []
+    for left, right in blocked:
+        widths.append(max(0.0, left - cursor))
+        cursor = max(cursor, right)
+    widths.append(max(0.0, high - cursor))
+    return max(widths)
 
 
 def validate_scene(scene: Mapping, case: Case):
@@ -72,9 +93,20 @@ def validate_scene(scene: Mapping, case: Case):
                 all(number(v) for v in point), field + ' missing')
     require(rect(scene.get('excavation_rect_m')) and
             rect(scene.get('target_body_rect_m')), 'target geometry missing')
+    centerline = scene.get('road_centerline_y_m')
+    require(number(centerline), 'road centerline missing')
+    excavation_side = (scene['excavation_rect_m'][1] +
+                       scene['excavation_rect_m'][3]) / 2 - centerline
+    vehicle_side = (scene['target_body_rect_m'][1] +
+                    scene['target_body_rect_m'][3]) / 2 - centerline
+    require((excavation_side * vehicle_side > 0) == (case.relation == 'alongside') and
+            excavation_side * vehicle_side != 0,
+            'vehicle relation not constructed from road geometry')
     require(number(scene.get('planned_passage_width_m')) and
             scene['planned_passage_width_m'] > 0,
             'planned traffic passage missing')
+    available_passage_width(scene.get('traffic_lane_span_y_m'),
+                            scene['target_body_rect_m'], scene['excavation_rect_m'])
     for field in ('parking_route_xy', 'traffic_route_xy'):
         route = scene.get(field)
         require(isinstance(route, list) and len(route) >= 2 and
@@ -147,6 +179,11 @@ def measure_original(rows: list[Mapping], scene: Mapping, case: Case):
         for field in ('passage_width_m', 'traffic_speed_mps', 'vehicle_speed_mps'):
             require(number(row.get(field)) and row[field] >= 0,
                     'original physical stream missing: ' + field)
+        actual_width = available_passage_width(scene['traffic_lane_span_y_m'],
+                                               row['vehicle_body_rect_m'],
+                                               row['excavation_rect_m'])
+        require(abs(row['passage_width_m'] - actual_width) <= 0.001,
+                'passage width differs from original body and road geometry')
         gaps.append(separation(row['vehicle_body_rect_m'],
                                row['excavation_rect_m']))
         widths.append(row['passage_width_m'])

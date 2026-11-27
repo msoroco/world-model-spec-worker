@@ -1,0 +1,71 @@
+{
+  "format": "worker-measurement-contract",
+  "assignment_id": "testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator",
+  "case_id": "testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator__different_lane_pass",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "qualifying motorcycle operator and independently classified other vehicle",
+      "source": {
+        "path": "inputs/testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator/assignment.json",
+        "sha256": "1a54e2605d47af781351dc515e253e51624a8383e51d98ab85a0d9c4491f40d6",
+        "law": "NRS 486.351(2); with 486.351(3)"
+      },
+      "output_key": "chapter_vehicle_classification",
+      "method": "analyze",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "same-lane-history.jsonl",
+        "same-lane-scene.json",
+        "trace.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "same traffic lane and behind-to-ahead overtaking or passing",
+      "source": {
+        "path": "inputs/testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator/assignment.json",
+        "sha256": "1a54e2605d47af781351dc515e253e51624a8383e51d98ab85a0d9c4491f40d6",
+        "law": "NRS 486.351(2); with 486.351(3)"
+      },
+      "output_key": "same_lane_passage",
+      "method": "analyze",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "same-lane-history.jsonl",
+        "same-lane-scene.json",
+        "trace.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 4,
+      "requirement": "subsection 3 exception reviewed independently and unresolved where text or facts absent",
+      "source": {
+        "path": "inputs/testing__C229023__NRS-486-351-2__motorcycle_or_moped_operator/assignment.json",
+        "sha256": "1a54e2605d47af781351dc515e253e51624a8383e51d98ab85a0d9c4491f40d6",
+        "law": "NRS 486.351(2); with 486.351(3)"
+      },
+      "output_key": "subsection_3_exception_review",
+      "method": "analyze",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "same-lane-history.jsonl",
+        "same-lane-scene.json",
+        "trace.jsonl",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "same-lane-scene.json"
+    ],
+    "error_contains": "Missing required source: same-lane-scene.json"
+  },
+  "scope": "Synthetic compatibility of source-bound original-frame measurements, without physical or legal finding"
+}

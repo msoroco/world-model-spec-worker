@@ -20,12 +20,21 @@ def scene(case):
                 exception=case.exception, vehicle_target_xy=[1, 2],
                 traffic_start_xy=[0, 0], excavation_rect_m=[0, 0, 2, 1],
                 target_body_rect_m=[0, 2, 2, 3],
+                road_centerline_y_m=0, traffic_lane_span_y_m=[-2.3, 0],
                 planned_passage_width_m=2.3, parking_route_xy=[[0, 3], [1, 2]],
                 traffic_route_xy=[[0, 0], [20, 0]],
                 conflicting_traffic_id='conflict-1', authority_record_id='order-1')
     for field in ('highway', 'vehicle', 'driver', 'excavation', 'parking_route',
                   'traffic_route', 'traffic_actor', 'halt_activity', 'exception'):
         data[field + '_source_sha256'] = 'a' * 64
+    if case.relation == 'opposite':
+        data['target_body_rect_m'] = [0, -3, 2, -2]
+        data['vehicle_target_xy'] = [1, -2]
+        data['parking_route_xy'] = [[0, -3], [1, -2]]
+        data['traffic_lane_span_y_m'] = [1, 3.3]
+    if case.passage == 'open':
+        data['traffic_lane_span_y_m'] = [-3.5, 0]
+        data['planned_passage_width_m'] = 3.5
     return data
 
 
@@ -36,9 +45,11 @@ def rows(case, data):
                    vehicle_id='ego-1', traffic_id='traffic-1',
                    relation=case.relation, halt_activity=case.activity,
                    exception=case.exception,
-                   vehicle_body_rect_m=[0, 2, 2, 3],
+                   vehicle_body_rect_m=data['target_body_rect_m'],
                    excavation_rect_m=[0, 0, 2, 1],
-                   passage_width_m=2.3, traffic_speed_mps=4,
+                   passage_width_m=probe.available_passage_width(
+                       data['traffic_lane_span_y_m'], data['target_body_rect_m'],
+                       data['excavation_rect_m']), traffic_speed_mps=4,
                    vehicle_speed_mps=0 if i >= 50 else 2)
         for field in ('frame', 'vehicle_motion', 'vehicle_body', 'excavation',
                       'passage', 'traffic_motion', 'activity', 'exception'):
@@ -75,7 +86,8 @@ class ExcavationTests(unittest.TestCase):
                 self.assertIn('set_exception_context', [x[0] for x in adapter.calls])
                 measured = probe.measure_original(rows(case, data), data, case)
                 self.assertEqual(measured['frame_count'], 900)
-                self.assertEqual(measured['minimum_body_excavation_gap_m'], 1)
+                self.assertEqual(measured['minimum_body_excavation_gap_m'],
+                                 2 if case.relation == 'opposite' else 1)
                 self.assertIsNone(measured['legal_obstruction_judgment'])
 
     def test_missing_original_source_rejected(self):
@@ -96,6 +108,19 @@ class ExcavationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'traffic spawn failed'):
             probe.construct(adapter, scene(case), case)
         self.assertEqual(adapter.calls[-1][0], 'destroy')
+
+    def test_relation_and_passage_derived_from_geometry(self):
+        case = probe.CASES[1]
+        data = scene(case)
+        self.assertEqual(probe.validate_scene(data, case)['case_id'], case.case_id)
+        data['target_body_rect_m'] = [0, 2, 2, 3]
+        with self.assertRaisesRegex(ValueError, 'relation not constructed'):
+            probe.validate_scene(data, case)
+        data = scene(probe.CASES[0])
+        records = rows(probe.CASES[0], data)
+        records[100]['passage_width_m'] += 0.5
+        with self.assertRaisesRegex(ValueError, 'passage width differs'):
+            probe.measure_original(records, data, probe.CASES[0])
 
 
 if __name__ == '__main__':

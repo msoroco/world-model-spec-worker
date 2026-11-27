@@ -39,4 +39,6 @@ The law prohibits same-lane abreast riding, overtaking or passing by motorcycle/
 
 Preflight exit 0; five tests exit 0; scoped static exit 0; exact scoped strict exit 1 because package status remains partial. Command bindings are in `result.json`.
 
-Next CPU work: construct/read back same-lane motorcycle and other-vehicle trajectories and abreast controls; source driver consent and subsection 3 exception; implement saved finalizer, exact positive/negative compatibility and independent delivery/comparison audits. CARLA motion and camera quality follow CPU readiness.
+The assignment's exact law text already includes subsection 3's two-abreast allowance with driver consent. The five selected cases distinguish consent, two versus three riders, and same versus adjacent lane passage. Actual driver consent and physical applicability require independently reviewed original sources; geometry alone cannot settle them.
+
+Current CPU work: source-gated Native construction, saved finalization, five synthetic diagnostic recipes, and physical/lifecycle proofs are implemented. The first exact primary compatibility proof passed selected measurement, missing-source rejection, Native/Core/Lean validation, and four-view decode. Remaining case and fallback compatibility, saved-only replay, independent delivery/comparison audits, and the scoped strict gate are in progress. CARLA motion and camera quality follow CPU readiness.

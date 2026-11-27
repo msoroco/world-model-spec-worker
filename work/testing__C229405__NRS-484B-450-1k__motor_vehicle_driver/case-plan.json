@@ -136,6 +136,38 @@
       "measurement": "excavation_park.measure_original: 900 joined original frames, body/excavation gap, available passage and moving traffic",
       "physical_risk": "Native parking route stability, actual passage and camera coverage need original CARLA review; no legal obstruction cutoff selected",
       "legal_judgment": "unresolved"
+    },
+    {
+      "case_id": "testing__C229405__NRS-484B-450-1k__motor_vehicle_driver__alongside_stop_ordinary",
+      "target_law_id": "NRS-484B-450-1k",
+      "branch": "alongside or opposite highway excavation where halt would obstruct traffic",
+      "relation": "alongside",
+      "halt_activity": "stop",
+      "passage_probe": "narrow",
+      "exception_context": "none",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction": "excavation_park.construct: source-gated excavation, vehicle halt route, passing traffic route and exception context",
+      "measurement": "excavation_park.measure_original: 900 joined original frames, body/excavation gap, available passage and moving traffic",
+      "physical_risk": "Native terminal halt and passage readback require original review; no legal obstruction cutoff selected",
+      "legal_judgment": "unresolved"
+    },
+    {
+      "case_id": "testing__C229405__NRS-484B-450-1k__motor_vehicle_driver__alongside_stand_ordinary",
+      "target_law_id": "NRS-484B-450-1k",
+      "branch": "alongside or opposite highway excavation where halt would obstruct traffic",
+      "relation": "alongside",
+      "halt_activity": "stand",
+      "passage_probe": "narrow",
+      "exception_context": "none",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction": "excavation_park.construct: source-gated excavation, vehicle halt route, passing traffic route and exception context",
+      "measurement": "excavation_park.measure_original: 900 joined original frames, body/excavation gap, available passage and moving traffic",
+      "physical_risk": "Native terminal halt and passage readback require original review; no legal obstruction cutoff selected",
+      "legal_judgment": "unresolved"
     }
   ],
   "comparisons": [
@@ -204,15 +236,98 @@
       "deliberate_differences": [
         "law compliance context"
       ]
+    },
+    {
+      "comparison_id": "park_vs_ordinary_stop",
+      "case_ids": [
+        "testing__C229405__NRS-484B-450-1k__motor_vehicle_driver__alongside_park_narrow",
+        "testing__C229405__NRS-484B-450-1k__motor_vehicle_driver__alongside_stop_ordinary"
+      ],
+      "fixed_conditions": "same highway, excavation, relation, passage, vehicle, traffic actor, camera plan and duration",
+      "deliberate_differences": [
+        "halt activity only"
+      ]
+    },
+    {
+      "comparison_id": "park_vs_ordinary_stand",
+      "case_ids": [
+        "testing__C229405__NRS-484B-450-1k__motor_vehicle_driver__alongside_park_narrow",
+        "testing__C229405__NRS-484B-450-1k__motor_vehicle_driver__alongside_stand_ordinary"
+      ],
+      "fixed_conditions": "same highway, excavation, relation, passage, vehicle, traffic actor, camera plan and duration",
+      "deliberate_differences": [
+        "halt activity only"
+      ]
+    },
+    {
+      "comparison_id": "ordinary_stop_vs_conflict_stop",
+      "case_ids": [
+        "testing__C229405__NRS-484B-450-1k__motor_vehicle_driver__alongside_stop_ordinary",
+        "testing__C229405__NRS-484B-450-1k__motor_vehicle_driver__alongside_stop_conflict"
+      ],
+      "fixed_conditions": "same highway, excavation, relation, passage, vehicle, traffic actor, camera plan and duration",
+      "deliberate_differences": [
+        "conflict-avoidance necessity context only"
+      ]
+    },
+    {
+      "comparison_id": "ordinary_stand_vs_officer_stand",
+      "case_ids": [
+        "testing__C229405__NRS-484B-450-1k__motor_vehicle_driver__alongside_stand_ordinary",
+        "testing__C229405__NRS-484B-450-1k__motor_vehicle_driver__alongside_stand_officer"
+      ],
+      "fixed_conditions": "same highway, excavation, relation, passage, vehicle, traffic actor, camera plan and duration",
+      "deliberate_differences": [
+        "officer direction context only"
+      ]
     }
   ],
   "observations": [
-    "driver and qualifying motor vehicle; public highway dedication/access",
-    "original excavation extent and vehicle body; alongside/opposite relation",
-    "halt activity, purpose, occupancy and loading/passenger activity",
-    "passing traffic actor route, movement and available passage",
-    "necessity to avoid conflict and compliance with law/officer/device recorded independently",
-    "whether traffic obstructed and whether exception applies remain legal judgments without numeric cutoff"
+    {
+      "name": "site_source",
+      "mandatory": true,
+      "description": "Original source-bound site source"
+    },
+    {
+      "name": "excavation_extent",
+      "mandatory": true,
+      "description": "Original source-bound excavation extent"
+    },
+    {
+      "name": "vehicle_body_history",
+      "mandatory": true,
+      "description": "Original source-bound vehicle body history"
+    },
+    {
+      "name": "vehicle_motion_history",
+      "mandatory": true,
+      "description": "Original source-bound vehicle motion history"
+    },
+    {
+      "name": "traffic_motion_history",
+      "mandatory": true,
+      "description": "Original source-bound traffic motion history"
+    },
+    {
+      "name": "passage_history",
+      "mandatory": true,
+      "description": "Original source-bound passage history"
+    },
+    {
+      "name": "halt_activity_history",
+      "mandatory": true,
+      "description": "Original source-bound halt activity history"
+    },
+    {
+      "name": "exception_context",
+      "mandatory": true,
+      "description": "Original source-bound exception context"
+    },
+    {
+      "name": "camera_frame_map",
+      "mandatory": true,
+      "description": "Original source-bound camera frame map"
+    }
   ],
   "sources": [
     {
@@ -238,8 +353,8 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "No selected-case runtime bundles, source-bound compatibility receipts, semantic proposals, or saved delivery/comparison audits yet.",
-    "Physical realization and camera coverage require a later CARLA run/original review."
+    "Original CARLA excavation feature and marker visibility require local physical review.",
+    "Observed obstruction and stated exception applicability require independent legal review."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
@@ -255,7 +370,7 @@
     ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_constructed_cpu_probe",
+  "planning_status": "selected_cpu_package_in_progress",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
@@ -278,5 +393,52 @@
       ],
       "reason": "The fixed parking task and excavation permit an active setup; their spatial and traffic relationship remains to be constructed."
     }
-  ]
+  ],
+  "requirement_dispositions": [
+    {
+      "requirement": "NRS-484B-450-1k highway excavation alongside/opposite halt, traffic obstruction and each stated exception",
+      "source": "inputs/testing__C229405__NRS-484B-450-1k__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "evidence_or_gap": "No accepted original recording; seven source-gated exact captures and controlled comparisons required.",
+      "case_ids": [
+        "testing__C229405__NRS-484B-450-1k__motor_vehicle_driver__alongside_park_narrow",
+        "testing__C229405__NRS-484B-450-1k__motor_vehicle_driver__opposite_park_narrow",
+        "testing__C229405__NRS-484B-450-1k__motor_vehicle_driver__alongside_park_open",
+        "testing__C229405__NRS-484B-450-1k__motor_vehicle_driver__alongside_stop_conflict",
+        "testing__C229405__NRS-484B-450-1k__motor_vehicle_driver__alongside_stand_officer",
+        "testing__C229405__NRS-484B-450-1k__motor_vehicle_driver__alongside_park_device",
+        "testing__C229405__NRS-484B-450-1k__motor_vehicle_driver__alongside_park_law",
+        "testing__C229405__NRS-484B-450-1k__motor_vehicle_driver__alongside_stop_ordinary",
+        "testing__C229405__NRS-484B-450-1k__motor_vehicle_driver__alongside_stand_ordinary"
+      ]
+    }
+  ],
+  "source_observation_mapping": {},
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "excavation, ego and passing traffic",
+        "interval": "approach through terminal halt"
+      },
+      {
+        "view": "approach",
+        "subject": "ego halt route and passing traffic route",
+        "interval": "approach through terminal halt"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "excavation edge, ego body and passage",
+        "interval": "approach through terminal halt"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "ego roadwork approach and halt",
+        "interval": "approach through terminal halt"
+      }
+    ]
+  }
 }
