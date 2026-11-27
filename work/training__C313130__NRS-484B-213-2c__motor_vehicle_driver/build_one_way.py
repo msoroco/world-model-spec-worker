@@ -33,6 +33,7 @@ def build(case, candidate_id):
         "one_way_capture.py": (HERE / "one_way_capture.py").read_text(),
         "finalize.py": (HERE / "finalize.py").read_text(),
         "measure_tunnel.py": (HERE / "measure_tunnel.py").read_text(),
+        "sight_proxy.py": (HERE / "sight_proxy.py").read_text(),
         "tests/test_one_way.py": (HERE / "test_one_way.py").read_text(),
     }
     gain = 1.5 if candidate_id == "primary" else 2.0

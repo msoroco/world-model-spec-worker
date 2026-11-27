@@ -24,7 +24,7 @@ def audit(opening_attempt, barrier_attempt):
                               ("cell_id", "law_id", "actor", "rate_hz", "duration_s",
                                "frames", "cameras", "physical_completion")})
         context = json.loads((path / "divided-road-context.json").read_text())
-        review = json.loads((path / "source-review.json").read_text())
+        review = json.loads((path / "authority-review.json").read_text())
         contexts.append((context, review))
         measurements.append(measure_attempt(path))
     left, right = contexts

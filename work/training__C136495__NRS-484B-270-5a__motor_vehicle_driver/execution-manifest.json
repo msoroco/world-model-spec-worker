@@ -1,0 +1,163 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C136495__NRS-484B-270-5a__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "case_id": "training__C136495__NRS-484B-270-5a__motor_vehicle_driver__selected_a21cf01e__condition_a",
+      "kind": "delivery",
+      "construction": "constructions/a-primary.json",
+      "construction_sha256": "820665bc0edeec6c4fe4529a58d6dbd9982f0089c682a2c08db0cbf145f65723",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Narrow road and bicycle controller may depart the route or lose camera coverage; fallback shortens lookahead without changing comparison"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "constructions/a-fallback1.json",
+          "construction_sha256": "ed42d0d34264ad439f6bb4646e6af7307c8a9153b7cde4311b886582fa5891f1",
+          "trigger": {
+            "source": "original Native controller route-error history",
+            "metric": "maximum contiguous route error > 0.75 m for five frames",
+            "failure_condition": "primary attempt fails original pose/route audit"
+          },
+          "changed_knobs": [
+            "lookahead_base_m: 4.0 m to 2.5 m for both actors"
+          ]
+        }
+      ],
+      "status": "cpu_draft",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "measurement_contract": "measurement-contract-condition_a.json",
+      "fixture_recipe": "work/training__C136495__NRS-484B-270-5a__motor_vehicle_driver/diagnostic-condition_a-primary-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "ru.bicycle": {
+          "entrypoint": "native/runner.py",
+          "method": "sample original Native actor/wheel/collision/camera frames and saved source hashes",
+          "evidence": "actor-frames.jsonl, camera-frame-map.jsonl, response-control.jsonl, classification.json, collision-events.jsonl, rider-binding.json"
+        },
+        "ru.electric_bicycle": {
+          "entrypoint": "native/runner.py",
+          "method": "sample original Native actor/wheel/collision/camera frames and saved source hashes",
+          "evidence": "actor-frames.jsonl, camera-frame-map.jsonl, response-control.jsonl, classification.json, collision-events.jsonl, rider-binding.json"
+        },
+        "ru.electric_scooter": {
+          "entrypoint": "native/runner.py",
+          "method": "sample original Native actor/wheel/collision/camera frames and saved source hashes",
+          "evidence": "actor-frames.jsonl, camera-frame-map.jsonl, response-control.jsonl, classification.json, collision-events.jsonl, rider-binding.json"
+        },
+        "drv.time_to_conflict": {
+          "entrypoint": "native/runner.py",
+          "method": "sample original Native actor/wheel/collision/camera frames and saved source hashes",
+          "evidence": "actor-frames.jsonl, camera-frame-map.jsonl, response-control.jsonl, classification.json, collision-events.jsonl, rider-binding.json"
+        },
+        "rel.contact": {
+          "entrypoint": "native/runner.py",
+          "method": "sample original Native actor/wheel/collision/camera frames and saved source hashes",
+          "evidence": "actor-frames.jsonl, camera-frame-map.jsonl, response-control.jsonl, classification.json, collision-events.jsonl, rider-binding.json"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "native/runner.py",
+          "method": "sample original Native actor/wheel/collision/camera frames and saved source hashes",
+          "evidence": "actor-frames.jsonl, camera-frame-map.jsonl, response-control.jsonl, classification.json, collision-events.jsonl, rider-binding.json"
+        },
+        "drv.hard_deceleration": {
+          "entrypoint": "native/runner.py",
+          "method": "sample original Native actor/wheel/collision/camera frames and saved source hashes",
+          "evidence": "actor-frames.jsonl, camera-frame-map.jsonl, response-control.jsonl, classification.json, collision-events.jsonl, rider-binding.json"
+        },
+        "kin.speed": {
+          "entrypoint": "native/runner.py",
+          "method": "sample original Native actor/wheel/collision/camera frames and saved source hashes",
+          "evidence": "actor-frames.jsonl, camera-frame-map.jsonl, response-control.jsonl, classification.json, collision-events.jsonl, rider-binding.json"
+        }
+      }
+    },
+    {
+      "case_id": "training__C136495__NRS-484B-270-5a__motor_vehicle_driver__selected_a21cf01e__condition_b",
+      "kind": "delivery",
+      "construction": "constructions/b-primary.json",
+      "construction_sha256": "4890bf8af385f3344f7a387b91e57666793d0a53d4bfa94faa79045a2becae38",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Narrow road and bicycle controller may depart the route or lose camera coverage; fallback shortens lookahead without changing comparison"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "constructions/b-fallback1.json",
+          "construction_sha256": "ef21acfc5420767554133b9ab72e19cbb80c70c4e58a795846ab317cdab84575",
+          "trigger": {
+            "source": "original Native controller route-error history",
+            "metric": "maximum contiguous route error > 0.75 m for five frames",
+            "failure_condition": "primary attempt fails original pose/route audit"
+          },
+          "changed_knobs": [
+            "lookahead_base_m: 4.0 m to 2.5 m for both actors"
+          ]
+        }
+      ],
+      "status": "cpu_draft",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "measurement_contract": "measurement-contract-condition_b.json",
+      "fixture_recipe": "work/training__C136495__NRS-484B-270-5a__motor_vehicle_driver/diagnostic-condition_b-primary-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "ru.bicycle": {
+          "entrypoint": "native/runner.py",
+          "method": "sample original Native actor/wheel/collision/camera frames and saved source hashes",
+          "evidence": "actor-frames.jsonl, camera-frame-map.jsonl, response-control.jsonl, classification.json, collision-events.jsonl, rider-binding.json"
+        },
+        "ru.electric_bicycle": {
+          "entrypoint": "native/runner.py",
+          "method": "sample original Native actor/wheel/collision/camera frames and saved source hashes",
+          "evidence": "actor-frames.jsonl, camera-frame-map.jsonl, response-control.jsonl, classification.json, collision-events.jsonl, rider-binding.json"
+        },
+        "ru.electric_scooter": {
+          "entrypoint": "native/runner.py",
+          "method": "sample original Native actor/wheel/collision/camera frames and saved source hashes",
+          "evidence": "actor-frames.jsonl, camera-frame-map.jsonl, response-control.jsonl, classification.json, collision-events.jsonl, rider-binding.json"
+        },
+        "drv.time_to_conflict": {
+          "entrypoint": "native/runner.py",
+          "method": "sample original Native actor/wheel/collision/camera frames and saved source hashes",
+          "evidence": "actor-frames.jsonl, camera-frame-map.jsonl, response-control.jsonl, classification.json, collision-events.jsonl, rider-binding.json"
+        },
+        "rel.contact": {
+          "entrypoint": "native/runner.py",
+          "method": "sample original Native actor/wheel/collision/camera frames and saved source hashes",
+          "evidence": "actor-frames.jsonl, camera-frame-map.jsonl, response-control.jsonl, classification.json, collision-events.jsonl, rider-binding.json"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "native/runner.py",
+          "method": "sample original Native actor/wheel/collision/camera frames and saved source hashes",
+          "evidence": "actor-frames.jsonl, camera-frame-map.jsonl, response-control.jsonl, classification.json, collision-events.jsonl, rider-binding.json"
+        },
+        "drv.hard_deceleration": {
+          "entrypoint": "native/runner.py",
+          "method": "sample original Native actor/wheel/collision/camera frames and saved source hashes",
+          "evidence": "actor-frames.jsonl, camera-frame-map.jsonl, response-control.jsonl, classification.json, collision-events.jsonl, rider-binding.json"
+        },
+        "kin.speed": {
+          "entrypoint": "native/runner.py",
+          "method": "sample original Native actor/wheel/collision/camera frames and saved source hashes",
+          "evidence": "actor-frames.jsonl, camera-frame-map.jsonl, response-control.jsonl, classification.json, collision-events.jsonl, rider-binding.json"
+        }
+      }
+    }
+  ]
+}

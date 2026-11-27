@@ -26,7 +26,7 @@ class FinalizeSavedTest(unittest.TestCase):
         (self.folder / "body_history.jsonl").write_text('{"frame":0}\n')
         (self.folder / "capture").mkdir()
         (self.folder / "capture/evidence.jsonl").write_text('{"frame":0}\n')
-        for name in ("overview", "approach", "median_reference", "driver_reference"):
+        for name in ("overview", "approach", "reference_corner", "driver_reference"):
             (self.folder / (name + ".mkv")).write_bytes(b"synthetic-video-placeholder")
 
     def tearDown(self):
@@ -41,7 +41,7 @@ class FinalizeSavedTest(unittest.TestCase):
         self.assertFalse(result["target_checks"][0]["physical_cause_confirmed"])
         self.assertFalse(report["physical_or_legal_acceptance"])
         self.assertEqual(len(result["recording_evidence"]), 2)
-        self.assertEqual(len(report["measurements"]["opening_geometry"]["sources"]), 5)
+        self.assertEqual(len(report["measurements"]["opening_geometry"]["sources"]), 4)
 
     def test_missing_saved_body_source_rejected_before_result(self):
         (self.folder / "native-uturn.jsonl").unlink()

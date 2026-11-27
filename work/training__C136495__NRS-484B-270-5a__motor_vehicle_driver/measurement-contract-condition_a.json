@@ -1,0 +1,42 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C136495__NRS-484B-270-5a__motor_vehicle_driver__selected_a21cf01e__condition_a",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "text-0",
+      "source": "NRS 484B.270(5)(a)",
+      "output_key": "driver_role",
+      "method": "measure_driver_role",
+      "inputs": [
+        "classification.json",
+        "actor-frames.jsonl"
+      ],
+      "value_type": "object",
+      "kind": "sourced_context"
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "text-1",
+      "source": "NRS 484B.270(5)(a)",
+      "output_key": "cyclist_interaction",
+      "method": "measure_interaction",
+      "inputs": [
+        "actor-frames.jsonl",
+        "camera-frame-map.jsonl",
+        "response-control.jsonl",
+        "classification.json",
+        "collision-events.jsonl",
+        "rider-binding.json"
+      ],
+      "value_type": "object",
+      "kind": "measured"
+    }
+  ],
+  "negative": {
+    "remove": [
+      "classification.json"
+    ],
+    "error_contains": "Missing required source: classification.json"
+  }
+}

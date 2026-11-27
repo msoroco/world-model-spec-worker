@@ -28,7 +28,7 @@ def build(suffix, candidate="primary"):
     camera_strategy = {
         "overview": "fixed_divided_road_overview",
         "approach": "ego_attached_forward_turn",
-        "median_reference": "fixed_median_reference",
+        "reference_corner": "fixed_reference_corner",
         "driver_reference": "fixed_opposing_roadway",
     }
     config = {

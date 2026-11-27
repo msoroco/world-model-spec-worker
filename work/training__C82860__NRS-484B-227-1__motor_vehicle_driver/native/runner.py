@@ -14,7 +14,7 @@ FRAMES = 600
 CAMERA_POSES = {
     'overview': ((0, -19, 25), (0, -52, 90), False),
     'approach': ((1.2, 0, 2.0), (0, -8, 0), True),
-    'median_reference': ((9, -14, 11), (0, -22, 90), False),
+    'reference_corner': ((9, -14, 11), (0, -22, 90), False),
     'driver_reference': ((1, 14, 11), (0, -22, -90), False),
 }
 

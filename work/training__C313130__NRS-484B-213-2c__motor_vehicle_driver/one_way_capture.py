@@ -73,6 +73,8 @@ def run(bundle, output, host, port):
     import carla
     import numpy as np
     from pipeline_capture import PipelineCapture
+    from carla_sgg.law_evidence import actor_visibility
+    from sight_proxy import incoming_lane_bracket
     from worker_exchange.media import compose_four_views
     from worker_exchange.native_output import seal_capture
     from worker_exchange.world_restore import snapshot, restore
@@ -186,9 +188,14 @@ def run(bundle, output, host, port):
                 velocity = ego.get_velocity()
                 footprint = body(ego)
                 speed = math.hypot(velocity.x, velocity.y)
-                ray = {"status": "unknown", "clear_lower_bound_m": 0,
-                       "blocker_upper_bound_m": None,
-                       "reason": "Native ray API or original obstruction review pending"}
+                lane = mapping.get_waypoint(ego.get_transform().location,
+                    project_to_road=True, lane_type=carla.LaneType.Driving)
+                original_visibility = actor_visibility(world, ego, mapping=mapping,
+                    lane_inventory=capture.visibility_lane_inventory,
+                    route_topology=capture.visibility_route_topology)
+                ray = incoming_lane_bracket(original_visibility,
+                    None if lane is None else lane.road_id,
+                    None if lane is None else lane.lane_id)
                 row = {"video_frame": index, "native_frame": native_frame,
                     "time_s": time_s, "source_cameras": {name: index for name, *_ in CAMERAS},
                     "body_xy_m": footprint, "observed_speed_mps": speed,

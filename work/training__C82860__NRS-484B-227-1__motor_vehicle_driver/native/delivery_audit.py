@@ -11,8 +11,8 @@ from pathlib import Path
 
 from measure_uturn import measure_attempt
 
-CAMERAS = ("overview", "approach", "median_reference", "driver_reference")
-SOURCES = ("request.json", "divided-road-context.json", "source-review.json",
+CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
+SOURCES = ("request.json", "divided-road-context.json", "authority-review.json",
            "native-uturn.jsonl", "video_frames.jsonl")
 
 
@@ -41,7 +41,8 @@ def audit(attempt, report_path, diagnostic=False):
         raise ValueError("Saved analysis report incomplete")
     if report.get("diagnostic_fixture") is not diagnostic:
         raise ValueError("Saved provenance differs from audit mode")
-    sources = {name: digest(attempt / name) for name in SOURCES}
+    sources = {name: digest(attempt / name) for name in SOURCES
+               if name != "request.json"}
     for name in ("right_hand_roadway", "divider_crossing", "u_turn_event",
                  "opening_geometry", "authority_context"):
         entry = report.get("measurements", {}).get(name, {})
@@ -65,7 +66,7 @@ def audit(attempt, report_path, diagnostic=False):
         provenance = read(attempt / "acquisition-provenance.json")
         seal = read(attempt / "capture-seal.json")
         context = read(attempt / "divided-road-context.json")
-        authority = read(attempt / "source-review.json")
+        authority = read(attempt / "authority-review.json")
         if (provenance.get("provenance_kind") != "native" or
                 provenance.get("diagnostic_fixture") is not False or
                 context.get("source_kind") != "original_native_divided_road_readback" or
@@ -78,7 +79,7 @@ def audit(attempt, report_path, diagnostic=False):
                 seal.get("encoder_exit_codes") != {name: 0 for name in CAMERAS}):
             raise ValueError("Sealed original Native road and median source missing")
         sealed_sources = seal.get("sources", {})
-        for name in (*(source for source in SOURCES if source != "source-review.json"),
+        for name in (*(source for source in SOURCES if source != "authority-review.json"),
                      "trace.jsonl", "body_history.jsonl",
                      "capture/evidence.jsonl", *(camera + ".mkv" for camera in CAMERAS)):
             if sealed_sources.get(name) != digest(attempt / name):

@@ -25,7 +25,7 @@ class DeliveryAuditTest(unittest.TestCase):
         (self.folder / "body_history.jsonl").write_text('{"frame":0}\n')
         (self.folder / "capture").mkdir()
         (self.folder / "capture/evidence.jsonl").write_text('{"frame":0}\n')
-        for name in ("overview", "approach", "median_reference", "driver_reference"):
+        for name in ("overview", "approach", "reference_corner", "driver_reference"):
             (self.folder / (name + ".mkv")).write_bytes(b"diagnostic-placeholder")
         self.report = self.folder / "analysis-report.json"
         finalize(self.folder, self.report)

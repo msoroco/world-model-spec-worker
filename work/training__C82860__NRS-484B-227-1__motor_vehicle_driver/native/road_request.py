@@ -16,7 +16,7 @@ ROAD_IDS = (828601, 828602)
 CAMERAS = (
     ("overview", 1920, 1080),
     ("approach", 1280, 720),
-    ("median_reference", 1280, 720),
+    ("reference_corner", 1280, 720),
     ("driver_reference", 1280, 720),
 )
 

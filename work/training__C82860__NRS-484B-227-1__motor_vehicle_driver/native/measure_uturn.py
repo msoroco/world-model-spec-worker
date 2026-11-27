@@ -18,7 +18,7 @@ if not analysis.is_dir():
 sys.path.insert(0, str(analysis))
 from divided_road import measure
 
-CAMERAS = ("overview", "approach", "median_reference", "driver_reference")
+CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 
 
 def digest(path):
@@ -45,12 +45,12 @@ def rows(path):
 
 def measure_attempt(attempt):
     attempt = Path(attempt)
-    for name in ("request.json", "divided-road-context.json", "source-review.json"):
+    for name in ("request.json", "divided-road-context.json", "authority-review.json"):
         if not (attempt / name).is_file():
             raise ValueError("Missing required source: " + name)
     request = json.loads((attempt / "request.json").read_text())
     context = json.loads((attempt / "divided-road-context.json").read_text())
-    review = json.loads((attempt / "source-review.json").read_text())
+    review = json.loads((attempt / "authority-review.json").read_text())
     if request.get("case_id", "").split("__")[-1] not in ("authorized_opening", "barrier_crossing"):
         raise ValueError("Exact U-turn case identity missing")
     if context.get("source_kind") not in ("original_native_divided_road_readback", "synthetic_native_sample"):
@@ -109,5 +109,5 @@ def measure_attempt(attempt):
     outcome = measure(samples, map_context, source_kind=("original_native" if context["source_kind"].startswith("original") else "synthetic_native_sample"), camera_names=CAMERAS)
     outcome["case_id"] = request["case_id"]
     outcome["source_sha256"] = {name: digest(attempt / name) for name in
-                                ("request.json", "divided-road-context.json", "source-review.json", "native-uturn.jsonl", "video_frames.jsonl")}
+                                ("request.json", "divided-road-context.json", "authority-review.json", "native-uturn.jsonl", "video_frames.jsonl")}
     return outcome

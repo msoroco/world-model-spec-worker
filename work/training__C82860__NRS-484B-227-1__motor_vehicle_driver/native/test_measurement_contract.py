@@ -33,7 +33,7 @@ class MeasurementContractTest(unittest.TestCase):
                     (attempt / "body_history.jsonl").write_text('{"frame":0}\n')
                     (attempt / "capture").mkdir()
                     (attempt / "capture/evidence.jsonl").write_text('{"frame":0}\n')
-                    for name in ("overview", "approach", "median_reference", "driver_reference"):
+                    for name in ("overview", "approach", "reference_corner", "driver_reference"):
                         (attempt / (name + ".mkv")).write_bytes(b"synthetic-video-placeholder")
                     report = finalize(attempt, attempt / "analysis-report.json")
                     self.assertIn("right_hand_roadway", verify_report(contract, report, attempt))

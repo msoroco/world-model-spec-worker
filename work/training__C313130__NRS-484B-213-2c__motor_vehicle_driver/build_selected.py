@@ -51,6 +51,7 @@ def build(suffix):
         "native_capture.py": (HERE / "native_capture.py").read_text(),
         "finalize.py": (HERE / "finalize.py").read_text(),
         "measure_tunnel.py": (HERE / "measure_tunnel.py").read_text(),
+        "sight_proxy.py": (HERE / "sight_proxy.py").read_text(),
         "tunnel_scene.py": (HERE / "tunnel_scene.py").read_text(),
         "tests/test_selected.py": (HERE / "test_selected.py").read_text()}
     config = {"format": "c313130-tunnel-selected-v1", "case_id": case_id,

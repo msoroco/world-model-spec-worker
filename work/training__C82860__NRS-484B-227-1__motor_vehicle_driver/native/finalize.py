@@ -13,8 +13,8 @@ def measure_attempt(attempt):
     """Selected contract entrypoint for the saved U-turn meter."""
     return _measure_attempt(attempt)
 
-CAMERAS = ("overview", "approach", "median_reference", "driver_reference")
-SOURCES = ("request.json", "divided-road-context.json", "source-review.json",
+CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
+SOURCES = ("request.json", "divided-road-context.json", "authority-review.json",
            "native-uturn.jsonl", "video_frames.jsonl")
 
 
@@ -92,7 +92,9 @@ def finalize(attempt, output):
             break
     from scenario_pipeline.worker_exchange.native_output import write_result
     write_result(attempt, result)
-    sources = {name: sha(attempt / name) for name in SOURCES}
+    # request.json is frozen inside the selected construction; the diagnostic
+    # fixture inventories only separately acquired source files.
+    sources = {name: sha(attempt / name) for name in SOURCES if name != "request.json"}
     report = {"format": "worker-analysis-report", "case_id": case,
               "measurements": {name: {"method": "measure_attempt", "value": measurement,
                                        "sources": sources}

@@ -33,7 +33,7 @@ def fixture(folder, case):
     from measure_uturn import digest
     review = {"format": "worker-divided-road-authority-source",
               "source": {"path": source.name, "sha256": digest(source)}}
-    (folder / "source-review.json").write_text(json.dumps(review) + "\n")
+    (folder / "authority-review.json").write_text(json.dumps(review) + "\n")
     x = q["requested_crossing_x_m"]
     names = [name for name, _, _ in CAMERAS]
     with (folder / "native-uturn.jsonl").open("w") as body, \

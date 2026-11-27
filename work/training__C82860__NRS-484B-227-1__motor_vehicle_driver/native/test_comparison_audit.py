@@ -28,7 +28,7 @@ class DividedRoadComparisonTest(unittest.TestCase):
                 "selected_case_id": case, "cell_id": "C82860",
                 "law_id": "NRS-484B-227-1", "actor": "motor_vehicle_driver",
                 "rate_hz": 20, "duration_s": 30, "frames": 600,
-                "cameras": ["overview", "approach", "median_reference", "driver_reference"],
+                "cameras": ["overview", "approach", "reference_corner", "driver_reference"],
                 "physical_completion": "full-body U-turn"}) + "\n")
 
     def tearDown(self):
@@ -43,9 +43,9 @@ class DividedRoadComparisonTest(unittest.TestCase):
     def test_changed_authority_source_and_map_rejected(self):
         source = self.barrier / "authority-source.json"
         source.write_text('{"public_authority_establishment":"changed"}\n')
-        review = json.loads((self.barrier / "source-review.json").read_text())
+        review = json.loads((self.barrier / "authority-review.json").read_text())
         review["source"]["sha256"] = digest(source)
-        (self.barrier / "source-review.json").write_text(json.dumps(review) + "\n")
+        (self.barrier / "authority-review.json").write_text(json.dumps(review) + "\n")
         with self.assertRaisesRegex(ValueError, "Fixed authority source differs"):
             audit(self.opening, self.barrier)
         fixture(self.barrier, "barrier_crossing")
