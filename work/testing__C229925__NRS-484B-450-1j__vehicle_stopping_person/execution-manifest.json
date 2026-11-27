@@ -1,0 +1,2213 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C229925__NRS-484B-450-1j__vehicle_stopping_person",
+  "status": "source_gated_draft",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "case_id": "testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_74ft",
+      "kind": "delivery",
+      "construction": "construction.json",
+      "construction_sha256": "cab0831701434a542159ebf6aafc16748756556497a31bad17a0a48f8b752609",
+      "fixture_recipe": "work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/diagnostic-opposite_stop_74ft-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "original reviewed fire-station entrance and public-highway packet required",
+      "acquisition": {
+        "entrance_boundary": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-entrance_boundary.jsonl"
+        },
+        "vehicle_body_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_body_history.jsonl"
+        },
+        "vehicle_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_motion_history.jsonl"
+        },
+        "highway_side_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-highway_side_history.jsonl"
+        },
+        "halt_activity_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-halt_activity_history.jsonl"
+        },
+        "traffic_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-traffic_motion_history.jsonl"
+        },
+        "exception_context": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-exception_context.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-camera_frame_map.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The opposite-side and entrance-side stop may not achieve a stable terminal halt with body position near the nominated foot boundary."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/opposite_stop_74ft/fallback1/construction.json",
+          "construction_sha256": "45c9474971a399fcc17e2cbe7d0d7b7aeec1cd12641009f2b7da606bf185b7f7",
+          "trigger": {
+            "source": "original fire-entrance-trace.jsonl and reviewed target",
+            "metric": "terminal ego speed and body-centroid gap over final 2 seconds",
+            "failure_condition": "speed remains above 0.1 m/s or centroid-target gap remains above 1.25 m"
+          },
+          "changed_knobs": [
+            "engineering_throttle: 0.25 to 0.18",
+            "engineering_braking_factor: 5.0 to 4.0"
+          ],
+          "offline": {
+            "construction_sha256": "45c9474971a399fcc17e2cbe7d0d7b7aeec1cd12641009f2b7da606bf185b7f7",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_74ft --candidate fallback1 --output .runtime-work/c229925-owner/offline-fallback1-opposite_stop_74ft",
+            "exit_code": 0,
+            "log": "proof-offline-fallback1-opposite_stop_74ft.log",
+            "log_sha256": "de52f52418d9e65f2666bc9e2420906d3f90ebd18c8f18a5c9265bd491f54d5a"
+          },
+          "compatibility": {
+            "receipt": "proofs/fallback1-opposite_stop_74ft/receipt.json",
+            "sha256": "8de39c1eaa54e5bee953cec399ab3970b4f68246bcf39268dc15b7750f34aea1",
+            "log": "proofs/fallback1-opposite_stop_74ft/analysis.log",
+            "negative_log": "proofs/fallback1-opposite_stop_74ft/negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "construction_sha256": "cab0831701434a542159ebf6aafc16748756556497a31bad17a0a48f8b752609",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_74ft --output .runtime-work/c229925-owner/offline-opposite_stop_74ft",
+        "exit_code": 0,
+        "log": "proof-offline-opposite_stop_74ft.log",
+        "log_sha256": "8db3b1fac1bf29c13b278be12b4bdc2e1167adff42657b44822c3c0b8e3e11a0"
+      },
+      "compatibility": {
+        "receipt": "proofs/primary-opposite_stop_74ft/receipt.json",
+        "sha256": "4161c0ec09985c75c85d53a8a2a0a015e6c9c0c678ca88a6407cc2fd9ad32c81",
+        "log": "proofs/primary-opposite_stop_74ft/analysis.log",
+        "negative_log": "proofs/primary-opposite_stop_74ft/negative.log"
+      },
+      "negative": {
+        "log": "proofs/primary-opposite_stop_74ft/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-opposite_stop_74ft-receipt.json",
+        "sha256": "77ec22f2fe96deaec2361c038b7b6fac53322e42441e3cacd78b5f7a5948246d"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_74ft --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_74ft --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_log": "proof-saved-opposite_stop_74ft.log",
+        "test_log_sha256": "afae6ae4bd717b246c1c8a932696253c5f4d20a5118849151b793a151685c8c7",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original fire-station, highway, vehicle, exception and pixel review pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_74ft",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "bc73ed9a3028138690568629b5fa201086add941837ddaf76703ca44260bab15",
+        "command": ".venv-cpu/bin/python work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/delivery_probe.py --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_74ft --attempt .runtime-work/c229925-owner/compat-opposite_stop_74ft --saved-root .runtime-work/c229925-owner/saved-opposite_stop_74ft --mode positive",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-opposite_stop_74ft-positive.log",
+        "test_log_sha256": "9014c351ad6c95903b068728f3d8a682a7cd74cd82b1de5b241cfc3ae559e3bd",
+        "negative_command": ".venv-cpu/bin/python work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/delivery_probe.py --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_74ft --attempt .runtime-work/c229925-owner/compat-opposite_stop_74ft --saved-root .runtime-work/c229925-owner/saved-opposite_stop_74ft --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: fire-entrance-context.json",
+        "negative_log": "proof-delivery-opposite_stop_74ft-negative.log",
+        "negative_log_sha256": "ce86beb3245d1cd314eb0b7933477b9542829d28400b49c577d3f4dec6f205af"
+      }
+    },
+    {
+      "case_id": "testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_75ft",
+      "kind": "delivery",
+      "construction": "cases/opposite_stop_75ft/construction.json",
+      "construction_sha256": "01b9bf159511c1610137597a1a5351d49ba18bec77e9f8ebe7c5f1ffe250293c",
+      "fixture_recipe": "work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/diagnostic-opposite_stop_75ft-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "original reviewed fire-station entrance and public-highway packet required",
+      "acquisition": {
+        "entrance_boundary": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-entrance_boundary.jsonl"
+        },
+        "vehicle_body_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_body_history.jsonl"
+        },
+        "vehicle_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_motion_history.jsonl"
+        },
+        "highway_side_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-highway_side_history.jsonl"
+        },
+        "halt_activity_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-halt_activity_history.jsonl"
+        },
+        "traffic_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-traffic_motion_history.jsonl"
+        },
+        "exception_context": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-exception_context.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-camera_frame_map.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The opposite-side and entrance-side stop may not achieve a stable terminal halt with body position near the nominated foot boundary."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/opposite_stop_75ft/fallback1/construction.json",
+          "construction_sha256": "0857221c9fb0b6e5cd470fe06878b83b0c2281c8344761059adfb5c4f0d21357",
+          "trigger": {
+            "source": "original fire-entrance-trace.jsonl and reviewed target",
+            "metric": "terminal ego speed and body-centroid gap over final 2 seconds",
+            "failure_condition": "speed remains above 0.1 m/s or centroid-target gap remains above 1.25 m"
+          },
+          "changed_knobs": [
+            "engineering_throttle: 0.25 to 0.18",
+            "engineering_braking_factor: 5.0 to 4.0"
+          ],
+          "offline": {
+            "construction_sha256": "0857221c9fb0b6e5cd470fe06878b83b0c2281c8344761059adfb5c4f0d21357",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_75ft --candidate fallback1 --output .runtime-work/c229925-owner/offline-fallback1-opposite_stop_75ft",
+            "exit_code": 0,
+            "log": "proof-offline-fallback1-opposite_stop_75ft.log",
+            "log_sha256": "27daaefdb132643eef3b59799cebb29384c99ede33df5fdf1547ba697fb6e30f"
+          },
+          "compatibility": {
+            "receipt": "proofs/fallback1-opposite_stop_75ft/receipt.json",
+            "sha256": "627c62fb1a614f3c993f7ebd7ebf49642bf7788e8ab82950921a9f9fea8acb3f",
+            "log": "proofs/fallback1-opposite_stop_75ft/analysis.log",
+            "negative_log": "proofs/fallback1-opposite_stop_75ft/negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "construction_sha256": "01b9bf159511c1610137597a1a5351d49ba18bec77e9f8ebe7c5f1ffe250293c",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_75ft --output .runtime-work/c229925-owner/offline-opposite_stop_75ft",
+        "exit_code": 0,
+        "log": "proof-offline-opposite_stop_75ft.log",
+        "log_sha256": "9407768aa0d36c056fe04c474be5d377041e45d74fc91cee2128a0eece45169a"
+      },
+      "compatibility": {
+        "receipt": "proofs/primary-opposite_stop_75ft/receipt.json",
+        "sha256": "436fce80a2643731b8b29e565efe345314265f23c0b8c9a7e3bf32d0a9e0a983",
+        "log": "proofs/primary-opposite_stop_75ft/analysis.log",
+        "negative_log": "proofs/primary-opposite_stop_75ft/negative.log"
+      },
+      "negative": {
+        "log": "proofs/primary-opposite_stop_75ft/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-opposite_stop_75ft-receipt.json",
+        "sha256": "e22d05b2feb41c4fe07e5bade697d830de35ce6864de9cdb5d80f130bdeed0f9"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_75ft --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_75ft --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_log": "proof-saved-opposite_stop_75ft.log",
+        "test_log_sha256": "f7e0ef0fced2a956cd24f840c9ba01eabe25eb9e84ee7434e33f80cea3623a39",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original fire-station, highway, vehicle, exception and pixel review pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_75ft",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "bc73ed9a3028138690568629b5fa201086add941837ddaf76703ca44260bab15",
+        "command": ".venv-cpu/bin/python work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/delivery_probe.py --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_75ft --attempt .runtime-work/c229925-owner/compat-opposite_stop_75ft --saved-root .runtime-work/c229925-owner/saved-opposite_stop_75ft --mode positive",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-opposite_stop_75ft-positive.log",
+        "test_log_sha256": "f6549d831c667d241d8209143a86a754fcf54fb8ea3f9163661b6afb7ec8d47a",
+        "negative_command": ".venv-cpu/bin/python work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/delivery_probe.py --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_75ft --attempt .runtime-work/c229925-owner/compat-opposite_stop_75ft --saved-root .runtime-work/c229925-owner/saved-opposite_stop_75ft --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: fire-entrance-context.json",
+        "negative_log": "proof-delivery-opposite_stop_75ft-negative.log",
+        "negative_log_sha256": "ce86beb3245d1cd314eb0b7933477b9542829d28400b49c577d3f4dec6f205af"
+      }
+    },
+    {
+      "case_id": "testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_76ft",
+      "kind": "delivery",
+      "construction": "cases/opposite_stop_76ft/construction.json",
+      "construction_sha256": "8a432ce2b5d5442b3631cfd6158e0e00587e181a2a8e77a83745bb4a8ab63957",
+      "fixture_recipe": "work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/diagnostic-opposite_stop_76ft-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "original reviewed fire-station entrance and public-highway packet required",
+      "acquisition": {
+        "entrance_boundary": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-entrance_boundary.jsonl"
+        },
+        "vehicle_body_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_body_history.jsonl"
+        },
+        "vehicle_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_motion_history.jsonl"
+        },
+        "highway_side_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-highway_side_history.jsonl"
+        },
+        "halt_activity_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-halt_activity_history.jsonl"
+        },
+        "traffic_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-traffic_motion_history.jsonl"
+        },
+        "exception_context": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-exception_context.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-camera_frame_map.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The opposite-side and entrance-side stop may not achieve a stable terminal halt with body position near the nominated foot boundary."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/opposite_stop_76ft/fallback1/construction.json",
+          "construction_sha256": "3b141e79b601ed0b3badfb432dc24c7f1d9296144b8f73e0dc28010257c83d25",
+          "trigger": {
+            "source": "original fire-entrance-trace.jsonl and reviewed target",
+            "metric": "terminal ego speed and body-centroid gap over final 2 seconds",
+            "failure_condition": "speed remains above 0.1 m/s or centroid-target gap remains above 1.25 m"
+          },
+          "changed_knobs": [
+            "engineering_throttle: 0.25 to 0.18",
+            "engineering_braking_factor: 5.0 to 4.0"
+          ],
+          "offline": {
+            "construction_sha256": "3b141e79b601ed0b3badfb432dc24c7f1d9296144b8f73e0dc28010257c83d25",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_76ft --candidate fallback1 --output .runtime-work/c229925-owner/offline-fallback1-opposite_stop_76ft",
+            "exit_code": 0,
+            "log": "proof-offline-fallback1-opposite_stop_76ft.log",
+            "log_sha256": "56013818c6093417c78426e8e0f1be7e982150d49ae155ae39e1769f9c019573"
+          },
+          "compatibility": {
+            "receipt": "proofs/fallback1-opposite_stop_76ft/receipt.json",
+            "sha256": "0e4e5ba1e2759369143664d92443e09c896719374282aacb56513edd573266a6",
+            "log": "proofs/fallback1-opposite_stop_76ft/analysis.log",
+            "negative_log": "proofs/fallback1-opposite_stop_76ft/negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "construction_sha256": "8a432ce2b5d5442b3631cfd6158e0e00587e181a2a8e77a83745bb4a8ab63957",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_76ft --output .runtime-work/c229925-owner/offline-opposite_stop_76ft",
+        "exit_code": 0,
+        "log": "proof-offline-opposite_stop_76ft.log",
+        "log_sha256": "8255d6863f6d405dcdfbc48697ec7b9d2f229d135ba137e23352cebc0c56efc0"
+      },
+      "compatibility": {
+        "receipt": "proofs/primary-opposite_stop_76ft/receipt.json",
+        "sha256": "c51dc546a2d6c5beba160e1ccb9cd5f3e1f7f571a3dc04a3eabc81a6eac42201",
+        "log": "proofs/primary-opposite_stop_76ft/analysis.log",
+        "negative_log": "proofs/primary-opposite_stop_76ft/negative.log"
+      },
+      "negative": {
+        "log": "proofs/primary-opposite_stop_76ft/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-opposite_stop_76ft-receipt.json",
+        "sha256": "b40ef9d19ee2d9d7c78ed7f6f92778d858085fd1d467ec2909f89854b731513b"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_76ft --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_76ft --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_log": "proof-saved-opposite_stop_76ft.log",
+        "test_log_sha256": "53a53c473a3a4c64f9d18e620ca06e81662c5194a09ef6ed822af75ea6feeb59",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original fire-station, highway, vehicle, exception and pixel review pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_76ft",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "bc73ed9a3028138690568629b5fa201086add941837ddaf76703ca44260bab15",
+        "command": ".venv-cpu/bin/python work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/delivery_probe.py --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_76ft --attempt .runtime-work/c229925-owner/compat-opposite_stop_76ft --saved-root .runtime-work/c229925-owner/saved-opposite_stop_76ft --mode positive",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-opposite_stop_76ft-positive.log",
+        "test_log_sha256": "746269a281ed5f75db3a72ac3d27778cb7c771001ddf84bcec2fb1929e2bec8d",
+        "negative_command": ".venv-cpu/bin/python work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/delivery_probe.py --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_76ft --attempt .runtime-work/c229925-owner/compat-opposite_stop_76ft --saved-root .runtime-work/c229925-owner/saved-opposite_stop_76ft --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: fire-entrance-context.json",
+        "negative_log": "proof-delivery-opposite_stop_76ft-negative.log",
+        "negative_log_sha256": "ce86beb3245d1cd314eb0b7933477b9542829d28400b49c577d3f4dec6f205af"
+      }
+    },
+    {
+      "case_id": "testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stand_74ft",
+      "kind": "delivery",
+      "construction": "cases/opposite_stand_74ft/construction.json",
+      "construction_sha256": "49c0866b7903dfd6edccf70963a67a36129f7e38293b29dabf4c53c5a9e075f7",
+      "fixture_recipe": "work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/diagnostic-opposite_stand_74ft-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "original reviewed fire-station entrance and public-highway packet required",
+      "acquisition": {
+        "entrance_boundary": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-entrance_boundary.jsonl"
+        },
+        "vehicle_body_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_body_history.jsonl"
+        },
+        "vehicle_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_motion_history.jsonl"
+        },
+        "highway_side_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-highway_side_history.jsonl"
+        },
+        "halt_activity_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-halt_activity_history.jsonl"
+        },
+        "traffic_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-traffic_motion_history.jsonl"
+        },
+        "exception_context": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-exception_context.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-camera_frame_map.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The opposite-side and entrance-side stop may not achieve a stable terminal halt with body position near the nominated foot boundary."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/opposite_stand_74ft/fallback1/construction.json",
+          "construction_sha256": "95429c895e086e5fbe3799d7f00e247d3d8c726509e91a049bcb298b3e87edf6",
+          "trigger": {
+            "source": "original fire-entrance-trace.jsonl and reviewed target",
+            "metric": "terminal ego speed and body-centroid gap over final 2 seconds",
+            "failure_condition": "speed remains above 0.1 m/s or centroid-target gap remains above 1.25 m"
+          },
+          "changed_knobs": [
+            "engineering_throttle: 0.25 to 0.18",
+            "engineering_braking_factor: 5.0 to 4.0"
+          ],
+          "offline": {
+            "construction_sha256": "95429c895e086e5fbe3799d7f00e247d3d8c726509e91a049bcb298b3e87edf6",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stand_74ft --candidate fallback1 --output .runtime-work/c229925-owner/offline-fallback1-opposite_stand_74ft",
+            "exit_code": 0,
+            "log": "proof-offline-fallback1-opposite_stand_74ft.log",
+            "log_sha256": "f1d4c676abe07ae6a61b14a0c0b8e344b3bbafcd375f0e9d8568406363feb0a9"
+          },
+          "compatibility": {
+            "receipt": "proofs/fallback1-opposite_stand_74ft/receipt.json",
+            "sha256": "cf7616da0dbf0b8c7193f2acb445b04631ec0d274610f488d2d8702f2f848bf6",
+            "log": "proofs/fallback1-opposite_stand_74ft/analysis.log",
+            "negative_log": "proofs/fallback1-opposite_stand_74ft/negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "construction_sha256": "49c0866b7903dfd6edccf70963a67a36129f7e38293b29dabf4c53c5a9e075f7",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stand_74ft --output .runtime-work/c229925-owner/offline-opposite_stand_74ft",
+        "exit_code": 0,
+        "log": "proof-offline-opposite_stand_74ft.log",
+        "log_sha256": "ba35159fb93f5e84958b208e57ce1d39674eb3ca20d206550b6213e1bd3e5ae0"
+      },
+      "compatibility": {
+        "receipt": "proofs/primary-opposite_stand_74ft/receipt.json",
+        "sha256": "ff83e709b5360eb567473eca37fe82beee0da37cbe990b271508a02122ca6cda",
+        "log": "proofs/primary-opposite_stand_74ft/analysis.log",
+        "negative_log": "proofs/primary-opposite_stand_74ft/negative.log"
+      },
+      "negative": {
+        "log": "proofs/primary-opposite_stand_74ft/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-opposite_stand_74ft-receipt.json",
+        "sha256": "39ccafb4c4116ae8af3b8722d143974386e69eb40d4c0b9288c0c04164a8f340"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stand_74ft --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stand_74ft --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_log": "proof-saved-opposite_stand_74ft.log",
+        "test_log_sha256": "430244dfcff0c5056db5278ae23f68e79a8e48357ba34e67ae6ef3ca474b5d53",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original fire-station, highway, vehicle, exception and pixel review pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stand_74ft",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "bc73ed9a3028138690568629b5fa201086add941837ddaf76703ca44260bab15",
+        "command": ".venv-cpu/bin/python work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/delivery_probe.py --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stand_74ft --attempt .runtime-work/c229925-owner/compat-opposite_stand_74ft --saved-root .runtime-work/c229925-owner/saved-opposite_stand_74ft --mode positive",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-opposite_stand_74ft-positive.log",
+        "test_log_sha256": "31843b360ef3d48cf6c565010ce8e063c6850b25c855fcbfb168ca933ea9e191",
+        "negative_command": ".venv-cpu/bin/python work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/delivery_probe.py --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stand_74ft --attempt .runtime-work/c229925-owner/compat-opposite_stand_74ft --saved-root .runtime-work/c229925-owner/saved-opposite_stand_74ft --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: fire-entrance-context.json",
+        "negative_log": "proof-delivery-opposite_stand_74ft-negative.log",
+        "negative_log_sha256": "ce86beb3245d1cd314eb0b7933477b9542829d28400b49c577d3f4dec6f205af"
+      }
+    },
+    {
+      "case_id": "testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_park_74ft",
+      "kind": "delivery",
+      "construction": "cases/opposite_park_74ft/construction.json",
+      "construction_sha256": "38ef565211ac667b947095efc48483e6e2aa14ffe02e99cc8f403a7a9bd1b72d",
+      "fixture_recipe": "work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/diagnostic-opposite_park_74ft-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "original reviewed fire-station entrance and public-highway packet required",
+      "acquisition": {
+        "entrance_boundary": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-entrance_boundary.jsonl"
+        },
+        "vehicle_body_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_body_history.jsonl"
+        },
+        "vehicle_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_motion_history.jsonl"
+        },
+        "highway_side_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-highway_side_history.jsonl"
+        },
+        "halt_activity_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-halt_activity_history.jsonl"
+        },
+        "traffic_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-traffic_motion_history.jsonl"
+        },
+        "exception_context": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-exception_context.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-camera_frame_map.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The opposite-side and entrance-side stop may not achieve a stable terminal halt with body position near the nominated foot boundary."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/opposite_park_74ft/fallback1/construction.json",
+          "construction_sha256": "69af16ebe3750e2ac833eda9f0e15a7aae65b454f2d406e7c896a8c2593e1c9b",
+          "trigger": {
+            "source": "original fire-entrance-trace.jsonl and reviewed target",
+            "metric": "terminal ego speed and body-centroid gap over final 2 seconds",
+            "failure_condition": "speed remains above 0.1 m/s or centroid-target gap remains above 1.25 m"
+          },
+          "changed_knobs": [
+            "engineering_throttle: 0.25 to 0.18",
+            "engineering_braking_factor: 5.0 to 4.0"
+          ],
+          "offline": {
+            "construction_sha256": "69af16ebe3750e2ac833eda9f0e15a7aae65b454f2d406e7c896a8c2593e1c9b",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_park_74ft --candidate fallback1 --output .runtime-work/c229925-owner/offline-fallback1-opposite_park_74ft",
+            "exit_code": 0,
+            "log": "proof-offline-fallback1-opposite_park_74ft.log",
+            "log_sha256": "35d115a97488d72d7b4f6ab9d1f1234f46d32e748e6694ad9ef3ae7a10168053"
+          },
+          "compatibility": {
+            "receipt": "proofs/fallback1-opposite_park_74ft/receipt.json",
+            "sha256": "00434628cbdc0e35c3b30a6fe84b09175e8f913eda551cc518c2f0fed6a63aa2",
+            "log": "proofs/fallback1-opposite_park_74ft/analysis.log",
+            "negative_log": "proofs/fallback1-opposite_park_74ft/negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "construction_sha256": "38ef565211ac667b947095efc48483e6e2aa14ffe02e99cc8f403a7a9bd1b72d",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_park_74ft --output .runtime-work/c229925-owner/offline-opposite_park_74ft",
+        "exit_code": 0,
+        "log": "proof-offline-opposite_park_74ft.log",
+        "log_sha256": "07ae571709f0e46a3a2fd5cfc3bec88f6be5614944b3bc69465f8ffa5112faee"
+      },
+      "compatibility": {
+        "receipt": "proofs/primary-opposite_park_74ft/receipt.json",
+        "sha256": "da9df62d7ebcff4a14b6f67be58896af29dda63c4a655696b19bc9fa6eab1079",
+        "log": "proofs/primary-opposite_park_74ft/analysis.log",
+        "negative_log": "proofs/primary-opposite_park_74ft/negative.log"
+      },
+      "negative": {
+        "log": "proofs/primary-opposite_park_74ft/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-opposite_park_74ft-receipt.json",
+        "sha256": "8db70938fe6d44281b39d621fd4b0dd6282c62b927fbe489426c50e931b1d351"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_park_74ft --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_park_74ft --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_log": "proof-saved-opposite_park_74ft.log",
+        "test_log_sha256": "8ea3352c4f655ba683089b9ad5712efe6750b0800950ce809a6bec91615c2915",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original fire-station, highway, vehicle, exception and pixel review pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_park_74ft",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "bc73ed9a3028138690568629b5fa201086add941837ddaf76703ca44260bab15",
+        "command": ".venv-cpu/bin/python work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/delivery_probe.py --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_park_74ft --attempt .runtime-work/c229925-owner/compat-opposite_park_74ft --saved-root .runtime-work/c229925-owner/saved-opposite_park_74ft --mode positive",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-opposite_park_74ft-positive.log",
+        "test_log_sha256": "6ac365373672778b4b739be1c76f7fa1e76833143faa918a991c6504c0da817f",
+        "negative_command": ".venv-cpu/bin/python work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/delivery_probe.py --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_park_74ft --attempt .runtime-work/c229925-owner/compat-opposite_park_74ft --saved-root .runtime-work/c229925-owner/saved-opposite_park_74ft --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: fire-entrance-context.json",
+        "negative_log": "proof-delivery-opposite_park_74ft-negative.log",
+        "negative_log_sha256": "ce86beb3245d1cd314eb0b7933477b9542829d28400b49c577d3f4dec6f205af"
+      }
+    },
+    {
+      "case_id": "testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__entrance_stop_19ft",
+      "kind": "delivery",
+      "construction": "cases/entrance_stop_19ft/construction.json",
+      "construction_sha256": "41e016d03872429d54c36db6d0387f4669b2f22ae1f81693d61303f5727feccc",
+      "fixture_recipe": "work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/diagnostic-entrance_stop_19ft-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "original reviewed fire-station entrance and public-highway packet required",
+      "acquisition": {
+        "entrance_boundary": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-entrance_boundary.jsonl"
+        },
+        "vehicle_body_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_body_history.jsonl"
+        },
+        "vehicle_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_motion_history.jsonl"
+        },
+        "highway_side_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-highway_side_history.jsonl"
+        },
+        "halt_activity_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-halt_activity_history.jsonl"
+        },
+        "traffic_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-traffic_motion_history.jsonl"
+        },
+        "exception_context": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-exception_context.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-camera_frame_map.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The opposite-side and entrance-side stop may not achieve a stable terminal halt with body position near the nominated foot boundary."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/entrance_stop_19ft/fallback1/construction.json",
+          "construction_sha256": "ef39c11410c27c43229202f6353a55a365018295f336db2edca7bcb23a5e6326",
+          "trigger": {
+            "source": "original fire-entrance-trace.jsonl and reviewed target",
+            "metric": "terminal ego speed and body-centroid gap over final 2 seconds",
+            "failure_condition": "speed remains above 0.1 m/s or centroid-target gap remains above 1.25 m"
+          },
+          "changed_knobs": [
+            "engineering_throttle: 0.25 to 0.18",
+            "engineering_braking_factor: 5.0 to 4.0"
+          ],
+          "offline": {
+            "construction_sha256": "ef39c11410c27c43229202f6353a55a365018295f336db2edca7bcb23a5e6326",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__entrance_stop_19ft --candidate fallback1 --output .runtime-work/c229925-owner/offline-fallback1-entrance_stop_19ft",
+            "exit_code": 0,
+            "log": "proof-offline-fallback1-entrance_stop_19ft.log",
+            "log_sha256": "cedd4b71a67b411ce718d73b22cb146500079a5b423fbe9b340e53ba2caaa8b1"
+          },
+          "compatibility": {
+            "receipt": "proofs/fallback1-entrance_stop_19ft/receipt.json",
+            "sha256": "7a107e46b15fe0e0727e7fb37659d59999f93cfa1f9588ab047eff034d31a2a2",
+            "log": "proofs/fallback1-entrance_stop_19ft/analysis.log",
+            "negative_log": "proofs/fallback1-entrance_stop_19ft/negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "construction_sha256": "41e016d03872429d54c36db6d0387f4669b2f22ae1f81693d61303f5727feccc",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__entrance_stop_19ft --output .runtime-work/c229925-owner/offline-entrance_stop_19ft",
+        "exit_code": 0,
+        "log": "proof-offline-entrance_stop_19ft.log",
+        "log_sha256": "553b969253009f07f2e68a0fb73747cff125919639f3ee52e43ee382a32f3fe7"
+      },
+      "compatibility": {
+        "receipt": "proofs/primary-entrance_stop_19ft/receipt.json",
+        "sha256": "be07efe79a7b6cf29574201d4d29fa00c534eea1f207aa057d193bc9654e7105",
+        "log": "proofs/primary-entrance_stop_19ft/analysis.log",
+        "negative_log": "proofs/primary-entrance_stop_19ft/negative.log"
+      },
+      "negative": {
+        "log": "proofs/primary-entrance_stop_19ft/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-entrance_stop_19ft-receipt.json",
+        "sha256": "f3a71ac3aafa5af8ed9009fe0e35f2b5a9241d4771cad787a94dfe3e8ed6d3c5"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__entrance_stop_19ft --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__entrance_stop_19ft --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_log": "proof-saved-entrance_stop_19ft.log",
+        "test_log_sha256": "eac56b9e23e9703dd48e02b812442f452b8bbcb04562ba4e4ca4957276658bc9",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original fire-station, highway, vehicle, exception and pixel review pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__entrance_stop_19ft",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "bc73ed9a3028138690568629b5fa201086add941837ddaf76703ca44260bab15",
+        "command": ".venv-cpu/bin/python work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/delivery_probe.py --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__entrance_stop_19ft --attempt .runtime-work/c229925-owner/compat-entrance_stop_19ft --saved-root .runtime-work/c229925-owner/saved-entrance_stop_19ft --mode positive",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-entrance_stop_19ft-positive.log",
+        "test_log_sha256": "ce05591e1892e6d11394bfbb6e4c12ac4e30dc12276330b7a406720bfe5f9ee2",
+        "negative_command": ".venv-cpu/bin/python work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/delivery_probe.py --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__entrance_stop_19ft --attempt .runtime-work/c229925-owner/compat-entrance_stop_19ft --saved-root .runtime-work/c229925-owner/saved-entrance_stop_19ft --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: fire-entrance-context.json",
+        "negative_log": "proof-delivery-entrance_stop_19ft-negative.log",
+        "negative_log_sha256": "ce86beb3245d1cd314eb0b7933477b9542829d28400b49c577d3f4dec6f205af"
+      }
+    },
+    {
+      "case_id": "testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__entrance_stop_20ft",
+      "kind": "delivery",
+      "construction": "cases/entrance_stop_20ft/construction.json",
+      "construction_sha256": "3209638baa6ceba3536c2bba720ff41dc9ba52ceace1ca41728a3a462c1b11cf",
+      "fixture_recipe": "work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/diagnostic-entrance_stop_20ft-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "original reviewed fire-station entrance and public-highway packet required",
+      "acquisition": {
+        "entrance_boundary": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-entrance_boundary.jsonl"
+        },
+        "vehicle_body_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_body_history.jsonl"
+        },
+        "vehicle_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_motion_history.jsonl"
+        },
+        "highway_side_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-highway_side_history.jsonl"
+        },
+        "halt_activity_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-halt_activity_history.jsonl"
+        },
+        "traffic_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-traffic_motion_history.jsonl"
+        },
+        "exception_context": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-exception_context.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-camera_frame_map.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The opposite-side and entrance-side stop may not achieve a stable terminal halt with body position near the nominated foot boundary."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/entrance_stop_20ft/fallback1/construction.json",
+          "construction_sha256": "554f73057fc77e43a1cd4df1d59def2d9dfdbeb30f397887073af5424f909137",
+          "trigger": {
+            "source": "original fire-entrance-trace.jsonl and reviewed target",
+            "metric": "terminal ego speed and body-centroid gap over final 2 seconds",
+            "failure_condition": "speed remains above 0.1 m/s or centroid-target gap remains above 1.25 m"
+          },
+          "changed_knobs": [
+            "engineering_throttle: 0.25 to 0.18",
+            "engineering_braking_factor: 5.0 to 4.0"
+          ],
+          "offline": {
+            "construction_sha256": "554f73057fc77e43a1cd4df1d59def2d9dfdbeb30f397887073af5424f909137",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__entrance_stop_20ft --candidate fallback1 --output .runtime-work/c229925-owner/offline-fallback1-entrance_stop_20ft",
+            "exit_code": 0,
+            "log": "proof-offline-fallback1-entrance_stop_20ft.log",
+            "log_sha256": "19dcd22e7ab067aec082d613e645051309f324fb6f31800d1be2e40f0c5c36da"
+          },
+          "compatibility": {
+            "receipt": "proofs/fallback1-entrance_stop_20ft/receipt.json",
+            "sha256": "a805dc14fb3c78c318bd208317a9ab77fcab9490187318d1f6794326a40b3b2b",
+            "log": "proofs/fallback1-entrance_stop_20ft/analysis.log",
+            "negative_log": "proofs/fallback1-entrance_stop_20ft/negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "construction_sha256": "3209638baa6ceba3536c2bba720ff41dc9ba52ceace1ca41728a3a462c1b11cf",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__entrance_stop_20ft --output .runtime-work/c229925-owner/offline-entrance_stop_20ft",
+        "exit_code": 0,
+        "log": "proof-offline-entrance_stop_20ft.log",
+        "log_sha256": "c43ac4c1dce0d2b9b830b5e56a85892ac3a53dcb583555bc950178b3c0c2b80f"
+      },
+      "compatibility": {
+        "receipt": "proofs/primary-entrance_stop_20ft/receipt.json",
+        "sha256": "ab6bb42cbda54d61800c9be4ccad1f195a6de0fd03d59911d4c3e926bf4abb21",
+        "log": "proofs/primary-entrance_stop_20ft/analysis.log",
+        "negative_log": "proofs/primary-entrance_stop_20ft/negative.log"
+      },
+      "negative": {
+        "log": "proofs/primary-entrance_stop_20ft/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-entrance_stop_20ft-receipt.json",
+        "sha256": "98fea0f9b65fc3090d8b3bab323e4aec7b20622a07d4ca2ce058f957753db786"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__entrance_stop_20ft --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__entrance_stop_20ft --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_log": "proof-saved-entrance_stop_20ft.log",
+        "test_log_sha256": "49404384ff8bfad59736e5cccb8adb2fbf3f067563d48ca585c52df8f2cffc54",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original fire-station, highway, vehicle, exception and pixel review pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__entrance_stop_20ft",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "bc73ed9a3028138690568629b5fa201086add941837ddaf76703ca44260bab15",
+        "command": ".venv-cpu/bin/python work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/delivery_probe.py --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__entrance_stop_20ft --attempt .runtime-work/c229925-owner/compat-entrance_stop_20ft --saved-root .runtime-work/c229925-owner/saved-entrance_stop_20ft --mode positive",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-entrance_stop_20ft-positive.log",
+        "test_log_sha256": "18be9b26c55206b571afe7ef8edf52647105d692875465b46fa255f76e1d448f",
+        "negative_command": ".venv-cpu/bin/python work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/delivery_probe.py --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__entrance_stop_20ft --attempt .runtime-work/c229925-owner/compat-entrance_stop_20ft --saved-root .runtime-work/c229925-owner/saved-entrance_stop_20ft --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: fire-entrance-context.json",
+        "negative_log": "proof-delivery-entrance_stop_20ft-negative.log",
+        "negative_log_sha256": "ce86beb3245d1cd314eb0b7933477b9542829d28400b49c577d3f4dec6f205af"
+      }
+    },
+    {
+      "case_id": "testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__entrance_stop_21ft",
+      "kind": "delivery",
+      "construction": "cases/entrance_stop_21ft/construction.json",
+      "construction_sha256": "ec318ebd37831bd402433ed8c3a7a57e289d3e5c743fbb2aa00b59aa18ae44b1",
+      "fixture_recipe": "work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/diagnostic-entrance_stop_21ft-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "original reviewed fire-station entrance and public-highway packet required",
+      "acquisition": {
+        "entrance_boundary": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-entrance_boundary.jsonl"
+        },
+        "vehicle_body_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_body_history.jsonl"
+        },
+        "vehicle_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_motion_history.jsonl"
+        },
+        "highway_side_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-highway_side_history.jsonl"
+        },
+        "halt_activity_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-halt_activity_history.jsonl"
+        },
+        "traffic_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-traffic_motion_history.jsonl"
+        },
+        "exception_context": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-exception_context.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-camera_frame_map.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The opposite-side and entrance-side stop may not achieve a stable terminal halt with body position near the nominated foot boundary."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/entrance_stop_21ft/fallback1/construction.json",
+          "construction_sha256": "1c650a13d85b70653fc9c2324c25e2b161580c3c1a7c4abe3fce5c38c4a0dfb6",
+          "trigger": {
+            "source": "original fire-entrance-trace.jsonl and reviewed target",
+            "metric": "terminal ego speed and body-centroid gap over final 2 seconds",
+            "failure_condition": "speed remains above 0.1 m/s or centroid-target gap remains above 1.25 m"
+          },
+          "changed_knobs": [
+            "engineering_throttle: 0.25 to 0.18",
+            "engineering_braking_factor: 5.0 to 4.0"
+          ],
+          "offline": {
+            "construction_sha256": "1c650a13d85b70653fc9c2324c25e2b161580c3c1a7c4abe3fce5c38c4a0dfb6",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__entrance_stop_21ft --candidate fallback1 --output .runtime-work/c229925-owner/offline-fallback1-entrance_stop_21ft",
+            "exit_code": 0,
+            "log": "proof-offline-fallback1-entrance_stop_21ft.log",
+            "log_sha256": "f4442f82736f16a33aeef2c261a2402b3f7c29570b5590ff70b5d206c4c1ba88"
+          },
+          "compatibility": {
+            "receipt": "proofs/fallback1-entrance_stop_21ft/receipt.json",
+            "sha256": "cc5cc6583cff8f82a6a6b1e4f3336cc3285cb2f8d1abbfceb076247e47be026e",
+            "log": "proofs/fallback1-entrance_stop_21ft/analysis.log",
+            "negative_log": "proofs/fallback1-entrance_stop_21ft/negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "construction_sha256": "ec318ebd37831bd402433ed8c3a7a57e289d3e5c743fbb2aa00b59aa18ae44b1",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__entrance_stop_21ft --output .runtime-work/c229925-owner/offline-entrance_stop_21ft",
+        "exit_code": 0,
+        "log": "proof-offline-entrance_stop_21ft.log",
+        "log_sha256": "43b674414dd0107c5ad3263a7e6a532a8b5cf22bb54ac1b000290cd5af8368ad"
+      },
+      "compatibility": {
+        "receipt": "proofs/primary-entrance_stop_21ft/receipt.json",
+        "sha256": "cfe8115734852fa1f8eaa22f2e4ae885e087764a3379f6945c8af74d3752a4b7",
+        "log": "proofs/primary-entrance_stop_21ft/analysis.log",
+        "negative_log": "proofs/primary-entrance_stop_21ft/negative.log"
+      },
+      "negative": {
+        "log": "proofs/primary-entrance_stop_21ft/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-entrance_stop_21ft-receipt.json",
+        "sha256": "af6e0301d84b78f9cdbea60fa7f94276cebdbdcd0512954184095c8bf55544a1"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__entrance_stop_21ft --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__entrance_stop_21ft --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_log": "proof-saved-entrance_stop_21ft.log",
+        "test_log_sha256": "51e5068268ffaaab1b370bbb83a3c7ae370c7b3550b259608d01dfe64407c731",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original fire-station, highway, vehicle, exception and pixel review pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__entrance_stop_21ft",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "bc73ed9a3028138690568629b5fa201086add941837ddaf76703ca44260bab15",
+        "command": ".venv-cpu/bin/python work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/delivery_probe.py --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__entrance_stop_21ft --attempt .runtime-work/c229925-owner/compat-entrance_stop_21ft --saved-root .runtime-work/c229925-owner/saved-entrance_stop_21ft --mode positive",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-entrance_stop_21ft-positive.log",
+        "test_log_sha256": "4f0ee0a3cdf7757ea8654cceaf8371470427c9f8cac2427dacdeb6584a547ba6",
+        "negative_command": ".venv-cpu/bin/python work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/delivery_probe.py --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__entrance_stop_21ft --attempt .runtime-work/c229925-owner/compat-entrance_stop_21ft --saved-root .runtime-work/c229925-owner/saved-entrance_stop_21ft --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: fire-entrance-context.json",
+        "negative_log": "proof-delivery-entrance_stop_21ft-negative.log",
+        "negative_log_sha256": "ce86beb3245d1cd314eb0b7933477b9542829d28400b49c577d3f4dec6f205af"
+      }
+    },
+    {
+      "case_id": "testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_traffic_conflict",
+      "kind": "delivery",
+      "construction": "cases/opposite_stop_traffic_conflict/construction.json",
+      "construction_sha256": "a7a3722c82bf895fe594c2cd50f5baac7fe34ca61634ad5071453b8a2446ab49",
+      "fixture_recipe": "work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/diagnostic-opposite_stop_traffic_conflict-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "original reviewed fire-station entrance and public-highway packet required",
+      "acquisition": {
+        "entrance_boundary": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-entrance_boundary.jsonl"
+        },
+        "vehicle_body_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_body_history.jsonl"
+        },
+        "vehicle_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_motion_history.jsonl"
+        },
+        "highway_side_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-highway_side_history.jsonl"
+        },
+        "halt_activity_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-halt_activity_history.jsonl"
+        },
+        "traffic_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-traffic_motion_history.jsonl"
+        },
+        "exception_context": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-exception_context.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-camera_frame_map.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The opposite-side and entrance-side stop may not achieve a stable terminal halt with body position near the nominated foot boundary."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/opposite_stop_traffic_conflict/fallback1/construction.json",
+          "construction_sha256": "55447697fea9291575fcf3fc071b32956387466f17983267a977d643835110a7",
+          "trigger": {
+            "source": "original fire-entrance-trace.jsonl and reviewed target",
+            "metric": "terminal ego speed and body-centroid gap over final 2 seconds",
+            "failure_condition": "speed remains above 0.1 m/s or centroid-target gap remains above 1.25 m"
+          },
+          "changed_knobs": [
+            "engineering_throttle: 0.25 to 0.18",
+            "engineering_braking_factor: 5.0 to 4.0"
+          ],
+          "offline": {
+            "construction_sha256": "55447697fea9291575fcf3fc071b32956387466f17983267a977d643835110a7",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_traffic_conflict --candidate fallback1 --output .runtime-work/c229925-owner/offline-fallback1-opposite_stop_traffic_conflict",
+            "exit_code": 0,
+            "log": "proof-offline-fallback1-opposite_stop_traffic_conflict.log",
+            "log_sha256": "4a6f36d758b1a6a618a2eea61250e89d14ccee4da32857139b735da45440014d"
+          },
+          "compatibility": {
+            "receipt": "proofs/fallback1-opposite_stop_traffic_conflict/receipt.json",
+            "sha256": "7d398c4d1d135efcb0691004203800c4418b8f4d2cf9fb78cf2e4043b3bd6dd4",
+            "log": "proofs/fallback1-opposite_stop_traffic_conflict/analysis.log",
+            "negative_log": "proofs/fallback1-opposite_stop_traffic_conflict/negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "construction_sha256": "a7a3722c82bf895fe594c2cd50f5baac7fe34ca61634ad5071453b8a2446ab49",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_traffic_conflict --output .runtime-work/c229925-owner/offline-opposite_stop_traffic_conflict",
+        "exit_code": 0,
+        "log": "proof-offline-opposite_stop_traffic_conflict.log",
+        "log_sha256": "a40468e73da7dfa0289f3ebd6ba8f91bc3355419fe87924af3e890c2619ba0f5"
+      },
+      "compatibility": {
+        "receipt": "proofs/primary-opposite_stop_traffic_conflict/receipt.json",
+        "sha256": "2a6e4f5c9916ac58472b21e18cfc2575f1c8a7b9be8db5c69ec9e608572bb7d9",
+        "log": "proofs/primary-opposite_stop_traffic_conflict/analysis.log",
+        "negative_log": "proofs/primary-opposite_stop_traffic_conflict/negative.log"
+      },
+      "negative": {
+        "log": "proofs/primary-opposite_stop_traffic_conflict/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-opposite_stop_traffic_conflict-receipt.json",
+        "sha256": "0cc7abc09960dba010e15578a05e943a0072ad3f78b5c73c74a35efa7c247ab1"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_traffic_conflict --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_traffic_conflict --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_log": "proof-saved-opposite_stop_traffic_conflict.log",
+        "test_log_sha256": "6633f13bdeeb6866e51fe6803061ffe72197651f5a442ea0339230b44a6c53db",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original fire-station, highway, vehicle, exception and pixel review pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_traffic_conflict",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "bc73ed9a3028138690568629b5fa201086add941837ddaf76703ca44260bab15",
+        "command": ".venv-cpu/bin/python work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/delivery_probe.py --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_traffic_conflict --attempt .runtime-work/c229925-owner/compat-opposite_stop_traffic_conflict --saved-root .runtime-work/c229925-owner/saved-opposite_stop_traffic_conflict --mode positive",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-opposite_stop_traffic_conflict-positive.log",
+        "test_log_sha256": "d2c6f1fa2d9242dd5b23887c0e090ee4cbb0efb734bccd4a3713bc9632ccfa77",
+        "negative_command": ".venv-cpu/bin/python work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/delivery_probe.py --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_traffic_conflict --attempt .runtime-work/c229925-owner/compat-opposite_stop_traffic_conflict --saved-root .runtime-work/c229925-owner/saved-opposite_stop_traffic_conflict --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: fire-entrance-context.json",
+        "negative_log": "proof-delivery-opposite_stop_traffic_conflict-negative.log",
+        "negative_log_sha256": "ce86beb3245d1cd314eb0b7933477b9542829d28400b49c577d3f4dec6f205af"
+      }
+    },
+    {
+      "case_id": "testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_law",
+      "kind": "delivery",
+      "construction": "cases/opposite_stop_law/construction.json",
+      "construction_sha256": "cd092f6e45127d85db1b8b59d1e4a00ceff777281d9523e0fdab492144f90b3a",
+      "fixture_recipe": "work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/diagnostic-opposite_stop_law-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "original reviewed fire-station entrance and public-highway packet required",
+      "acquisition": {
+        "entrance_boundary": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-entrance_boundary.jsonl"
+        },
+        "vehicle_body_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_body_history.jsonl"
+        },
+        "vehicle_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_motion_history.jsonl"
+        },
+        "highway_side_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-highway_side_history.jsonl"
+        },
+        "halt_activity_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-halt_activity_history.jsonl"
+        },
+        "traffic_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-traffic_motion_history.jsonl"
+        },
+        "exception_context": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-exception_context.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-camera_frame_map.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The opposite-side and entrance-side stop may not achieve a stable terminal halt with body position near the nominated foot boundary."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/opposite_stop_law/fallback1/construction.json",
+          "construction_sha256": "db26be9d9cbe4e9bc86a631589e419aeb48af1837fe85269c18d84fcd29a370c",
+          "trigger": {
+            "source": "original fire-entrance-trace.jsonl and reviewed target",
+            "metric": "terminal ego speed and body-centroid gap over final 2 seconds",
+            "failure_condition": "speed remains above 0.1 m/s or centroid-target gap remains above 1.25 m"
+          },
+          "changed_knobs": [
+            "engineering_throttle: 0.25 to 0.18",
+            "engineering_braking_factor: 5.0 to 4.0"
+          ],
+          "offline": {
+            "construction_sha256": "db26be9d9cbe4e9bc86a631589e419aeb48af1837fe85269c18d84fcd29a370c",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_law --candidate fallback1 --output .runtime-work/c229925-owner/offline-fallback1-opposite_stop_law",
+            "exit_code": 0,
+            "log": "proof-offline-fallback1-opposite_stop_law.log",
+            "log_sha256": "fb6b4e775b330b922ee4eb0c357d626f3eeb840ea2ab7654fc6d660780920ba2"
+          },
+          "compatibility": {
+            "receipt": "proofs/fallback1-opposite_stop_law/receipt.json",
+            "sha256": "cde9f3065a183d1bb43114ee5d901de5e13769ee833ee7f9ccc9d05c6af1da60",
+            "log": "proofs/fallback1-opposite_stop_law/analysis.log",
+            "negative_log": "proofs/fallback1-opposite_stop_law/negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "construction_sha256": "cd092f6e45127d85db1b8b59d1e4a00ceff777281d9523e0fdab492144f90b3a",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_law --output .runtime-work/c229925-owner/offline-opposite_stop_law",
+        "exit_code": 0,
+        "log": "proof-offline-opposite_stop_law.log",
+        "log_sha256": "34aa961264ac9831be3d9543bab75a7c398070ebd1290b7f5f0e787f3c9ab455"
+      },
+      "compatibility": {
+        "receipt": "proofs/primary-opposite_stop_law/receipt.json",
+        "sha256": "f63882baec1e47ea17175737b47e92b8137f55da1ea2ba84444e9599b078f9df",
+        "log": "proofs/primary-opposite_stop_law/analysis.log",
+        "negative_log": "proofs/primary-opposite_stop_law/negative.log"
+      },
+      "negative": {
+        "log": "proofs/primary-opposite_stop_law/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-opposite_stop_law-receipt.json",
+        "sha256": "f6ffc30f8ea69c1033b480a87349683835546dfa70f6decae71b1df39658628d"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_law --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_law --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_log": "proof-saved-opposite_stop_law.log",
+        "test_log_sha256": "ed6caa4c0ecaf181323866479b958198cf333574f7a20371d2e40bba86fc3243",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original fire-station, highway, vehicle, exception and pixel review pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_law",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "bc73ed9a3028138690568629b5fa201086add941837ddaf76703ca44260bab15",
+        "command": ".venv-cpu/bin/python work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/delivery_probe.py --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_law --attempt .runtime-work/c229925-owner/compat-opposite_stop_law --saved-root .runtime-work/c229925-owner/saved-opposite_stop_law --mode positive",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-opposite_stop_law-positive.log",
+        "test_log_sha256": "e9ea6fe2a503c80441a79f2028a46420c772c9276549c46f9344300ffb6b4d58",
+        "negative_command": ".venv-cpu/bin/python work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/delivery_probe.py --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_law --attempt .runtime-work/c229925-owner/compat-opposite_stop_law --saved-root .runtime-work/c229925-owner/saved-opposite_stop_law --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: fire-entrance-context.json",
+        "negative_log": "proof-delivery-opposite_stop_law-negative.log",
+        "negative_log_sha256": "ce86beb3245d1cd314eb0b7933477b9542829d28400b49c577d3f4dec6f205af"
+      }
+    },
+    {
+      "case_id": "testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_police",
+      "kind": "delivery",
+      "construction": "cases/opposite_stop_police/construction.json",
+      "construction_sha256": "10713e94487bd352c21feaad99d8548f6ae73899cf6c09cbe5ea2619d45079fd",
+      "fixture_recipe": "work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/diagnostic-opposite_stop_police-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "original reviewed fire-station entrance and public-highway packet required",
+      "acquisition": {
+        "entrance_boundary": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-entrance_boundary.jsonl"
+        },
+        "vehicle_body_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_body_history.jsonl"
+        },
+        "vehicle_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_motion_history.jsonl"
+        },
+        "highway_side_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-highway_side_history.jsonl"
+        },
+        "halt_activity_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-halt_activity_history.jsonl"
+        },
+        "traffic_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-traffic_motion_history.jsonl"
+        },
+        "exception_context": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-exception_context.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-camera_frame_map.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The opposite-side and entrance-side stop may not achieve a stable terminal halt with body position near the nominated foot boundary."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/opposite_stop_police/fallback1/construction.json",
+          "construction_sha256": "7df2aa5f5250c2b9dc43ff0e747b9034a6117e9f34270f8ab1051ced786f5bb6",
+          "trigger": {
+            "source": "original fire-entrance-trace.jsonl and reviewed target",
+            "metric": "terminal ego speed and body-centroid gap over final 2 seconds",
+            "failure_condition": "speed remains above 0.1 m/s or centroid-target gap remains above 1.25 m"
+          },
+          "changed_knobs": [
+            "engineering_throttle: 0.25 to 0.18",
+            "engineering_braking_factor: 5.0 to 4.0"
+          ],
+          "offline": {
+            "construction_sha256": "7df2aa5f5250c2b9dc43ff0e747b9034a6117e9f34270f8ab1051ced786f5bb6",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_police --candidate fallback1 --output .runtime-work/c229925-owner/offline-fallback1-opposite_stop_police",
+            "exit_code": 0,
+            "log": "proof-offline-fallback1-opposite_stop_police.log",
+            "log_sha256": "89a5ef9eb1d14b36366fe6740173727d324b1cfaf2733b6b77564947c152b8d5"
+          },
+          "compatibility": {
+            "receipt": "proofs/fallback1-opposite_stop_police/receipt.json",
+            "sha256": "c45cf6884fe03698871e0de9588a2bdabd53b1b072f81a301e3f3a97a19bd69b",
+            "log": "proofs/fallback1-opposite_stop_police/analysis.log",
+            "negative_log": "proofs/fallback1-opposite_stop_police/negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "construction_sha256": "10713e94487bd352c21feaad99d8548f6ae73899cf6c09cbe5ea2619d45079fd",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_police --output .runtime-work/c229925-owner/offline-opposite_stop_police",
+        "exit_code": 0,
+        "log": "proof-offline-opposite_stop_police.log",
+        "log_sha256": "7686421741a71f9594c838d6aa60b607eab6d3b3151301cd764b8dfc939d7425"
+      },
+      "compatibility": {
+        "receipt": "proofs/primary-opposite_stop_police/receipt.json",
+        "sha256": "193f44fa0afe60b5801ab09648bdf9e76f093c8f473f291d24c7e04b423cfed8",
+        "log": "proofs/primary-opposite_stop_police/analysis.log",
+        "negative_log": "proofs/primary-opposite_stop_police/negative.log"
+      },
+      "negative": {
+        "log": "proofs/primary-opposite_stop_police/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-opposite_stop_police-receipt.json",
+        "sha256": "5b70fd9e33b93a859e7e8ea7a9235de1a7e7f16564131a5df912d74dbc6062f8"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_police --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_police --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_log": "proof-saved-opposite_stop_police.log",
+        "test_log_sha256": "f400dc143758fe12b380cd11ae48d1162b6680db19793dce2157d763b61bd53c",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original fire-station, highway, vehicle, exception and pixel review pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_police",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "bc73ed9a3028138690568629b5fa201086add941837ddaf76703ca44260bab15",
+        "command": ".venv-cpu/bin/python work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/delivery_probe.py --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_police --attempt .runtime-work/c229925-owner/compat-opposite_stop_police --saved-root .runtime-work/c229925-owner/saved-opposite_stop_police --mode positive",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-opposite_stop_police-positive.log",
+        "test_log_sha256": "1fa9a25defbecf76f2481ba9736a63dd63a2820da4e9d2c1fa5b3d25eeb11a1f",
+        "negative_command": ".venv-cpu/bin/python work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/delivery_probe.py --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_police --attempt .runtime-work/c229925-owner/compat-opposite_stop_police --saved-root .runtime-work/c229925-owner/saved-opposite_stop_police --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: fire-entrance-context.json",
+        "negative_log": "proof-delivery-opposite_stop_police-negative.log",
+        "negative_log_sha256": "ce86beb3245d1cd314eb0b7933477b9542829d28400b49c577d3f4dec6f205af"
+      }
+    },
+    {
+      "case_id": "testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_device",
+      "kind": "delivery",
+      "construction": "cases/opposite_stop_device/construction.json",
+      "construction_sha256": "741173b9fa33b62c530efa3449ec192256537d8a94fe9dc7f6116f6fa87f9a08",
+      "fixture_recipe": "work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/diagnostic-opposite_stop_device-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "original reviewed fire-station entrance and public-highway packet required",
+      "acquisition": {
+        "entrance_boundary": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-entrance_boundary.jsonl"
+        },
+        "vehicle_body_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_body_history.jsonl"
+        },
+        "vehicle_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_motion_history.jsonl"
+        },
+        "highway_side_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-highway_side_history.jsonl"
+        },
+        "halt_activity_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-halt_activity_history.jsonl"
+        },
+        "traffic_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-traffic_motion_history.jsonl"
+        },
+        "exception_context": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-exception_context.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-camera_frame_map.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The opposite-side and entrance-side stop may not achieve a stable terminal halt with body position near the nominated foot boundary."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/opposite_stop_device/fallback1/construction.json",
+          "construction_sha256": "d3aadc37f0dc2d54324342f0b060bdb76291729c39fd3c9ad1b92a232fc7fde5",
+          "trigger": {
+            "source": "original fire-entrance-trace.jsonl and reviewed target",
+            "metric": "terminal ego speed and body-centroid gap over final 2 seconds",
+            "failure_condition": "speed remains above 0.1 m/s or centroid-target gap remains above 1.25 m"
+          },
+          "changed_knobs": [
+            "engineering_throttle: 0.25 to 0.18",
+            "engineering_braking_factor: 5.0 to 4.0"
+          ],
+          "offline": {
+            "construction_sha256": "d3aadc37f0dc2d54324342f0b060bdb76291729c39fd3c9ad1b92a232fc7fde5",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_device --candidate fallback1 --output .runtime-work/c229925-owner/offline-fallback1-opposite_stop_device",
+            "exit_code": 0,
+            "log": "proof-offline-fallback1-opposite_stop_device.log",
+            "log_sha256": "c5178dec573c9fff7053ee51d6cc76b2411cea4ae7edd4414a403f571eff726d"
+          },
+          "compatibility": {
+            "receipt": "proofs/fallback1-opposite_stop_device/receipt.json",
+            "sha256": "8cb4d7a626f40b564a6dcc6dddf164b689e7bd3b58345a349ad30e1fec485fa6",
+            "log": "proofs/fallback1-opposite_stop_device/analysis.log",
+            "negative_log": "proofs/fallback1-opposite_stop_device/negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "construction_sha256": "741173b9fa33b62c530efa3449ec192256537d8a94fe9dc7f6116f6fa87f9a08",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_device --output .runtime-work/c229925-owner/offline-opposite_stop_device",
+        "exit_code": 0,
+        "log": "proof-offline-opposite_stop_device.log",
+        "log_sha256": "cb1e3bebeb5cbf53bec4e48fe63de1291e234d9be37bb96bc76742a85db32206"
+      },
+      "compatibility": {
+        "receipt": "proofs/primary-opposite_stop_device/receipt.json",
+        "sha256": "3f4af5530c0f93c0fdcb4c22d7ce44b4da222543db54b54de11a4946aa391b94",
+        "log": "proofs/primary-opposite_stop_device/analysis.log",
+        "negative_log": "proofs/primary-opposite_stop_device/negative.log"
+      },
+      "negative": {
+        "log": "proofs/primary-opposite_stop_device/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-opposite_stop_device-receipt.json",
+        "sha256": "3f54f4853f6164c100e0c26f6dd265caf82f21dc03ee731957c5312818677c83"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_device --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_device --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_log": "proof-saved-opposite_stop_device.log",
+        "test_log_sha256": "ea76c2c7d23180f64ad0687e71ec1dc165717fc6f29d47b4d5e95840f0476d4a",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original fire-station, highway, vehicle, exception and pixel review pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_device",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "bc73ed9a3028138690568629b5fa201086add941837ddaf76703ca44260bab15",
+        "command": ".venv-cpu/bin/python work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/delivery_probe.py --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_device --attempt .runtime-work/c229925-owner/compat-opposite_stop_device --saved-root .runtime-work/c229925-owner/saved-opposite_stop_device --mode positive",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-opposite_stop_device-positive.log",
+        "test_log_sha256": "2dda5eede2e06b11533e0ecbeec5a75792264d156849d8bbc66c24f0559a603d",
+        "negative_command": ".venv-cpu/bin/python work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/delivery_probe.py --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_device --attempt .runtime-work/c229925-owner/compat-opposite_stop_device --saved-root .runtime-work/c229925-owner/saved-opposite_stop_device --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: fire-entrance-context.json",
+        "negative_log": "proof-delivery-opposite_stop_device-negative.log",
+        "negative_log_sha256": "ce86beb3245d1cd314eb0b7933477b9542829d28400b49c577d3f4dec6f205af"
+      }
+    },
+    {
+      "case_id": "testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_nonfire",
+      "kind": "delivery",
+      "construction": "cases/opposite_stop_nonfire/construction.json",
+      "construction_sha256": "5d407733fac3c446fae53797726bd3543fd9c82b09c51966f4aa735b02217460",
+      "fixture_recipe": "work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/diagnostic-opposite_stop_nonfire-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "original reviewed fire-station entrance and public-highway packet required",
+      "acquisition": {
+        "entrance_boundary": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-entrance_boundary.jsonl"
+        },
+        "vehicle_body_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_body_history.jsonl"
+        },
+        "vehicle_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_motion_history.jsonl"
+        },
+        "highway_side_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-highway_side_history.jsonl"
+        },
+        "halt_activity_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-halt_activity_history.jsonl"
+        },
+        "traffic_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-traffic_motion_history.jsonl"
+        },
+        "exception_context": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-exception_context.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-camera_frame_map.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The opposite-side and entrance-side stop may not achieve a stable terminal halt with body position near the nominated foot boundary."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/opposite_stop_nonfire/fallback1/construction.json",
+          "construction_sha256": "290a372716b4b4b8c972c1051880f307b6e9b78ddeb7131fa808959d18663b0c",
+          "trigger": {
+            "source": "original fire-entrance-trace.jsonl and reviewed target",
+            "metric": "terminal ego speed and body-centroid gap over final 2 seconds",
+            "failure_condition": "speed remains above 0.1 m/s or centroid-target gap remains above 1.25 m"
+          },
+          "changed_knobs": [
+            "engineering_throttle: 0.25 to 0.18",
+            "engineering_braking_factor: 5.0 to 4.0"
+          ],
+          "offline": {
+            "construction_sha256": "290a372716b4b4b8c972c1051880f307b6e9b78ddeb7131fa808959d18663b0c",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_nonfire --candidate fallback1 --output .runtime-work/c229925-owner/offline-fallback1-opposite_stop_nonfire",
+            "exit_code": 0,
+            "log": "proof-offline-fallback1-opposite_stop_nonfire.log",
+            "log_sha256": "1c8f1e1eb420834b05f7d4302181652a4eb2636777e7c3d0c7b6830eb7b4591a"
+          },
+          "compatibility": {
+            "receipt": "proofs/fallback1-opposite_stop_nonfire/receipt.json",
+            "sha256": "cf21b5d3dcb794cf13d55c7095da66f9ce162ac7a64acaec0870508e7a86f807",
+            "log": "proofs/fallback1-opposite_stop_nonfire/analysis.log",
+            "negative_log": "proofs/fallback1-opposite_stop_nonfire/negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "construction_sha256": "5d407733fac3c446fae53797726bd3543fd9c82b09c51966f4aa735b02217460",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_nonfire --output .runtime-work/c229925-owner/offline-opposite_stop_nonfire",
+        "exit_code": 0,
+        "log": "proof-offline-opposite_stop_nonfire.log",
+        "log_sha256": "6a4bcc0714f50918fbe752f11f6d36d100742696a2a9084f79b72870dd3d4009"
+      },
+      "compatibility": {
+        "receipt": "proofs/primary-opposite_stop_nonfire/receipt.json",
+        "sha256": "b516a090c1547d56ff845242854487991d5c64782cac064be11973a3a6409c98",
+        "log": "proofs/primary-opposite_stop_nonfire/analysis.log",
+        "negative_log": "proofs/primary-opposite_stop_nonfire/negative.log"
+      },
+      "negative": {
+        "log": "proofs/primary-opposite_stop_nonfire/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-opposite_stop_nonfire-receipt.json",
+        "sha256": "f3f51a588990dc6efc14b6c2288c0acd53abfb0742d743a2345e7d9fddbcd001"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_nonfire --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_nonfire --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_log": "proof-saved-opposite_stop_nonfire.log",
+        "test_log_sha256": "b7977971499fbe041b4b254d86f4ee643ef57d02fa249ff27501e83956b7e4b3",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original fire-station, highway, vehicle, exception and pixel review pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_nonfire",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "bc73ed9a3028138690568629b5fa201086add941837ddaf76703ca44260bab15",
+        "command": ".venv-cpu/bin/python work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/delivery_probe.py --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_nonfire --attempt .runtime-work/c229925-owner/compat-opposite_stop_nonfire --saved-root .runtime-work/c229925-owner/saved-opposite_stop_nonfire --mode positive",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-opposite_stop_nonfire-positive.log",
+        "test_log_sha256": "6a9ec30a724d5697d8f7818005c59e5caead3452ba227e5807da092f4842e4bd",
+        "negative_command": ".venv-cpu/bin/python work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/delivery_probe.py --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_nonfire --attempt .runtime-work/c229925-owner/compat-opposite_stop_nonfire --saved-root .runtime-work/c229925-owner/saved-opposite_stop_nonfire --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: fire-entrance-context.json",
+        "negative_log": "proof-delivery-opposite_stop_nonfire-negative.log",
+        "negative_log_sha256": "ce86beb3245d1cd314eb0b7933477b9542829d28400b49c577d3f4dec6f205af"
+      }
+    },
+    {
+      "case_id": "testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_private_road",
+      "kind": "delivery",
+      "construction": "cases/opposite_stop_private_road/construction.json",
+      "construction_sha256": "73e8c5cd1b0280e9ce24ad31ccfee852ce1802dca1d80ecd4a0842951ff15b07",
+      "fixture_recipe": "work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/diagnostic-opposite_stop_private_road-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "original reviewed fire-station entrance and public-highway packet required",
+      "acquisition": {
+        "entrance_boundary": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-entrance_boundary.jsonl"
+        },
+        "vehicle_body_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_body_history.jsonl"
+        },
+        "vehicle_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_motion_history.jsonl"
+        },
+        "highway_side_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-highway_side_history.jsonl"
+        },
+        "halt_activity_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-halt_activity_history.jsonl"
+        },
+        "traffic_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-traffic_motion_history.jsonl"
+        },
+        "exception_context": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-exception_context.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-camera_frame_map.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The opposite-side and entrance-side stop may not achieve a stable terminal halt with body position near the nominated foot boundary."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/opposite_stop_private_road/fallback1/construction.json",
+          "construction_sha256": "e2dffcafe4a12ab2c2502d67e743a5adb91fd0716adc9f556d1fe9ef05dc7969",
+          "trigger": {
+            "source": "original fire-entrance-trace.jsonl and reviewed target",
+            "metric": "terminal ego speed and body-centroid gap over final 2 seconds",
+            "failure_condition": "speed remains above 0.1 m/s or centroid-target gap remains above 1.25 m"
+          },
+          "changed_knobs": [
+            "engineering_throttle: 0.25 to 0.18",
+            "engineering_braking_factor: 5.0 to 4.0"
+          ],
+          "offline": {
+            "construction_sha256": "e2dffcafe4a12ab2c2502d67e743a5adb91fd0716adc9f556d1fe9ef05dc7969",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_private_road --candidate fallback1 --output .runtime-work/c229925-owner/offline-fallback1-opposite_stop_private_road",
+            "exit_code": 0,
+            "log": "proof-offline-fallback1-opposite_stop_private_road.log",
+            "log_sha256": "cc34fcdfd2b43505dd15cb91f914d4f54c31b93dfb9a8d90be5876466af040a5"
+          },
+          "compatibility": {
+            "receipt": "proofs/fallback1-opposite_stop_private_road/receipt.json",
+            "sha256": "27717bea727fdaec3b92e8dc52b243c367d26fba0797000d0f4b31d6308e0a46",
+            "log": "proofs/fallback1-opposite_stop_private_road/analysis.log",
+            "negative_log": "proofs/fallback1-opposite_stop_private_road/negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "construction_sha256": "73e8c5cd1b0280e9ce24ad31ccfee852ce1802dca1d80ecd4a0842951ff15b07",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_private_road --output .runtime-work/c229925-owner/offline-opposite_stop_private_road",
+        "exit_code": 0,
+        "log": "proof-offline-opposite_stop_private_road.log",
+        "log_sha256": "07a12955bc4f79fa7db94f4e9109fd5eb7314c6e60e3c7722a01e05763481942"
+      },
+      "compatibility": {
+        "receipt": "proofs/primary-opposite_stop_private_road/receipt.json",
+        "sha256": "9b36a781e5ab46546e4c5b3e415c0338c84de71d492906e456e239b2c24f7ae0",
+        "log": "proofs/primary-opposite_stop_private_road/analysis.log",
+        "negative_log": "proofs/primary-opposite_stop_private_road/negative.log"
+      },
+      "negative": {
+        "log": "proofs/primary-opposite_stop_private_road/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-opposite_stop_private_road-receipt.json",
+        "sha256": "670963032632f771db424d4b0a0a1adcb27465f48ea23dd8f909d26ae999ca60"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_private_road --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_private_road --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_log": "proof-saved-opposite_stop_private_road.log",
+        "test_log_sha256": "138450e26554da9886dd7d1bacc61550bb85ade417e772d3972780f6e7baddf8",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original fire-station, highway, vehicle, exception and pixel review pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_private_road",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "bc73ed9a3028138690568629b5fa201086add941837ddaf76703ca44260bab15",
+        "command": ".venv-cpu/bin/python work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/delivery_probe.py --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_private_road --attempt .runtime-work/c229925-owner/compat-opposite_stop_private_road --saved-root .runtime-work/c229925-owner/saved-opposite_stop_private_road --mode positive",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-opposite_stop_private_road-positive.log",
+        "test_log_sha256": "1d2e2b33ccd79bfc43c76c74b7d2b0b2083adb5ccd0d8735442e83920bf8d62d",
+        "negative_command": ".venv-cpu/bin/python work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/delivery_probe.py --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__opposite_stop_private_road --attempt .runtime-work/c229925-owner/compat-opposite_stop_private_road --saved-root .runtime-work/c229925-owner/saved-opposite_stop_private_road --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: fire-entrance-context.json",
+        "negative_log": "proof-delivery-opposite_stop_private_road-negative.log",
+        "negative_log_sha256": "ce86beb3245d1cd314eb0b7933477b9542829d28400b49c577d3f4dec6f205af"
+      }
+    },
+    {
+      "case_id": "testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__entrance_stop_74ft",
+      "kind": "delivery",
+      "construction": "cases/entrance_stop_74ft/construction.json",
+      "construction_sha256": "e0707dfe380b078f4c262f83c3449b7277ec7e8c807be266a0939419a80824e7",
+      "fixture_recipe": "work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/diagnostic-entrance_stop_74ft-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "original reviewed fire-station entrance and public-highway packet required",
+      "acquisition": {
+        "entrance_boundary": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-entrance_boundary.jsonl"
+        },
+        "vehicle_body_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_body_history.jsonl"
+        },
+        "vehicle_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_motion_history.jsonl"
+        },
+        "highway_side_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-highway_side_history.jsonl"
+        },
+        "halt_activity_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-halt_activity_history.jsonl"
+        },
+        "traffic_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-traffic_motion_history.jsonl"
+        },
+        "exception_context": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-exception_context.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-camera_frame_map.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The opposite-side and entrance-side stop may not achieve a stable terminal halt with body position near the nominated foot boundary."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/entrance_stop_74ft/fallback1/construction.json",
+          "construction_sha256": "ad31a14b7f6425e3e651462c056e205c5bfd1133c17cbea6d1045bf93d6fe4a0",
+          "trigger": {
+            "source": "original fire-entrance-trace.jsonl and reviewed target",
+            "metric": "terminal ego speed and body-centroid gap over final 2 seconds",
+            "failure_condition": "speed remains above 0.1 m/s or centroid-target gap remains above 1.25 m"
+          },
+          "changed_knobs": [
+            "engineering_throttle: 0.25 to 0.18",
+            "engineering_braking_factor: 5.0 to 4.0"
+          ],
+          "offline": {
+            "construction_sha256": "ad31a14b7f6425e3e651462c056e205c5bfd1133c17cbea6d1045bf93d6fe4a0",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__entrance_stop_74ft --candidate fallback1 --output .runtime-work/c229925-owner/offline-fallback1-entrance_stop_74ft",
+            "exit_code": 0,
+            "log": "proof-offline-fallback1-entrance_stop_74ft.log",
+            "log_sha256": "b5ee0ea6f13513b68d71ea95e7b2521e264f49bec6cdfb37df66a0f07e33700a"
+          },
+          "compatibility": {
+            "receipt": "proofs/fallback1-entrance_stop_74ft/receipt.json",
+            "sha256": "0528ca1339bfbb9148c872767692e1bc967b7e7f03285e71913fbc588efaaa19",
+            "log": "proofs/fallback1-entrance_stop_74ft/analysis.log",
+            "negative_log": "proofs/fallback1-entrance_stop_74ft/negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "construction_sha256": "e0707dfe380b078f4c262f83c3449b7277ec7e8c807be266a0939419a80824e7",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__entrance_stop_74ft --output .runtime-work/c229925-owner/offline-entrance_stop_74ft",
+        "exit_code": 0,
+        "log": "proof-offline-entrance_stop_74ft.log",
+        "log_sha256": "74e9db8ea8e0470a84cc11d363b54ffa55cdb3825aacfdec4ea3fa8514ade236"
+      },
+      "compatibility": {
+        "receipt": "proofs/primary-entrance_stop_74ft/receipt.json",
+        "sha256": "582b6dff9994701b0596a63ead384558d45730b68da6184f42382aa3ecbad991",
+        "log": "proofs/primary-entrance_stop_74ft/analysis.log",
+        "negative_log": "proofs/primary-entrance_stop_74ft/negative.log"
+      },
+      "negative": {
+        "log": "proofs/primary-entrance_stop_74ft/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-entrance_stop_74ft-receipt.json",
+        "sha256": "76c6971fa7cf0d642cf8327bdba282412a61b6c1c6bb317c771d43b01f77d52e"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__entrance_stop_74ft --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/execution-manifest.json --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__entrance_stop_74ft --attempt \"$ATTEMPT\" --output \"$PROCESSED\" --library runtime/library --validator \"$LEAN_VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "test_log": "proof-saved-entrance_stop_74ft.log",
+        "test_log_sha256": "72f92c567f808e5021cafaf5e2bc30aed1ed25cc43e17b3daf082c94a12ee976",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original fire-station, highway, vehicle, exception and pixel review pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__entrance_stop_74ft",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "bc73ed9a3028138690568629b5fa201086add941837ddaf76703ca44260bab15",
+        "command": ".venv-cpu/bin/python work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/delivery_probe.py --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__entrance_stop_74ft --attempt .runtime-work/c229925-owner/compat-entrance_stop_74ft --saved-root .runtime-work/c229925-owner/saved-entrance_stop_74ft --mode positive",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-entrance_stop_74ft-positive.log",
+        "test_log_sha256": "944cfd24a880ea48260ca74884e609b8c04363b440b9f419c19b60914d5e30f4",
+        "negative_command": ".venv-cpu/bin/python work/testing__C229925__NRS-484B-450-1j__vehicle_stopping_person/delivery_probe.py --case testing__C229925__NRS-484B-450-1j__vehicle_stopping_person__entrance_stop_74ft --attempt .runtime-work/c229925-owner/compat-entrance_stop_74ft --saved-root .runtime-work/c229925-owner/saved-entrance_stop_74ft --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: fire-entrance-context.json",
+        "negative_log": "proof-delivery-entrance_stop_74ft-negative.log",
+        "negative_log_sha256": "ce86beb3245d1cd314eb0b7933477b9542829d28400b49c577d3f4dec6f205af"
+      }
+    }
+  ]
+}

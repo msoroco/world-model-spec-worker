@@ -1,0 +1,93 @@
+{
+  "template_id": "NRS-484B-450-1j@vehicle_stopping_person",
+  "law_id": "NRS-484B-450-1j",
+  "actor": "vehicle_stopping_person",
+  "quote": "A person shall not stop, stand or park a vehicle, except when necessary to avoid conflict with other traffic or in compliance with law or the directions of a police officer or official traffic-control device, in any of the following places: Within 20 feet of a driveway entrance to any fire station and, on the side of a highway opposite the entrance to any fire station, within 75 feet of that entrance.",
+  "structure": {
+    "law_id": "NRS-484B-450-1j",
+    "activation": {
+      "condition": "Person stops, stands or parks a vehicle at a fire-station driveway entrance or on the opposite side of a highway.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "A person shall not stop, stand or park a vehicle, except when necessary to avoid conflict with other traffic or in compliance with law or the directions of a police officer or official traffic-control device, in any of the following places: Within 20 feet of a driveway entrance to any fire station and, on the side of a highway opposite the entrance to any fire station, within 75 feet of that entrance.",
+      "type": "must_not",
+      "numeric_conditions": [
+        {
+          "variable": "entrance_distance_target_ft",
+          "operator": "within",
+          "value": 20,
+          "unit": "ft",
+          "branch": "entrance proximity",
+          "note": "Legal boundary and body-distance convention unresolved"
+        },
+        {
+          "variable": "entrance_distance_target_ft",
+          "operator": "within",
+          "value": 75,
+          "unit": "ft",
+          "branch": "opposite highway side proximity",
+          "note": "Legal boundary and body-distance convention unresolved"
+        }
+      ]
+    },
+    "exceptions": [
+      {
+        "trigger": "necessary to avoid conflict with other traffic",
+        "effect": "exception to prohibition",
+        "replacement_obligation": null,
+        "source_clause": "necessary to avoid conflict with other traffic"
+      },
+      {
+        "trigger": "in compliance with law",
+        "effect": "exception to prohibition",
+        "replacement_obligation": null,
+        "source_clause": "in compliance with law"
+      },
+      {
+        "trigger": "the directions of a police officer",
+        "effect": "exception to prohibition",
+        "replacement_obligation": null,
+        "source_clause": "the directions of a police officer"
+      },
+      {
+        "trigger": "official traffic-control device",
+        "effect": "exception to prohibition",
+        "replacement_obligation": null,
+        "source_clause": "official traffic-control device"
+      }
+    ],
+    "timing": {
+      "description": "Observe original approach through terminal halt and independent direction circumstances.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "necessary to avoid conflict with other traffic",
+        "note": "Preserve traffic motion and independent necessity facts without deciding necessity."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "highway_side_request",
+      "kind": "world_setup",
+      "range_or_domain": "entrance or opposite side"
+    },
+    {
+      "name": "entrance_distance_target_ft",
+      "kind": "world_setup",
+      "range_or_domain": "19/20/21 and 74/75/76 foot targets"
+    },
+    {
+      "name": "halt_activity",
+      "kind": "world_setup",
+      "range_or_domain": "stop, stand or park"
+    },
+    {
+      "name": "circumstance",
+      "kind": "world_setup",
+      "range_or_domain": "none, conflict, law, police, device, nonfire or private road"
+    }
+  ]
+}

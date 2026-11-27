@@ -276,12 +276,51 @@
     }
   ],
   "observations": [
-    "source-reviewed highway and physical edge or curb",
-    "two vehicle original footprints and positions",
-    "edge vehicle original stopped/parked history",
-    "ego original stop/stand/park activity and duration",
-    "traffic-conflict necessity and law/police/device direction sources",
-    "four-camera original visibility and 20 Hz actor/control joins"
+    {
+      "name": "site_source",
+      "mandatory": true,
+      "description": "Original source-bound site source"
+    },
+    {
+      "name": "edge_reference",
+      "mandatory": true,
+      "description": "Original source-bound edge reference"
+    },
+    {
+      "name": "ego_body_history",
+      "mandatory": true,
+      "description": "Original source-bound ego body history"
+    },
+    {
+      "name": "edge_vehicle_body_history",
+      "mandatory": true,
+      "description": "Original source-bound edge vehicle body history"
+    },
+    {
+      "name": "ego_motion_history",
+      "mandatory": true,
+      "description": "Original source-bound ego motion history"
+    },
+    {
+      "name": "edge_motion_history",
+      "mandatory": true,
+      "description": "Original source-bound edge motion history"
+    },
+    {
+      "name": "halt_activity_history",
+      "mandatory": true,
+      "description": "Original source-bound halt activity history"
+    },
+    {
+      "name": "exception_context",
+      "mandatory": true,
+      "description": "Original source-bound exception context"
+    },
+    {
+      "name": "camera_frame_map",
+      "mandatory": true,
+      "description": "Original source-bound camera frame map"
+    }
   ],
   "sources": [
     {
@@ -307,8 +346,8 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "Original highway, curb and side-by-side vehicle placement require local physical review.",
+    "Stop, stand or park activity and exceptions require independent source and legal review."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
@@ -327,7 +366,7 @@
     ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_exact_cases_and_source_gated_constructor",
+  "planning_status": "selected_cpu_package_in_progress",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
@@ -349,5 +388,51 @@
       ],
       "reason": "A narrow road can support the specified parking relationship; neither narrowness nor the other vehicle alone establishes activation."
     }
-  ]
+  ],
+  "requirement_dispositions": [
+    {
+      "requirement": "NRS-484B-450-1l highway side of a vehicle stopped or parked at highway edge or curb; stop, stand, park and each stated exception",
+      "source": "inputs/testing__C135705__NRS-484B-450-1l__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "evidence_or_gap": "No accepted original recording; eight exact captures and seven controlled comparisons required.",
+      "case_ids": [
+        "testing__C135705__NRS-484B-450-1l__motor_vehicle_driver__side_park",
+        "testing__C135705__NRS-484B-450-1l__motor_vehicle_driver__behind_park",
+        "testing__C135705__NRS-484B-450-1l__motor_vehicle_driver__side_stop",
+        "testing__C135705__NRS-484B-450-1l__motor_vehicle_driver__side_stand",
+        "testing__C135705__NRS-484B-450-1l__motor_vehicle_driver__side_conflict",
+        "testing__C135705__NRS-484B-450-1l__motor_vehicle_driver__side_law",
+        "testing__C135705__NRS-484B-450-1l__motor_vehicle_driver__side_police",
+        "testing__C135705__NRS-484B-450-1l__motor_vehicle_driver__side_device"
+      ]
+    }
+  ],
+  "source_observation_mapping": {},
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "narrow highway, edge vehicle and ego",
+        "interval": "approach through terminal halt"
+      },
+      {
+        "view": "approach",
+        "subject": "ego approach and edge vehicle",
+        "interval": "approach through terminal halt"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "curb edge and two vehicle bodies",
+        "interval": "approach through terminal halt"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "ego highway-side approach and halt",
+        "interval": "approach through terminal halt"
+      }
+    ]
+  }
 }

@@ -67,7 +67,7 @@ class ParkingTests(unittest.TestCase):
 
     def test_all_exact_cases_spawn_and_request_distinct_endpoints(self):
         plan = json.loads((HERE / "case-plan.json").read_text())
-        self.assertEqual({row["case_id"].removeprefix(HERE.name + "__") for row in plan["cases"]},
+        self.assertEqual({row["case_id"].rsplit("__", 1)[-1] for row in plan["cases"]},
                          {case.case_id for case in CASES})
         self.assertEqual(len(plan["comparisons"]), 7)
         for case in CASES:

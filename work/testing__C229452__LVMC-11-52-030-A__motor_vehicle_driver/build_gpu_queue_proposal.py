@@ -16,15 +16,16 @@ def main():
     for entry in manifest['cases']:
         case = entry['case_id']
         identity = (f'--repo "$PWD" --batch full-test-delivery --db "$DB" '
-                    f'--assignment {ASSIGNMENT} --case {case} --run "$RUN" --job "$JOB_ID"')
+                    f'--assignment {ASSIGNMENT} --case {case}')
         prepare = f'{BASE} prepare-delivery {identity}'
-        execute = (f'{BASE} execute-delivery {identity} --python "$CARLA_PYTHON" '
+        execution = identity + ' --run "$RUN" --job "$JOB_ID"'
+        execute = (f'{BASE} execute-delivery {execution} --python "$CARLA_PYTHON" '
                    '--host "$CARLA_HOST" --port "$CARLA_PORT"')
         cases.append({
             'assignment_id': ASSIGNMENT, 'case_id': case,
             'prepare_command': prepare,
             'execute_command': execute,
-            'accept_command': (f'{BASE} accept-delivery {identity} --attempt "$ATTEMPT" '
+            'accept_command': (f'{BASE} accept-delivery {execution} --attempt "$ATTEMPT" '
                                '--audit "$AUDIT" --review-archive /external/archive'),
             'capture_command': execute,
             'postprocessing_command': (f'.venv-cpu/bin/python runtime.py process-saved '

@@ -19,3 +19,5 @@ The original Native route requires a reviewed site packet with source hashes for
 - Exact manifest: `execution-manifest.json`; semantic stage hashes: `proposals/semantic-index.json`; independent audit: `delivery_audit.py`; queue proposal: `gpu-queue-proposal.json`.
 
 All diagnostic scratch, decoder build, generated video and temporary attempts are under `.runtime-work/`. No work artifact claims an accepted original capture.
+
+Lead repaired the nine published `prepare-delivery` commands and nine fallback commands to match the current runtime CLI, which does not accept `--run` or `--job` for preparation. The queue validator and exact scoped strict gate passed after repair (`.runtime-work/c229405-lead-cli-repair/strict-after-cli-repair.log`, SHA-256 `4289641082f9c650199c6696d0590f3f4bb75f8367a63ad1f9dc4acf0cc08251`). Current proposal SHA-256 is `141b1f2a11b1f670f1470920e26292a49c28c432da5d9c250c64ad826d3241db`.

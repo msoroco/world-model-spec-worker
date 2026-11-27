@@ -10,6 +10,7 @@ import hashlib
 import json
 import math
 import queue
+import shutil
 import subprocess
 from pathlib import Path
 
@@ -231,6 +232,14 @@ def run_native(cfg, site, records, site_path, output, host, port):
                    "parking_person_source": site["sources"]["person"]["sha256"],
                    "halt_purpose_source": site["sources"]["purpose"]["sha256"],
                    "site_sha256": sha(site_path)}
+        site_output = output / "reviewed-site"
+        site_output.mkdir(exist_ok=False)
+        shutil.copy2(site_path, site_output / "site.json")
+        for ref in site["sources"].values():
+            source = (Path(site_path).parent / ref["path"]).resolve()
+            target_path = site_output / ref["path"]
+            target_path.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(source, target_path)
         write(output / "parking-context.json", context)
         write(output / "acquisition-provenance.json", {
             "provenance_kind": "native", "diagnostic_fixture": False,
@@ -277,6 +286,8 @@ def run_native(cfg, site, records, site_path, output, host, port):
         cameras.close(); cameras = None
         names = ["trace.jsonl", "video_frames.jsonl", "parking-history.jsonl",
                  "parking-context.json", "road.xodr", "carla_recorder.log",
+                 "reviewed-site/site.json",
+                 *["reviewed-site/" + ref["path"] for ref in site["sources"].values()],
                  *[name + ".mkv" for name, _, _ in CAMERAS]]
         write(output / "acquisition.json", {name: {"kind": "original_native",
             "sha256": sha(output / name)} for name in names})
