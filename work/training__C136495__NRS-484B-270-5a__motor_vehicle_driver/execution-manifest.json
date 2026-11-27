@@ -7,7 +7,7 @@
       "case_id": "training__C136495__NRS-484B-270-5a__motor_vehicle_driver__selected_a21cf01e__condition_a",
       "kind": "delivery",
       "construction": "constructions/a-primary.json",
-      "construction_sha256": "820665bc0edeec6c4fe4529a58d6dbd9982f0089c682a2c08db0cbf145f65723",
+      "construction_sha256": "ad112f911664e5f46215475fa96ffbc60ca73c2a12c4645fdf54611a9b06a337",
       "candidate_risk": {
         "status": "physical",
         "reason": "Narrow road and bicycle controller may depart the route or lose camera coverage; fallback shortens lookahead without changing comparison"
@@ -16,7 +16,7 @@
         {
           "id": "fallback1",
           "construction": "constructions/a-fallback1.json",
-          "construction_sha256": "ed42d0d34264ad439f6bb4646e6af7307c8a9153b7cde4311b886582fa5891f1",
+          "construction_sha256": "4c10542f28d126b18cf995081f40e5944fcdf325b1fc8c3e5e9392eff0ad296b",
           "trigger": {
             "source": "original Native controller route-error history",
             "metric": "maximum contiguous route error > 0.75 m for five frames",
@@ -24,7 +24,21 @@
           },
           "changed_knobs": [
             "lookahead_base_m: 4.0 m to 2.5 m for both actors"
-          ]
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "4c10542f28d126b18cf995081f40e5944fcdf325b1fc8c3e5e9392eff0ad296b",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C136495__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case training__C136495__NRS-484B-270-5a__motor_vehicle_driver__selected_a21cf01e__condition_a --candidate fallback1 --output .runtime-work/c136495-5a-build/offline-a-fallback1",
+            "log": "materialization-a-fallback1.log",
+            "log_sha256": "3b36bbf62946f79ebef59b027bc2d5b837aadb5aa2f517025de26a3607d8fdff"
+          },
+          "compatibility": {
+            "receipt": "proofs/public-a-fallback1.json",
+            "sha256": "9ef51689a05aea4ba093c3096806ab1e1af7fd3b872998124abb25920e9c6960",
+            "log": "proofs/public-a-fallback1-analysis.log",
+            "negative_log": "proofs/public-a-fallback1-negative.log",
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/training__C136495__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case training__C136495__NRS-484B-270-5a__motor_vehicle_driver__selected_a21cf01e__condition_a --candidate fallback1 --output .runtime-work/c136495-5a-build/public-a-fallback1 --library runtime/library --validator .runtime-work/c136495-5a-build/validator/.lake/build/bin/adapterCheck"
+          }
         }
       ],
       "status": "cpu_draft",
@@ -79,13 +93,60 @@
           "method": "sample original Native actor/wheel/collision/camera frames and saved source hashes",
           "evidence": "actor-frames.jsonl, camera-frame-map.jsonl, response-control.jsonl, classification.json, collision-events.jsonl, rider-binding.json"
         }
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "ad112f911664e5f46215475fa96ffbc60ca73c2a12c4645fdf54611a9b06a337",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C136495__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case training__C136495__NRS-484B-270-5a__motor_vehicle_driver__selected_a21cf01e__condition_a --candidate primary --output .runtime-work/c136495-5a-build/offline-a-primary",
+        "log": "materialization-a-primary.log",
+        "log_sha256": "0baa5af5238837436bf6af5d18dbf4ce33d052880af53dc2bbb1c5a06b5ba4fd"
+      },
+      "compatibility": {
+        "receipt": "proofs/public-a-primary.json",
+        "sha256": "3f563592883975bd4a2c2faab98dabef73e0b4231f8e6c0a7ca5f4762b55d974",
+        "log": "proofs/public-a-primary-analysis.log",
+        "negative_log": "proofs/public-a-primary-negative.log",
+        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/training__C136495__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case training__C136495__NRS-484B-270-5a__motor_vehicle_driver__selected_a21cf01e__condition_a --candidate primary --output .runtime-work/c136495-5a-build/public-a-primary --library runtime/library --validator .runtime-work/c136495-5a-build/validator/.lake/build/bin/adapterCheck"
+      },
+      "negative": {
+        "log": "proofs/public-a-primary-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "proofs/physical-a-receipt.json",
+        "sha256": "ec6dfacd98fc33106e920cfc63885b0b37b12ff72f94b2c313af19352429c92b"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C136495__NRS-484B-270-5a__motor_vehicle_driver__selected_a21cf01e__condition_a",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "proofs/independent-delivery-check.py",
+        "script_sha256": "266ac39852bad866fa00f97076ad1ce9b74a80d90bd0e4de668451dfa2be268d",
+        "command": ".venv-cpu/bin/python work/training__C136495__NRS-484B-270-5a__motor_vehicle_driver/proofs/independent-delivery-check.py --case training__C136495__NRS-484B-270-5a__motor_vehicle_driver__selected_a21cf01e__condition_a --source-root .runtime-work/c136495-5a-build/public-a-primary",
+        "test_exit_code": 0,
+        "test_log": "proofs/delivery-a-positive.log",
+        "test_log_sha256": "792a1cd0a614fde9cf9cc9075c2373b075c27db22717e89125f860297b05a77c",
+        "negative_command": ".venv-cpu/bin/python work/training__C136495__NRS-484B-270-5a__motor_vehicle_driver/proofs/independent-delivery-check.py --case training__C136495__NRS-484B-270-5a__motor_vehicle_driver__selected_a21cf01e__condition_a --source-root .runtime-work/c136495-5a-build/public-a-primary --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: classification.json",
+        "negative_log": "proofs/delivery-a-negative.log",
+        "negative_log_sha256": "900288cb2c9348a4b118c4728565b0aef1dbd63272c7117f36b4dead62a5f703",
+        "scope": "synthetic saved-source CPU audit; no Native physical or legal acceptance"
       }
     },
     {
       "case_id": "training__C136495__NRS-484B-270-5a__motor_vehicle_driver__selected_a21cf01e__condition_b",
       "kind": "delivery",
       "construction": "constructions/b-primary.json",
-      "construction_sha256": "4890bf8af385f3344f7a387b91e57666793d0a53d4bfa94faa79045a2becae38",
+      "construction_sha256": "2ea5a8094deda6565d2ad2975972c3a79c73f161e495cdfdcef99bb44fbd3795",
       "candidate_risk": {
         "status": "physical",
         "reason": "Narrow road and bicycle controller may depart the route or lose camera coverage; fallback shortens lookahead without changing comparison"
@@ -94,7 +155,7 @@
         {
           "id": "fallback1",
           "construction": "constructions/b-fallback1.json",
-          "construction_sha256": "ef21acfc5420767554133b9ab72e19cbb80c70c4e58a795846ab317cdab84575",
+          "construction_sha256": "ea73ed0a37f60387fe1cc3fb505ab80d34f7d39c97ef36d4f41541512ddfc0d1",
           "trigger": {
             "source": "original Native controller route-error history",
             "metric": "maximum contiguous route error > 0.75 m for five frames",
@@ -102,7 +163,21 @@
           },
           "changed_knobs": [
             "lookahead_base_m: 4.0 m to 2.5 m for both actors"
-          ]
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "ea73ed0a37f60387fe1cc3fb505ab80d34f7d39c97ef36d4f41541512ddfc0d1",
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C136495__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case training__C136495__NRS-484B-270-5a__motor_vehicle_driver__selected_a21cf01e__condition_b --candidate fallback1 --output .runtime-work/c136495-5a-build/offline-b-fallback1",
+            "log": "materialization-b-fallback1.log",
+            "log_sha256": "1cb826b4f2713634377ff3967fd3eaa85d692777212c414fd7e92e38e7fc2249"
+          },
+          "compatibility": {
+            "receipt": "proofs/public-b-fallback1.json",
+            "sha256": "7fedcc21a21a9fc601f36ce563894e9d64414751df2e7ba1188bd74ae2afa9ea",
+            "log": "proofs/public-b-fallback1-analysis.log",
+            "negative_log": "proofs/public-b-fallback1-negative.log",
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/training__C136495__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case training__C136495__NRS-484B-270-5a__motor_vehicle_driver__selected_a21cf01e__condition_b --candidate fallback1 --output .runtime-work/c136495-5a-build/public-b-fallback1 --library runtime/library --validator .runtime-work/c136495-5a-build/validator/.lake/build/bin/adapterCheck"
+          }
         }
       ],
       "status": "cpu_draft",
@@ -157,6 +232,53 @@
           "method": "sample original Native actor/wheel/collision/camera frames and saved source hashes",
           "evidence": "actor-frames.jsonl, camera-frame-map.jsonl, response-control.jsonl, classification.json, collision-events.jsonl, rider-binding.json"
         }
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "2ea5a8094deda6565d2ad2975972c3a79c73f161e495cdfdcef99bb44fbd3795",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C136495__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case training__C136495__NRS-484B-270-5a__motor_vehicle_driver__selected_a21cf01e__condition_b --candidate primary --output .runtime-work/c136495-5a-build/offline-b-primary",
+        "log": "materialization-b-primary.log",
+        "log_sha256": "89718a37e0d9ba6ef9e53e642b969707db06e0fa755ebf16ceaea823b79a5db8"
+      },
+      "compatibility": {
+        "receipt": "proofs/public-b-primary.json",
+        "sha256": "81e5bcd3de73ac1e61e06ec10c43661c19093e7e9d9412888035e3be7d92946c",
+        "log": "proofs/public-b-primary-analysis.log",
+        "negative_log": "proofs/public-b-primary-negative.log",
+        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/training__C136495__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case training__C136495__NRS-484B-270-5a__motor_vehicle_driver__selected_a21cf01e__condition_b --candidate primary --output .runtime-work/c136495-5a-build/public-b-primary --library runtime/library --validator .runtime-work/c136495-5a-build/validator/.lake/build/bin/adapterCheck"
+      },
+      "negative": {
+        "log": "proofs/public-b-primary-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "proofs/physical-b-receipt.json",
+        "sha256": "0ea328356d535bbc039545674f3b79913b6e3a9f2fdd6e618feb6eed01fd9552"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C136495__NRS-484B-270-5a__motor_vehicle_driver__selected_a21cf01e__condition_b",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "proofs/independent-delivery-check.py",
+        "script_sha256": "266ac39852bad866fa00f97076ad1ce9b74a80d90bd0e4de668451dfa2be268d",
+        "command": ".venv-cpu/bin/python work/training__C136495__NRS-484B-270-5a__motor_vehicle_driver/proofs/independent-delivery-check.py --case training__C136495__NRS-484B-270-5a__motor_vehicle_driver__selected_a21cf01e__condition_b --source-root .runtime-work/c136495-5a-build/public-b-primary",
+        "test_exit_code": 0,
+        "test_log": "proofs/delivery-b-positive.log",
+        "test_log_sha256": "66176d6dd8dc895a33d4042996764f84a94a528232400b9d8e52f3a896377765",
+        "negative_command": ".venv-cpu/bin/python work/training__C136495__NRS-484B-270-5a__motor_vehicle_driver/proofs/independent-delivery-check.py --case training__C136495__NRS-484B-270-5a__motor_vehicle_driver__selected_a21cf01e__condition_b --source-root .runtime-work/c136495-5a-build/public-b-primary --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing required source: classification.json",
+        "negative_log": "proofs/delivery-b-negative.log",
+        "negative_log_sha256": "900288cb2c9348a4b118c4728565b0aef1dbd63272c7117f36b4dead62a5f703",
+        "scope": "synthetic saved-source CPU audit; no Native physical or legal acceptance"
       }
     }
   ]

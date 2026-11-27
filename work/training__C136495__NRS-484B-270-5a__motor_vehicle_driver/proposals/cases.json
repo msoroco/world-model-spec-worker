@@ -3,9 +3,121 @@
   "law_id": "NRS-484B-270-5a",
   "actor": "motor_vehicle_driver",
   "status": "draft",
-  "sweep_specs": [],
+  "sweep_specs": [
+    {
+      "sweep_id": "training__C136495__NRS-484B-270-5a__motor_vehicle_driver__due_care_evidence",
+      "target_law_id": "NRS-484B-270-5a",
+      "judgment_refs": [
+        {
+          "phrase": "due care",
+          "note": "The statute supplies no numeric due-care cutoff; original person/bicycle qualification, actor response, collision and surrounding context require independent review."
+        }
+      ],
+      "rationale": "Due care is qualitative; original context and physical realization require independent local review before any judgment sweep bounds are chosen.",
+      "status": "incomplete",
+      "missing_inputs": [
+        "Original physically verified person riding a qualifying bicycle and full interaction context; no accepted source or defensible judgment range supplied."
+      ]
+    }
+  ],
   "sweeps_expanded": true,
   "cases": [
+    {
+      "case_id": "training__C136495__NRS-484B-270-5a__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared authored narrow road and bicycle blueprint source setup; no recording selection",
+      "variable_assignments": {
+        "requested_longitudinal_response_trigger_distance": {
+          "kind": "controller",
+          "value": 25
+        }
+      },
+      "unresolved_judgment_calls": [
+        "due care"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ru.bicycle",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "hash-bound original actor, collision sensor, classification and four-camera frame join",
+            "time_window": "30 s / 600 joined original frames",
+            "reference_frame": "Native road, actor and camera frame",
+            "uncertainty": "50 ms sampling; actual person, bicycle type, propulsion, moped exclusion and due care require independent source review"
+          },
+          {
+            "name": "ru.electric_bicycle",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "hash-bound original actor, collision sensor, classification and four-camera frame join",
+            "time_window": "30 s / 600 joined original frames",
+            "reference_frame": "Native road, actor and camera frame",
+            "uncertainty": "50 ms sampling; actual person, bicycle type, propulsion, moped exclusion and due care require independent source review"
+          },
+          {
+            "name": "ru.electric_scooter",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "hash-bound original actor, collision sensor, classification and four-camera frame join",
+            "time_window": "30 s / 600 joined original frames",
+            "reference_frame": "Native road, actor and camera frame",
+            "uncertainty": "50 ms sampling; actual person, bicycle type, propulsion, moped exclusion and due care require independent source review"
+          },
+          {
+            "name": "drv.time_to_conflict",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "hash-bound original actor, collision sensor, classification and four-camera frame join",
+            "time_window": "30 s / 600 joined original frames",
+            "reference_frame": "Native road, actor and camera frame",
+            "uncertainty": "50 ms sampling; actual person, bicycle type, propulsion, moped exclusion and due care require independent source review"
+          },
+          {
+            "name": "rel.contact",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "hash-bound original actor, collision sensor, classification and four-camera frame join",
+            "time_window": "30 s / 600 joined original frames",
+            "reference_frame": "Native road, actor and camera frame",
+            "uncertainty": "50 ms sampling; actual person, bicycle type, propulsion, moped exclusion and due care require independent source review"
+          },
+          {
+            "name": "rel.surface_gap",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "hash-bound original actor, collision sensor, classification and four-camera frame join",
+            "time_window": "30 s / 600 joined original frames",
+            "reference_frame": "Native road, actor and camera frame",
+            "uncertainty": "50 ms sampling; actual person, bicycle type, propulsion, moped exclusion and due care require independent source review"
+          },
+          {
+            "name": "drv.hard_deceleration",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "hash-bound original actor, collision sensor, classification and four-camera frame join",
+            "time_window": "30 s / 600 joined original frames",
+            "reference_frame": "Native road, actor and camera frame",
+            "uncertainty": "50 ms sampling; actual person, bicycle type, propulsion, moped exclusion and due care require independent source review"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "hash-bound original actor, collision sensor, classification and four-camera frame join",
+            "time_window": "30 s / 600 joined original frames",
+            "reference_frame": "Native road, actor and camera frame",
+            "uncertainty": "50 ms sampling; actual person, bicycle type, propulsion, moped exclusion and due care require independent source review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Due care is a legal judgment; synthetic TTC, gap, braking and contact measurements are not legal thresholds",
+          "Native blueprint name does not prove a person riding a qualifying bicycle"
+        ]
+      }
+    },
     {
       "case_id": "training__C136495__NRS-484B-270-5a__motor_vehicle_driver__selected_a21cf01e__condition_a",
       "target_law_id": "NRS-484B-270-5a",
@@ -31,8 +143,7 @@
         }
       },
       "unresolved_judgment_calls": [
-        "person riding a qualifying bicycle",
-        "exercise due care to avoid a collision"
+        "due care"
       ],
       "recording_description": {
         "channels": [
@@ -119,6 +230,17 @@
         "primary_variable": "requested_longitudinal_response_trigger_distance",
         "comparison_or_standard": "paired original response contrast",
         "target_value_or_branch": "early_response"
+      },
+      "deterministic_branch": {
+        "source_clause": "Exercise due care to avoid a collision with a person riding a bicycle, an electric bicycle or an electric scooter.",
+        "judgment_context": [
+          {
+            "phrase": "due care",
+            "note": "The statute supplies no numeric due-care cutoff; original person/bicycle qualification, actor response, collision and surrounding context require independent review.",
+            "status": "not_exercised",
+            "reason": "No fixture response label resolves the qualitative due-care duty or original rider/bicycle qualification."
+          }
+        ]
       }
     },
     {
@@ -146,8 +268,7 @@
         }
       },
       "unresolved_judgment_calls": [
-        "person riding a qualifying bicycle",
-        "exercise due care to avoid a collision"
+        "due care"
       ],
       "recording_description": {
         "channels": [
@@ -234,6 +355,17 @@
         "primary_variable": "requested_longitudinal_response_trigger_distance",
         "comparison_or_standard": "paired original response contrast",
         "target_value_or_branch": "later_response"
+      },
+      "deterministic_branch": {
+        "source_clause": "Exercise due care to avoid a collision with a person riding a bicycle, an electric bicycle or an electric scooter.",
+        "judgment_context": [
+          {
+            "phrase": "due care",
+            "note": "The statute supplies no numeric due-care cutoff; original person/bicycle qualification, actor response, collision and surrounding context require independent review.",
+            "status": "not_exercised",
+            "reason": "No fixture response label resolves the qualitative due-care duty or original rider/bicycle qualification."
+          }
+        ]
       }
     }
   ]

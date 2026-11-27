@@ -1,5 +1,15 @@
 # training__C177626__NRS-484B-263__motor_vehicle_driver
 
+## 2026-11-27 entry construction checkpoint
+
+Status remains partial. The new `native/geometry.py` authors separate highway approach/connector/departure roads and entry access/connector roads with junction 100, explicit lane links and coincident merge reference lines. `native/prove_geometry.py` passes the positive topology and four missing-link/physical-join negatives. This is an OpenDRIVE proposal; it does not verify the legal controlled-access designation or an exit route.
+
+`native/acquisition.py` binds 600 original 20 Hz actor snapshots, two inventoried approaching highway vehicles, the original map hash and four per-frame camera joins to measured surface gaps, projected arrival gaps and through-vehicle deceleration. `native/prove_acquisition.py` passes a synthetic positive and eight source-loss/wrong-road/wrong-camera/legal-overclaim negatives. These synthetic fixtures test acquisition invariants only; no original simulator recording is asserted.
+
+`native/runner.py` drafts a CARLA entry run for both exact selected conditions and four distinct through-traffic placements per condition. It uses physical vehicle control, original actor readback, four lossless FFV1 views, a canonical frame map, PipelineCapture and world restoration. `native/prove_runner.py` passes all eight case/candidate combinations and two identity negatives; the runner's `--check` also passed for condition A. The original Native run has not occurred, and CARLA Python is absent from `.venv-cpu`; the CPU offline path remains worker work. `worker_check.py --assignment training__C177626__NRS-484B-263__motor_vehicle_driver` passed static checks while status stayed partial.
+
+Case-plan source mappings now name the proposed measurement channels; reviewed entry scope is bound to both planned cases. Remaining: exact selected construction bundle, offline/public compatibility, saved-only positive and negative proofs, semantic stages, physical and delivery/comparison audits, then the exact scoped strict gate. The engineering 5.0 s and 2.5 s settings are not legal hazard or reasonable-safety definitions. The statute's exit alternative needs a separate route/cell; this entry geometry does not silently cover it.
+
 Status: partial. A source-shaped yield and gap proof is present; this is not a deployable delivery package.
 
 ## 2026-11-23 multi-traffic controller checkpoint

@@ -37,7 +37,7 @@
       "source": "NRS 484B.270(5)(a)",
       "source_text": "The driver of a motor vehicle shall:",
       "status": "selected_required",
-      "evidence_or_gap": "Exact source text inventoried; Native realization, comparison proof and measured evidence pending.",
+      "evidence_or_gap": "Exact 600-frame bicycle-branch construction, source-bound response, collision, camera and saved measurement paths are authored; actual person, qualifying bicycle, physical response and due care require independent original review.",
       "case_ids": [
         "training__C136495__NRS-484B-270-5a__motor_vehicle_driver__selected_a21cf01e__condition_a",
         "training__C136495__NRS-484B-270-5a__motor_vehicle_driver__selected_a21cf01e__condition_b"
@@ -48,7 +48,7 @@
       "source": "NRS 484B.270(5)(a)",
       "source_text": "Exercise due care to avoid a collision with a person riding a bicycle, an electric bicycle or an electric scooter.",
       "status": "selected_required",
-      "evidence_or_gap": "This clause contains the selected draft scope or a rule applying to it; it is not an independent optional alternative. Its physical predicate and saved evidence remain unverified.",
+      "evidence_or_gap": "Exact 600-frame bicycle-branch construction, source-bound response, collision, camera and saved measurement paths are authored; actual person, qualifying bicycle, physical response and due care require independent original review.",
       "case_ids": [
         "training__C136495__NRS-484B-270-5a__motor_vehicle_driver__selected_a21cf01e__condition_a",
         "training__C136495__NRS-484B-270-5a__motor_vehicle_driver__selected_a21cf01e__condition_b"
@@ -58,19 +58,22 @@
       "requirement": "reviewed-scope-0",
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
       "source_text": "Person riding a bicycle",
-      "status": "alternative_pending",
-      "evidence_or_gap": "Exact source text inventoried; Native realization, comparison proof and measured evidence pending.",
-      "case_ids": []
+      "status": "selected_required",
+      "evidence_or_gap": "Exact 600-frame bicycle-branch construction, source-bound response, collision, camera and saved measurement paths are authored; actual person, qualifying bicycle, physical response and due care require independent original review.",
+      "case_ids": [
+        "training__C136495__NRS-484B-270-5a__motor_vehicle_driver__selected_a21cf01e__condition_a",
+        "training__C136495__NRS-484B-270-5a__motor_vehicle_driver__selected_a21cf01e__condition_b"
+      ]
     }
   ],
   "cases": [
     {
       "case_id": "training__C136495__NRS-484B-270-5a__motor_vehicle_driver__selected_a21cf01e__condition_a",
       "target_law_id": "NRS-484B-270-5a",
-      "target_type": "planned_delivery_comparison",
-      "planning_status": "unverified",
+      "target_type": "compliant_attempt",
+      "planning_status": "cpu_draft",
       "source_branch": "Person riding a bicycle",
-      "comparison_variable": "cyclist_conflict_response",
+      "comparison_variable": "requested_longitudinal_response_trigger_distance",
       "condition_index": 0,
       "fixed_conditions": {
         "cell_id": "C136495",
@@ -84,15 +87,26 @@
         ]
       },
       "source_text": "The driver of a motor vehicle shall: Exercise due care to avoid a collision with a person riding a bicycle, an electric bicycle or an electric scooter.",
-      "claim": "No legal outcome or physical execution is asserted."
+      "claim": "No legal outcome or physical execution is asserted.",
+      "kind": "delivery",
+      "physical_target": "earlier measured-gap braking response",
+      "physical_risk_assessment": {
+        "risk": "CARLA bicycle actor may lack a visible human rider or fail to track the narrow road, and response may not realize in original motion",
+        "failure_trigger": "missing actual rider/bicycle qualification, route error, camera loss or absent observed response",
+        "fallback_status": "fallback1 shorter lookahead authored; physical realization unverified",
+        "physical_success_claimed": false
+      },
+      "gap_ids": [
+        "missing-original-5a-bicycle-interaction"
+      ]
     },
     {
       "case_id": "training__C136495__NRS-484B-270-5a__motor_vehicle_driver__selected_a21cf01e__condition_b",
       "target_law_id": "NRS-484B-270-5a",
-      "target_type": "planned_delivery_comparison",
-      "planning_status": "unverified",
+      "target_type": "violating_attempt",
+      "planning_status": "cpu_draft",
       "source_branch": "Person riding a bicycle",
-      "comparison_variable": "cyclist_conflict_response",
+      "comparison_variable": "requested_longitudinal_response_trigger_distance",
       "condition_index": 1,
       "fixed_conditions": {
         "cell_id": "C136495",
@@ -106,7 +120,18 @@
         ]
       },
       "source_text": "The driver of a motor vehicle shall: Exercise due care to avoid a collision with a person riding a bicycle, an electric bicycle or an electric scooter.",
-      "claim": "No legal outcome or physical execution is asserted."
+      "claim": "No legal outcome or physical execution is asserted.",
+      "kind": "delivery",
+      "physical_target": "later measured-gap braking response",
+      "physical_risk_assessment": {
+        "risk": "CARLA bicycle actor may lack a visible human rider or fail to track the narrow road, and response may not realize in original motion",
+        "failure_trigger": "missing actual rider/bicycle qualification, route error, camera loss or absent observed response",
+        "fallback_status": "fallback1 shorter lookahead authored; physical realization unverified",
+        "physical_success_claimed": false
+      },
+      "gap_ids": [
+        "missing-original-5a-bicycle-interaction"
+      ]
     }
   ],
   "comparisons": [
@@ -117,7 +142,7 @@
         "training__C136495__NRS-484B-270-5a__motor_vehicle_driver__selected_a21cf01e__condition_b"
       ],
       "deliberate_differences": [
-        "cyclist_conflict_response"
+        "requested_longitudinal_response_trigger_distance"
       ],
       "fixed_conditions": {
         "cell_id": "C136495",
@@ -128,10 +153,23 @@
         "law_id": "NRS-484B-270-5a",
         "selection_targets": [
           "full-train"
-        ]
+        ],
+        "shared_road_actor_route_camera_duration": true
       },
-      "status": "planned_only",
-      "audit_gap": "No Native construction, measured trace or independent saved audit exists."
+      "status": "cpu_draft",
+      "audit_gap": "Original Native physical response and due-care judgment remain unverified; independent synthetic comparison audit exists.",
+      "source_bound_cpu_proof": {
+        "receipt": "proofs/comparison-primary-receipt.json",
+        "receipt_sha256": "c919a8e31c12dd62a1717c1f338399f600fd7c326724f028e64c33e39afcffeb",
+        "positive_log": "proofs/comparison-primary-positive.log",
+        "positive_log_sha256": "200b1dc138b0405d789801f1da3a2b973da8d7f5aaa5dc2279e1e92fe4541fa0",
+        "negative_log": "proofs/comparison-primary-negative.log",
+        "negative_log_sha256": "784288515e80c63b829c212b612ae1d7b1f2411a96e7edbbd506a5b0219ec7de",
+        "script": "proofs/independent-comparison-check.py",
+        "script_sha256": "63644c465f49c06f3391bde65e63e1198a066e571299757c9ceb894664af2811",
+        "negative_expected_error": "Comparison condition or ordering differs",
+        "scope": "synthetic saved-source comparison; no physical or legal verdict"
+      }
     }
   ],
   "observations": [
@@ -139,49 +177,49 @@
       "name": "ru.bicycle",
       "mandatory": true,
       "source_note": "the rider at risk",
-      "status": "unmapped_to_native_and_core"
+      "status": "mapped_to_original_capture_and_saved_finalizer"
     },
     {
       "name": "ru.electric_bicycle",
       "mandatory": true,
       "source_note": "or an electric bicycle",
-      "status": "unmapped_to_native_and_core"
+      "status": "mapped_to_original_capture_and_saved_finalizer"
     },
     {
       "name": "ru.electric_scooter",
       "mandatory": true,
       "source_note": "or an electric scooter",
-      "status": "unmapped_to_native_and_core"
+      "status": "mapped_to_original_capture_and_saved_finalizer"
     },
     {
       "name": "drv.time_to_conflict",
       "mandatory": true,
       "source_note": "the surrogate for due care",
-      "status": "unmapped_to_native_and_core"
+      "status": "mapped_to_original_capture_and_saved_finalizer"
     },
     {
       "name": "rel.contact",
       "mandatory": true,
       "source_note": "the collision the duty is about",
-      "status": "unmapped_to_native_and_core"
+      "status": "mapped_to_original_capture_and_saved_finalizer"
     },
     {
       "name": "rel.surface_gap",
       "mandatory": true,
       "source_note": "the clearance kept",
-      "status": "unmapped_to_native_and_core"
+      "status": "mapped_to_original_capture_and_saved_finalizer"
     },
     {
       "name": "drv.hard_deceleration",
       "mandatory": true,
       "source_note": "a late reaction",
-      "status": "unmapped_to_native_and_core"
+      "status": "mapped_to_original_capture_and_saved_finalizer"
     },
     {
       "name": "kin.speed",
       "mandatory": true,
       "source_note": "the speed at which the subject approaches the rider",
-      "status": "unmapped_to_native_and_core"
+      "status": "mapped_to_original_capture_and_saved_finalizer"
     }
   ],
   "sources": [
@@ -208,64 +246,120 @@
   ],
   "source_observation_mapping": {
     "ru.bicycle": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Native original actor/collision/classification/response rows and four-camera frame joins; physical source qualification remains unresolved.",
+      "channels": [
+        "ru.bicycle"
+      ],
       "source_refs": [
         "inputs/training__C136495__NRS-484B-270-5a__motor_vehicle_driver/assignment.json"
       ]
     },
     "ru.electric_bicycle": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Native original actor/collision/classification/response rows and four-camera frame joins; physical source qualification remains unresolved.",
+      "channels": [
+        "ru.electric_bicycle"
+      ],
       "source_refs": [
         "inputs/training__C136495__NRS-484B-270-5a__motor_vehicle_driver/assignment.json"
       ]
     },
     "ru.electric_scooter": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Native original actor/collision/classification/response rows and four-camera frame joins; physical source qualification remains unresolved.",
+      "channels": [
+        "ru.electric_scooter"
+      ],
       "source_refs": [
         "inputs/training__C136495__NRS-484B-270-5a__motor_vehicle_driver/assignment.json"
       ]
     },
     "drv.time_to_conflict": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Native original actor/collision/classification/response rows and four-camera frame joins; physical source qualification remains unresolved.",
+      "channels": [
+        "drv.time_to_conflict"
+      ],
       "source_refs": [
         "inputs/training__C136495__NRS-484B-270-5a__motor_vehicle_driver/assignment.json"
       ]
     },
     "rel.contact": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Native original actor/collision/classification/response rows and four-camera frame joins; physical source qualification remains unresolved.",
+      "channels": [
+        "rel.contact"
+      ],
       "source_refs": [
         "inputs/training__C136495__NRS-484B-270-5a__motor_vehicle_driver/assignment.json"
       ]
     },
     "rel.surface_gap": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Native original actor/collision/classification/response rows and four-camera frame joins; physical source qualification remains unresolved.",
+      "channels": [
+        "rel.surface_gap"
+      ],
       "source_refs": [
         "inputs/training__C136495__NRS-484B-270-5a__motor_vehicle_driver/assignment.json"
       ]
     },
     "drv.hard_deceleration": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Native original actor/collision/classification/response rows and four-camera frame joins; physical source qualification remains unresolved.",
+      "channels": [
+        "drv.hard_deceleration"
+      ],
       "source_refs": [
         "inputs/training__C136495__NRS-484B-270-5a__motor_vehicle_driver/assignment.json"
       ]
     },
     "kin.speed": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Native original actor/collision/classification/response rows and four-camera frame joins; physical source qualification remains unresolved.",
+      "channels": [
+        "kin.speed"
+      ],
       "source_refs": [
         "inputs/training__C136495__NRS-484B-270-5a__motor_vehicle_driver/assignment.json"
       ]
     }
   },
-  "legal_analysis_note": "The statutory text-1 clause is required for the selected draft scope. Other source alternatives or exceptions remain pending where listed. All cases remain unverified and unselected; no physical applicability or legal outcome is asserted.",
-  "readiness": "planning_only",
+  "legal_analysis_note": "The exact statute supplies a due-care duty to avoid collision; no speed, gap, TTC or braking value is a legal cutoff. This assignment selects the frozen person-riding-bicycle witness; electric alternatives remain source terms but are not represented as physically tested riders by this bicycle fixture.",
+  "readiness": "cpu_draft",
   "physical_prerequisites": "Use an actual bicycle, electric bicycle or scooter rider with approach trajectories, gap, braking and collision evidence.",
-  "legal_interpretation_limit": "Due care has no fixed surrogate speed or gap threshold."
+  "legal_interpretation_limit": "Due care has no fixed surrogate speed or gap threshold.",
+  "evidence_review": {
+    "reviewer": "worker",
+    "method": "Frozen assignment membership and witness inventory reviewed; no accepted recording rows or source-hashed equivalence receipts were supplied. Original bicycle/person and due-care evidence must be acquired.",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "missing-original-5a-bicycle-interaction",
+        "requirement": "Person riding a bicycle and driver due-care interaction",
+        "source": "NRS 484B.270(5)(a)",
+        "why_existing_insufficient": "The frozen local snapshot lists no accepted membership or original source evidence."
+      }
+    ]
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "original motor vehicle and bicycle blueprint bodies on the narrow road",
+        "interval": "full 30-second approach and separation",
+        "view": "overview"
+      },
+      {
+        "subject": "measured forward gap and driver braking onset relative to cyclist",
+        "interval": "before, during and after gap response",
+        "view": "approach"
+      },
+      {
+        "subject": "person-on-bicycle qualification and body clearance for independent visual review",
+        "interval": "full conflict-possible window",
+        "view": "reference_corner"
+      },
+      {
+        "subject": "driver forward view and cyclist visibility",
+        "interval": "full conflict-possible window",
+        "view": "driver_reference"
+      }
+    ]
+  }
 }

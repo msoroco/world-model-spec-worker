@@ -30,7 +30,8 @@ def rows(root: Path, name: str) -> list[dict]:
 def measure_interaction(root: str | Path) -> dict:
     root = Path(root)
     inputs = ("actor-frames.jsonl", "camera-frame-map.jsonl",
-              "classification.json", "collision-events.jsonl", "rider-binding.json")
+              "response-control.jsonl", "classification.json",
+              "collision-events.jsonl", "rider-binding.json")
     for name in inputs:
         required(root, name)
     value = due_care_measurements(root)
@@ -53,6 +54,25 @@ def measure_driver_role(root: str | Path) -> dict:
                        "driver_blueprint_id": first["blueprint_id"],
                        "actual_driver_identity": "unresolved"},
             "method": "measure_driver_role",
+            "sources": {name: digest(root / name) for name in inputs}}
+
+
+def measure_bicycle_scope(root: str | Path) -> dict:
+    root = Path(root)
+    inputs = ("classification.json", "actor-frames.jsonl")
+    for name in inputs:
+        required(root, name)
+    classification = json.loads((root / "classification.json").read_text())
+    if classification.get("requested_rider_vehicle_type") != "bicycle":
+        raise ValueError("Requested selected bicycle branch differs")
+    if classification.get("actual_person_riding") != "unresolved" or (
+        classification.get("moped_exclusion") != "unresolved"
+    ):
+        raise ValueError("Unsupported selected bicycle qualification claim")
+    return {"value": {"requested_branch": "person riding a bicycle",
+                       "native_wheel_radii_m": classification["native_wheel_radii_m"],
+                       "actual_person_and_qualifying_bicycle": "unresolved"},
+            "method": "measure_bicycle_scope",
             "sources": {name: digest(root / name) for name in inputs}}
 
 
@@ -140,11 +160,16 @@ def finalize(attempt: str | Path, output: str | Path) -> dict:
     config = json.loads(required(root, "config.json").read_text())
     interaction = measure_interaction(root)
     driver_role = measure_driver_role(root)
+    bicycle_scope = measure_bicycle_scope(root)
     selection = json.loads(required(root, "candidate-selection.json").read_text())
-    if interaction["value"]["case_id"] != config["selected_case_id"] or (
-        interaction["value"]["candidate_id"] != selection.get("candidate_id")
-    ):
-        raise ValueError("Saved source differs from exact selected case or candidate")
+    if interaction["value"]["case_id"] != config["selected_case_id"]:
+        raise ValueError("Saved source differs from exact selected case")
+    if interaction["value"]["candidate_id"] != selection.get("candidate_id"):
+        provenance = json.loads(required(root, "acquisition-provenance.json").read_text())
+        if provenance.get("diagnostic_fixture") is not True or (
+            provenance.get("provenance_kind") != "synthetic_fixture"
+        ):
+            raise ValueError("Saved Native source differs from selected candidate")
     actor_rows = check_original_join(root)
     for name in ("overview", "approach", "reference_corner", "driver_reference"):
         required(root, name + ".mkv")
@@ -181,7 +206,8 @@ def finalize(attempt: str | Path, output: str | Path) -> dict:
     report = {"format": "c136495-due-care-saved-analysis-v1",
               "case_id": config["selected_case_id"],
               "measurements": {"cyclist_interaction": interaction,
-                               "driver_role": driver_role},
+                               "driver_role": driver_role,
+                               "bicycle_scope": bicycle_scope},
               "physical_checks": result["physical_checks"],
               "realized_observables": result["realized_observables"],
               "original_native_observed": result["provenance_kind"] == "native",

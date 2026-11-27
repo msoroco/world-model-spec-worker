@@ -10,7 +10,7 @@ import subprocess
 from pathlib import Path
 
 ASSIGNMENT = 'training__C405647__NRS-484B-267-2c__motor_vehicle_driver'
-CAMERAS = ('forward', 'rear', 'left', 'right')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 FRAMES = 600
 
 
@@ -40,7 +40,7 @@ def measure(root):
         raise ValueError('Requires all 600 original 20 Hz samples')
     video_hashes = {}
     for camera in CAMERAS:
-        path = root / ('camera_' + camera + '.mkv')
+        path = root / (camera + '.mkv')
         if not path.is_file() or not path.stat().st_size:
             raise ValueError('Missing nonempty source camera: ' + camera)
         probe = subprocess.run(['ffprobe', '-v', 'error', '-count_frames', '-select_streams', 'v:0',
@@ -62,7 +62,7 @@ def measure(root):
         for camera in CAMERAS:
             probe = subprocess.run(['ffprobe', '-v', 'error', '-select_streams', 'v:0',
                                     '-show_entries', 'stream=width,height', '-of', 'json',
-                                    str(root / ('camera_' + camera + '.mkv'))],
+                                    str(root / (camera + '.mkv'))],
                                    capture_output=True, text=True, check=True)
             dim = json.loads(probe.stdout)['streams'][0]
             if (dim['width'], dim['height']) != (1920, 1080):
@@ -123,7 +123,7 @@ def measure(root):
         'source_kind': review['review_kind'],
         'sources': {'video_frames.jsonl': sha(frame_path), 'approach_trace.jsonl': sha(trace_path),
                     'emergency_review.json': sha(review_path),
-                    **{'camera_' + camera + '.mkv': h for camera, h in video_hashes.items()}},
+                    **{camera + '.mkv': h for camera, h in video_hashes.items()}},
         'sample_count': FRAMES, 'sample_span_s': times[-1] - times[0],
         'trigger_frame': trigger, 'trigger_time_s': times[trigger],
         'trigger_gap_m': gaps[trigger], 'trigger_ego_speed_mps': speeds[trigger],

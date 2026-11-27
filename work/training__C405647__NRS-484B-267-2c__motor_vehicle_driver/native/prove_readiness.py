@@ -39,7 +39,7 @@ def main():
     for camera, color in zip(module.CAMERAS, ('red', 'green', 'blue', 'yellow')):
         subprocess.run(['ffmpeg', '-nostdin', '-v', 'error', '-y', '-f', 'lavfi', '-i',
                         'color=c=' + color + ':s=64x48:r=20', '-frames:v', '600',
-                        '-c:v', 'ffv1', str(ROOT / ('camera_' + camera + '.mkv'))], check=True)
+                        '-c:v', 'ffv1', str(ROOT / (camera + '.mkv'))], check=True)
     frame_path = ROOT / 'video_frames.jsonl'
     trace_path = ROOT / 'approach_trace.jsonl'
     review_path = ROOT / 'emergency_review.json'
@@ -59,7 +59,7 @@ def main():
               'visible_motion_source': 'synthetic fixture', 'officer_direction_source': 'synthetic fixture',
               'lights_meet_484A_480_3': True, 'visible_to_approaching_driver': True,
               'officer_direction_present': False,
-              'camera_sha256': {camera: module.sha(ROOT / ('camera_' + camera + '.mkv'))
+              'camera_sha256': {camera: module.sha(ROOT / (camera + '.mkv'))
                                 for camera in module.CAMERAS}}
     write_lines(frame_path, frames)
     write_lines(trace_path, trace)
@@ -93,7 +93,7 @@ def main():
     failures['no_approach'] = reject('no_approach', 'No measured approach',
         lambda: write_lines(trace_path, bad), lambda: write_lines(trace_path, trace))
     bad_review = copy.deepcopy(review)
-    bad_review['camera_sha256']['forward'] = '0' * 64
+    bad_review['camera_sha256']['overview'] = '0' * 64
     failures['stale_video'] = reject('stale_video', 'not bound',
         lambda: write(review_path, bad_review), lambda: write(review_path, review))
     bad_review = copy.deepcopy(review)
