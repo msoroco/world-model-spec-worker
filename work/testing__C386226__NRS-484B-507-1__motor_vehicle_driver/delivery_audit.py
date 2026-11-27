@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 import subprocess
 
-from freight_zone import CASES, measure_history, validate_site
+from freight_zone_sweep import CASES, measure_history, validate_site
 from saved_audit import audit_original_history
 
 HERE = Path(__file__).resolve().parent

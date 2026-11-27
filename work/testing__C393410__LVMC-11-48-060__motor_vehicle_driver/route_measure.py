@@ -48,15 +48,20 @@ def load_review(path: Path, source_root: Path, case_id: str, diagnostic: bool = 
         raise ValueError('Municipal jurisdiction unreviewed')
     if site.get('chapter_scope_reviewed') is not True:
         raise ValueError('Chapter actor and vehicle scope unreviewed')
+    hashes = {row['sha256'] for row in source_files}
     routes = site.get('truck_routes', {})
     if not all(isinstance(routes.get(key), dict) and routes[key].get('designation_source_sha256')
                and routes[key].get('road_id') for key in ('origin', 'destination')):
         raise ValueError('Both authoritative truck route designations required')
+    if any(type(routes[key]['road_id']) is not int or routes[key]['designation_source_sha256'] not in hashes for key in ('origin', 'destination')):
+        raise ValueError('Original truck-route identity or cited designation source invalid')
     if routes['origin']['road_id'] == routes['destination']['road_id']:
         raise ValueError('Distinct truck routes required')
     street = site.get('intervening_street', {})
     if street.get('designation') not in STREETS or not street.get('road_id') or not street.get('designation_source_sha256'):
         raise ValueError('Intervening street designation source missing')
+    if type(street['road_id']) is not int or street['designation_source_sha256'] not in hashes:
+        raise ValueError('Original connector identity or cited designation source invalid')
     if site.get('governing_controls_reviewed') is not True:
         raise ValueError('Route controls unreviewed')
     itinerary = packet.get('itinerary', {})
@@ -79,8 +84,21 @@ def load_review(path: Path, source_root: Path, case_id: str, diagnostic: bool = 
     if purpose['kind'] != 'none' and (not purpose.get('required_enroute_reviewed')
             or not purpose.get('premises_source_sha256') or not purpose.get('activity_source_sha256')):
         raise ValueError('Exception needs independently reviewed necessity, premises and activity')
+    if purpose['kind'] != 'none' and (purpose['premises_source_sha256'] not in hashes or purpose['activity_source_sha256'] not in hashes):
+        raise ValueError('Original enroute premises or activity source not cited')
     if purpose['kind'] == 'none' and purpose.get('required_enroute_reviewed'):
         raise ValueError('No-purpose control cannot assert an exception')
+    if purpose['kind'] != 'none' and not diagnostic:
+        protocol = packet.get('activity_protocol', {})
+        if (protocol.get('kind') != purpose['kind'] or not protocol.get('reviewed')
+                or not protocol.get('source_sha256') or not protocol.get('prop_blueprint')
+                or not protocol['prop_blueprint'].startswith('static.prop.')
+                or len(protocol.get('premises_xyz_m', [])) != 3
+                or protocol.get('source_sha256') not in {row['sha256'] for row in source_files}):
+            raise ValueError('Original required-enroute activity construction missing')
+        for value in protocol['premises_xyz_m']:
+            if not math.isfinite(float(value)):
+                raise ValueError('Original premises position invalid')
     return packet
 
 
@@ -127,9 +145,13 @@ def measure(source: Path) -> dict:
     activities = [row for row in frames if row.get('activity_kind') == kind and row.get('road_id') == middle]
     if kind != 'none' and (not activities or not purpose.get('required_enroute_reviewed')):
         raise ValueError('Required enroute activity not source-observed')
+    if kind != 'none' and packet.get('diagnostic_fixture') is False and any(
+            type(row.get('activity_prop_actor_id')) is not int or
+            row.get('observation_source') != 'original_native_snapshot' for row in activities):
+        raise ValueError('Original activity prop readback missing')
     return {'origin_truck_route_observed': True, 'intervening_street_observed': True,
         'destination_truck_route_observed': complete, 'intervening_designation': street['designation'],
         'enroute_purpose_kind': kind, 'enroute_activity_observed': bool(activities),
         'required_enroute_reviewed': bool(purpose.get('required_enroute_reviewed')),
         'sample_count': len(frames), 'first_native_frame': frames[0]['frame'],
-        'last_native_frame': frames[-1]['frame'], 'legal_verdict': 'unresolved'}
+        'last_native_frame': frames[-1]['frame']}

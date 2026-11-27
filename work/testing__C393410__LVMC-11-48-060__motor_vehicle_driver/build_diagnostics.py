@@ -24,7 +24,7 @@ def build():
         diagnostic=json.loads(json.dumps(example));files=diagnostic['files']
         capture=json.loads(files['capture/manifest.json']);capture['case_id']=cid;files['capture/manifest.json']=json.dumps(capture,sort_keys=True)+'\n'
         mapping=[json.loads(line) for line in files['video_frames.jsonl'].splitlines()]
-        source_hash=sha(('synthetic-truck-route:'+short).encode())
+        source_hash=sha(b'synthetic-truck-route-source')
         routes={'origin':{'road_id':10,'designation_source_sha256':source_hash},'destination':{'road_id':30,'designation_source_sha256':source_hash}}
         site={'municipal_jurisdiction_reviewed':True,'chapter_scope_reviewed':True,'truck_routes':routes,'intervening_street':{'road_id':20,'designation':case['street_class'],'designation_source_sha256':source_hash},'governing_controls_reviewed':True}
         purpose={'kind':case['enroute_purpose'],'required_enroute_reviewed':case['enroute_purpose']!='none'}

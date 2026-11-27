@@ -45,7 +45,7 @@ def build():
             'case':{'case_id':cid,'physical_target':'complete reviewed through-route or declared local control with source-backed enroute activity','recording_description':description}}
         spec={'case_id':cid,'street_class':case['street_class'],'route_use':case['route_use'],'enroute_purpose':case['enroute_purpose'],'source_status':'reviewed_original_route_packet_required_at_capture'}
         write(folder/'config.json',config);write(folder/'case-spec.json',spec)
-        for candidate,speed in [('primary',4.0),('fallback1',2.5)]:
+        for candidate,speed in [('primary',4.0),('fallback1',5.5)]:
             controller={'target_speed_mps':speed,'source':'predeclared route tracking with original map road-ID readback','physical_acceptance':False}
             control_name='controller-'+candidate+'.json';write(folder/control_name,controller)
             files=[{'path':name,'source':str((HERE/name).relative_to(REPO)),'content':(HERE/name).read_text()} for name in MODULES]
@@ -65,8 +65,8 @@ def build():
                     'native_handoff':{'python_env_var':'CARLA_PYTHON','host_env_var':'CARLA_HOST','port_env_var':'CARLA_PORT'}}
             else:
                 entry['candidates'].append({'id':'fallback1','construction':str((folder/name).relative_to(HERE)),'construction_sha256':digest,
-                    'trigger':{'source':'original route and four-view pixel audit','metric':'route completion or camera visibility','failure_condition':'primary missed origin-connector-destination route or lost synchronized view'},
-                    'changed_knobs':['target vehicle speed 4.0 to 2.5 m/s on unchanged site, route and purpose']})
+                    'trigger':{'source':'original route and four-view pixel audit','metric':'route completion','failure_condition':'primary missed origin-connector-destination route within 45 seconds'},
+                    'changed_knobs':['target vehicle speed 4.0 to 5.5 m/s on unchanged site, route and purpose']})
         entries.append(entry)
         print(short,'primary/fallback1 source-deferred constructions',flush=True)
     write(HERE/'execution-manifest.draft.json',{'format':'worker-execution-manifest','assignment_id':HERE.name,'status':'reviewed_original_route_packet_required_at_capture','runtime_manifest_sha256':hashlib.sha256((REPO/'runtime/SOURCE-MANIFEST.json').read_bytes()).hexdigest(),'cases':entries})

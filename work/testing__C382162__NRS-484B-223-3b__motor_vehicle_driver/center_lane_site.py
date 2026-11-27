@@ -48,6 +48,9 @@ def inspect_site(packet: dict, case_kind: str) -> dict:
         raise ValueError("Native map and reviewed highway sources required")
     if packet.get("public_highway_confirmed") is not True:
         raise ValueError("highway status unverified")
+    if (not packet.get("ego_id") or not packet.get("driver_id") or
+            packet["ego_id"] != packet["driver_id"]):
+        raise ValueError("reviewed ego and original driver identity differ")
     lanes = packet.get("lanes")
     if not isinstance(lanes, list) or len(lanes) < 3:
         raise ValueError("original lane inventory missing")
@@ -111,4 +114,10 @@ def verify_reviewed_site(attempt_root, packet: dict, case_kind: str, live_opendr
     topology = inspect_site(packet, case_kind)
     if topology["highway_road_id"] != review["highway_road_id"]:
         raise ValueError("reviewed highway road differs from Native topology")
+    center = next(lane for lane in packet["lanes"] if lane["id"] == topology["center_lane_id"])
+    polygon = center.get("polygon_xy_m")
+    if (not isinstance(polygon, list) or len(polygon) < 4 or
+            review.get("center_lane_polygon_xy_m") != polygon):
+        raise ValueError("reviewed original center-lane polygon missing or changed")
+    topology["center_lane_polygon_xy_m"] = polygon
     return topology

@@ -1,0 +1,647 @@
+{
+  "actor": "motor_vehicle_driver",
+  "cases": [
+    {
+      "case_id": "testing__C393410__LVMC-11-48-060__motor_vehicle_driver__baseline",
+      "rationale": "Shared reviewed connecting-street and full route reference.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "authoritative original municipal and street designation readback",
+            "name": "municipal_route_designation",
+            "reference_frame": "reviewed original truck-route street network",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "physical source realization pending",
+            "unit": "source"
+          },
+          {
+            "method": "original 20 Hz route and road identity observations",
+            "name": "ego_route_history",
+            "reference_frame": "reviewed original truck-route street network",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "physical source realization pending",
+            "unit": "state"
+          },
+          {
+            "method": "original required enroute purpose, premises and activity source readback",
+            "name": "enroute_context",
+            "reference_frame": "reviewed original truck-route street network",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "physical source realization pending",
+            "unit": "state"
+          },
+          {
+            "method": "original route controls and chapter scope review",
+            "name": "governing_controls",
+            "reference_frame": "reviewed original truck-route street network",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "physical source realization pending",
+            "unit": "state"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "independently reviewed designation, trip purpose and enroute premises",
+            "name": "reviewed_truck_route_site",
+            "unit": "source"
+          }
+        ],
+        "limitations": [
+          "Worker does not assign a through-route or required-enroute legal verdict.",
+          "Stops and dwell alone do not prove pick-up, delivery or essential use."
+        ]
+      },
+      "target_law_id": null,
+      "target_type": "baseline",
+      "unresolved_judgment_calls": [
+        "through routes",
+        "required enroute"
+      ],
+      "variable_assignments": {
+        "enroute_purpose": {
+          "kind": "world_setup",
+          "value": "none"
+        },
+        "route_use": {
+          "kind": "world_setup",
+          "value": "through"
+        },
+        "street_class": {
+          "kind": "world_setup",
+          "value": "non_truck"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C393410__LVMC-11-48-060__motor_vehicle_driver__through_no_enroute",
+      "deliberate_differences": [
+        "street_class",
+        "route_use",
+        "enroute_purpose"
+      ],
+      "paired_probe_id": "source-gated-truck-route-passage",
+      "probe": {
+        "comparison_or_standard": "same route and full original-source context except declared comparison variable",
+        "primary_variable": "enroute_purpose",
+        "target_value_or_branch": {
+          "enroute_purpose": "none",
+          "route_use": "through",
+          "street_class": "non_truck"
+        }
+      },
+      "rationale": "Controlled designated/non-truck route, complete/local use and each separate required-enroute exception.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "authoritative original municipal and street designation readback",
+            "name": "municipal_route_designation",
+            "reference_frame": "reviewed original truck-route street network",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "physical source realization pending",
+            "unit": "source"
+          },
+          {
+            "method": "original 20 Hz route and road identity observations",
+            "name": "ego_route_history",
+            "reference_frame": "reviewed original truck-route street network",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "physical source realization pending",
+            "unit": "state"
+          },
+          {
+            "method": "original required enroute purpose, premises and activity source readback",
+            "name": "enroute_context",
+            "reference_frame": "reviewed original truck-route street network",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "physical source realization pending",
+            "unit": "state"
+          },
+          {
+            "method": "original route controls and chapter scope review",
+            "name": "governing_controls",
+            "reference_frame": "reviewed original truck-route street network",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "physical source realization pending",
+            "unit": "state"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "independently reviewed designation, trip purpose and enroute premises",
+            "name": "reviewed_truck_route_site",
+            "unit": "source"
+          }
+        ],
+        "limitations": [
+          "Worker does not assign a through-route or required-enroute legal verdict.",
+          "Stops and dwell alone do not prove pick-up, delivery or essential use."
+        ]
+      },
+      "target_law_id": "LVMC-11-48-060",
+      "target_type": "judgment_sweep",
+      "unresolved_judgment_calls": [
+        "through routes",
+        "required enroute"
+      ],
+      "variable_assignments": {
+        "enroute_purpose": {
+          "kind": "world_setup",
+          "value": "none"
+        },
+        "route_use": {
+          "kind": "world_setup",
+          "value": "through"
+        },
+        "street_class": {
+          "kind": "world_setup",
+          "value": "non_truck"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C393410__LVMC-11-48-060__motor_vehicle_driver__pickup_required",
+      "deliberate_differences": [
+        "street_class",
+        "route_use",
+        "enroute_purpose"
+      ],
+      "paired_probe_id": "source-gated-truck-route-passage",
+      "probe": {
+        "comparison_or_standard": "same route and full original-source context except declared comparison variable",
+        "primary_variable": "enroute_purpose",
+        "target_value_or_branch": {
+          "enroute_purpose": "pick_up",
+          "route_use": "through",
+          "street_class": "non_truck"
+        }
+      },
+      "rationale": "Controlled designated/non-truck route, complete/local use and each separate required-enroute exception.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "authoritative original municipal and street designation readback",
+            "name": "municipal_route_designation",
+            "reference_frame": "reviewed original truck-route street network",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "physical source realization pending",
+            "unit": "source"
+          },
+          {
+            "method": "original 20 Hz route and road identity observations",
+            "name": "ego_route_history",
+            "reference_frame": "reviewed original truck-route street network",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "physical source realization pending",
+            "unit": "state"
+          },
+          {
+            "method": "original required enroute purpose, premises and activity source readback",
+            "name": "enroute_context",
+            "reference_frame": "reviewed original truck-route street network",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "physical source realization pending",
+            "unit": "state"
+          },
+          {
+            "method": "original route controls and chapter scope review",
+            "name": "governing_controls",
+            "reference_frame": "reviewed original truck-route street network",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "physical source realization pending",
+            "unit": "state"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "independently reviewed designation, trip purpose and enroute premises",
+            "name": "reviewed_truck_route_site",
+            "unit": "source"
+          }
+        ],
+        "limitations": [
+          "Worker does not assign a through-route or required-enroute legal verdict.",
+          "Stops and dwell alone do not prove pick-up, delivery or essential use."
+        ]
+      },
+      "target_law_id": "LVMC-11-48-060",
+      "target_type": "judgment_sweep",
+      "unresolved_judgment_calls": [
+        "through routes",
+        "required enroute"
+      ],
+      "variable_assignments": {
+        "enroute_purpose": {
+          "kind": "world_setup",
+          "value": "pick_up"
+        },
+        "route_use": {
+          "kind": "world_setup",
+          "value": "through"
+        },
+        "street_class": {
+          "kind": "world_setup",
+          "value": "non_truck"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C393410__LVMC-11-48-060__motor_vehicle_driver__delivery_required",
+      "deliberate_differences": [
+        "street_class",
+        "route_use",
+        "enroute_purpose"
+      ],
+      "paired_probe_id": "source-gated-truck-route-passage",
+      "probe": {
+        "comparison_or_standard": "same route and full original-source context except declared comparison variable",
+        "primary_variable": "enroute_purpose",
+        "target_value_or_branch": {
+          "enroute_purpose": "delivery",
+          "route_use": "through",
+          "street_class": "non_truck"
+        }
+      },
+      "rationale": "Controlled designated/non-truck route, complete/local use and each separate required-enroute exception.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "authoritative original municipal and street designation readback",
+            "name": "municipal_route_designation",
+            "reference_frame": "reviewed original truck-route street network",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "physical source realization pending",
+            "unit": "source"
+          },
+          {
+            "method": "original 20 Hz route and road identity observations",
+            "name": "ego_route_history",
+            "reference_frame": "reviewed original truck-route street network",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "physical source realization pending",
+            "unit": "state"
+          },
+          {
+            "method": "original required enroute purpose, premises and activity source readback",
+            "name": "enroute_context",
+            "reference_frame": "reviewed original truck-route street network",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "physical source realization pending",
+            "unit": "state"
+          },
+          {
+            "method": "original route controls and chapter scope review",
+            "name": "governing_controls",
+            "reference_frame": "reviewed original truck-route street network",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "physical source realization pending",
+            "unit": "state"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "independently reviewed designation, trip purpose and enroute premises",
+            "name": "reviewed_truck_route_site",
+            "unit": "source"
+          }
+        ],
+        "limitations": [
+          "Worker does not assign a through-route or required-enroute legal verdict.",
+          "Stops and dwell alone do not prove pick-up, delivery or essential use."
+        ]
+      },
+      "target_law_id": "LVMC-11-48-060",
+      "target_type": "judgment_sweep",
+      "unresolved_judgment_calls": [
+        "through routes",
+        "required enroute"
+      ],
+      "variable_assignments": {
+        "enroute_purpose": {
+          "kind": "world_setup",
+          "value": "delivery"
+        },
+        "route_use": {
+          "kind": "world_setup",
+          "value": "through"
+        },
+        "street_class": {
+          "kind": "world_setup",
+          "value": "non_truck"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C393410__LVMC-11-48-060__motor_vehicle_driver__essential_required",
+      "deliberate_differences": [
+        "street_class",
+        "route_use",
+        "enroute_purpose"
+      ],
+      "paired_probe_id": "source-gated-truck-route-passage",
+      "probe": {
+        "comparison_or_standard": "same route and full original-source context except declared comparison variable",
+        "primary_variable": "enroute_purpose",
+        "target_value_or_branch": {
+          "enroute_purpose": "essential_use",
+          "route_use": "through",
+          "street_class": "non_truck"
+        }
+      },
+      "rationale": "Controlled designated/non-truck route, complete/local use and each separate required-enroute exception.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "authoritative original municipal and street designation readback",
+            "name": "municipal_route_designation",
+            "reference_frame": "reviewed original truck-route street network",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "physical source realization pending",
+            "unit": "source"
+          },
+          {
+            "method": "original 20 Hz route and road identity observations",
+            "name": "ego_route_history",
+            "reference_frame": "reviewed original truck-route street network",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "physical source realization pending",
+            "unit": "state"
+          },
+          {
+            "method": "original required enroute purpose, premises and activity source readback",
+            "name": "enroute_context",
+            "reference_frame": "reviewed original truck-route street network",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "physical source realization pending",
+            "unit": "state"
+          },
+          {
+            "method": "original route controls and chapter scope review",
+            "name": "governing_controls",
+            "reference_frame": "reviewed original truck-route street network",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "physical source realization pending",
+            "unit": "state"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "independently reviewed designation, trip purpose and enroute premises",
+            "name": "reviewed_truck_route_site",
+            "unit": "source"
+          }
+        ],
+        "limitations": [
+          "Worker does not assign a through-route or required-enroute legal verdict.",
+          "Stops and dwell alone do not prove pick-up, delivery or essential use."
+        ]
+      },
+      "target_law_id": "LVMC-11-48-060",
+      "target_type": "judgment_sweep",
+      "unresolved_judgment_calls": [
+        "through routes",
+        "required enroute"
+      ],
+      "variable_assignments": {
+        "enroute_purpose": {
+          "kind": "world_setup",
+          "value": "essential_use"
+        },
+        "route_use": {
+          "kind": "world_setup",
+          "value": "through"
+        },
+        "street_class": {
+          "kind": "world_setup",
+          "value": "non_truck"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C393410__LVMC-11-48-060__motor_vehicle_driver__local_non_through",
+      "deliberate_differences": [
+        "street_class",
+        "route_use",
+        "enroute_purpose"
+      ],
+      "paired_probe_id": "source-gated-truck-route-passage",
+      "probe": {
+        "comparison_or_standard": "same route and full original-source context except declared comparison variable",
+        "primary_variable": "enroute_purpose",
+        "target_value_or_branch": {
+          "enroute_purpose": "none",
+          "route_use": "local",
+          "street_class": "non_truck"
+        }
+      },
+      "rationale": "Controlled designated/non-truck route, complete/local use and each separate required-enroute exception.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "authoritative original municipal and street designation readback",
+            "name": "municipal_route_designation",
+            "reference_frame": "reviewed original truck-route street network",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "physical source realization pending",
+            "unit": "source"
+          },
+          {
+            "method": "original 20 Hz route and road identity observations",
+            "name": "ego_route_history",
+            "reference_frame": "reviewed original truck-route street network",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "physical source realization pending",
+            "unit": "state"
+          },
+          {
+            "method": "original required enroute purpose, premises and activity source readback",
+            "name": "enroute_context",
+            "reference_frame": "reviewed original truck-route street network",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "physical source realization pending",
+            "unit": "state"
+          },
+          {
+            "method": "original route controls and chapter scope review",
+            "name": "governing_controls",
+            "reference_frame": "reviewed original truck-route street network",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "physical source realization pending",
+            "unit": "state"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "independently reviewed designation, trip purpose and enroute premises",
+            "name": "reviewed_truck_route_site",
+            "unit": "source"
+          }
+        ],
+        "limitations": [
+          "Worker does not assign a through-route or required-enroute legal verdict.",
+          "Stops and dwell alone do not prove pick-up, delivery or essential use."
+        ]
+      },
+      "target_law_id": "LVMC-11-48-060",
+      "target_type": "judgment_sweep",
+      "unresolved_judgment_calls": [
+        "through routes",
+        "required enroute"
+      ],
+      "variable_assignments": {
+        "enroute_purpose": {
+          "kind": "world_setup",
+          "value": "none"
+        },
+        "route_use": {
+          "kind": "world_setup",
+          "value": "local"
+        },
+        "street_class": {
+          "kind": "world_setup",
+          "value": "non_truck"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C393410__LVMC-11-48-060__motor_vehicle_driver__designated_route",
+      "deliberate_differences": [
+        "street_class",
+        "route_use",
+        "enroute_purpose"
+      ],
+      "paired_probe_id": "source-gated-truck-route-passage",
+      "probe": {
+        "comparison_or_standard": "same route and full original-source context except declared comparison variable",
+        "primary_variable": "enroute_purpose",
+        "target_value_or_branch": {
+          "enroute_purpose": "none",
+          "route_use": "through",
+          "street_class": "truck_route"
+        }
+      },
+      "rationale": "Controlled designated/non-truck route, complete/local use and each separate required-enroute exception.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "authoritative original municipal and street designation readback",
+            "name": "municipal_route_designation",
+            "reference_frame": "reviewed original truck-route street network",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "physical source realization pending",
+            "unit": "source"
+          },
+          {
+            "method": "original 20 Hz route and road identity observations",
+            "name": "ego_route_history",
+            "reference_frame": "reviewed original truck-route street network",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "physical source realization pending",
+            "unit": "state"
+          },
+          {
+            "method": "original required enroute purpose, premises and activity source readback",
+            "name": "enroute_context",
+            "reference_frame": "reviewed original truck-route street network",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "physical source realization pending",
+            "unit": "state"
+          },
+          {
+            "method": "original route controls and chapter scope review",
+            "name": "governing_controls",
+            "reference_frame": "reviewed original truck-route street network",
+            "sampling_rate_hz": 20,
+            "time_window": "900 original frames",
+            "uncertainty": "physical source realization pending",
+            "unit": "state"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "independently reviewed designation, trip purpose and enroute premises",
+            "name": "reviewed_truck_route_site",
+            "unit": "source"
+          }
+        ],
+        "limitations": [
+          "Worker does not assign a through-route or required-enroute legal verdict.",
+          "Stops and dwell alone do not prove pick-up, delivery or essential use."
+        ]
+      },
+      "target_law_id": "LVMC-11-48-060",
+      "target_type": "judgment_sweep",
+      "unresolved_judgment_calls": [
+        "through routes",
+        "required enroute"
+      ],
+      "variable_assignments": {
+        "enroute_purpose": {
+          "kind": "world_setup",
+          "value": "none"
+        },
+        "route_use": {
+          "kind": "world_setup",
+          "value": "through"
+        },
+        "street_class": {
+          "kind": "world_setup",
+          "value": "truck_route"
+        }
+      }
+    }
+  ],
+  "cell_id": "C393410",
+  "status": "draft",
+  "sweep_expansion_scope": "Six controlled source-gated original-route probes; legal judgment unresolved.",
+  "sweep_specs": [
+    {
+      "judgment_refs": [
+        {
+          "note": "Authoritative route designations, complete passage, and pick-up, delivery or essential use required enroute require independent original-source review; no stop-duration proxy or worker legal verdict.",
+          "phrase": "through routes"
+        },
+        {
+          "note": "Authoritative route designations, complete passage, and pick-up, delivery or essential use required enroute require independent original-source review; no stop-duration proxy or worker legal verdict.",
+          "phrase": "required enroute"
+        }
+      ],
+      "missing_inputs": [
+        "authoritative truck route endpoints and connecting street designation",
+        "complete original route from origin through connector to destination or local endpoint",
+        "separate required-enroute pick-up, delivery and essential-use premises/activity sources"
+      ],
+      "rationale": "Original route, purpose and necessity are source judgments, not worker numeric legal cutoffs.",
+      "status": "incomplete",
+      "sweep_id": "source-gated-truck-route-passage",
+      "target_law_id": "LVMC-11-48-060"
+    }
+  ],
+  "sweeps_expanded": true
+}

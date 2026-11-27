@@ -1,0 +1,48 @@
+{
+  "actor": "motor_vehicle_driver",
+  "law_id": "NRS-484B-223-3b",
+  "parameter_refs": [
+    {
+      "kind": "world_setup",
+      "name": "route_relationship",
+      "range_or_domain": "from or onto highway"
+    },
+    {
+      "kind": "controller",
+      "name": "commanded_center_lane_target_ft",
+      "range_or_domain": "engineering target 190, 200 or 210 ft"
+    },
+    {
+      "kind": "subject_behavior",
+      "name": "observed_center_lane_path_ft",
+      "range_or_domain": "original-frame observed path length in feet"
+    }
+  ],
+  "quote": "If a highway has been designed to provide a single center lane to be used only for turning by traffic moving in both directions, the following rules apply: A vehicle must not travel more than 200 feet in a center turn lane before making a left-hand turn from the highway.",
+  "structure": {
+    "activation": {
+      "condition": "Highway has one exclusive center lane for turning by traffic in both directions; vehicle uses it before a left-hand turn from the highway.",
+      "numeric_conditions": []
+    },
+    "exceptions": [],
+    "judgment_calls_needed": [],
+    "law_id": "NRS-484B-223-3b",
+    "obligation": {
+      "description": "Do not travel more than 200 feet in the center turn lane before the left-hand turn from the highway.",
+      "numeric_conditions": [
+        {
+          "operator": ">",
+          "unit": "ft",
+          "value": 200,
+          "variable": "observed_center_lane_path_ft"
+        }
+      ],
+      "type": "must_not"
+    },
+    "timing": {
+      "description": "Measure original body entry through exit before the original left-turn departure; retain unresolved boundary interpolation.",
+      "numeric_conditions": []
+    }
+  },
+  "template_id": "NRS-484B-223-3b@motor_vehicle_driver"
+}

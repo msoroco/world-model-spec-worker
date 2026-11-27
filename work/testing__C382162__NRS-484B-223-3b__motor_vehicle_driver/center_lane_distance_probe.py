@@ -92,6 +92,17 @@ def measure_with_original_body(site, frames):
     polygon = site.get("center_lane_polygon_xy_m")
     if not polygon:
         raise ValueError("reviewed center-lane body polygon missing")
+    sourced = derive_body_occupancy(site, frames)
+    result = measure(site, sourced)
+    result["body_occupancy_source"] = "original eight-vertex footprint against reviewed lane polygon"
+    return result
+
+
+def derive_body_occupancy(site, frames):
+    """Replace optional readback flags with independently computed geometry."""
+    polygon = site.get("center_lane_polygon_xy_m")
+    if not polygon:
+        raise ValueError("reviewed center-lane body polygon missing")
     sourced = []
     for row in frames:
         if "body_vertices_m" not in row:
@@ -101,9 +112,7 @@ def measure_with_original_body(site, frames):
             if key in row and row[key] != value:
                 raise ValueError("original body geometry readback differs from reviewed lane polygon")
         sourced.append(dict(row, **geometry))
-    result = measure(site, sourced)
-    result["body_occupancy_source"] = "original eight-vertex footprint against reviewed lane polygon"
-    return result
+    return sourced
 
 
 def measure_exact(attempt_root, packet, case_kind, live_opendrive, frames):
@@ -120,9 +129,10 @@ def measure_exact(attempt_root, packet, case_kind, live_opendrive, frames):
         "ego_id": ego_id,
         "one_shared_center_lane": True,
         "turns_only_both_directions": True,
+        "center_lane_polygon_xy_m": topology["center_lane_polygon_xy_m"],
     }
     if case_kind != "onto_highway_contrast":
-        result = measure(site, frames)
+        result = measure_with_original_body(site, frames)
         result["exact_case_kind"] = case_kind
         result["distance_restriction_applicable"] = True
         return result
@@ -145,15 +155,20 @@ def measure_exact(attempt_root, packet, case_kind, live_opendrive, frames):
                 row.get("driver_id") != ego_id or
                 not _digest(row.get("source_sha256"))):
             raise ValueError("original contrast frame, time, driver or source join failed")
-    occupied = [row for row in frames if row.get("body_overlaps_center_lane") is True and
+    sourced = derive_body_occupancy(site, frames)
+    occupied = [row for row in sourced if row.get("body_overlaps_center_lane") is True and
                 row.get("lane_id") == topology["center_lane_id"]]
     if not occupied or not any(row.get("body_within_center_lane") is True for row in occupied):
         raise ValueError("original contrast center-lane body occupancy missing")
+    occupied_indices = [i for i, row in enumerate(sourced) if row["body_overlaps_center_lane"]]
+    if occupied_indices != list(range(occupied_indices[0], occupied_indices[-1] + 1)):
+        raise ValueError("interrupted contrast center-lane occupancy requires separate review")
     return {
         "exact_case_kind": case_kind,
         "distance_restriction_applicable": False,
         "observed_turn_onto_highway": True,
         "legal_judgment": None,
         "site_source_sha256": site["site_source_sha256"],
+        "body_occupancy_source": "original eight-vertex footprint against reviewed lane polygon",
         "route_source_sha256": list(dict.fromkeys(row["source_sha256"] for row in frames)),
     }

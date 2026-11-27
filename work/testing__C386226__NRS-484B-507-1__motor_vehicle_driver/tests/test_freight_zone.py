@@ -12,6 +12,8 @@ from freight_zone import CASES, build_case, measure_history, validate_site
 from finalize_saved import finalize
 from original_runner import construct
 from delivery_audit import audit_attempt, audit_comparisons
+from freight_zone_sweep import CASES as SWEEP_CASES, build_case as build_sweep_case, validate_site as validate_sweep_site, measure_history as measure_sweep_history
+from build_sweep_bundles import site_and_rows
 
 
 def site(effective=True):
@@ -72,6 +74,12 @@ class Adapter:
 
     def set_freight_arrival(self, *args, **kwargs):
         self.calls.append(("set_freight_arrival", args, kwargs))
+
+    def set_passenger_dwell(self, *args, **kwargs):
+        self.calls.append(("set_passenger_dwell", args, kwargs))
+
+    def set_freight_headway(self, *args, **kwargs):
+        self.calls.append(("set_freight_headway", args, kwargs))
 
     def destroy(self, actor):
         self.calls.append(("destroy", (actor,), {}))
@@ -220,7 +228,7 @@ class FreightZoneTest(unittest.TestCase):
                  "freight_entry_source_sha256": "freight-entry",
                  "traffic_and_official_directions_source_sha256": "traffic",
                  "clock_source_sha256": "clock", "civil_time_iso": "2026-11-26T12:00:00-08:00"}
-        for c in CASES:
+        for c in SWEEP_CASES:
             cid = aid + "__" + c.name
             report = {"format": "c386226-independent-original-audit-v1", "case_id": cid,
                       "source_kind": "original_native_capture", "legal_status": "unresolved",
@@ -246,6 +254,56 @@ class FreightZoneTest(unittest.TestCase):
         broken[aid + "__stand_no_material"]["comparison_record"]["road_source_sha256"] = "changed-road"
         with self.assertRaisesRegex(ValueError, "fixed comparison condition changed"):
             audit_comparisons(broken)
+
+
+class FreightSweepTest(unittest.TestCase):
+    def test_all_five_source_gates_reject_missing_axis_source(self):
+        for name in ("sweep_material_delay-0000", "sweep_marked_boundary-0000",
+                     "sweep_effective_hours-0000", "sweep_passenger_dwell-0000",
+                     "sweep_freight_headway-0000"):
+            with self.subTest(name=name):
+                case = next(c for c in SWEEP_CASES if c.name == name)
+                reviewed, _ = site_and_rows(case, "case__" + name, "synthetic-source")
+                if name.startswith("sweep_material"):
+                    reviewed["materials_inventory_source_sha256"] = ""
+                elif name.startswith("sweep_marked"):
+                    reviewed["zone"]["boundary_anchor_source_sha256"] = ""
+                elif name.startswith("sweep_effective"):
+                    reviewed["clock"]["effective_boundary_source_sha256"] = ""
+                elif name.startswith("sweep_passenger"):
+                    reviewed["passenger_dwell_controller_source_sha256"] = ""
+                else:
+                    reviewed["road"]["freight_headway_controller_source_sha256"] = ""
+                adapter = Adapter()
+                with self.assertRaises(ValueError):
+                    build_sweep_case(adapter, reviewed, case)
+                self.assertEqual(adapter.calls, [])
+
+    def test_sweep_controllers_and_original_measurements(self):
+        names = ("sweep_material_delay-0002", "sweep_marked_boundary-0000",
+                 "sweep_effective_hours-0001", "sweep_passenger_dwell-0002",
+                 "sweep_freight_headway-0002")
+        keys = ("halt_to_material_event_s", "marked_zone_signed_distance_m",
+                "civil_boundary_offset_min", "observed_passenger_dwell_s",
+                "observed_freight_entry_headway_s")
+        for name, key in zip(names, keys):
+            with self.subTest(name=name):
+                case = next(c for c in SWEEP_CASES if c.name == name)
+                reviewed, original = site_and_rows(case, "case__" + name, "synthetic-source")
+                validate_sweep_site(reviewed, case)
+                adapter = Adapter()
+                built = build_sweep_case(adapter, reviewed, case)
+                self.assertEqual(len(built["owned"]), 4)
+                observed = measure_sweep_history([{**row, "case_id": case.name} for row in original], case, reviewed)
+                self.assertEqual(observed["legal_judgment"], "unresolved")
+                value = observed[key]
+                if isinstance(value, list):
+                    value = value[0]
+                self.assertIsInstance(value, (float, int))
+                if key == "observed_passenger_dwell_s":
+                    self.assertIn("set_passenger_dwell", [call[0] for call in adapter.calls])
+                if key == "observed_freight_entry_headway_s":
+                    self.assertIn("set_freight_headway", [call[0] for call in adapter.calls])
 
 
 if __name__ == "__main__":

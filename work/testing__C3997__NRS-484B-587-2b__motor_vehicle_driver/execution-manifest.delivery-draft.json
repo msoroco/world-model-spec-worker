@@ -1,0 +1,1711 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C3997__NRS-484B-587-2b__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "partial_cpu_preparation",
+  "semantic_index": "proposals/semantic-index.json",
+  "cases": [
+    {
+      "case_id": "testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_stay",
+      "kind": "delivery",
+      "status": "partial_cpu_preparation",
+      "construction": "construction.json",
+      "construction_sha256": "5167ad41f19dd6a63c03e84a8ae1036c8b2b41a3d182a258bc06fd1866cb5e59",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Actual Native lane-change route may miss the sourced solid-white separator or leave four-view camera coverage; retry with a source-bound lower steering gain after physical failure."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback1-construction.json",
+          "construction_sha256": "47a29e847304aae343bae68ff52508db26e20ce8e1803a619014922a3149f595",
+          "trigger": {
+            "source": "original-attempt/physical-feedback.json",
+            "metric": "source-bound route convergence and camera coverage",
+            "failure_condition": "Primary steering cannot hold sourced route or reviewed views lose vehicle body"
+          },
+          "changed_knobs": [
+            "steer_gain .025 to .02"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/execution-manifest.draft.json --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_stay --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/proofs-v6/offline-north_traffic_stay-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "exit_code": 0,
+            "log": "proof-offline-north_traffic_stay-fallback1.log",
+            "log_sha256": "c0c846344de5cd023b5bad8413d888ed6872a4a4fc4ffe4db052eafc24772a69",
+            "construction_sha256": "47a29e847304aae343bae68ff52508db26e20ce8e1803a619014922a3149f595"
+          },
+          "compatibility": {
+            "receipt": "proof-compat-receipt-north_traffic_stay-fallback1.json",
+            "sha256": "3fdab7022be150f6e8500663c70026e66424fcd1ecad623d86fb7cc6b60be78e",
+            "log": "proof-compat-analysis-north_traffic_stay-fallback1.log",
+            "negative_log": "proof-compat-negative-north_traffic_stay-fallback1.log"
+          }
+        }
+      ],
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "fixture_recipe": "work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C3997_REVIEWED_SITE"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/execution-manifest.draft.json --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_stay --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/proofs-v6/offline-north_traffic_stay-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-offline-north_traffic_stay-primary.log",
+        "log_sha256": "2013016b2d3bed58f204dc44be2a6413220894f28fa0cc3ee013f5a5ea6b6ff2",
+        "construction_sha256": "5167ad41f19dd6a63c03e84a8ae1036c8b2b41a3d182a258bc06fd1866cb5e59"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-north_traffic_stay-primary.json",
+        "sha256": "7fd835c15f28c399328d53b150620fddabc09a75b3c3caa061507bb55f375f55",
+        "log": "proof-compat-analysis-north_traffic_stay-primary.log",
+        "negative_log": "proof-compat-negative-north_traffic_stay-primary.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-north_traffic_stay-primary.log"
+      },
+      "acquisition": {
+        "controlled_access_authority": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "public_highway_boundary": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "lane_function": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "solid_white_separator": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "vehicle_body_line_relation": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "vehicle_class_and_driver": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "emergency_necessity": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "subsection3_shoulder_scope": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        }
+      },
+      "saved_replay": {
+        "log": "proof-saved-north_traffic_stay.log",
+        "sha256": "7083a412523e793dd55a2a0cb7d9f759595c53d36e9c9b400d55279ca9727eda"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/execution-manifest.json --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_stay --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/delivery_audit.py --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_stay --attempt $ATTEMPT --review $PIXEL_REVIEW --physical $PHYSICAL_RESULT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-saved-north_traffic_stay.log",
+        "test_log_sha256": "7083a412523e793dd55a2a0cb7d9f759595c53d36e9c9b400d55279ca9727eda"
+      },
+      "physical_preparation": {
+        "receipt": "physical-north_traffic_stay-receipt.json",
+        "sha256": "cc58779fcfed10f3909e33a49783334e3be669bf337a318acbe8c871f5fe49d1"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_stay",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent pixel review missing four views",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/delivery_audit.py --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_stay --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/delivery-v1/north_traffic_stay --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/proofs/physical/north_traffic_stay/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/delivery-v1/north_traffic_stay/pixel-review.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/delivery_audit.py --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_stay --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/delivery-v1/north_traffic_stay --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/proofs/physical/north_traffic_stay/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/delivery-v1/north_traffic_stay/pixel-review-missing-view.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "a504d38a0cd8a062072a021d63441a2e2901b99d5e0d82c3cc63ea8e0f2382a2",
+        "test_log": "proof-delivery-positive-north_traffic_stay.log",
+        "test_log_sha256": "f9c0f75fd042adda34744fe0684a48e74f331941f84f6b244e37941e7e04878d",
+        "negative_log": "proof-delivery-negative-north_traffic_stay.log",
+        "negative_log_sha256": "c5637f51618e0ea7be7b7bf6e814d979a2f3ccefb04a16d07ede73bc75672974",
+        "diagnostic_scope": "CPU rejection protocol only; original Native source, four views and physical review remain required"
+      }
+    },
+    {
+      "case_id": "testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_to_entrance",
+      "kind": "delivery",
+      "status": "partial_cpu_preparation",
+      "construction": "cases/north_traffic_to_entrance/construction.json",
+      "construction_sha256": "0386ee3c3eea5dc9ac60328fb22041aae250207c8564a7741634ba39b872cc0b",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Actual Native lane-change route may miss the sourced solid-white separator or leave four-view camera coverage; retry with a source-bound lower steering gain after physical failure."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/north_traffic_to_entrance/fallback1-construction.json",
+          "construction_sha256": "ee6a2e0d52c425abdeaa38cb98e7c6ea4cd4b0b9f448674f9ae72c21e2c48cab",
+          "trigger": {
+            "source": "original-attempt/physical-feedback.json",
+            "metric": "source-bound route convergence and camera coverage",
+            "failure_condition": "Primary steering cannot hold sourced route or reviewed views lose vehicle body"
+          },
+          "changed_knobs": [
+            "steer_gain .025 to .02"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/execution-manifest.draft.json --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_to_entrance --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/proofs-v6/offline-north_traffic_to_entrance-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "exit_code": 0,
+            "log": "proof-offline-north_traffic_to_entrance-fallback1.log",
+            "log_sha256": "8d8652f537f8598b758c8171a918fb420fd9b0708ed45678114359591566b32d",
+            "construction_sha256": "ee6a2e0d52c425abdeaa38cb98e7c6ea4cd4b0b9f448674f9ae72c21e2c48cab"
+          },
+          "compatibility": {
+            "receipt": "proof-compat-receipt-north_traffic_to_entrance-fallback1.json",
+            "sha256": "b10ad4b9fd764e22729e9e0f767d5de63785362762431231757398c5a4738abf",
+            "log": "proof-compat-analysis-north_traffic_to_entrance-fallback1.log",
+            "negative_log": "proof-compat-negative-north_traffic_to_entrance-fallback1.log"
+          }
+        }
+      ],
+      "measurement_contract": "cases/north_traffic_to_entrance/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "fixture_recipe": "work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/cases/north_traffic_to_entrance/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C3997_REVIEWED_SITE"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/execution-manifest.draft.json --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_to_entrance --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/proofs-v6/offline-north_traffic_to_entrance-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-offline-north_traffic_to_entrance-primary.log",
+        "log_sha256": "0087a06e2767ffc38294a6319f8e5fc5d3a21d578145ef137041d66cec48a4a0",
+        "construction_sha256": "0386ee3c3eea5dc9ac60328fb22041aae250207c8564a7741634ba39b872cc0b"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-north_traffic_to_entrance-primary.json",
+        "sha256": "dc39ec1f6711121189e5d7df6573459205e28370f23a677f1fe14adf9b4cd6fe",
+        "log": "proof-compat-analysis-north_traffic_to_entrance-primary.log",
+        "negative_log": "proof-compat-negative-north_traffic_to_entrance-primary.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-north_traffic_to_entrance-primary.log"
+      },
+      "acquisition": {
+        "controlled_access_authority": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "public_highway_boundary": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "lane_function": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "solid_white_separator": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "vehicle_body_line_relation": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "vehicle_class_and_driver": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "emergency_necessity": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "subsection3_shoulder_scope": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        }
+      },
+      "saved_replay": {
+        "log": "proof-saved-north_traffic_to_entrance.log",
+        "sha256": "e70989ef7f5ad55e9a54338a365d8a3a8adbd5d612930d6fd783a46061fbf583"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/execution-manifest.json --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_to_entrance --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/delivery_audit.py --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_to_entrance --attempt $ATTEMPT --review $PIXEL_REVIEW --physical $PHYSICAL_RESULT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-saved-north_traffic_to_entrance.log",
+        "test_log_sha256": "e70989ef7f5ad55e9a54338a365d8a3a8adbd5d612930d6fd783a46061fbf583"
+      },
+      "physical_preparation": {
+        "receipt": "physical-north_traffic_to_entrance-receipt.json",
+        "sha256": "5d13e908ff1f8b94c3970200d37580e8de55407fdd732230d8005fb5a0ce10f7"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_to_entrance",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent pixel review missing four views",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/delivery_audit.py --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_to_entrance --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/delivery-v1/north_traffic_to_entrance --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/proofs/physical/north_traffic_to_entrance/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/delivery-v1/north_traffic_to_entrance/pixel-review.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/delivery_audit.py --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_to_entrance --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/delivery-v1/north_traffic_to_entrance --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/proofs/physical/north_traffic_to_entrance/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/delivery-v1/north_traffic_to_entrance/pixel-review-missing-view.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "a504d38a0cd8a062072a021d63441a2e2901b99d5e0d82c3cc63ea8e0f2382a2",
+        "test_log": "proof-delivery-positive-north_traffic_to_entrance.log",
+        "test_log_sha256": "8984cfffcc19e920dcb1bf0817d5f45359b25e958a1e3ef2efd72ae30b66a598",
+        "negative_log": "proof-delivery-negative-north_traffic_to_entrance.log",
+        "negative_log_sha256": "c5637f51618e0ea7be7b7bf6e814d979a2f3ccefb04a16d07ede73bc75672974",
+        "diagnostic_scope": "CPU rejection protocol only; original Native source, four views and physical review remain required"
+      }
+    },
+    {
+      "case_id": "testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_entrance_to_traffic",
+      "kind": "delivery",
+      "status": "partial_cpu_preparation",
+      "construction": "cases/north_entrance_to_traffic/construction.json",
+      "construction_sha256": "11a9807ecd80670ffca88abc1a6ae22a88cc200321ce2614259f962553b1b6e5",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Actual Native lane-change route may miss the sourced solid-white separator or leave four-view camera coverage; retry with a source-bound lower steering gain after physical failure."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/north_entrance_to_traffic/fallback1-construction.json",
+          "construction_sha256": "66cd68882f8c895da2f8797c4f5380d935a7143715ab165ecba8c7b366e48f2d",
+          "trigger": {
+            "source": "original-attempt/physical-feedback.json",
+            "metric": "source-bound route convergence and camera coverage",
+            "failure_condition": "Primary steering cannot hold sourced route or reviewed views lose vehicle body"
+          },
+          "changed_knobs": [
+            "steer_gain .025 to .02"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/execution-manifest.draft.json --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_entrance_to_traffic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/proofs-v6/offline-north_entrance_to_traffic-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "exit_code": 0,
+            "log": "proof-offline-north_entrance_to_traffic-fallback1.log",
+            "log_sha256": "f61dd188264ef0b3031ae8ba92e637b08ae0929272776e1645210575f6a8dd82",
+            "construction_sha256": "66cd68882f8c895da2f8797c4f5380d935a7143715ab165ecba8c7b366e48f2d"
+          },
+          "compatibility": {
+            "receipt": "proof-compat-receipt-north_entrance_to_traffic-fallback1.json",
+            "sha256": "7554c44a449f56477ffb1a0e3d0167a8831a425781afed0e8603264fc9e578d8",
+            "log": "proof-compat-analysis-north_entrance_to_traffic-fallback1.log",
+            "negative_log": "proof-compat-negative-north_entrance_to_traffic-fallback1.log"
+          }
+        }
+      ],
+      "measurement_contract": "cases/north_entrance_to_traffic/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "fixture_recipe": "work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/cases/north_entrance_to_traffic/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C3997_REVIEWED_SITE"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/execution-manifest.draft.json --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_entrance_to_traffic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/proofs-v6/offline-north_entrance_to_traffic-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-offline-north_entrance_to_traffic-primary.log",
+        "log_sha256": "a0f8175b8a9087220ac0e2621e982772683a1be6e2e2787eb53e5694924c5fca",
+        "construction_sha256": "11a9807ecd80670ffca88abc1a6ae22a88cc200321ce2614259f962553b1b6e5"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-north_entrance_to_traffic-primary.json",
+        "sha256": "247d15c0b307d9d1765a4c32d531d823fb7c85ebfe4663a2e9557442a9530c40",
+        "log": "proof-compat-analysis-north_entrance_to_traffic-primary.log",
+        "negative_log": "proof-compat-negative-north_entrance_to_traffic-primary.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-north_entrance_to_traffic-primary.log"
+      },
+      "acquisition": {
+        "controlled_access_authority": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "public_highway_boundary": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "lane_function": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "solid_white_separator": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "vehicle_body_line_relation": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "vehicle_class_and_driver": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "emergency_necessity": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "subsection3_shoulder_scope": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        }
+      },
+      "saved_replay": {
+        "log": "proof-saved-north_entrance_to_traffic.log",
+        "sha256": "7b4cf7325703ba91c9028c67d893464c44c9239bc130ff311fdeec996fa225c4"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/execution-manifest.json --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_entrance_to_traffic --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/delivery_audit.py --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_entrance_to_traffic --attempt $ATTEMPT --review $PIXEL_REVIEW --physical $PHYSICAL_RESULT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-saved-north_entrance_to_traffic.log",
+        "test_log_sha256": "7b4cf7325703ba91c9028c67d893464c44c9239bc130ff311fdeec996fa225c4"
+      },
+      "physical_preparation": {
+        "receipt": "physical-north_entrance_to_traffic-receipt.json",
+        "sha256": "d0d8636ee3178bae2694714353c4f14a0ccd96063f7317608f22cfa209cc30ea"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_entrance_to_traffic",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent pixel review missing four views",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/delivery_audit.py --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_entrance_to_traffic --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/delivery-v1/north_entrance_to_traffic --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/proofs/physical/north_entrance_to_traffic/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/delivery-v1/north_entrance_to_traffic/pixel-review.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/delivery_audit.py --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_entrance_to_traffic --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/delivery-v1/north_entrance_to_traffic --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/proofs/physical/north_entrance_to_traffic/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/delivery-v1/north_entrance_to_traffic/pixel-review-missing-view.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "a504d38a0cd8a062072a021d63441a2e2901b99d5e0d82c3cc63ea8e0f2382a2",
+        "test_log": "proof-delivery-positive-north_entrance_to_traffic.log",
+        "test_log_sha256": "ab0599670569780c2de0505d04b5c564084de6655097e5130552597a398b5891",
+        "negative_log": "proof-delivery-negative-north_entrance_to_traffic.log",
+        "negative_log_sha256": "c5637f51618e0ea7be7b7bf6e814d979a2f3ccefb04a16d07ede73bc75672974",
+        "diagnostic_scope": "CPU rejection protocol only; original Native source, four views and physical review remain required"
+      }
+    },
+    {
+      "case_id": "testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_to_exit",
+      "kind": "delivery",
+      "status": "partial_cpu_preparation",
+      "construction": "cases/north_traffic_to_exit/construction.json",
+      "construction_sha256": "63b8eaebc19b15776639d420a7dd78a05bb6032650c74214cd4d79981f3a590d",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Actual Native lane-change route may miss the sourced solid-white separator or leave four-view camera coverage; retry with a source-bound lower steering gain after physical failure."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/north_traffic_to_exit/fallback1-construction.json",
+          "construction_sha256": "103c1fdef54ee67a7e064a6ab93a04e2d75b6f5afaeda37cd7ad493c4088b891",
+          "trigger": {
+            "source": "original-attempt/physical-feedback.json",
+            "metric": "source-bound route convergence and camera coverage",
+            "failure_condition": "Primary steering cannot hold sourced route or reviewed views lose vehicle body"
+          },
+          "changed_knobs": [
+            "steer_gain .025 to .02"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/execution-manifest.draft.json --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_to_exit --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/proofs-v6/offline-north_traffic_to_exit-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "exit_code": 0,
+            "log": "proof-offline-north_traffic_to_exit-fallback1.log",
+            "log_sha256": "989e515ce74f031508ba3306409e16538dd45aa8845a359cc872fff01c2b0498",
+            "construction_sha256": "103c1fdef54ee67a7e064a6ab93a04e2d75b6f5afaeda37cd7ad493c4088b891"
+          },
+          "compatibility": {
+            "receipt": "proof-compat-receipt-north_traffic_to_exit-fallback1.json",
+            "sha256": "9a6e97f23be3b866d9097b01b8b66ec6860553475db1edda2442df63c50b6770",
+            "log": "proof-compat-analysis-north_traffic_to_exit-fallback1.log",
+            "negative_log": "proof-compat-negative-north_traffic_to_exit-fallback1.log"
+          }
+        }
+      ],
+      "measurement_contract": "cases/north_traffic_to_exit/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "fixture_recipe": "work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/cases/north_traffic_to_exit/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C3997_REVIEWED_SITE"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/execution-manifest.draft.json --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_to_exit --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/proofs-v6/offline-north_traffic_to_exit-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-offline-north_traffic_to_exit-primary.log",
+        "log_sha256": "f44b9fecab7fe3fdeea1a15314c7eeb9c69099768d358bbe78d83be686bba4f7",
+        "construction_sha256": "63b8eaebc19b15776639d420a7dd78a05bb6032650c74214cd4d79981f3a590d"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-north_traffic_to_exit-primary.json",
+        "sha256": "63e4a1bc03a3cf962d987dd44ca2774d3f2d9a38ebeba6930f871728f2be0e40",
+        "log": "proof-compat-analysis-north_traffic_to_exit-primary.log",
+        "negative_log": "proof-compat-negative-north_traffic_to_exit-primary.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-north_traffic_to_exit-primary.log"
+      },
+      "acquisition": {
+        "controlled_access_authority": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "public_highway_boundary": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "lane_function": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "solid_white_separator": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "vehicle_body_line_relation": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "vehicle_class_and_driver": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "emergency_necessity": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "subsection3_shoulder_scope": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        }
+      },
+      "saved_replay": {
+        "log": "proof-saved-north_traffic_to_exit.log",
+        "sha256": "e84db21b701d0451accdf376971a0798162aff503814a66160c40eba9318e058"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/execution-manifest.json --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_to_exit --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/delivery_audit.py --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_to_exit --attempt $ATTEMPT --review $PIXEL_REVIEW --physical $PHYSICAL_RESULT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-saved-north_traffic_to_exit.log",
+        "test_log_sha256": "e84db21b701d0451accdf376971a0798162aff503814a66160c40eba9318e058"
+      },
+      "physical_preparation": {
+        "receipt": "physical-north_traffic_to_exit-receipt.json",
+        "sha256": "9b5b85bb36d9d8b487760d8154f3676ae72ded3bdefa45f9bab547082f568805"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_to_exit",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent pixel review missing four views",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/delivery_audit.py --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_to_exit --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/delivery-v1/north_traffic_to_exit --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/proofs/physical/north_traffic_to_exit/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/delivery-v1/north_traffic_to_exit/pixel-review.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/delivery_audit.py --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_to_exit --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/delivery-v1/north_traffic_to_exit --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/proofs/physical/north_traffic_to_exit/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/delivery-v1/north_traffic_to_exit/pixel-review-missing-view.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "a504d38a0cd8a062072a021d63441a2e2901b99d5e0d82c3cc63ea8e0f2382a2",
+        "test_log": "proof-delivery-positive-north_traffic_to_exit.log",
+        "test_log_sha256": "9c9844377b7ee92dfba1e14cdefa1422b81b6d66725ee446b54762657d6416fa",
+        "negative_log": "proof-delivery-negative-north_traffic_to_exit.log",
+        "negative_log_sha256": "c5637f51618e0ea7be7b7bf6e814d979a2f3ccefb04a16d07ede73bc75672974",
+        "diagnostic_scope": "CPU rejection protocol only; original Native source, four views and physical review remain required"
+      }
+    },
+    {
+      "case_id": "testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_exit_to_traffic",
+      "kind": "delivery",
+      "status": "partial_cpu_preparation",
+      "construction": "cases/north_exit_to_traffic/construction.json",
+      "construction_sha256": "68b92a21c1fe036e7bde2c3b5fa84244291ca3cd543e2896758ffda835d86864",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Actual Native lane-change route may miss the sourced solid-white separator or leave four-view camera coverage; retry with a source-bound lower steering gain after physical failure."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/north_exit_to_traffic/fallback1-construction.json",
+          "construction_sha256": "e9b9becde67680ad40c85eede3458c0d036c75d9618d1707f2716149a83e8bec",
+          "trigger": {
+            "source": "original-attempt/physical-feedback.json",
+            "metric": "source-bound route convergence and camera coverage",
+            "failure_condition": "Primary steering cannot hold sourced route or reviewed views lose vehicle body"
+          },
+          "changed_knobs": [
+            "steer_gain .025 to .02"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/execution-manifest.draft.json --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_exit_to_traffic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/proofs-v6/offline-north_exit_to_traffic-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "exit_code": 0,
+            "log": "proof-offline-north_exit_to_traffic-fallback1.log",
+            "log_sha256": "3831df6a6ebe68bba686a0a89ee652f6374ae8dc96efae9efc4523a0e50c0a5d",
+            "construction_sha256": "e9b9becde67680ad40c85eede3458c0d036c75d9618d1707f2716149a83e8bec"
+          },
+          "compatibility": {
+            "receipt": "proof-compat-receipt-north_exit_to_traffic-fallback1.json",
+            "sha256": "86590b44f95ed6ae210061bb8e611c22206cec38f697eec326c180108221ee5b",
+            "log": "proof-compat-analysis-north_exit_to_traffic-fallback1.log",
+            "negative_log": "proof-compat-negative-north_exit_to_traffic-fallback1.log"
+          }
+        }
+      ],
+      "measurement_contract": "cases/north_exit_to_traffic/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "fixture_recipe": "work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/cases/north_exit_to_traffic/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C3997_REVIEWED_SITE"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/execution-manifest.draft.json --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_exit_to_traffic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/proofs-v6/offline-north_exit_to_traffic-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-offline-north_exit_to_traffic-primary.log",
+        "log_sha256": "4361d3251ef99e0702a78b06d661d830fac97a69029b592b8451a741a390f027",
+        "construction_sha256": "68b92a21c1fe036e7bde2c3b5fa84244291ca3cd543e2896758ffda835d86864"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-north_exit_to_traffic-primary.json",
+        "sha256": "34fce0c59b5cec911d32ba094e3656f79ac37268d627b0e97fd3726f032e216b",
+        "log": "proof-compat-analysis-north_exit_to_traffic-primary.log",
+        "negative_log": "proof-compat-negative-north_exit_to_traffic-primary.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-north_exit_to_traffic-primary.log"
+      },
+      "acquisition": {
+        "controlled_access_authority": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "public_highway_boundary": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "lane_function": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "solid_white_separator": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "vehicle_body_line_relation": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "vehicle_class_and_driver": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "emergency_necessity": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "subsection3_shoulder_scope": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        }
+      },
+      "saved_replay": {
+        "log": "proof-saved-north_exit_to_traffic.log",
+        "sha256": "de36c6cf0fddf854a3817d391fc52f43744f3ee339c46856cf1a2ba47f3b5249"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/execution-manifest.json --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_exit_to_traffic --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/delivery_audit.py --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_exit_to_traffic --attempt $ATTEMPT --review $PIXEL_REVIEW --physical $PHYSICAL_RESULT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-saved-north_exit_to_traffic.log",
+        "test_log_sha256": "de36c6cf0fddf854a3817d391fc52f43744f3ee339c46856cf1a2ba47f3b5249"
+      },
+      "physical_preparation": {
+        "receipt": "physical-north_exit_to_traffic-receipt.json",
+        "sha256": "9cf609b43a37e8b19416aa5447bff5506949a44f2da2ea90f641acf1af7b7431"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_exit_to_traffic",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent pixel review missing four views",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/delivery_audit.py --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_exit_to_traffic --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/delivery-v1/north_exit_to_traffic --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/proofs/physical/north_exit_to_traffic/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/delivery-v1/north_exit_to_traffic/pixel-review.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/delivery_audit.py --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_exit_to_traffic --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/delivery-v1/north_exit_to_traffic --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/proofs/physical/north_exit_to_traffic/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/delivery-v1/north_exit_to_traffic/pixel-review-missing-view.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "a504d38a0cd8a062072a021d63441a2e2901b99d5e0d82c3cc63ea8e0f2382a2",
+        "test_log": "proof-delivery-positive-north_exit_to_traffic.log",
+        "test_log_sha256": "3e52c78cb7e45efa78552922bc40a596f6dc2043e76dd24bf8785c56d116d37d",
+        "negative_log": "proof-delivery-negative-north_exit_to_traffic.log",
+        "negative_log_sha256": "c5637f51618e0ea7be7b7bf6e814d979a2f3ccefb04a16d07ede73bc75672974",
+        "diagnostic_scope": "CPU rejection protocol only; original Native source, four views and physical review remain required"
+      }
+    },
+    {
+      "case_id": "testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__south_traffic_stay",
+      "kind": "delivery",
+      "status": "partial_cpu_preparation",
+      "construction": "cases/south_traffic_stay/construction.json",
+      "construction_sha256": "3d61b8be05f39320209d23535cdc89038d6ae6e65e79e86f5e21a807808f1a2d",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Actual Native lane-change route may miss the sourced solid-white separator or leave four-view camera coverage; retry with a source-bound lower steering gain after physical failure."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/south_traffic_stay/fallback1-construction.json",
+          "construction_sha256": "c01705abc18924310426715d65e7295c858e0e5ee35329811aef57ad0346f3b3",
+          "trigger": {
+            "source": "original-attempt/physical-feedback.json",
+            "metric": "source-bound route convergence and camera coverage",
+            "failure_condition": "Primary steering cannot hold sourced route or reviewed views lose vehicle body"
+          },
+          "changed_knobs": [
+            "steer_gain .025 to .02"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/execution-manifest.draft.json --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__south_traffic_stay --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/proofs-v6/offline-south_traffic_stay-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "exit_code": 0,
+            "log": "proof-offline-south_traffic_stay-fallback1.log",
+            "log_sha256": "3b9fbbe1b5c5e1599ed64900124b205af02503aeab5c2adf4eb131e7ee9988e3",
+            "construction_sha256": "c01705abc18924310426715d65e7295c858e0e5ee35329811aef57ad0346f3b3"
+          },
+          "compatibility": {
+            "receipt": "proof-compat-receipt-south_traffic_stay-fallback1.json",
+            "sha256": "2e97d86841414c1914e605abe5587e74d460d241af8b8ee0102ac306905a3b33",
+            "log": "proof-compat-analysis-south_traffic_stay-fallback1.log",
+            "negative_log": "proof-compat-negative-south_traffic_stay-fallback1.log"
+          }
+        }
+      ],
+      "measurement_contract": "cases/south_traffic_stay/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "fixture_recipe": "work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/cases/south_traffic_stay/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C3997_REVIEWED_SITE"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/execution-manifest.draft.json --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__south_traffic_stay --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/proofs-v6/offline-south_traffic_stay-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-offline-south_traffic_stay-primary.log",
+        "log_sha256": "f61ea93a0d45c9b3a3c9f5193b5abf0bafd964729ca7b8f282376d16e24e47b5",
+        "construction_sha256": "3d61b8be05f39320209d23535cdc89038d6ae6e65e79e86f5e21a807808f1a2d"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-south_traffic_stay-primary.json",
+        "sha256": "9b34a2bb2f9f8a5b962aaa1d95b81e2b5bb2bb603f39647c513d8b5c13624b25",
+        "log": "proof-compat-analysis-south_traffic_stay-primary.log",
+        "negative_log": "proof-compat-negative-south_traffic_stay-primary.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-south_traffic_stay-primary.log"
+      },
+      "acquisition": {
+        "controlled_access_authority": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "public_highway_boundary": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "lane_function": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "solid_white_separator": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "vehicle_body_line_relation": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "vehicle_class_and_driver": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "emergency_necessity": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "subsection3_shoulder_scope": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        }
+      },
+      "saved_replay": {
+        "log": "proof-saved-south_traffic_stay.log",
+        "sha256": "d57276f9e9a601b07c5d805c04b3e89e78de054cada24509abaa3cc4af04a603"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/execution-manifest.json --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__south_traffic_stay --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/delivery_audit.py --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__south_traffic_stay --attempt $ATTEMPT --review $PIXEL_REVIEW --physical $PHYSICAL_RESULT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-saved-south_traffic_stay.log",
+        "test_log_sha256": "d57276f9e9a601b07c5d805c04b3e89e78de054cada24509abaa3cc4af04a603"
+      },
+      "physical_preparation": {
+        "receipt": "physical-south_traffic_stay-receipt.json",
+        "sha256": "9059da11b1cdcb87229aa1a6c3861682b3f04424e774a1de8b49951dc9887c2e"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__south_traffic_stay",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent pixel review missing four views",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/delivery_audit.py --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__south_traffic_stay --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/delivery-v1/south_traffic_stay --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/proofs/physical/south_traffic_stay/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/delivery-v1/south_traffic_stay/pixel-review.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/delivery_audit.py --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__south_traffic_stay --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/delivery-v1/south_traffic_stay --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/proofs/physical/south_traffic_stay/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/delivery-v1/south_traffic_stay/pixel-review-missing-view.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "a504d38a0cd8a062072a021d63441a2e2901b99d5e0d82c3cc63ea8e0f2382a2",
+        "test_log": "proof-delivery-positive-south_traffic_stay.log",
+        "test_log_sha256": "5349201172abdb2905a503a25a30f12bb09bbf7db8713f78db3fcdc6b49cd7a8",
+        "negative_log": "proof-delivery-negative-south_traffic_stay.log",
+        "negative_log_sha256": "c5637f51618e0ea7be7b7bf6e814d979a2f3ccefb04a16d07ede73bc75672974",
+        "diagnostic_scope": "CPU rejection protocol only; original Native source, four views and physical review remain required"
+      }
+    },
+    {
+      "case_id": "testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__south_traffic_to_entrance",
+      "kind": "delivery",
+      "status": "partial_cpu_preparation",
+      "construction": "cases/south_traffic_to_entrance/construction.json",
+      "construction_sha256": "35b76d148c30a677afec1892c8d0803b7c743aa57bb93305d87be2b498321680",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Actual Native lane-change route may miss the sourced solid-white separator or leave four-view camera coverage; retry with a source-bound lower steering gain after physical failure."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/south_traffic_to_entrance/fallback1-construction.json",
+          "construction_sha256": "8344de20fda08ec71d1c18bf4f542befea481ac7d35746c3f1a998cc9f65947f",
+          "trigger": {
+            "source": "original-attempt/physical-feedback.json",
+            "metric": "source-bound route convergence and camera coverage",
+            "failure_condition": "Primary steering cannot hold sourced route or reviewed views lose vehicle body"
+          },
+          "changed_knobs": [
+            "steer_gain .025 to .02"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/execution-manifest.draft.json --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__south_traffic_to_entrance --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/proofs-v6/offline-south_traffic_to_entrance-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "exit_code": 0,
+            "log": "proof-offline-south_traffic_to_entrance-fallback1.log",
+            "log_sha256": "db6cd6d70ff530d5a6375764ed6e759acb4a111766340401f6bb255fb81b2172",
+            "construction_sha256": "8344de20fda08ec71d1c18bf4f542befea481ac7d35746c3f1a998cc9f65947f"
+          },
+          "compatibility": {
+            "receipt": "proof-compat-receipt-south_traffic_to_entrance-fallback1.json",
+            "sha256": "10927253e1f65600bf628681c32287eb72531e32bf8a97e9fd1b97338307b3b8",
+            "log": "proof-compat-analysis-south_traffic_to_entrance-fallback1.log",
+            "negative_log": "proof-compat-negative-south_traffic_to_entrance-fallback1.log"
+          }
+        }
+      ],
+      "measurement_contract": "cases/south_traffic_to_entrance/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "fixture_recipe": "work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/cases/south_traffic_to_entrance/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C3997_REVIEWED_SITE"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/execution-manifest.draft.json --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__south_traffic_to_entrance --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/proofs-v6/offline-south_traffic_to_entrance-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-offline-south_traffic_to_entrance-primary.log",
+        "log_sha256": "b4fcf5b22d188be11c794deeaba768c23738522e7d6ffb51e034fbc27e2ff4d9",
+        "construction_sha256": "35b76d148c30a677afec1892c8d0803b7c743aa57bb93305d87be2b498321680"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-south_traffic_to_entrance-primary.json",
+        "sha256": "c61fd023f6af85027ddb323e63ad08cf74b3227ad6e234e1f18486a4af96b2e0",
+        "log": "proof-compat-analysis-south_traffic_to_entrance-primary.log",
+        "negative_log": "proof-compat-negative-south_traffic_to_entrance-primary.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-south_traffic_to_entrance-primary.log"
+      },
+      "acquisition": {
+        "controlled_access_authority": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "public_highway_boundary": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "lane_function": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "solid_white_separator": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "vehicle_body_line_relation": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "vehicle_class_and_driver": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "emergency_necessity": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "subsection3_shoulder_scope": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        }
+      },
+      "saved_replay": {
+        "log": "proof-saved-south_traffic_to_entrance.log",
+        "sha256": "78200c7fdc72b5edba45d3f2b31a653d6f7d4a474fce5e9e64bf89ebd753b656"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/execution-manifest.json --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__south_traffic_to_entrance --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/delivery_audit.py --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__south_traffic_to_entrance --attempt $ATTEMPT --review $PIXEL_REVIEW --physical $PHYSICAL_RESULT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-saved-south_traffic_to_entrance.log",
+        "test_log_sha256": "78200c7fdc72b5edba45d3f2b31a653d6f7d4a474fce5e9e64bf89ebd753b656"
+      },
+      "physical_preparation": {
+        "receipt": "physical-south_traffic_to_entrance-receipt.json",
+        "sha256": "bfb8d860fc2fa849339441165c8a14d258e4a4e8ba8a2bb9f6ca7098dfdbb245"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__south_traffic_to_entrance",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent pixel review missing four views",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/delivery_audit.py --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__south_traffic_to_entrance --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/delivery-v1/south_traffic_to_entrance --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/proofs/physical/south_traffic_to_entrance/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/delivery-v1/south_traffic_to_entrance/pixel-review.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/delivery_audit.py --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__south_traffic_to_entrance --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/delivery-v1/south_traffic_to_entrance --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/proofs/physical/south_traffic_to_entrance/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/delivery-v1/south_traffic_to_entrance/pixel-review-missing-view.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "a504d38a0cd8a062072a021d63441a2e2901b99d5e0d82c3cc63ea8e0f2382a2",
+        "test_log": "proof-delivery-positive-south_traffic_to_entrance.log",
+        "test_log_sha256": "3867da8ace52d40fdda44eab0f2e972675d37535c0e0a0681c0880969c272985",
+        "negative_log": "proof-delivery-negative-south_traffic_to_entrance.log",
+        "negative_log_sha256": "c5637f51618e0ea7be7b7bf6e814d979a2f3ccefb04a16d07ede73bc75672974",
+        "diagnostic_scope": "CPU rejection protocol only; original Native source, four views and physical review remain required"
+      }
+    },
+    {
+      "case_id": "testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__south_traffic_to_exit",
+      "kind": "delivery",
+      "status": "partial_cpu_preparation",
+      "construction": "cases/south_traffic_to_exit/construction.json",
+      "construction_sha256": "cf72296a6f8fdb82731a0b7602488f405b79b8ae03462bf2b5be84ea362bdfa2",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Actual Native lane-change route may miss the sourced solid-white separator or leave four-view camera coverage; retry with a source-bound lower steering gain after physical failure."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/south_traffic_to_exit/fallback1-construction.json",
+          "construction_sha256": "07f5c1b50e2f66bc33c3756cc9ba9dca3723c55b8800803db100c0e052a6f592",
+          "trigger": {
+            "source": "original-attempt/physical-feedback.json",
+            "metric": "source-bound route convergence and camera coverage",
+            "failure_condition": "Primary steering cannot hold sourced route or reviewed views lose vehicle body"
+          },
+          "changed_knobs": [
+            "steer_gain .025 to .02"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/execution-manifest.draft.json --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__south_traffic_to_exit --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/proofs-v6/offline-south_traffic_to_exit-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "exit_code": 0,
+            "log": "proof-offline-south_traffic_to_exit-fallback1.log",
+            "log_sha256": "3e96ea812b17001951ad54be173b23d49a3d55769eb2ccc334add7b17abc4607",
+            "construction_sha256": "07f5c1b50e2f66bc33c3756cc9ba9dca3723c55b8800803db100c0e052a6f592"
+          },
+          "compatibility": {
+            "receipt": "proof-compat-receipt-south_traffic_to_exit-fallback1.json",
+            "sha256": "b05c7075ce40bbbbee20f04fd93bf46e970a1bab5c8859fe4bb09af1857f9e16",
+            "log": "proof-compat-analysis-south_traffic_to_exit-fallback1.log",
+            "negative_log": "proof-compat-negative-south_traffic_to_exit-fallback1.log"
+          }
+        }
+      ],
+      "measurement_contract": "cases/south_traffic_to_exit/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "fixture_recipe": "work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/cases/south_traffic_to_exit/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C3997_REVIEWED_SITE"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/execution-manifest.draft.json --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__south_traffic_to_exit --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/proofs-v6/offline-south_traffic_to_exit-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-offline-south_traffic_to_exit-primary.log",
+        "log_sha256": "538cc13258f28676f4051909b06858e00c1c6e8d9b61db675aa75e945e790732",
+        "construction_sha256": "cf72296a6f8fdb82731a0b7602488f405b79b8ae03462bf2b5be84ea362bdfa2"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-south_traffic_to_exit-primary.json",
+        "sha256": "dbf1cc04acd1f8208d37e238c323beb7806d7dc37164715b91429efafb738a38",
+        "log": "proof-compat-analysis-south_traffic_to_exit-primary.log",
+        "negative_log": "proof-compat-negative-south_traffic_to_exit-primary.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-south_traffic_to_exit-primary.log"
+      },
+      "acquisition": {
+        "controlled_access_authority": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "public_highway_boundary": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "lane_function": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "solid_white_separator": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "vehicle_body_line_relation": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "vehicle_class_and_driver": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "emergency_necessity": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "subsection3_shoulder_scope": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        }
+      },
+      "saved_replay": {
+        "log": "proof-saved-south_traffic_to_exit.log",
+        "sha256": "d08949ff76be5ea21ce46dce0dc2505434e091366b5b56c229bba7a041bf3058"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/execution-manifest.json --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__south_traffic_to_exit --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/delivery_audit.py --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__south_traffic_to_exit --attempt $ATTEMPT --review $PIXEL_REVIEW --physical $PHYSICAL_RESULT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-saved-south_traffic_to_exit.log",
+        "test_log_sha256": "d08949ff76be5ea21ce46dce0dc2505434e091366b5b56c229bba7a041bf3058"
+      },
+      "physical_preparation": {
+        "receipt": "physical-south_traffic_to_exit-receipt.json",
+        "sha256": "152854bdd7ab4bbd88074c1785966d61f4313f444050cd9078b585ea3e7ed8ae"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__south_traffic_to_exit",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent pixel review missing four views",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/delivery_audit.py --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__south_traffic_to_exit --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/delivery-v1/south_traffic_to_exit --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/proofs/physical/south_traffic_to_exit/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/delivery-v1/south_traffic_to_exit/pixel-review.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/delivery_audit.py --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__south_traffic_to_exit --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/delivery-v1/south_traffic_to_exit --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/proofs/physical/south_traffic_to_exit/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/delivery-v1/south_traffic_to_exit/pixel-review-missing-view.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "a504d38a0cd8a062072a021d63441a2e2901b99d5e0d82c3cc63ea8e0f2382a2",
+        "test_log": "proof-delivery-positive-south_traffic_to_exit.log",
+        "test_log_sha256": "5ae7430243520813129ef59fa6445d95d6519bd300b4915816ce5e599c46343d",
+        "negative_log": "proof-delivery-negative-south_traffic_to_exit.log",
+        "negative_log_sha256": "c5637f51618e0ea7be7b7bf6e814d979a2f3ccefb04a16d07ede73bc75672974",
+        "diagnostic_scope": "CPU rejection protocol only; original Native source, four views and physical review remain required"
+      }
+    },
+    {
+      "case_id": "testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_to_exit_emergency",
+      "kind": "delivery",
+      "status": "partial_cpu_preparation",
+      "construction": "cases/north_traffic_to_exit_emergency/construction.json",
+      "construction_sha256": "4e63874486f57cb14227039986119b4f5f17ce8449f154f65a2edae78a8f8d37",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Actual Native lane-change route may miss the sourced solid-white separator or leave four-view camera coverage; retry with a source-bound lower steering gain after physical failure."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/north_traffic_to_exit_emergency/fallback1-construction.json",
+          "construction_sha256": "91ef5875458f5e99b36d0cd7c0e7c65fcf92626185b15114296592916b128991",
+          "trigger": {
+            "source": "original-attempt/physical-feedback.json",
+            "metric": "source-bound route convergence and camera coverage",
+            "failure_condition": "Primary steering cannot hold sourced route or reviewed views lose vehicle body"
+          },
+          "changed_knobs": [
+            "steer_gain .025 to .02"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/execution-manifest.draft.json --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_to_exit_emergency --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/proofs-v6/offline-north_traffic_to_exit_emergency-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "exit_code": 0,
+            "log": "proof-offline-north_traffic_to_exit_emergency-fallback1.log",
+            "log_sha256": "290f1b246ca3a3e999228e58fb2cccb62787993d39ec65cc62de3e93970a4e89",
+            "construction_sha256": "91ef5875458f5e99b36d0cd7c0e7c65fcf92626185b15114296592916b128991"
+          },
+          "compatibility": {
+            "receipt": "proof-compat-receipt-north_traffic_to_exit_emergency-fallback1.json",
+            "sha256": "b6337c3e9c3a22aea6b797471d5844ae022100d4b678970874e439f851b4d203",
+            "log": "proof-compat-analysis-north_traffic_to_exit_emergency-fallback1.log",
+            "negative_log": "proof-compat-negative-north_traffic_to_exit_emergency-fallback1.log"
+          }
+        }
+      ],
+      "measurement_contract": "cases/north_traffic_to_exit_emergency/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "fixture_recipe": "work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/cases/north_traffic_to_exit_emergency/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C3997_REVIEWED_SITE"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/execution-manifest.draft.json --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_to_exit_emergency --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/proofs-v6/offline-north_traffic_to_exit_emergency-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-offline-north_traffic_to_exit_emergency-primary.log",
+        "log_sha256": "ebe8246934389ddd8903ab67a14d9a2a5b16b1d013d1d608365423a3861ee380",
+        "construction_sha256": "4e63874486f57cb14227039986119b4f5f17ce8449f154f65a2edae78a8f8d37"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-north_traffic_to_exit_emergency-primary.json",
+        "sha256": "eadd9a3f83eb18eabe4c42f06cf5f656fd0cad07fc1e8e214647aaa6a8a95bcd",
+        "log": "proof-compat-analysis-north_traffic_to_exit_emergency-primary.log",
+        "negative_log": "proof-compat-negative-north_traffic_to_exit_emergency-primary.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-north_traffic_to_exit_emergency-primary.log"
+      },
+      "acquisition": {
+        "controlled_access_authority": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "public_highway_boundary": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "lane_function": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "solid_white_separator": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "vehicle_body_line_relation": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "vehicle_class_and_driver": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "emergency_necessity": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "subsection3_shoulder_scope": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        }
+      },
+      "saved_replay": {
+        "log": "proof-saved-north_traffic_to_exit_emergency.log",
+        "sha256": "bda418100c494183f0f108fd53681eff6e9fd41eb2c3aa78db13cec76267b081"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/execution-manifest.json --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_to_exit_emergency --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/delivery_audit.py --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_to_exit_emergency --attempt $ATTEMPT --review $PIXEL_REVIEW --physical $PHYSICAL_RESULT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-saved-north_traffic_to_exit_emergency.log",
+        "test_log_sha256": "bda418100c494183f0f108fd53681eff6e9fd41eb2c3aa78db13cec76267b081"
+      },
+      "physical_preparation": {
+        "receipt": "physical-north_traffic_to_exit_emergency-receipt.json",
+        "sha256": "0619778fe13033fdf2af8becbf826164a805534bedb0573f69bbd4f5c537f0ce"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_to_exit_emergency",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent pixel review missing four views",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/delivery_audit.py --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_to_exit_emergency --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/delivery-v1/north_traffic_to_exit_emergency --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/proofs/physical/north_traffic_to_exit_emergency/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/delivery-v1/north_traffic_to_exit_emergency/pixel-review.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/delivery_audit.py --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_to_exit_emergency --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/delivery-v1/north_traffic_to_exit_emergency --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/proofs/physical/north_traffic_to_exit_emergency/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/delivery-v1/north_traffic_to_exit_emergency/pixel-review-missing-view.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "a504d38a0cd8a062072a021d63441a2e2901b99d5e0d82c3cc63ea8e0f2382a2",
+        "test_log": "proof-delivery-positive-north_traffic_to_exit_emergency.log",
+        "test_log_sha256": "fda3a5b89f8cfc1c6436276b90fc00e99ee4963e387240d1a5cc302324b45f69",
+        "negative_log": "proof-delivery-negative-north_traffic_to_exit_emergency.log",
+        "negative_log_sha256": "c5637f51618e0ea7be7b7bf6e814d979a2f3ccefb04a16d07ede73bc75672974",
+        "diagnostic_scope": "CPU rejection protocol only; original Native source, four views and physical review remain required"
+      }
+    },
+    {
+      "case_id": "testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_to_exit_shoulder_authorized",
+      "kind": "delivery",
+      "status": "partial_cpu_preparation",
+      "construction": "cases/north_traffic_to_exit_shoulder_authorized/construction.json",
+      "construction_sha256": "9eb5103546327165d0e79a4ed1581cc7dd0fd1ae7b1098345a5305337233d54c",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Actual Native lane-change route may miss the sourced solid-white separator or leave four-view camera coverage; retry with a source-bound lower steering gain after physical failure."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/north_traffic_to_exit_shoulder_authorized/fallback1-construction.json",
+          "construction_sha256": "0cea2ed18708c72b54d10547234e9f4baa98f63872c1f5f0d57c05771733af4c",
+          "trigger": {
+            "source": "original-attempt/physical-feedback.json",
+            "metric": "source-bound route convergence and camera coverage",
+            "failure_condition": "Primary steering cannot hold sourced route or reviewed views lose vehicle body"
+          },
+          "changed_knobs": [
+            "steer_gain .025 to .02"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/execution-manifest.draft.json --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_to_exit_shoulder_authorized --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/proofs-v6/offline-north_traffic_to_exit_shoulder_authorized-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python --candidate fallback1",
+            "exit_code": 0,
+            "log": "proof-offline-north_traffic_to_exit_shoulder_authorized-fallback1.log",
+            "log_sha256": "8f3fc97ab5092a7baad10bd1362b1c6bac0fa099c5268bc7d6ed40b5b22c19e3",
+            "construction_sha256": "0cea2ed18708c72b54d10547234e9f4baa98f63872c1f5f0d57c05771733af4c"
+          },
+          "compatibility": {
+            "receipt": "proof-compat-receipt-north_traffic_to_exit_shoulder_authorized-fallback1.json",
+            "sha256": "c9293a03e3756683139ec5f5b01792323a37fbba9d0449a7c4a00886c758a600",
+            "log": "proof-compat-analysis-north_traffic_to_exit_shoulder_authorized-fallback1.log",
+            "negative_log": "proof-compat-negative-north_traffic_to_exit_shoulder_authorized-fallback1.log"
+          }
+        }
+      ],
+      "measurement_contract": "cases/north_traffic_to_exit_shoulder_authorized/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "fixture_recipe": "work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/cases/north_traffic_to_exit_shoulder_authorized/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "reviewed_packet_env_var": "C3997_REVIEWED_SITE"
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/execution-manifest.draft.json --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_to_exit_shoulder_authorized --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/proofs-v6/offline-north_traffic_to_exit_shoulder_authorized-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "proof-offline-north_traffic_to_exit_shoulder_authorized-primary.log",
+        "log_sha256": "32c9e417678051b78d39a1a22c6a5006f25b8946bb54bdaa504ea331f256a23a",
+        "construction_sha256": "9eb5103546327165d0e79a4ed1581cc7dd0fd1ae7b1098345a5305337233d54c"
+      },
+      "compatibility": {
+        "receipt": "proof-compat-receipt-north_traffic_to_exit_shoulder_authorized-primary.json",
+        "sha256": "4760e16d0eec703fba0b1e542733289dc877e80003dd5ec46ae543d767141fdf",
+        "log": "proof-compat-analysis-north_traffic_to_exit_shoulder_authorized-primary.log",
+        "negative_log": "proof-compat-negative-north_traffic_to_exit_shoulder_authorized-primary.log"
+      },
+      "negative": {
+        "log": "proof-compat-negative-north_traffic_to_exit_shoulder_authorized-primary.log"
+      },
+      "acquisition": {
+        "controlled_access_authority": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "public_highway_boundary": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "lane_function": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "solid_white_separator": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "vehicle_body_line_relation": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "vehicle_class_and_driver": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "emergency_necessity": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        },
+        "subsection3_shoulder_scope": {
+          "entrypoint": "lane_native.py",
+          "method": "PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl",
+          "evidence": "original Native actor, map, source packet and four-view frame join"
+        }
+      },
+      "saved_replay": {
+        "log": "proof-saved-north_traffic_to_exit_shoulder_authorized.log",
+        "sha256": "67fe4955a67dd8f13f2bb01804a523974c1b1b9fafb8a2b4178f89c8ef898dcb"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/execution-manifest.json --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_to_exit_shoulder_authorized --attempt $ATTEMPT --output $PROCESSED --library runtime/library --validator $LEAN_VALIDATOR --owner-release-receipt $OWNER_RELEASE_RECEIPT",
+        "feedback_command": ".venv-cpu/bin/python work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/delivery_audit.py --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_to_exit_shoulder_authorized --attempt $ATTEMPT --review $PIXEL_REVIEW --physical $PHYSICAL_RESULT",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "proof-saved-north_traffic_to_exit_shoulder_authorized.log",
+        "test_log_sha256": "67fe4955a67dd8f13f2bb01804a523974c1b1b9fafb8a2b4178f89c8ef898dcb"
+      },
+      "physical_preparation": {
+        "receipt": "physical-north_traffic_to_exit_shoulder_authorized-receipt.json",
+        "sha256": "245683a48b8fdb80bfd78e4aec3c4ca525f5baa6e90dabd4154b429c11ab91ac"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_to_exit_shoulder_authorized",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "independent pixel review missing four views",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/delivery_audit.py --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_to_exit_shoulder_authorized --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/delivery-v1/north_traffic_to_exit_shoulder_authorized --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/proofs/physical/north_traffic_to_exit_shoulder_authorized/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/delivery-v1/north_traffic_to_exit_shoulder_authorized/pixel-review.json",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/delivery_audit.py --case testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_to_exit_shoulder_authorized --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/delivery-v1/north_traffic_to_exit_shoulder_authorized --physical /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C3997__NRS-484B-587-2b__motor_vehicle_driver/proofs/physical/north_traffic_to_exit_shoulder_authorized/complete_motion-result.json --diagnostic-fixture --review /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c3997-owner-nov27/delivery-v1/north_traffic_to_exit_shoulder_authorized/pixel-review-missing-view.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "a504d38a0cd8a062072a021d63441a2e2901b99d5e0d82c3cc63ea8e0f2382a2",
+        "test_log": "proof-delivery-positive-north_traffic_to_exit_shoulder_authorized.log",
+        "test_log_sha256": "6a4b6fe2402caf456749c1309203d777dd6d72caeec0c570682576b6af92eac2",
+        "negative_log": "proof-delivery-negative-north_traffic_to_exit_shoulder_authorized.log",
+        "negative_log_sha256": "c5637f51618e0ea7be7b7bf6e814d979a2f3ccefb04a16d07ede73bc75672974",
+        "diagnostic_scope": "CPU rejection protocol only; original Native source, four views and physical review remain required"
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "north_entrance_vs_stay",
+      "case_ids": [
+        "testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_stay",
+        "testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_to_entrance"
+      ],
+      "fixed_conditions": [
+        "C3997 adjacent lanes",
+        "controlled-access source",
+        "solid-white line source",
+        "vehicle class",
+        "20 Hz 900 frame four-view profile",
+        "approach",
+        "origin",
+        "emergency_required",
+        "subsection3_shoulder_authorized"
+      ],
+      "deliberate_differences": [
+        "destination"
+      ],
+      "purpose": "Original source-bound crossing/exception contrast; no automated legal verdict"
+    },
+    {
+      "comparison_id": "north_exit_vs_stay",
+      "case_ids": [
+        "testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_stay",
+        "testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_to_exit"
+      ],
+      "fixed_conditions": [
+        "C3997 adjacent lanes",
+        "controlled-access source",
+        "solid-white line source",
+        "vehicle class",
+        "20 Hz 900 frame four-view profile",
+        "approach",
+        "origin",
+        "emergency_required",
+        "subsection3_shoulder_authorized"
+      ],
+      "deliberate_differences": [
+        "destination"
+      ],
+      "purpose": "Original source-bound crossing/exception contrast; no automated legal verdict"
+    },
+    {
+      "comparison_id": "north_reverse_entrance",
+      "case_ids": [
+        "testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_to_entrance",
+        "testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_entrance_to_traffic"
+      ],
+      "fixed_conditions": [
+        "C3997 adjacent lanes",
+        "controlled-access source",
+        "solid-white line source",
+        "vehicle class",
+        "20 Hz 900 frame four-view profile",
+        "approach",
+        "emergency_required",
+        "subsection3_shoulder_authorized"
+      ],
+      "deliberate_differences": [
+        "origin",
+        "destination"
+      ],
+      "purpose": "Original source-bound crossing/exception contrast; no automated legal verdict"
+    },
+    {
+      "comparison_id": "north_reverse_exit",
+      "case_ids": [
+        "testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_to_exit",
+        "testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_exit_to_traffic"
+      ],
+      "fixed_conditions": [
+        "C3997 adjacent lanes",
+        "controlled-access source",
+        "solid-white line source",
+        "vehicle class",
+        "20 Hz 900 frame four-view profile",
+        "approach",
+        "emergency_required",
+        "subsection3_shoulder_authorized"
+      ],
+      "deliberate_differences": [
+        "origin",
+        "destination"
+      ],
+      "purpose": "Original source-bound crossing/exception contrast; no automated legal verdict"
+    },
+    {
+      "comparison_id": "approach_entrance",
+      "case_ids": [
+        "testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_to_entrance",
+        "testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__south_traffic_to_entrance"
+      ],
+      "fixed_conditions": [
+        "C3997 adjacent lanes",
+        "controlled-access source",
+        "solid-white line source",
+        "vehicle class",
+        "20 Hz 900 frame four-view profile",
+        "origin",
+        "destination",
+        "emergency_required",
+        "subsection3_shoulder_authorized"
+      ],
+      "deliberate_differences": [
+        "approach"
+      ],
+      "purpose": "Original source-bound crossing/exception contrast; no automated legal verdict"
+    },
+    {
+      "comparison_id": "approach_exit",
+      "case_ids": [
+        "testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_to_exit",
+        "testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__south_traffic_to_exit"
+      ],
+      "fixed_conditions": [
+        "C3997 adjacent lanes",
+        "controlled-access source",
+        "solid-white line source",
+        "vehicle class",
+        "20 Hz 900 frame four-view profile",
+        "origin",
+        "destination",
+        "emergency_required",
+        "subsection3_shoulder_authorized"
+      ],
+      "deliberate_differences": [
+        "approach"
+      ],
+      "purpose": "Original source-bound crossing/exception contrast; no automated legal verdict"
+    },
+    {
+      "comparison_id": "south_entrance_vs_stay",
+      "case_ids": [
+        "testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__south_traffic_stay",
+        "testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__south_traffic_to_entrance"
+      ],
+      "fixed_conditions": [
+        "C3997 adjacent lanes",
+        "controlled-access source",
+        "solid-white line source",
+        "vehicle class",
+        "20 Hz 900 frame four-view profile",
+        "approach",
+        "origin",
+        "emergency_required",
+        "subsection3_shoulder_authorized"
+      ],
+      "deliberate_differences": [
+        "destination"
+      ],
+      "purpose": "Original source-bound crossing/exception contrast; no automated legal verdict"
+    },
+    {
+      "comparison_id": "emergency_exception",
+      "case_ids": [
+        "testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_to_exit",
+        "testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_to_exit_emergency"
+      ],
+      "fixed_conditions": [
+        "C3997 adjacent lanes",
+        "controlled-access source",
+        "solid-white line source",
+        "vehicle class",
+        "20 Hz 900 frame four-view profile",
+        "approach",
+        "origin",
+        "destination",
+        "subsection3_shoulder_authorized"
+      ],
+      "deliberate_differences": [
+        "emergency_required"
+      ],
+      "purpose": "Original source-bound crossing/exception contrast; no automated legal verdict"
+    },
+    {
+      "comparison_id": "shoulder_scope",
+      "case_ids": [
+        "testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_to_exit",
+        "testing__C3997__NRS-484B-587-2b__motor_vehicle_driver__north_traffic_to_exit_shoulder_authorized"
+      ],
+      "fixed_conditions": [
+        "C3997 adjacent lanes",
+        "controlled-access source",
+        "solid-white line source",
+        "20 Hz 900 frame four-view profile",
+        "approach",
+        "origin",
+        "destination",
+        "emergency_required"
+      ],
+      "deliberate_differences": [
+        "vehicle_class",
+        "subsection3_shoulder_authorized",
+        "shoulder_paved",
+        "lawful_sign_permits_shoulder"
+      ],
+      "purpose": "Original source-bound crossing/exception contrast; no automated legal verdict"
+    }
+  ]
+}

@@ -1,22 +1,11 @@
-# testing__C393410__LVMC-11-48-060__motor_vehicle_driver
+# C393410 LVMC 11.48.060 truck-route passage
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: ready for original-source GPU delivery after the exact assignment CPU gate. The exact law says streets other than truck routes shall not be used as through routes from one truck route to another unless pick-up, delivery or essential use is required enroute. No accepted recording or exact-law judgment range was supplied.
 
-Exact law: LVMC 11.48.060 — Streets, other than truck routes, shall not be used as through routes from one truck route to another unless pick-up, delivery or essential use is required enroute.
-Assigned branch(es): Passage between truck routes, preserving all three enroute exceptions..
-Cell: C393410 (residence_district, travel, truck_route_designation); actor: motor_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+The six selected exact cases are `through_no_enroute`, `pickup_required`, `delivery_required`, `essential_required`, `local_non_through`, and `designated_route`. Five comparisons hold municipal jurisdiction, route endpoints, connector, vehicle, capture profile and duration fixed while isolating each required-enroute exception, local versus through use, or designated versus non-truck street status. The three exceptions are separate source-backed alternatives. A stop or dwell alone does not establish any exception or a legal verdict.
 
-## Next CPU actions
+`execution-manifest.json` binds six primary and six faster-route fallback constructions. `runner.py`, `route_measure.py`, `route_adapter.py`, `native_entry.py`, and `analysis.py` provide original source gating, CARLA vehicle and activity-prop creation, 20 Hz route and road-ID readback, four synchronized FFV1 camera streams, world restoration, and recorded-only finalization. The fallback is selected only if a primary original route fails to finish within 45 seconds. Original route review requires source-hashed municipal and chapter context, both truck-route designations, connector status, complete route, controls, premises, necessity and an activity-prop protocol for each exception. The independent `delivery_audit.py` checks saved source/frame joins, full video decode and original ego/prop pixel-review receipts. `comparison_audit.py` checks both fixed conditions and declared differences.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C393410__LVMC-11-48-060__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+CPU evidence: 12/12 offline executions, 12/12 positive/negative current-runtime compatibility candidates, 6/6 saved-only finalizers, 6/6 independent delivery positive/missing-source audit pairs, 5/5 comparison audits and negative controls, 6/6 physical/lifecycle fixtures, a pinned physical-criterion test, three focused unit tests, seven semantic stages and the selected validator sweep pass. See the `cpu-*-proofs.json` files, `cpu-final-tests.log`, `cpu-current-validators.log` and `gpu-queue-proposal.json`. Diagnostic fixture evidence is synthetic and supports software readiness only.
 
-## Proven checks and dependency boundary
-
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
-
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+The local operator should use `gpu-queue-proposal.json` for exact canonical prepare, execute, owner release, saved processing and acceptance. Actual source authority, vehicle/prop motion, full route completion, all four camera pixels, original independent audit and statutory application remain later local review. The worker has made no legal or physical acceptance claim.

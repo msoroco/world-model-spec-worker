@@ -114,7 +114,8 @@ class CenterLaneDistanceProbeTests(unittest.TestCase):
             (root / "review.json").write_text(json.dumps({
                 "public_highway_confirmed": True,
                 "single_bidirectional_turn_only_center_lane": True,
-                "highway_road_id": "H"}) + "\n")
+                "highway_road_id": "H",
+                "center_lane_polygon_xy_m": packet()["lanes"][0]["polygon_xy_m"]}) + "\n")
             site = packet("short_travel")
             site["ego_id"] = "ego-1"
             for name, key in (("map.json", "native_map_source"),
@@ -124,6 +125,10 @@ class CenterLaneDistanceProbeTests(unittest.TestCase):
             for row in frames:
                 row["road_id"] = "S" if row["road_id"] == "road-turn" else "H"
                 row["lane_id"] = "C" if row["lane_id"] == "center-turn" else "E"
+                index = row["original_frame"] - 100
+                x = -3 if index == 0 else 103 if index == 62 else (0.1 if index == 1 else 99.9 if index == 61 else index + 10)
+                row["body_vertices_m"] = [(x + dx, dy, z) for z in (0, 1)
+                                           for dx, dy in ((-.2, -.2), (.2, -.2), (.2, .2), (-.2, .2))]
             result = probe.measure_exact(root, site, "short_travel", live, frames)
             self.assertTrue(result["distance_restriction_applicable"])
             site["route"]["relationship"] = "onto_highway"
@@ -134,6 +139,8 @@ class CenterLaneDistanceProbeTests(unittest.TestCase):
             contrast[1]["road_id"] = "S"
             contrast[2]["road_id"] = "H"
             contrast[2]["maneuver"] = "left_turn"
+            contrast[2]["body_vertices_m"] = [(2 + dx, dy, z) for z in (0, 1)
+                                                for dx, dy in ((-.2, -.2), (.2, -.2), (.2, .2), (-.2, .2))]
             result = probe.measure_exact(root, site, "onto_highway_contrast", live, contrast)
             self.assertFalse(result["distance_restriction_applicable"])
             self.assertNotIn("observed_center_lane_path_ft", result)

@@ -35,19 +35,19 @@ def measure_scope(source: Path) -> dict:
 
 
 def measure_pickup(source: Path) -> dict:
-    m=measure(source);return {'pick_up_required_enroute':m['enroute_purpose_kind']=='pick_up' and m['enroute_activity_observed'] and m['required_enroute_reviewed'],'legal_verdict':'unresolved'}
+    m=measure(source);return {'pick_up_required_enroute':m['enroute_purpose_kind']=='pick_up' and m['enroute_activity_observed'] and m['required_enroute_reviewed']}
 
 
 def measure_delivery(source: Path) -> dict:
-    m=measure(source);return {'delivery_required_enroute':m['enroute_purpose_kind']=='delivery' and m['enroute_activity_observed'] and m['required_enroute_reviewed'],'legal_verdict':'unresolved'}
+    m=measure(source);return {'delivery_required_enroute':m['enroute_purpose_kind']=='delivery' and m['enroute_activity_observed'] and m['required_enroute_reviewed']}
 
 
 def measure_essential(source: Path) -> dict:
-    m=measure(source);return {'essential_use_required_enroute':m['enroute_purpose_kind']=='essential_use' and m['enroute_activity_observed'] and m['required_enroute_reviewed'],'legal_verdict':'unresolved'}
+    m=measure(source);return {'essential_use_required_enroute':m['enroute_purpose_kind']=='essential_use' and m['enroute_activity_observed'] and m['required_enroute_reviewed']}
 
 
 def measure_route_control(source: Path) -> dict:
-    m=measure(source);return {'local_or_designated_control':not m['destination_truck_route_observed'] or m['intervening_designation']=='truck_route','legal_verdict':'unresolved'}
+    m=measure(source);return {'local_or_designated_control':not m['destination_truck_route_observed'] or m['intervening_designation']=='truck_route'}
 
 
 def analyze(attempt: Path, output: Path) -> dict:
@@ -95,7 +95,7 @@ def analyze(attempt: Path, output: Path) -> dict:
                 stream.write(json.dumps({'time_s':frame['time_s'],'value':values[name](frame)},separators=(',',':'))+'\n')
         evidence.append({'name':name,'unit':channel['unit'],'reference':ref})
     context='channels/reviewed_truck_route_site.json'
-    (attempt/context).write_text(json.dumps({'site_source_sha256':packet['site_source_sha256'],'legal_judgment':'unresolved'})+'\n')
+    (attempt/context).write_text(json.dumps({'reviewed_truck_route_site':{'site_source_sha256':packet['site_source_sha256'],'statutory_judgment':'unresolved'}})+'\n')
     evidence.append({'name':'reviewed_truck_route_site','unit':'source','reference':context})
     native={'case_id':case_id,'measured_values':{'route':measurement},'target_checks':[{'target':'source-bound between-route passage and enroute context','requested':True,'measured':True,'method':'measure_route','tolerance':0,'matched':True,'physical_cause_confirmed':False,'cause_evidence':['original-route-observations.json']}],
         'setup_confirmed':False,'behavior_attempted':False,'maneuver_completed':False,'termination_reason':'Saved route measurement; physical and legal review pending','physical_failure_flags':[],'trace_reference':'trace.jsonl','video_references':[name+'.mkv' for name in CAMERAS],'video_frame_map_reference':'video_frames.jsonl','recording_description':description,'recording_evidence':evidence,'realized_observables':{}}
