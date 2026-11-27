@@ -1,6 +1,6 @@
 # C323986 / NRS 484B.627(1)(a) motor vehicle driver
 
-Status: partial CPU construction in progress. No original recording has been accepted or reviewed; frozen `evidence.json` lists none. The exact law conditions the extreme-right duty on slow driving that impedes traffic immediately behind, a highway with one lane in each direction, and paved width permitting the movement. It also refers conditionally to NRS 484B.630. No legal threshold or verdict is inferred from a fixture or requested controller value.
+Status: ready; exact strict assignment CPU gate passed. No original recording has been accepted or reviewed; frozen `evidence.json` lists none. The exact law conditions the extreme-right duty on slow driving that impedes traffic immediately behind, a highway with one lane in each direction, and paved width permitting the movement. It also refers conditionally to NRS 484B.630. No legal threshold or verdict is inferred from a fixture or requested controller value.
 
 ## Exact coverage and comparison isolation
 
@@ -10,11 +10,12 @@ The site packet is an external original-source gate. `reviewed_scene.py` require
 
 `right_side_measurement.py` measures original subject/follower speed and gap, body position relative to paved/highway right edges, and prop position/clearance without a legal cutoff. `finalize_original.py` joins sealed original motion, independent follower relation, and four-view frame map by exact frame/time/actor identity; it rejects absent sources and stale case/frame-map bindings. Five focused synthetic CPU tests in `tests/test_reviewed_scene.py` pass, including all fourteen scene calls through a fake adapter and positive/negative sealed joins. `cpu-tests.log` contains the passing output. These are construction and source-format tests, not accepted physical evidence.
 
-## Remaining CPU work on this assignment
+## CPU proof record and delivery handoff
 
-1. Complete saved-only finalization into the Native result and pinned converter, with case-specific source packets and positive/negative compatibility fixtures for all fourteen primary cases.
-2. The seven draft canonical semantic stage proposals now validate, including deterministic expansion of all three judgment sweeps. Finish per-case measurement contracts, offline construction checks, physical/lifecycle checker tests and independent delivery/comparison audits.
-3. Assess concrete fallback triggers, provide justified source-bound fallback constructions where physical risk warrants, then bind every selected case into `execution-manifest.json` and an exact queue proposal.
-4. Run the exact strict gate: `.venv-cpu/bin/python worker_check.py --assignment testing__C323986__NRS-484B-627-1a__motor_vehicle_driver --complete --require-delivery-ready`. Keep `result.json` partial until this passes.
+All fourteen exact inline constructions passed `runtime.py offline` and the pinned positive/negative package compatibility path on the current runtime. Synthetic diagnostic fixtures are identified as such and make no physical or legal acceptance claim. Every case has three source-bound physical outcome fixtures (met, not met, unverified), a capture lifecycle fixture, saved-only processing with original-source preservation and final video decode, and positive/negative independent delivery audits. All seven comparisons have source-bound positive/negative audits. The final manifest binds exact construction hashes, acquisition methods, measurement contract, physical and compatibility receipts, saved-processing commands, and delivery audit proofs. Manual pinned validators for execution manifest, semantic stages, delivery acceptance, compatibility receipts, and portable imports passed.
 
-All scratch and generated fixture media belong under `.runtime-work/`. No GPU or original recording is required to complete the remaining CPU code and proofs.
+The source-gated Native runner requires `C323986_AUTHORITY_ROOT` and `C323986_SITE_REF` for an operator-reviewed original site and OpenDRIVE map. It uses the pinned `PipelineCapture` during each Native tick, records original actor and follower motion, four synchronized camera sources, scene graphs and recorder data, then encodes views and seals hashes only after ownership cleanup and world-setting restoration. `gpu-queue-proposal.json` gives the exact fourteen canonical delivery jobs and seven comparison audits for lead integration. A Native attempt without a matching reviewed site, adequate prop clearance, synced pixels, and complete source capture must fail or remain unverified; only GPU execution and independent review can establish actual physical and legal outcomes.
+
+No reviewed site or prop clearance readings were supplied in frozen inputs, so no alternate physical construction was invented. If a Native spawn or clearance check fails, the attempt remains failed and the site must be reviewed before a physically distinct fallback is authored. This is an explicit source gate, not an environment or package blocker for CPU preparation.
+
+All scratch media and temporary files are under `.runtime-work/`. Returned files in this assignment are UTF-8, below 2 MiB each, and have no trailing whitespace or blank lines at EOF.

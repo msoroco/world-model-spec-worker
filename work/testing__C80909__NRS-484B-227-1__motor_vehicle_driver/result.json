@@ -1,12 +1,38 @@
 {
   "assignment_id": "testing__C80909__NRS-484B-227-1__motor_vehicle_driver",
   "input_sha256": "f6b2f13c7ba84ce8f047c514fa8cf3b98616598abc36e24fc6d41019bf5724c4",
-  "status": "partial",
-  "readiness_kind": "source_inventory",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
-  "tests": [],
-  "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+  "tests": [
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C80909__NRS-484B-227-1__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-tests.log",
+      "sha256": "ae08d437249cf3c3cbdd53fd6bec852599babe8db7933e50a8d5dee47f779938"
+    },
+    {
+      "command": "export SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c80909-227-owner/output\"; PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C80909__NRS-484B-227-1__motor_vehicle_driver/prove_construction_drafts.py",
+      "exit_code": 0,
+      "log": "construction-proof.log",
+      "sha256": "8193e60824a65fee967b692fff232680700fd63b2d0e01a5ebee59472d1deab9"
+    },
+    {
+      "command": "export SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c80909-227-owner/output\"; PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C80909__NRS-484B-227-1__motor_vehicle_driver/prove_saved_exact.py",
+      "exit_code": 0,
+      "log": "saved-exact-proof.log",
+      "sha256": "6269f488fc73f8704650b8df4a737c850de4cc16ae8c3e6f20cbb97635118c4c"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C80909__NRS-484B-227-1__motor_vehicle_driver/prove_comparison_exact.py",
+      "exit_code": 0,
+      "log": "comparison-exact-proof.log",
+      "sha256": "f29d4b7ea21965cf1bc70a409dbfb7efa44a677d999cc9692ae0921fb9d07286"
+    }
   ],
-  "reason": "Source and accepted-metadata inventory complete; exact branch decomposition, evidence sufficiency, executable constructions/controllers, case-specific finalizers, semantic proposals, source-bound compatibility proofs, and independent delivery/comparison audits remain CPU work."
+  "remaining_gpu_checks": [
+    "Native CARLA OpenDRIVE and barrier asset parse, actual complete U-turn including reverse segment, measured full-body opening clearance, other-vehicle identity and visibility, four-camera frame coverage, and independent source review of administrative public-authority establishment"
+  ],
+  "reason": null,
+  "first_gpu_delivery_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --run \"$RUN\" --assignment testing__C80909__NRS-484B-227-1__motor_vehicle_driver --case testing__C80909__NRS-484B-227-1__motor_vehicle_driver__opening_single --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
 }

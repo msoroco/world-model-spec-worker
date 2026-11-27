@@ -24,9 +24,201 @@
   "topic_inventory": {
     "exact-text": "No vehicle shall at any time be driven through or within a safety zone."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C412974__NRS-484B-110__motor_vehicle_driver__through_zone",
+      "target_law_id": "NRS-484B-110",
+      "branch": "driven through or within a safety zone",
+      "route_variant": "through",
+      "designation_status": "active",
+      "gap_ids": [
+        "no-original-zone-travel-evidence"
+      ],
+      "construction": "zone_motion.validate_scene and Native source-gated construction: physical boundary markers, roadway, controlled vehicle route and 20 Hz original body capture",
+      "measurement": "zone_motion.measure_original: joined 900-frame original body, motion, zone boundary, designation and marking source histories",
+      "physical_risk": "Official designation and continuing marking/sign visibility need independent original-source review; actual body motion and camera coverage need later CARLA review.",
+      "legal_judgment": "unresolved"
+    },
+    {
+      "case_id": "testing__C412974__NRS-484B-110__motor_vehicle_driver__within_zone",
+      "target_law_id": "NRS-484B-110",
+      "branch": "driven through or within a safety zone",
+      "route_variant": "within",
+      "designation_status": "active",
+      "gap_ids": [
+        "no-original-zone-travel-evidence"
+      ],
+      "construction": "zone_motion.validate_scene and Native source-gated construction: physical boundary markers, roadway, controlled vehicle route and 20 Hz original body capture",
+      "measurement": "zone_motion.measure_original: joined 900-frame original body, motion, zone boundary, designation and marking source histories",
+      "physical_risk": "Official designation and continuing marking/sign visibility need independent original-source review; actual body motion and camera coverage need later CARLA review.",
+      "legal_judgment": "unresolved"
+    },
+    {
+      "case_id": "testing__C412974__NRS-484B-110__motor_vehicle_driver__beside_zone",
+      "target_law_id": "NRS-484B-110",
+      "branch": "driven through or within a safety zone",
+      "route_variant": "beside",
+      "designation_status": "active",
+      "gap_ids": [
+        "no-original-zone-travel-evidence"
+      ],
+      "construction": "zone_motion.validate_scene and Native source-gated construction: physical boundary markers, roadway, controlled vehicle route and 20 Hz original body capture",
+      "measurement": "zone_motion.measure_original: joined 900-frame original body, motion, zone boundary, designation and marking source histories",
+      "physical_risk": "Official designation and continuing marking/sign visibility need independent original-source review; actual body motion and camera coverage need later CARLA review.",
+      "legal_judgment": "unresolved"
+    },
+    {
+      "case_id": "testing__C412974__NRS-484B-110__motor_vehicle_driver__through_unverified_designation",
+      "target_law_id": "NRS-484B-110",
+      "branch": "driven through or within a safety zone",
+      "route_variant": "through",
+      "designation_status": "unverified",
+      "gap_ids": [
+        "no-original-zone-travel-evidence"
+      ],
+      "construction": "zone_motion.validate_scene and Native source-gated construction: physical boundary markers, roadway, controlled vehicle route and 20 Hz original body capture",
+      "measurement": "zone_motion.measure_original: joined 900-frame original body, motion, zone boundary, designation and marking source histories",
+      "physical_risk": "Official designation and continuing marking/sign visibility need independent original-source review; actual body motion and camera coverage need later CARLA review.",
+      "legal_judgment": "unresolved"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "through_vs_beside",
+      "case_ids": [
+        "testing__C412974__NRS-484B-110__motor_vehicle_driver__through_zone",
+        "testing__C412974__NRS-484B-110__motor_vehicle_driver__beside_zone"
+      ],
+      "fixed_conditions": "same source-reviewed public highway, physical zone boundary, driver, motor vehicle, 20 Hz, 45 s, four-camera plan and unrelated context",
+      "deliberate_differences": [
+        "ego trajectory relative to fixed safety-zone boundaries"
+      ],
+      "status": "source_gated_original_audit",
+      "audit": {
+        "entrypoint": "comparison_audit.py",
+        "command": ".venv-cpu/bin/python work/testing__C412974__NRS-484B-110__motor_vehicle_driver/comparison_audit.py --comparison through_vs_beside --report-map $REPORT_MAP --output $OUTPUT",
+        "cpu_probe_command": ".venv-cpu/bin/python work/testing__C412974__NRS-484B-110__motor_vehicle_driver/comparison_probe.py --comparison through_vs_beside",
+        "cpu_probe_log": "comparison-through_vs_beside.log",
+        "cpu_probe_log_sha256": "1a8f780817e223513e422c6c8c082de663a668f9a9926c7d82f17f7fb29a3ea5",
+        "cpu_probe_exit_code": 0,
+        "scope": "synthetic report-shape only; accepted original comparison requires two accepted original reports"
+      }
+    },
+    {
+      "comparison_id": "through_vs_within",
+      "case_ids": [
+        "testing__C412974__NRS-484B-110__motor_vehicle_driver__through_zone",
+        "testing__C412974__NRS-484B-110__motor_vehicle_driver__within_zone"
+      ],
+      "fixed_conditions": "same source-reviewed public highway, physical zone boundary, driver, motor vehicle, 20 Hz, 45 s, four-camera plan and unrelated context",
+      "deliberate_differences": [
+        "ego terminal trajectory: exits zone versus remains inside"
+      ],
+      "status": "source_gated_original_audit",
+      "audit": {
+        "entrypoint": "comparison_audit.py",
+        "command": ".venv-cpu/bin/python work/testing__C412974__NRS-484B-110__motor_vehicle_driver/comparison_audit.py --comparison through_vs_within --report-map $REPORT_MAP --output $OUTPUT",
+        "cpu_probe_command": ".venv-cpu/bin/python work/testing__C412974__NRS-484B-110__motor_vehicle_driver/comparison_probe.py --comparison through_vs_within",
+        "cpu_probe_log": "comparison-through_vs_within.log",
+        "cpu_probe_log_sha256": "59c413c9d9fa675db3d2dba0937f988457aa439f38bf6129f54d45a82f3345e7",
+        "cpu_probe_exit_code": 0,
+        "scope": "synthetic report-shape only; accepted original comparison requires two accepted original reports"
+      }
+    },
+    {
+      "comparison_id": "through_vs_unverified",
+      "case_ids": [
+        "testing__C412974__NRS-484B-110__motor_vehicle_driver__through_zone",
+        "testing__C412974__NRS-484B-110__motor_vehicle_driver__through_unverified_designation"
+      ],
+      "fixed_conditions": "same source-reviewed public highway, physical zone boundary, driver, motor vehicle, 20 Hz, 45 s, four-camera plan and unrelated context",
+      "deliberate_differences": [
+        "official pedestrian-only designation and visible marking/sign provenance"
+      ],
+      "status": "source_gated_original_audit",
+      "audit": {
+        "entrypoint": "comparison_audit.py",
+        "command": ".venv-cpu/bin/python work/testing__C412974__NRS-484B-110__motor_vehicle_driver/comparison_audit.py --comparison through_vs_unverified --report-map $REPORT_MAP --output $OUTPUT",
+        "cpu_probe_command": ".venv-cpu/bin/python work/testing__C412974__NRS-484B-110__motor_vehicle_driver/comparison_probe.py --comparison through_vs_unverified",
+        "cpu_probe_log": "comparison-through_vs_unverified.log",
+        "cpu_probe_log_sha256": "76594697ff3d71cf6eacc4b2deb918af40ac4d78128e34547ce07359d9a431b2",
+        "cpu_probe_exit_code": 0,
+        "scope": "synthetic report-shape only; accepted original comparison requires two accepted original reports"
+      }
+    }
+  ],
+  "observations": [
+    {
+      "name": "reviewed_site_source",
+      "mandatory": true,
+      "description": "Original source-bound reviewed site source"
+    },
+    {
+      "name": "highway_public_access",
+      "mandatory": true,
+      "description": "Original source-bound highway public access"
+    },
+    {
+      "name": "public_authority_dedication",
+      "mandatory": true,
+      "description": "Original source-bound public authority dedication"
+    },
+    {
+      "name": "official_pedestrian_exclusive_designation",
+      "mandatory": true,
+      "description": "Original source-bound official pedestrian exclusive designation"
+    },
+    {
+      "name": "designation_interval",
+      "mandatory": true,
+      "description": "Original source-bound designation interval"
+    },
+    {
+      "name": "zone_boundary",
+      "mandatory": true,
+      "description": "Original source-bound zone boundary"
+    },
+    {
+      "name": "marking_or_sign",
+      "mandatory": true,
+      "description": "Original source-bound marking or sign"
+    },
+    {
+      "name": "marking_visibility_history",
+      "mandatory": true,
+      "description": "Original source-bound marking visibility history"
+    },
+    {
+      "name": "vehicle_classification",
+      "mandatory": true,
+      "description": "Original source-bound vehicle classification"
+    },
+    {
+      "name": "driver_attribution",
+      "mandatory": true,
+      "description": "Original source-bound driver attribution"
+    },
+    {
+      "name": "vehicle_body_history",
+      "mandatory": true,
+      "description": "Original source-bound vehicle body history"
+    },
+    {
+      "name": "vehicle_motion_history",
+      "mandatory": true,
+      "description": "Original source-bound vehicle motion history"
+    },
+    {
+      "name": "zone_overlap_history",
+      "mandatory": true,
+      "description": "Original source-bound zone overlap history"
+    },
+    {
+      "name": "camera_frame_map",
+      "mandatory": true,
+      "description": "Original source-bound camera frame map"
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C412974__NRS-484B-110__motor_vehicle_driver/assignment.json",
@@ -51,17 +243,25 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "A physical marker or colored rendering alone does not establish official pedestrian-only designation.",
+    "The unverified-designation contrast is an evidence-source contrast; it does not assert that the designation is legally absent.",
+    "Any frame-overlap or synthetic fixture result is a geometric diagnostic, not a legal determination."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
+    "method": "Reviewed the exact NRS 484B.110 text, conditional witness and zero-entry accepted evidence inventory. No physical equivalence is claimed.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "no-original-zone-travel-evidence",
+        "requirement": "Original highway, official pedestrian-only safety-zone designation and interval, visible marking/sign, driver/vehicle identity, and body-motion relative to original zone boundaries",
+        "source": "inputs/testing__C412974__NRS-484B-110__motor_vehicle_driver/assignment.json",
+        "why_existing_insufficient": "Frozen evidence.json lists zero accepted recordings; the sole source witness is conditional and physically unverified."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "selected_cpu_package_in_progress",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
@@ -84,5 +284,47 @@
       ],
       "reason": "A paved-road travel route can pass through an officially designated safety zone; zone presence alone does not establish that movement."
     }
-  ]
+  ],
+  "requirement_dispositions": [
+    {
+      "requirement": "Vehicle driven through a designated safety zone or remaining within it",
+      "source": "inputs/testing__C412974__NRS-484B-110__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "evidence_or_gap": "Frozen evidence.json lists zero accepted recordings; the sole source witness is conditional and physically unverified.",
+      "case_ids": [
+        "testing__C412974__NRS-484B-110__motor_vehicle_driver__through_zone",
+        "testing__C412974__NRS-484B-110__motor_vehicle_driver__within_zone",
+        "testing__C412974__NRS-484B-110__motor_vehicle_driver__beside_zone",
+        "testing__C412974__NRS-484B-110__motor_vehicle_driver__through_unverified_designation"
+      ]
+    }
+  ],
+  "source_observation_mapping": {},
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "fixed zone boundaries and complete vehicle route",
+        "interval": "whole encounter"
+      },
+      {
+        "view": "approach",
+        "subject": "entry, exit and body footprint",
+        "interval": "whole encounter"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "physical markings/signs and zone edge",
+        "interval": "whole encounter"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "vehicle driver reference and zone marking/sign visibility",
+        "interval": "whole encounter"
+      }
+    ]
+  }
 }

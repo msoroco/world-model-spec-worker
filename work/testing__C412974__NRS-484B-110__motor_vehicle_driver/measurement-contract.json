@@ -1,0 +1,26 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "Vehicle driven through a designated safety zone or remaining within it",
+      "source": "inputs/testing__C412974__NRS-484B-110__motor_vehicle_driver/assignment.json",
+      "output_key": "safety_zone_original_body_motion",
+      "method": "analyze",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "safety-zone-history.jsonl",
+        "safety-zone-site.json",
+        "trace.jsonl",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "safety-zone-site.json"
+    ],
+    "error_contains": "Missing required source: safety-zone-site.json"
+  }
+}

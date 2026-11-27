@@ -145,11 +145,12 @@ def build():
     sweeps = [{'sweep_id': 'c229023-7771-' + str(index), 'target_law_id': LAW,
                'judgment_refs': [{'phrase': phrase, 'note': note}],
                'status': 'incomplete',
-               'rationale': 'No reviewed original scene or independent legal judgment range; physical selected comparisons remain runnable.',
+               'rationale': 'No independent original-source legal range; authored physical comparisons remain runnable.',
                'missing_inputs': ['reviewed original roadway and original Native physical capture']}
               for index, (phrase, note, _) in enumerate(judgments)]
     cases_ref = write('cases.json', {'cell_id': 'C229023', 'actor': ACTOR,
                                      'status': 'draft', 'sweep_specs': sweeps,
+                                     'sweeps_expanded': True,
                                      'cases': [baseline, *selected]})
     write('semantic-index.json', {'format': 'worker-semantic-delivery',
                                   'assignment_id': AID,

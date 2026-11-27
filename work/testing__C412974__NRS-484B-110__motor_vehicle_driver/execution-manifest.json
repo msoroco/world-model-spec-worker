@@ -1,0 +1,716 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C412974__NRS-484B-110__motor_vehicle_driver",
+  "status": "source_gated_draft",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "case_id": "testing__C412974__NRS-484B-110__motor_vehicle_driver__through_zone",
+      "kind": "delivery",
+      "construction": "construction.json",
+      "construction_sha256": "fcb2d7eaf93bdf3df96533a95013c753223fb727b00756e11281ce93c4478e22",
+      "fixture_recipe": "work/testing__C412974__NRS-484B-110__motor_vehicle_driver/diagnostic-through_zone-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed original public highway, official pedestrian-exclusive safety-zone designation, interval, visible marking and source-bound physical boundary required",
+      "acquisition": {
+        "reviewed_site_source": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-reviewed_site_source.jsonl"
+        },
+        "highway_public_access": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-highway_public_access.jsonl"
+        },
+        "public_authority_dedication": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-public_authority_dedication.jsonl"
+        },
+        "official_pedestrian_exclusive_designation": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-official_pedestrian_exclusive_designation.jsonl"
+        },
+        "designation_interval": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-designation_interval.jsonl"
+        },
+        "zone_boundary": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-zone_boundary.jsonl"
+        },
+        "marking_or_sign": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-marking_or_sign.jsonl"
+        },
+        "marking_visibility_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-marking_visibility_history.jsonl"
+        },
+        "vehicle_classification": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_classification.jsonl"
+        },
+        "driver_attribution": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-driver_attribution.jsonl"
+        },
+        "vehicle_body_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_body_history.jsonl"
+        },
+        "vehicle_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_motion_history.jsonl"
+        },
+        "zone_overlap_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-zone_overlap_history.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-camera_frame_map.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "A narrow designated zone may impede the off-lane transit or complete four-camera view of markers during the full original body motion."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/through_zone/fallback1-construction.json",
+          "construction_sha256": "6ce8eb15205a18e01498da21ecad92e9c7e8cca17682fca060585b01ddc37292",
+          "trigger": {
+            "source": "original Native trace.jsonl and safety-zone-history.jsonl",
+            "metric": "original route progress, body-to-zone overlap and marker camera coverage",
+            "failure_condition": "primary misses the selected route target or original zone boundary and vehicle body are not observable through the encounter"
+          },
+          "changed_knobs": [
+            "engineering_throttle: 0.25 to 0.18",
+            "engineering_braking_factor: 5.0 to 4.0"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C412974__NRS-484B-110__motor_vehicle_driver/execution-manifest.json --case testing__C412974__NRS-484B-110__motor_vehicle_driver__through_zone --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c412974-nov26/offline-through_zone-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "6ce8eb15205a18e01498da21ecad92e9c7e8cca17682fca060585b01ddc37292",
+            "log": "cases/through_zone/proof-offline-fallback1.log",
+            "log_sha256": "0ba2c9f5b35d41415ff41da518aea7a890ef70efc35d1061a0b9921b2fa84412"
+          },
+          "compatibility": {
+            "receipt": "cases/through_zone/proof-compatibility-fallback1.json",
+            "sha256": "915f576f98e880416044dcd19254922f7e469ee1d49ae819ff6f45daeb6897cc",
+            "log": "cases/through_zone/proof-compatibility-fallback1-analysis.log",
+            "negative_log": "cases/through_zone/proof-compatibility-fallback1-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C412974__NRS-484B-110__motor_vehicle_driver/execution-manifest.json --case testing__C412974__NRS-484B-110__motor_vehicle_driver__through_zone --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c412974-nov26/offline-through_zone-primary",
+        "exit_code": 0,
+        "construction_sha256": "fcb2d7eaf93bdf3df96533a95013c753223fb727b00756e11281ce93c4478e22",
+        "log": "cases/through_zone/proof-offline-primary.log",
+        "log_sha256": "0ba2c9f5b35d41415ff41da518aea7a890ef70efc35d1061a0b9921b2fa84412"
+      },
+      "compatibility": {
+        "receipt": "cases/through_zone/proof-compatibility-primary.json",
+        "sha256": "dd70f8a349a6d439d02a8efc3de05262ab3fa355cebb0dbec9bb34215e6d5cef",
+        "log": "cases/through_zone/proof-compatibility-primary-analysis.log",
+        "negative_log": "cases/through_zone/proof-compatibility-primary-negative.log"
+      },
+      "negative": {
+        "log": "cases/through_zone/proof-compatibility-primary-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C412974__NRS-484B-110__motor_vehicle_driver/execution-manifest.json --case testing__C412974__NRS-484B-110__motor_vehicle_driver__through_zone --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C412974__NRS-484B-110__motor_vehicle_driver/execution-manifest.json --case testing__C412974__NRS-484B-110__motor_vehicle_driver__through_zone --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "proof-saved-through_zone.log",
+        "test_log_sha256": "35cfa0d40e2668ae3ec19c5ea46c7f7bc9a7ec02c43e9e6ba8fff5207e34c723",
+        "test_exit_code": 0,
+        "scope": "synthetic saved-only software replay; original designation, pixels and physical review pending"
+      },
+      "physical_preparation": {
+        "receipt": "physical-through_zone-receipt.json",
+        "sha256": "53875a3842310a743162b29d1a36c57b4dd416dcb18d3e1be2238461b52f1773"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C412974__NRS-484B-110__motor_vehicle_driver__through_zone",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "103092d415b9c1aba3d2f1550432fc734285119c14ee1b746f1699643d093f2e",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C412974__NRS-484B-110__motor_vehicle_driver/delivery_probe.py --case testing__C412974__NRS-484B-110__motor_vehicle_driver__through_zone --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c412974-nov26/saved/attempt-through_zone --saved-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c412974-nov26/saved/processed-through_zone --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-through_zone-positive.log",
+        "test_log_sha256": "1c914370e5812c70d9ebc1b4fbc9a82152b5468ea9184202fbff2354e1813b2e",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C412974__NRS-484B-110__motor_vehicle_driver/delivery_probe.py --case testing__C412974__NRS-484B-110__motor_vehicle_driver__through_zone --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c412974-nov26/saved/attempt-through_zone --saved-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c412974-nov26/saved/processed-through_zone --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: safety-zone-site.json",
+        "negative_log": "delivery-through_zone-negative.log",
+        "negative_log_sha256": "985afce0e8f12b5663a3dfab097a166dfe86eee9907f1a9af40ce5491930d1c6"
+      }
+    },
+    {
+      "case_id": "testing__C412974__NRS-484B-110__motor_vehicle_driver__within_zone",
+      "kind": "delivery",
+      "construction": "cases/within_zone/construction.json",
+      "construction_sha256": "550f4538003f320b0878563a4ac78f39ef00b6fccb2c67be3dfc722262141bb3",
+      "fixture_recipe": "work/testing__C412974__NRS-484B-110__motor_vehicle_driver/diagnostic-within_zone-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed original public highway, official pedestrian-exclusive safety-zone designation, interval, visible marking and source-bound physical boundary required",
+      "acquisition": {
+        "reviewed_site_source": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-reviewed_site_source.jsonl"
+        },
+        "highway_public_access": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-highway_public_access.jsonl"
+        },
+        "public_authority_dedication": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-public_authority_dedication.jsonl"
+        },
+        "official_pedestrian_exclusive_designation": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-official_pedestrian_exclusive_designation.jsonl"
+        },
+        "designation_interval": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-designation_interval.jsonl"
+        },
+        "zone_boundary": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-zone_boundary.jsonl"
+        },
+        "marking_or_sign": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-marking_or_sign.jsonl"
+        },
+        "marking_visibility_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-marking_visibility_history.jsonl"
+        },
+        "vehicle_classification": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_classification.jsonl"
+        },
+        "driver_attribution": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-driver_attribution.jsonl"
+        },
+        "vehicle_body_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_body_history.jsonl"
+        },
+        "vehicle_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_motion_history.jsonl"
+        },
+        "zone_overlap_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-zone_overlap_history.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-camera_frame_map.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "A narrow designated zone may impede the off-lane transit or complete four-camera view of markers during the full original body motion."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/within_zone/fallback1-construction.json",
+          "construction_sha256": "f7b74f946365750769f6311f0eae4f8570ac93f41ca87be455cd5d2b8e9aa0aa",
+          "trigger": {
+            "source": "original Native trace.jsonl and safety-zone-history.jsonl",
+            "metric": "original route progress, body-to-zone overlap and marker camera coverage",
+            "failure_condition": "primary misses the selected route target or original zone boundary and vehicle body are not observable through the encounter"
+          },
+          "changed_knobs": [
+            "engineering_throttle: 0.25 to 0.18",
+            "engineering_braking_factor: 5.0 to 4.0"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C412974__NRS-484B-110__motor_vehicle_driver/execution-manifest.json --case testing__C412974__NRS-484B-110__motor_vehicle_driver__within_zone --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c412974-nov26/offline-within_zone-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "f7b74f946365750769f6311f0eae4f8570ac93f41ca87be455cd5d2b8e9aa0aa",
+            "log": "cases/within_zone/proof-offline-fallback1.log",
+            "log_sha256": "bfefb811bdffc874144a4d8920b35a4364baf8d0874a6b43b7aa2897282d51cf"
+          },
+          "compatibility": {
+            "receipt": "cases/within_zone/proof-compatibility-fallback1.json",
+            "sha256": "0ee2c70915535781e2b89b2aa61d1c61bb511dce22dcd8bce3280b68772e9eff",
+            "log": "cases/within_zone/proof-compatibility-fallback1-analysis.log",
+            "negative_log": "cases/within_zone/proof-compatibility-fallback1-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C412974__NRS-484B-110__motor_vehicle_driver/execution-manifest.json --case testing__C412974__NRS-484B-110__motor_vehicle_driver__within_zone --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c412974-nov26/offline-within_zone-primary",
+        "exit_code": 0,
+        "construction_sha256": "550f4538003f320b0878563a4ac78f39ef00b6fccb2c67be3dfc722262141bb3",
+        "log": "cases/within_zone/proof-offline-primary.log",
+        "log_sha256": "99fd8c75542b36c54ae8a7ce4fe86a2bb1a7e41099066cb3ec5b691a152b4998"
+      },
+      "compatibility": {
+        "receipt": "cases/within_zone/proof-compatibility-primary.json",
+        "sha256": "e150674fa8642c5741e2c7baa4c98c49b4ee991abbc46f4d578b8758aa876b0d",
+        "log": "cases/within_zone/proof-compatibility-primary-analysis.log",
+        "negative_log": "cases/within_zone/proof-compatibility-primary-negative.log"
+      },
+      "negative": {
+        "log": "cases/within_zone/proof-compatibility-primary-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C412974__NRS-484B-110__motor_vehicle_driver/execution-manifest.json --case testing__C412974__NRS-484B-110__motor_vehicle_driver__within_zone --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C412974__NRS-484B-110__motor_vehicle_driver/execution-manifest.json --case testing__C412974__NRS-484B-110__motor_vehicle_driver__within_zone --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "proof-saved-within_zone.log",
+        "test_log_sha256": "10b9f17f895e650abb692e70db210fdd6f41ed9613cbe505593e78d7ef4a11e0",
+        "test_exit_code": 0,
+        "scope": "synthetic saved-only software replay; original designation, pixels and physical review pending"
+      },
+      "physical_preparation": {
+        "receipt": "physical-within_zone-receipt.json",
+        "sha256": "8267285d0f0d6c74612fa09b2204af20962590c195e5b8b74c0c80a3d6c29770"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C412974__NRS-484B-110__motor_vehicle_driver__within_zone",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "103092d415b9c1aba3d2f1550432fc734285119c14ee1b746f1699643d093f2e",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C412974__NRS-484B-110__motor_vehicle_driver/delivery_probe.py --case testing__C412974__NRS-484B-110__motor_vehicle_driver__within_zone --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c412974-nov26/saved/attempt-within_zone --saved-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c412974-nov26/saved/processed-within_zone --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-within_zone-positive.log",
+        "test_log_sha256": "20d2de3b0d578942b22a2053b6cc89b3f8c487d49d2149295e7a0af65f6adccb",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C412974__NRS-484B-110__motor_vehicle_driver/delivery_probe.py --case testing__C412974__NRS-484B-110__motor_vehicle_driver__within_zone --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c412974-nov26/saved/attempt-within_zone --saved-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c412974-nov26/saved/processed-within_zone --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: safety-zone-site.json",
+        "negative_log": "delivery-within_zone-negative.log",
+        "negative_log_sha256": "985afce0e8f12b5663a3dfab097a166dfe86eee9907f1a9af40ce5491930d1c6"
+      }
+    },
+    {
+      "case_id": "testing__C412974__NRS-484B-110__motor_vehicle_driver__beside_zone",
+      "kind": "delivery",
+      "construction": "cases/beside_zone/construction.json",
+      "construction_sha256": "767c1a6f61d8ef2a95d67aa6b30879978e785265a60675db9f3cc36699835cc4",
+      "fixture_recipe": "work/testing__C412974__NRS-484B-110__motor_vehicle_driver/diagnostic-beside_zone-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed original public highway, official pedestrian-exclusive safety-zone designation, interval, visible marking and source-bound physical boundary required",
+      "acquisition": {
+        "reviewed_site_source": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-reviewed_site_source.jsonl"
+        },
+        "highway_public_access": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-highway_public_access.jsonl"
+        },
+        "public_authority_dedication": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-public_authority_dedication.jsonl"
+        },
+        "official_pedestrian_exclusive_designation": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-official_pedestrian_exclusive_designation.jsonl"
+        },
+        "designation_interval": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-designation_interval.jsonl"
+        },
+        "zone_boundary": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-zone_boundary.jsonl"
+        },
+        "marking_or_sign": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-marking_or_sign.jsonl"
+        },
+        "marking_visibility_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-marking_visibility_history.jsonl"
+        },
+        "vehicle_classification": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_classification.jsonl"
+        },
+        "driver_attribution": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-driver_attribution.jsonl"
+        },
+        "vehicle_body_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_body_history.jsonl"
+        },
+        "vehicle_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_motion_history.jsonl"
+        },
+        "zone_overlap_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-zone_overlap_history.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-camera_frame_map.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "A narrow designated zone may impede the off-lane transit or complete four-camera view of markers during the full original body motion."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/beside_zone/fallback1-construction.json",
+          "construction_sha256": "19d0fa4df01f3978146df9e516d9777bb81b3f63dabcc402c40779d026b59a72",
+          "trigger": {
+            "source": "original Native trace.jsonl and safety-zone-history.jsonl",
+            "metric": "original route progress, body-to-zone overlap and marker camera coverage",
+            "failure_condition": "primary misses the selected route target or original zone boundary and vehicle body are not observable through the encounter"
+          },
+          "changed_knobs": [
+            "engineering_throttle: 0.25 to 0.18",
+            "engineering_braking_factor: 5.0 to 4.0"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C412974__NRS-484B-110__motor_vehicle_driver/execution-manifest.json --case testing__C412974__NRS-484B-110__motor_vehicle_driver__beside_zone --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c412974-nov26/offline-beside_zone-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "19d0fa4df01f3978146df9e516d9777bb81b3f63dabcc402c40779d026b59a72",
+            "log": "cases/beside_zone/proof-offline-fallback1.log",
+            "log_sha256": "07b85336615555e3c557d1e3abe57bd8c58c13be322cbe6c518ec9ee4d5e7361"
+          },
+          "compatibility": {
+            "receipt": "cases/beside_zone/proof-compatibility-fallback1.json",
+            "sha256": "5b6ab6959937ca465bf72df94945cc1920cc6da316dcbf7a120652b925a42cd6",
+            "log": "cases/beside_zone/proof-compatibility-fallback1-analysis.log",
+            "negative_log": "cases/beside_zone/proof-compatibility-fallback1-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C412974__NRS-484B-110__motor_vehicle_driver/execution-manifest.json --case testing__C412974__NRS-484B-110__motor_vehicle_driver__beside_zone --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c412974-nov26/offline-beside_zone-primary",
+        "exit_code": 0,
+        "construction_sha256": "767c1a6f61d8ef2a95d67aa6b30879978e785265a60675db9f3cc36699835cc4",
+        "log": "cases/beside_zone/proof-offline-primary.log",
+        "log_sha256": "07b85336615555e3c557d1e3abe57bd8c58c13be322cbe6c518ec9ee4d5e7361"
+      },
+      "compatibility": {
+        "receipt": "cases/beside_zone/proof-compatibility-primary.json",
+        "sha256": "f79bafa440dd5c9c767aa0779683f9f1fcf88e641f922f19d11404d6322233fc",
+        "log": "cases/beside_zone/proof-compatibility-primary-analysis.log",
+        "negative_log": "cases/beside_zone/proof-compatibility-primary-negative.log"
+      },
+      "negative": {
+        "log": "cases/beside_zone/proof-compatibility-primary-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C412974__NRS-484B-110__motor_vehicle_driver/execution-manifest.json --case testing__C412974__NRS-484B-110__motor_vehicle_driver__beside_zone --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C412974__NRS-484B-110__motor_vehicle_driver/execution-manifest.json --case testing__C412974__NRS-484B-110__motor_vehicle_driver__beside_zone --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "proof-saved-beside_zone.log",
+        "test_log_sha256": "362f81123e3d02d4ca83f50ff925ebb07628da9b617ea18471060c8aec71d086",
+        "test_exit_code": 0,
+        "scope": "synthetic saved-only software replay; original designation, pixels and physical review pending"
+      },
+      "physical_preparation": {
+        "receipt": "physical-beside_zone-receipt.json",
+        "sha256": "76335a62461c7152645df2103111fe07cfe24660e33ea928dd5e8f3e897cdd67"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C412974__NRS-484B-110__motor_vehicle_driver__beside_zone",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "103092d415b9c1aba3d2f1550432fc734285119c14ee1b746f1699643d093f2e",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C412974__NRS-484B-110__motor_vehicle_driver/delivery_probe.py --case testing__C412974__NRS-484B-110__motor_vehicle_driver__beside_zone --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c412974-nov26/saved/attempt-beside_zone --saved-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c412974-nov26/saved/processed-beside_zone --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-beside_zone-positive.log",
+        "test_log_sha256": "79752d42e8df5cdd0f7ca1642fa260c33d5ff120e5f7386a897807b0386c95a0",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C412974__NRS-484B-110__motor_vehicle_driver/delivery_probe.py --case testing__C412974__NRS-484B-110__motor_vehicle_driver__beside_zone --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c412974-nov26/saved/attempt-beside_zone --saved-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c412974-nov26/saved/processed-beside_zone --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: safety-zone-site.json",
+        "negative_log": "delivery-beside_zone-negative.log",
+        "negative_log_sha256": "985afce0e8f12b5663a3dfab097a166dfe86eee9907f1a9af40ce5491930d1c6"
+      }
+    },
+    {
+      "case_id": "testing__C412974__NRS-484B-110__motor_vehicle_driver__through_unverified_designation",
+      "kind": "delivery",
+      "construction": "cases/through_unverified_designation/construction.json",
+      "construction_sha256": "eb65aaa304f7eba05c56b837713c499f0856cdf28c64696b2f6cc7d483b003ce",
+      "fixture_recipe": "work/testing__C412974__NRS-484B-110__motor_vehicle_driver/diagnostic-through_unverified_designation-recipe.json",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed original public highway, official pedestrian-exclusive safety-zone designation, interval, visible marking and source-bound physical boundary required",
+      "acquisition": {
+        "reviewed_site_source": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-reviewed_site_source.jsonl"
+        },
+        "highway_public_access": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-highway_public_access.jsonl"
+        },
+        "public_authority_dedication": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-public_authority_dedication.jsonl"
+        },
+        "official_pedestrian_exclusive_designation": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-official_pedestrian_exclusive_designation.jsonl"
+        },
+        "designation_interval": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-designation_interval.jsonl"
+        },
+        "zone_boundary": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-zone_boundary.jsonl"
+        },
+        "marking_or_sign": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-marking_or_sign.jsonl"
+        },
+        "marking_visibility_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-marking_visibility_history.jsonl"
+        },
+        "vehicle_classification": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_classification.jsonl"
+        },
+        "driver_attribution": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-driver_attribution.jsonl"
+        },
+        "vehicle_body_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_body_history.jsonl"
+        },
+        "vehicle_motion_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-vehicle_motion_history.jsonl"
+        },
+        "zone_overlap_history": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-zone_overlap_history.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "original Native frame source and saved-only extraction",
+          "evidence": "channel-camera_frame_map.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "A narrow designated zone may impede the off-lane transit or complete four-camera view of markers during the full original body motion."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/through_unverified_designation/fallback1-construction.json",
+          "construction_sha256": "fa69f05a1f20c6c990f021466c22c6b75526a362566c5123c8e53be7d27fdbb8",
+          "trigger": {
+            "source": "original Native trace.jsonl and safety-zone-history.jsonl",
+            "metric": "original route progress, body-to-zone overlap and marker camera coverage",
+            "failure_condition": "primary misses the selected route target or original zone boundary and vehicle body are not observable through the encounter"
+          },
+          "changed_knobs": [
+            "engineering_throttle: 0.25 to 0.18",
+            "engineering_braking_factor: 5.0 to 4.0"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C412974__NRS-484B-110__motor_vehicle_driver/execution-manifest.json --case testing__C412974__NRS-484B-110__motor_vehicle_driver__through_unverified_designation --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c412974-nov26/offline-through_unverified_designation-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "fa69f05a1f20c6c990f021466c22c6b75526a362566c5123c8e53be7d27fdbb8",
+            "log": "cases/through_unverified_designation/proof-offline-fallback1.log",
+            "log_sha256": "d344864def34621ce9583dfb4c147dec1026596cad45a30c32f8a6e23bf3ead1"
+          },
+          "compatibility": {
+            "receipt": "cases/through_unverified_designation/proof-compatibility-fallback1.json",
+            "sha256": "f8801fe589663dfece175ca5619ecba3e97d3d01cffe3933c8a36425dbcf1b5a",
+            "log": "cases/through_unverified_designation/proof-compatibility-fallback1-analysis.log",
+            "negative_log": "cases/through_unverified_designation/proof-compatibility-fallback1-negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C412974__NRS-484B-110__motor_vehicle_driver/execution-manifest.json --case testing__C412974__NRS-484B-110__motor_vehicle_driver__through_unverified_designation --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c412974-nov26/offline-through_unverified_designation-primary",
+        "exit_code": 0,
+        "construction_sha256": "eb65aaa304f7eba05c56b837713c499f0856cdf28c64696b2f6cc7d483b003ce",
+        "log": "cases/through_unverified_designation/proof-offline-primary.log",
+        "log_sha256": "501fd488a4bd92e4a89da32dafe944f26c2f32e67fab7007f8d9c09d3bd14b52"
+      },
+      "compatibility": {
+        "receipt": "cases/through_unverified_designation/proof-compatibility-primary.json",
+        "sha256": "a079b67848461bcd3231a4beaaa72c3e29434a65bd163b4ccacbe13f8b3cf7b7",
+        "log": "cases/through_unverified_designation/proof-compatibility-primary-analysis.log",
+        "negative_log": "cases/through_unverified_designation/proof-compatibility-primary-negative.log"
+      },
+      "negative": {
+        "log": "cases/through_unverified_designation/proof-compatibility-primary-negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C412974__NRS-484B-110__motor_vehicle_driver/execution-manifest.json --case testing__C412974__NRS-484B-110__motor_vehicle_driver__through_unverified_designation --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C412974__NRS-484B-110__motor_vehicle_driver/execution-manifest.json --case testing__C412974__NRS-484B-110__motor_vehicle_driver__through_unverified_designation --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "proof-saved-through_unverified_designation.log",
+        "test_log_sha256": "5fff2fb859b05f038bf87816325a01fd81c0902ae4fb673a879c641e5cf70b33",
+        "test_exit_code": 0,
+        "scope": "synthetic saved-only software replay; original designation, pixels and physical review pending"
+      },
+      "physical_preparation": {
+        "receipt": "physical-through_unverified_designation-receipt.json",
+        "sha256": "0af334564c39126943084278cba5bb7f7eee3c9fecf4c5c5d0cd9c0a02f97b6d"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C412974__NRS-484B-110__motor_vehicle_driver__through_unverified_designation",
+        "sets": [
+          "full-test"
+        ],
+        "cpu_proof_kind": "mock_only_contract_wiring",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "103092d415b9c1aba3d2f1550432fc734285119c14ee1b746f1699643d093f2e",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C412974__NRS-484B-110__motor_vehicle_driver/delivery_probe.py --case testing__C412974__NRS-484B-110__motor_vehicle_driver__through_unverified_designation --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c412974-nov26/saved/attempt-through_unverified_designation --saved-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c412974-nov26/saved/processed-through_unverified_designation --mode positive",
+        "test_exit_code": 0,
+        "test_log": "delivery-through_unverified_designation-positive.log",
+        "test_log_sha256": "3f67cf047ccb87d9c9acdc24b608c67520a91ae320bdf98fa1439d7475628fcd",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C412974__NRS-484B-110__motor_vehicle_driver/delivery_probe.py --case testing__C412974__NRS-484B-110__motor_vehicle_driver__through_unverified_designation --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c412974-nov26/saved/attempt-through_unverified_designation --saved-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c412974-nov26/saved/processed-through_unverified_designation --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: safety-zone-site.json",
+        "negative_log": "delivery-through_unverified_designation-negative.log",
+        "negative_log_sha256": "985afce0e8f12b5663a3dfab097a166dfe86eee9907f1a9af40ce5491930d1c6"
+      }
+    }
+  ]
+}

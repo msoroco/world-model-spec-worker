@@ -20,9 +20,98 @@
   "topic_inventory": {
     "exact-text": "Every vehicle driven upon a divided highway must be driven only upon the right-hand roadway and must not be driven over, across or within any dividing space, barrier or section or make any left turn, semicircular turn or U-turn, except through an opening in the barrier or dividing section or space or at a crossover or intersection established by a public authority."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "candidate_limitations": [
+        "Authored median geometry and CARLA body clearance require local physical verification.",
+        "The accepted opening-aligned metadata does not evidence a complete U-turn or multiple movements.",
+        "A local engineering opening does not establish public-authority status."
+      ],
+      "case_id": "testing__C80909__NRS-484B-227-1__motor_vehicle_driver__opening_single",
+      "construction_candidate": "scene.json",
+      "physical_risk_assessment": {
+        "fallback_policy": "No fallback selected before a source-inspected map and measured clearance; require original full-body and route evidence.",
+        "risk": "Primary route could strike the end of a closed divider or fail to reverse orientation within the opening.",
+        "status": "physical"
+      },
+      "purpose": "U-turn through a reviewed median opening in one continuous forward movement.",
+      "status": "selected_cpu_construction_in_progress",
+      "target_law_id": "NRS-484B-227-1",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ]
+    },
+    {
+      "candidate_limitations": [
+        "Authored median geometry and CARLA body clearance require local physical verification.",
+        "The accepted opening-aligned metadata does not evidence a complete U-turn or multiple movements.",
+        "A local engineering opening does not establish public-authority status."
+      ],
+      "case_id": "testing__C80909__NRS-484B-227-1__motor_vehicle_driver__opening_multiple",
+      "construction_candidate": "cases/opening_multiple/scene.json",
+      "physical_risk_assessment": {
+        "fallback_policy": "No fallback selected before a source-inspected map and measured clearance; require original full-body and route evidence.",
+        "risk": "Observed-stop gear changes and reverse clearance may fail in the available opening width.",
+        "status": "physical"
+      },
+      "purpose": "U-turn through the same reviewed opening with a physically realized reverse and subsequent forward movement.",
+      "status": "selected_cpu_construction_in_progress",
+      "target_law_id": "NRS-484B-227-1",
+      "gap_ids": [
+        "unverified-law-coverage"
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "audit_script": "comparison_audit.py",
+      "case_ids": [
+        "testing__C80909__NRS-484B-227-1__motor_vehicle_driver__opening_single",
+        "testing__C80909__NRS-484B-227-1__motor_vehicle_driver__opening_multiple"
+      ],
+      "comparison_id": "continuous_vs_multiple_movement",
+      "cpu_proof": "comparisons/continuous_vs_multiple_movement.json",
+      "deliberate_differences": [
+        "physically realized reverse segment versus continuous forward movement"
+      ],
+      "fixed_conditions": [
+        "same reviewed divided-highway identity and vehicle",
+        "same camera and duration profile",
+        "same source right-hand roadway and opening geometry"
+      ],
+      "status": "diagnostic_pair_audit_passed_original_native_pair_pending"
+    }
+  ],
+  "observations": [
+    {
+      "mandatory": true,
+      "name": "ego_body_history",
+      "purpose": "original full-body opening, closed-divider and roadway occupancy",
+      "source": "ego-body-history.jsonl",
+      "unit": "m"
+    },
+    {
+      "mandatory": true,
+      "name": "ego_heading_history",
+      "purpose": "net direction reversal and cumulative heading change",
+      "source": "ego-body-history.jsonl",
+      "unit": "deg"
+    },
+    {
+      "mandatory": true,
+      "name": "ego_velocity_history",
+      "purpose": "signed forward and reverse motion corroborated by displacement",
+      "source": "ego-body-history.jsonl",
+      "unit": "m/s"
+    },
+    {
+      "name": "observed_vehicle_body_history",
+      "mandatory": true,
+      "purpose": "fixed other-vehicle control identity, body, frame and time source",
+      "source": "observed-vehicle-history.jsonl",
+      "unit": "m"
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C80909__NRS-484B-227-1__motor_vehicle_driver/assignment.json",
@@ -61,8 +150,8 @@
     "532c32e79b54dde98a7d7bf086a66014c02e70486ad1509f418d7176f9023102"
   ],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "CARLA map/asset/body geometry and four-view visibility require original execution.",
+    "Public-authority establishment is an administrative source question; local engineering geometry does not prove it."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
@@ -76,10 +165,6 @@
           {
             "path": "inputs/testing__C80909__NRS-484B-227-1__motor_vehicle_driver/accepted/532c32e79b54dde98a7d7bf086a66014c02e70486ad1509f418d7176f9023102/metadata.json",
             "sha256": "dfb21e5943ec503922e532da4e3d2bf3b88f25fa518c67ccf12a66c2822f5367"
-          },
-          {
-            "path": "inputs/testing__C80909__NRS-484B-227-1__motor_vehicle_driver/review-context/review.json",
-            "sha256": "f112ee4ccaedd1eed9b7e54b5acbe4c3ee24fb462f23a9c088b3a322905ef9b4"
           }
         ]
       }
@@ -97,17 +182,21 @@
     ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "construction_draft_selected_source_review_pending",
   "witness_review": [
     {
-      "source": "/pscratch/sd/m/msoroco/world-model-spec/runs/scenario_pipeline/state/operations/worker_exchange/demo-test-full-branches-v7/3239e9df279f2f67c8ff317343c6ae7f20a4ddc3a329f1647459e2a7fa338326/local-checkout/work/testing__C80909__NRS-484B-227-1__motor_vehicle_driver/assignment.json",
-      "source_index": null,
-      "source_sha256": "b8c0bdb6bcf6037406a1615c8a75031c26226584a02f0a626d24a51d87223511",
+      "source": "inputs/testing__C80909__NRS-484B-227-1__motor_vehicle_driver/witnesses.json",
+      "source_sha256": "ecfcb88a95536293a129a513eafd5998062ab5b1c4c9cb388d1bcfb8e361d78b",
       "branch": "U-turn through a median opening, including a multiple-movement variant.",
-      "decision": null,
-      "confidence": null,
-      "required_context": [],
-      "reason": null
+      "decision": "conditional",
+      "confidence": "low",
+      "required_context": [
+        "Opposing roadways and right-hand roadway bounds",
+        "Physical opening and closed divider extents",
+        "Original full-body trajectory and every movement",
+        "Separate administrative authority review"
+      ],
+      "reason": "Frozen witness identifies the opening and multi-movement scope, but no original motion receipt is exported."
     }
   ],
   "prior_review_context": {
@@ -115,5 +204,55 @@
       "left_turn_opening_alignment"
     ],
     "remaining_requirements_note": null
-  }
+  },
+  "selected_branch": "U-turn through a median opening, including a multiple-movement variant.",
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "approach through departure",
+        "subject": "ego body and median opening",
+        "view": "overview"
+      },
+      {
+        "interval": "approach and entry",
+        "subject": "source right-hand roadway approach",
+        "view": "approach"
+      },
+      {
+        "interval": "every U-turn movement",
+        "subject": "divider end and opening clearance",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "full recording",
+        "subject": "ego travel orientation",
+        "view": "driver_reference"
+      },
+      {
+        "interval": "approach through departure",
+        "subject": "fixed observed other vehicle on opposing right-hand roadway",
+        "view": "overview"
+      }
+    ],
+    "duration_s": 30,
+    "profile": "overview1080-capability",
+    "status": "engineering_candidate_duration_set_native_visibility_unverified"
+  },
+  "source_observation_mapping": {},
+  "requirement_dispositions": [
+    {
+      "requirement": "U-turn through a median opening, including a multiple-movement variant.",
+      "source": {
+        "path": "inputs/testing__C80909__NRS-484B-227-1__motor_vehicle_driver/witnesses.json",
+        "sha256": "ecfcb88a95536293a129a513eafd5998062ab5b1c4c9cb388d1bcfb8e361d78b"
+      },
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C80909__NRS-484B-227-1__motor_vehicle_driver__opening_single",
+        "testing__C80909__NRS-484B-227-1__motor_vehicle_driver__opening_multiple"
+      ],
+      "evidence_or_gap": "Accepted opening-aligned metadata lacks original body/heading/gear/time source proof; selected single and multiple movement implementations measure those gaps."
+    }
+  ]
 }

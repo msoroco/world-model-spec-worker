@@ -1,0 +1,64 @@
+{
+  "template_id": "NRS-484B-227-1@motor_vehicle_driver",
+  "law_id": "NRS-484B-227-1",
+  "actor": "motor_vehicle_driver",
+  "quote": "Every vehicle driven upon a divided highway must be driven only upon the right-hand roadway and must not be driven over, across or within any dividing space, barrier or section or make any left turn, semicircular turn or U-turn, except through an opening in the barrier or dividing section or space or at a crossover or intersection established by a public authority.",
+  "structure": {
+    "law_id": "NRS-484B-227-1",
+    "activation": {
+      "condition": "A vehicle is driven upon a source-reviewed divided highway.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "Drive only upon the right-hand roadway; do not cross the divider or make a prohibited turn outside an applicable exception.",
+      "type": "roadway_and_turn_restriction",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "source_clause": "except through an opening in the barrier or dividing section or space",
+        "description": "Physical opening exception, source geometry required"
+      },
+      {
+        "source_clause": "at a crossover or intersection established by a public authority",
+        "description": "Crossover or intersection administrative establishment requires separate source"
+      }
+    ],
+    "timing": {
+      "description": "Observe original approach, every U-turn movement, and departure.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "right-hand roadway",
+        "note": "Roadway direction and boundaries excluding shoulders need reviewed map sources and observed body occupancy."
+      },
+      {
+        "phrase": "established by a public authority",
+        "note": "An authored crossover or intersection label does not establish an administrative fact."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "opening_geometry",
+      "kind": "world_setup",
+      "range_or_domain": "physical opening versus closed divider"
+    },
+    {
+      "name": "movement_sequence",
+      "kind": "world_setup",
+      "range_or_domain": "continuous forward versus realized reverse then forward"
+    },
+    {
+      "name": "destination_roadway",
+      "kind": "world_setup",
+      "range_or_domain": "source versus destination right-hand roadway occupancy"
+    },
+    {
+      "name": "authority_establishment",
+      "kind": "world_setup",
+      "range_or_domain": "separately reviewed crossover or intersection source"
+    }
+  ]
+}
