@@ -28,7 +28,7 @@ class ReviewAcceptedTests(unittest.TestCase):
         self.case_id = ASSIGNMENT + "__business_continuous"
         self.trace = self.root / "trace.json"
         self.video = self.root / "raw.mkv"
-        self.trace.write_bytes(b'{"original_fixture":true}\n')
+        self.trace.write_text(json.dumps({"scenes": [{"t": 50 + i * 50} for i in range(900)]}) + "\n")
         self.video.write_bytes(b"fixture-video-bytes")
         meta = self.root / "inputs" / ASSIGNMENT / "accepted" / self.rid / "metadata.json"
         meta.parent.mkdir(parents=True)
@@ -42,7 +42,7 @@ class ReviewAcceptedTests(unittest.TestCase):
             "acceptance": {"case_id": self.case_id, "frames": 900,
                            "trace_sha256": trace_hash, "video_sha256": video_hash},
         }) + "\n")
-        self.packet = packet(case_id=self.case_id)
+        self.packet = packet(case_id=self.case_id, time_offset_s=0.05)
         self.packet["original_trace_sha256"] = trace_hash
         self.packet["original_video_sha256"] = video_hash
         evidence_path = self.root / "inputs" / ASSIGNMENT / "evidence.json"
@@ -84,6 +84,9 @@ class ReviewAcceptedTests(unittest.TestCase):
                          hashlib.sha256(self.trace.read_bytes()).hexdigest())
         self.assertEqual(finding["measurement"]["original_video_sha256"],
                          hashlib.sha256(self.video.read_bytes()).hexdigest())
+        self.assertEqual(finding["core_time_join"]["scene_count"], 900)
+        self.assertEqual(finding["core_time_join"]["joined_signal_samples"], 30)
+        self.assertEqual(finding["core_time_join"]["core_indicator_samples_checked"], 0)
 
     def test_unbound_substitute_packet_rejected(self):
         self.packet["route_sha256"] = "substitute-route"
@@ -130,12 +133,62 @@ class ReviewAcceptedTests(unittest.TestCase):
                            self.packet_path, self.root)
                 self.packet[key] = original
 
+    def reseal_trace(self, scenes):
+        self.trace.write_text(json.dumps({"scenes": scenes}) + "\n")
+        trace_hash = hashlib.sha256(self.trace.read_bytes()).hexdigest()
+        meta_path = self.root / "inputs" / ASSIGNMENT / "accepted" / self.rid / "metadata.json"
+        meta = json.loads(meta_path.read_text())
+        meta["trace_sha256"] = trace_hash
+        meta["acceptance"]["trace_sha256"] = trace_hash
+        meta_path.write_text(json.dumps(meta) + "\n")
+        evidence_path = self.root / "inputs" / ASSIGNMENT / "evidence.json"
+        evidence = json.loads(evidence_path.read_text())
+        evidence["recordings"][0]["sources"][0]["sha256"] = hashlib.sha256(meta_path.read_bytes()).hexdigest()
+        evidence_path.write_text(json.dumps(evidence) + "\n")
+        self.packet["original_trace_sha256"] = trace_hash
+        write_sources(self.root, self.packet)
+        self.save()
+        self.bind_packet(self.rid, self.packet_path)
+
+    def test_incomplete_original_core_history_rejected(self):
+        self.reseal_trace([{"t": 50 + i * 50} for i in range(899)])
+        with self.assertRaisesRegex(EvidenceError, "complete original Core scene history"):
+            review(self.root, self.rid, self.trace, self.video,
+                   self.packet_path, self.root)
+
+    def test_sealed_packet_with_changed_original_core_timeline_rejected(self):
+        scenes = [{"t": 50 + i * 50} for i in range(900)]
+        scenes[10]["t"] = 551
+        self.reseal_trace(scenes)
+        with self.assertRaisesRegex(EvidenceError, "signal sample/Core timestamp join"):
+            review(self.root, self.rid, self.trace, self.video,
+                   self.packet_path, self.root)
+
+    def test_original_core_indicator_agreement_is_counted(self):
+        scenes = [{"t": 50 + i * 50, "subject": 7,
+                   "users": [{"track": 7, "sig": {"turn_indicator": "left"}}]}
+                  for i in range(900)]
+        self.reseal_trace(scenes)
+        finding = review(self.root, self.rid, self.trace, self.video,
+                         self.packet_path, self.root)
+        self.assertEqual(finding["core_time_join"]["core_indicator_samples_checked"], 30)
+
+    def test_sealed_packet_disagreeing_with_original_core_indicator_rejected(self):
+        scenes = [{"t": 50 + i * 50, "subject": 7,
+                   "users": [{"track": 7, "sig": {"turn_indicator": "left"}}]}
+                  for i in range(900)]
+        scenes[10]["users"][0]["sig"]["turn_indicator"] = "off"
+        self.reseal_trace(scenes)
+        with self.assertRaisesRegex(EvidenceError, "disagrees with original Core indicator"):
+            review(self.root, self.rid, self.trace, self.video,
+                   self.packet_path, self.root)
+
     def second_side(self):
         folder = self.root / "second"
         folder.mkdir()
         trace = folder / "trace.json"
         video = folder / "raw.mkv"
-        trace.write_bytes(b'{"original_fixture":"second"}\n')
+        trace.write_text(json.dumps({"scenes": [{"t": 50 + i * 50} for i in range(900)]}) + "\n")
         video.write_bytes(b"second-fixture-video-bytes")
         case_id = ASSIGNMENT + "__business_short"
         rid = "second-fixture-recording"
@@ -162,7 +215,7 @@ class ReviewAcceptedTests(unittest.TestCase):
                          "sha256": hashlib.sha256(meta.read_bytes()).hexdigest()}],
         })
         evidence_path.write_text(json.dumps(evidence) + "\n")
-        second = packet(start=10, case_id=case_id)
+        second = packet(start=10, case_id=case_id, time_offset_s=0.05)
         second["original_trace_sha256"] = th
         second["original_video_sha256"] = vh
         write_sources(folder, second)

@@ -15,10 +15,12 @@ mod = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(mod)
 
 
-def packet(start=0, district="business", direction="left", case_id="a", step_m=1.0):
+def packet(start=0, district="business", direction="left", case_id="a", step_m=1.0,
+           time_offset_s=0.0):
     samples = []
     for i in range(30):
-        samples.append({"frame": i, "time_s": i / 20, "x_m": i * step_m, "y_m": 0.0,
+        samples.append({"frame": i, "time_s": time_offset_s + i / 20,
+                        "x_m": i * step_m, "y_m": 0.0,
                         "signal": direction if i >= start else "off",
                         "light_source": "vehicle_light_state_readback"})
     return {"format": "original-signal-history-v1", "fps": 20,
@@ -112,6 +114,35 @@ class SignalDistanceTest(unittest.TestCase):
         p["samples"][3]["time_s"] = 0.3
         with self.assertRaisesRegex(mod.EvidenceError, "20 Hz"):
             mod.measure(p)
+
+    def test_reject_boolean_native_position(self):
+        for key in ("x_m", "y_m"):
+            with self.subTest(key=key):
+                p = packet()
+                p["samples"][10][key] = True
+                with self.assertRaisesRegex(mod.EvidenceError, "invalid Native position"):
+                    mod.measure(p)
+
+    def test_reject_nonobject_signal_sample(self):
+        p = packet()
+        p["samples"][10] = None
+        with self.assertRaisesRegex(mod.EvidenceError, "sample must be an object"):
+            mod.measure(p)
+
+    def test_nonzero_original_first_frame_time(self):
+        p = packet(time_offset_s=0.05)
+        self.assertAlmostEqual(mod.measure(p)["continuous_distance_m"], 29)
+        p["samples"][10]["time_s"] += 0.05
+        with self.assertRaisesRegex(mod.EvidenceError, "20 Hz"):
+            mod.measure(p)
+
+    def test_invalid_original_first_frame_time(self):
+        for value in (-0.05, float("nan"), True, "0.05"):
+            with self.subTest(value=value):
+                p = packet()
+                p["samples"][0]["time_s"] = value
+                with self.assertRaisesRegex(mod.EvidenceError, "first-frame time"):
+                    mod.measure(p)
 
     def test_reject_absent_onset_light(self):
         p = packet()

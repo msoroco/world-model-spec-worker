@@ -1844,3 +1844,21 @@ All-work hygiene review covered 85,043 files after removing four generated `__py
 ## 2026-11-27 10:22 PST C178244 original-recording join
 
 C178244's historical accepted-recording reviewer now rejects a signal measurement packet unless its original trace and video hashes match the exact admitted accepted recording and its sealed source. The returned measurement includes both hashes. Two new negative tests cover packet rebind and sealed-source mismatch. The 39-test suite, current right-turn allocation audit, 29-entry success-ledger hash check and assignment-scoped static check passed. C178244 remains partial because its frozen cell is left-turn while its assigned selected branch is business right-turn; original trace/video and frozen signal packet are absent. No GPU queue entry or ready claim changed.
+
+## 2026-11-27 C178244 Core timeline proof
+
+C178244's historical accepted-source reviewer now verifies the admitted original Core scene count and monotonic timestamps, then joins each signal sample to its Core scene time. Two negative tests reseal fixture source hashes around incomplete or changed traces and confirm rejection after source admission. The 41-test suite, 29-entry success-ledger hash check and scoped static check pass. The strict assignment check still fails at truthful partial status; no original recording or signal packet was imported, no branch allocation changed, and no GPU queue entry was promoted.
+
+## 2026-11-27 C178244 original timestamp correction
+
+The C178244 original-frame measurement now accepts a nonzero first Native timestamp and checks subsequent sample times relative to it at 20 Hz. Its admitted Core timeline join remains exact at each sample frame. The 43-test suite, 29 success-ledger hashes and scoped static check pass; the strict assignment gate still fails on truthful partial status. No ready status or GPU queue entry changed.
+
+## 2026-11-27 10:30 PST C178244 Core indicator cross-check
+
+The C178244 accepted-source reviewer now checks packet signal states against any observed subject turn indicator in the exact admitted Core scene and reports how many samples had that independent field. The positive and conflicting-source tests pass in the 45-test suite; 29 success-ledger hashes and scoped static validation pass. The scoped strict check still rejects the truthful partial status. Six historical original recordings still lack source bytes and a frozen signal packet in this export, and the assigned right-turn branch still conflicts with the frozen left-turn cell. No ready status or GPU queue entry changed.
+
+A read-only hygiene scan of 85,044 work files found no oversized, non-UTF-8, trailing-whitespace or conflict-marker files. It did find 362 historical newline-only proof logs across 82 ready assignments; these are referenced by comparison audit hashes and were left byte-identical to preserve their existing proof bindings. The six files changed in this turn have no trailing whitespace, conflict markers or blank EOF and remain under 2 MiB. No Git command was run.
+
+## 2026-11-27 10:37 PST C178244 position-source proof
+
+Pinned runtime verify/preflight passed. C178244's original signal-distance measurement now rejects Boolean coordinates and malformed sample rows instead of accepting a Boolean as a Native position or raising an unrelated attribute error. Its 47-test suite, 29 receipt hashes and scoped static check pass. The exact strict assignment gate still fails at the truthful partial status because the frozen left-turn cell does not satisfy the selected business right-turn branch. The other remaining batch partial, C158190, still has a frozen stop-sign cell versus selected yield-sign branch. No accepted original source was imported or ready status changed.

@@ -104,17 +104,24 @@ def measure(packet: dict) -> dict:
     require(direction in ("left", "right"), "turn direction")
     samples = packet.get("samples")
     require(isinstance(samples, list) and len(samples) >= 3, "missing samples")
+    first_time = samples[0].get("time_s") if isinstance(samples[0], dict) else None
+    require(isinstance(first_time, (int, float)) and not isinstance(first_time, bool) and
+            isfinite(first_time) and first_time >= 0, "invalid original first-frame time")
     onset = packet.get("turn_onset_frame")
     require(isinstance(onset, int) and onset >= 2, "missing observed turn onset")
     require(onset < len(samples), "turn onset outside samples")
     for i, s in enumerate(samples):
+        require(isinstance(s, dict), "original signal sample must be an object")
         require(s.get("frame") == i, "nonconsecutive original frames")
-        require(s.get("time_s") is not None and abs(s["time_s"] - i / FPS) <= 0.001,
+        sample_time = s.get("time_s")
+        require(isinstance(sample_time, (int, float)) and not isinstance(sample_time, bool) and
+                isfinite(sample_time) and abs(sample_time - first_time - i / FPS) <= 0.001,
                 "frame time disagrees with 20 Hz")
         require(s.get("light_source") == "vehicle_light_state_readback", "command substituted for light readback")
         require(s.get("signal") in ("left", "right", "off"), "missing signal readback")
         for key in ("x_m", "y_m"):
-            require(isinstance(s.get(key), (int, float)) and isfinite(s[key]), "invalid Native position")
+            require(isinstance(s.get(key), (int, float)) and not isinstance(s[key], bool) and
+                    isfinite(s[key]), "invalid Native position")
     # A signal in the turn direction must remain observed at every sample of the
     # continuous final interval. The last interruption fixes its start.
     start = onset

@@ -34,12 +34,30 @@ def verify_core_time_join(trace: Path, frames_declared: int, samples: list[dict]
         if timestamps and stamp <= timestamps[-1]:
             raise EvidenceError("original Core scene timestamps must increase")
         timestamps.append(stamp)
+    signal_checked = 0
     for sample in samples:
         frame = sample["frame"]
         if frame >= len(timestamps) or timestamps[frame] != round(sample["time_s"] * 1000):
             raise EvidenceError("signal sample/Core timestamp join failed")
+        scene = scenes[frame]
+        subject = scene.get("subject")
+        users = scene.get("users")
+        if subject is not None and isinstance(users, list):
+            matches = [user for user in users if isinstance(user, dict) and
+                       user.get("track") == subject]
+            if len(matches) != 1:
+                raise EvidenceError("original Core subject user is ambiguous")
+            signals = matches[0].get("sig")
+            if signals is not None and not isinstance(signals, dict):
+                raise EvidenceError("original Core subject signal is malformed")
+            signal = signals.get("turn_indicator") if signals is not None else None
+            if signal is not None:
+                if signal not in ("left", "right", "off") or signal != sample["signal"]:
+                    raise EvidenceError("signal packet disagrees with original Core indicator")
+                signal_checked += 1
     return {"scene_count": len(timestamps), "first_timestamp_ms": timestamps[0],
-            "last_timestamp_ms": timestamps[-1], "joined_signal_samples": len(samples)}
+            "last_timestamp_ms": timestamps[-1], "joined_signal_samples": len(samples),
+            "core_indicator_samples_checked": signal_checked}
 
 
 def review(repo: Path, recording_id: str, trace: Path, video: Path,
