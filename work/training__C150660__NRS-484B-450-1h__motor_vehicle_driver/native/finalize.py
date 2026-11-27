@@ -16,6 +16,41 @@ def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
+def verify_original_review(attempt, survey, case):
+    seal_path = attempt / "capture-seal.json"
+    if not seal_path.is_file():
+        raise ValueError("Original source review requires a sealed Native capture")
+    seal = json.loads(seal_path.read_text())
+    sources = seal.get("sources")
+    if (seal.get("format") != "worker-sealed-capture" or
+            seal.get("provenance_kind") != "native" or
+            seal.get("diagnostic_fixture") or seal.get("frames") != FRAME_COUNT or
+            not seal.get("restoration", {}).get("restored") or
+            not isinstance(sources, dict) or
+            seal.get("source_digest") != hashlib.sha256(json.dumps(
+                sources, sort_keys=True, separators=(",", ":"),
+                ensure_ascii=False).encode()).hexdigest()):
+        raise ValueError("Original Native capture seal is invalid")
+    sealed_names = (*SOURCES, *VIDEOS, "construction.json", "runner.py")
+    for name in sealed_names:
+        if sources.get(name) != sha(attempt / name):
+            raise ValueError("Original source differs from sealed capture: " + name)
+    if (survey.get("case_id") != case or
+            not isinstance(survey.get("independent_reviewer"), str) or
+            not survey["independent_reviewer"].strip() or
+            survey.get("actual_pixels_reviewed") is not True or
+            survey.get("zone_raw_sha256") != sources["zone_raw.json"] or
+            survey.get("road_sha256") != sources["road.xodr"] or
+            survey.get("video_frames_sha256") != sources["video_frames.jsonl"] or
+            survey.get("video_sha256") != {name: sources[name] for name in VIDEOS}):
+        raise ValueError("Original review is not independently bound to sealed sources")
+    review_keys = ("safety_zone_official_status", "zone_marker_readback",
+                   "adjacent_curb_readback", "halt_purpose", "traffic_conflict",
+                   "applicable_law_direction", "officer_direction", "device_direction")
+    if any(survey.get(key) is None for key in review_keys):
+        raise ValueError("Original designation, curb or exception review incomplete")
+
+
 def measure_safety_zone(rows, zone):
     return measure_trace(rows, zone)
 
@@ -42,6 +77,8 @@ def finalize(attempt_path, output_path):
         raise ValueError("Original safety-zone source identity differs")
     if survey.get("review_kind") not in ("synthetic_diagnostic", "original_source_review"):
         raise ValueError("Original safety-zone context review kind missing")
+    if survey["review_kind"] == "original_source_review":
+        verify_original_review(attempt, survey, case)
     zone = raw.get("zone")
     rows = raw.get("frames")
     observed = measure_safety_zone(rows, zone)
@@ -142,7 +179,8 @@ def finalize(attempt_path, output_path):
               "target_checks": [{"target": "observed safety-zone resting position",
                                  "requested": requested_position,
                                  "measured": measurements[-1],
-                                 "method": "measure_safety_zone", "matched": matched,
+                                 "method": "measure_safety_zone", "tolerance": 0.25,
+                                 "matched": matched,
                                  "physical_cause_confirmed": False,
                                  "cause_evidence": list(SOURCES)}],
               "setup_confirmed": not diagnostic, "behavior_attempted": not diagnostic,

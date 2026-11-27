@@ -20,12 +20,17 @@ def require(value, message):
         raise ValueError(message)
 
 
+def original_native_source_contract(attempt, review_path):
+    return validate(attempt, review_path)
+
+
 def run(attempt, output):
     attempt, output = Path(attempt), Path(output)
     require(not output.exists() and not (attempt / "result.json").exists(),
             "choose a fresh saved analysis")
-    review_path = attempt / "source-review.json"
-    finding = validate(attempt, review_path)
+    review_path = attempt / "original-review.json"
+    require(review_path.is_file(), "Missing required source: original-review.json")
+    finding = original_native_source_contract(attempt, review_path)
     config = json.loads((attempt / "config.json").read_text(encoding="utf-8"))
     require(config.get("case_id") == finding["case_id"], "original case differs from config")
     require(tuple(item["name"] for item in config["recording_description"]["channels"]) == CHANNELS,
@@ -36,7 +41,7 @@ def run(attempt, output):
     require(len(actors) == len(joins) == FRAME_COUNT, "original packet length changed")
     source_names = ("capture-manifest.json", "road.xodr", "zone-survey.json",
                     "actor-frames.jsonl", "camera-frames.jsonl", "trace.jsonl",
-                    "video_frames.jsonl", "source-review.json")
+                    "video_frames.jsonl", "original-review.json")
     if (attempt / "capture-seal.json").is_file():
         source_names += ("capture-seal.json",)
     source_hashes = {name: sha(attempt / name) for name in source_names}

@@ -1,7 +1,7 @@
 """CPU-checked Native caravan route draft; no local recording has been accepted.
 
-The runnable path retains original body/velocity rows. Camera capture and saved
-delivery processing must be added before this can become a selected package.
+The runnable path retains original body and velocity rows with four camera
+streams and a canonical frame map. Selected saved processing is pending.
 """
 
 import argparse
@@ -69,6 +69,7 @@ def sample(actor, mapping):
     return {'native_road_id': waypoint.road_id, 'native_lane_id': waypoint.lane_id,
             'native_body_xy_m': body(actor),
             'native_center_xy_m': [pose.location.x, pose.location.y],
+            'native_velocity_xy_mps': [velocity.x, velocity.y],
             'speed_mps': math.hypot(velocity.x, velocity.y)}
 
 

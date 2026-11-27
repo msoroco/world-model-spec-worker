@@ -103,3 +103,20 @@ The exact NRS 484B.510 law text also names stopping, standing and parking for an
 
 Current proof SHA-256: runner `8b4218d37e45e4e596949325ba15e7768e22611fd795e89835d8be12c9cf6614`; finalizer `1a490d144a42535f197ca5b96925e4daf32d20f7f1301e6e7a083e50a74a6f09`; source checker `de4f8a8472080543c597a69b0b1cedfa3cd072a1b45596165a72898de82241f4`; source proof `107041ab4a9f4cc62207be855d152f82b5ddd935b67b4971118500191294f4d9`; stub proof `d4ce4ce6d2e36de183de774e1a3331b8956cdea5002defb67b6c8a496b859526`; eight construction proof `1fd6ce6b22eb344eed32fdecbe7fe781eca144c29e7ffc5aeeb1d41c7baf6af5`; eight pinned offline summary `00e9c7014d0b612d4dfcde164c16d377c464523c68cf1c6ff42885b9a3f801d6`; draft manifest `eeba1e160ad05fe8addc3ea5946c17e427bfbc115ce6a7e1af64ef6f77e6705b`. All eight actual offline logs remain under `.runtime-work/`; returned `work/` contains only their hashes and summaries. The scoped `--complete` check passes. The exact scoped strict gate still fails because `result.json` is partial. Next CPU actions: resolve the stop/stand construction alternatives and bind selected execution/measurement, public positive/negative, saved-only, semantic and independent audit proofs; then rerun strict. Do not select from this draft or claim physical acceptance.
 
+## 2026-11-27 six-case stop and stand construction
+
+The exact source says stop, stand or park for any purpose or length of time. Two additional original Native requests now isolate departure timing within the same frozen narrow-road park cell: `stop_only` requests departure from frame 300 and `stand_only` from frame 500. Both retain the same restricted-zone map, sign, actor, unrelated requested purpose, absence of passenger/waiting controls, parking target, 600-frame duration and four-camera plan. Comparisons pair stop/stand and stand/park. These are engineering contrasts, not legal duration thresholds or proof that the requested episodes physically occurred.
+
+The runner records `departure_requested` per original actor frame. The source validator binds the requested frame to the exact case and measures actual movement only from original body/speed and canonical trace. A controlled 600-frame FFV1 source fixture yields 301 stopped-in-zone frames and 299 moving-after-request frames for `stop_only`, versus 501 and 99 for `stand_only`; it separately passes eleven corrupt-source/review negatives. The five independent findings remain unverified in that fixture. No real CARLA physics, sign authority, driver purpose, actual loading, interference or legal outcome is claimed.
+
+All twelve primary/fallback inline bundles pass materialized request, unit and wrong-case checks and all twelve pinned runtime offline checks. Source and offline artifacts were rebuilt after the six-case changes. The selected execution manifest, public positive and missing-source negative, saved-only, semantic and independent delivery/comparison proofs remain unfinished. `result.json` truthfully remains partial; scoped `--complete` passes and scoped strict requires ready status.
+
+Current SHA-256:
+- `native/runner.py`: `ded17115c634ca9478aa2ce82bc5215edb1869e95cdf6bb293320931c52834c9`
+- `native/capture_plan.py`: `93005a0c99ee012f894be6db418885d39d98b80e8ad679301947a823f765da5b`
+- `native/original_source_contract.py`: `96daba4a149948831cd637c55796b759b750f89b7293609479735dfc38cc74f5`
+- `native/original-source-proof.json`: `99370aff72c400d683aa2a41900ef40f9da7be689f96d2c53fb5d8efd0ccb4a0`
+- `native/capture-plan-proof.json`: `16643a17c14850987bee192611f3dae0f48791f8bdc4134a7e28485187c69ccc`
+- `native/construction-proof.json`: `460ae2ff5e49d264dc8952e1a8896c8e239dfe0e0b0ebc649405f55f0f652758`
+- `native/current-runtime-offline-proof.json`: `a8bcc821b26e3b42eb73c8cf84a77a63927fc9c365c2d8e598a6bd3e4893aefb`
+- `draft-construction-manifest.json`: `8775e6e8f20a83b2b1232703878fc216134691d3956c18fdd82dd00e139cee08`

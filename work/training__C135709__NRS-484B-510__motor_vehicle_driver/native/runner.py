@@ -219,7 +219,10 @@ def execute(request: dict, output_dir: Path, host: str, port: int) -> dict:
                                  "z": ego_pose.location.z},
                     "heading_deg": ego_pose.rotation.yaw,
                     "velocity_mps": [ego_velocity.x, ego_velocity.y, ego_velocity.z],
-                    "speed_mps": ego_speed}, sort_keys=True) + "\n")
+                    "control": {"throttle": control["throttle"],
+                                "brake": control["brake"], "hand_brake": False},
+                    "speed_mps": ego_speed, "speed_mph": ego_speed / 0.44704},
+                    sort_keys=True) + "\n")
                 nearby = [person.id for person in pedestrians if
                           person.get_location().distance(ego.get_location()) <= 5]
                 others = [] if other is None else [{"actor_id": other.id,

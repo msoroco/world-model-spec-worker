@@ -1,0 +1,40 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C228508__NRS-484B-127-3__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "partial",
+  "cases": [
+    {
+      "case_id": "training__C228508__NRS-484B-127-3__motor_vehicle_driver__probe_a",
+      "kind": "delivery",
+      "construction": "selected/primary/construction.json",
+      "construction_sha256": "a7de306459a16e324cf33d387e24c88e4fb8d47e8b238b1b849cb52a3dc0cfa4",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native group spacing and entrant lane transition may drift under velocity control"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected/fallback1/construction.json",
+          "construction_sha256": "1a2bd505c2bf8b4077b9954ec9cd46cf7b943d4ceebc540d0e86fbb1f1863a72",
+          "trigger": {
+            "source": "native_samples.jsonl",
+            "metric": "minimum original consecutive-body clearance",
+            "failure_condition": "Primary clearance or entrant transition misses its predeclared engineering target"
+          },
+          "changed_knobs": [
+            "group speed 6 m/s to 5 m/s"
+          ]
+        }
+      ],
+      "measurement_contract": "selected-probe_a-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-analysis-report"
+      },
+      "fixture_recipe": "work/training__C228508__NRS-484B-127-3__motor_vehicle_driver/selected-probe_a-fixture-recipe.json",
+      "delivery_readiness": "incomplete"
+    }
+  ]
+}

@@ -6,10 +6,12 @@
   "sweep_specs": [],
   "cases": [
     {
-      "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__selected_6214a61f__condition_a",
-      "target_law_id": "NRS-484B-450-1h",
-      "target_type": "controlled_branch_probe",
-      "rationale": "Original Native safety-zone stop request; realized footprint, designation, curb and exceptions need independent source review.",
+      "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "cell_id": "C150660",
+      "actor": "motor_vehicle_driver",
+      "rationale": "Unselected fixed road and driver context.",
       "recording_description": {
         "channels": [
           {
@@ -94,9 +96,7 @@
             "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
           }
         ],
-        "context_inputs": [
-          "context-survey.json"
-        ],
+        "context_inputs": [],
         "limitations": [
           "Requested position is not realized distance; measure original footprint",
           "Authored markers do not establish an official safety zone or adjacent curb",
@@ -104,15 +104,11 @@
           "CPU fixtures do not establish physical or legal acceptance"
         ]
       },
-      "unresolved_judgment_calls": [
-        "Official safety-zone designation and adjacent curb status",
-        "Actual stop/stand/park purpose and exception authority or necessity",
-        "Physical stop location and actual four-view pixels"
-      ],
+      "unresolved_judgment_calls": [],
       "variable_assignments": {
         "position_request": {
           "kind": "controller",
-          "value": "between",
+          "value": null,
           "unit": "category"
         },
         "requested_curb_end_gap_ft": {
@@ -122,12 +118,12 @@
         },
         "activity_request": {
           "kind": "controller",
-          "value": "stop",
+          "value": null,
           "unit": "category"
         },
         "exception_request": {
           "kind": "controller",
-          "value": "none",
+          "value": null,
           "unit": "category"
         },
         "observed_zone_and_exception_state": {
@@ -138,8 +134,10 @@
       }
     },
     {
-      "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__selected_6214a61f__condition_b",
+      "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__selected_6214a61f__condition_a",
       "target_law_id": "NRS-484B-450-1h",
+      "cell_id": "C150660",
+      "actor": "motor_vehicle_driver",
       "target_type": "boundary_probe",
       "rationale": "Original Native safety-zone stop request; realized footprint, designation, curb and exceptions need independent source review.",
       "recording_description": {
@@ -226,9 +224,153 @@
             "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
           }
         ],
-        "context_inputs": [
-          "context-survey.json"
+        "context_inputs": [],
+        "limitations": [
+          "Requested position is not realized distance; measure original footprint",
+          "Authored markers do not establish an official safety zone or adjacent curb",
+          "Every statutory exception and actual camera pixels require independent original-source review",
+          "CPU fixtures do not establish physical or legal acceptance"
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "Official safety-zone designation and adjacent curb status",
+        "Actual stop/stand/park purpose and exception authority or necessity",
+        "Physical stop location and actual four-view pixels"
+      ],
+      "variable_assignments": {
+        "position_request": {
+          "kind": "controller",
+          "value": "between",
+          "unit": "category"
+        },
+        "requested_curb_end_gap_ft": {
+          "kind": "controller",
+          "value": null,
+          "unit": "ft"
+        },
+        "activity_request": {
+          "kind": "controller",
+          "value": "stop",
+          "unit": "category"
+        },
+        "exception_request": {
+          "kind": "controller",
+          "value": "none",
+          "unit": "category"
+        },
+        "observed_zone_and_exception_state": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        }
+      },
+      "paired_probe_id": "c150660-selected-pair",
+      "deliberate_differences": [
+        "requested_curb_end_gap_ft",
+        "position_request"
+      ],
+      "probe": {
+        "primary_variable": "position_request",
+        "comparison_or_standard": "30 feet from either opposite curb-end point or between zone and curb",
+        "target_value_or_branch": "between/stop/none",
+        "threshold_ref": null,
+        "operator": "categorical",
+        "unit": "category",
+        "test_value": "between"
+      }
+    },
+    {
+      "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__selected_6214a61f__condition_b",
+      "target_law_id": "NRS-484B-450-1h",
+      "cell_id": "C150660",
+      "actor": "motor_vehicle_driver",
+      "target_type": "boundary_probe",
+      "rationale": "Original Native safety-zone stop request; realized footprint, designation, curb and exceptions need independent source review.",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "boolean proxy",
+            "method": "Native 20 Hz velocity and stop control",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "st.safety_zone",
+            "unit": "source geometry",
+            "method": "authored and Native map plus independent zone designation review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "st.road_edge",
+            "unit": "m",
+            "method": "Native shoulder edge and independent curb review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "boolean geometry",
+            "method": "four-corner body footprint between zone and curb",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "m",
+            "method": "footprint distance to both opposite curb-end points",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "kin.position",
+            "unit": "m",
+            "method": "original Native four-corner body footprint",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "drv.forced_halt",
+            "unit": "review source",
+            "method": "original traffic-conflict and halt-purpose review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "dev.human_direction",
+            "unit": "review source",
+            "method": "original officer-direction review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "exception_context",
+            "unit": "review source",
+            "method": "original law, traffic, officer and device review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          }
         ],
+        "context_inputs": [],
         "limitations": [
           "Requested position is not realized distance; measure original footprint",
           "Authored markers do not establish an official safety zone or adjacent curb",
@@ -267,11 +409,28 @@
           "value": null,
           "unit": "structured"
         }
-      }
+      },
+      "paired_probe_id": "c150660-selected-pair",
+      "deliberate_differences": [
+        "requested_curb_end_gap_ft",
+        "position_request"
+      ],
+      "probe": {
+        "primary_variable": "requested_curb_end_gap_ft",
+        "comparison_or_standard": "30 feet from either opposite curb-end point or between zone and curb",
+        "target_value_or_branch": "45.0 ft",
+        "threshold_ref": null,
+        "operator": "<=",
+        "unit": "ft",
+        "test_value": 45.0
+      },
+      "epsilon_used": "5 ft engineering probe spacing, not legal tolerance"
     },
     {
       "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__end_25",
       "target_law_id": "NRS-484B-450-1h",
+      "cell_id": "C150660",
+      "actor": "motor_vehicle_driver",
       "target_type": "boundary_probe",
       "rationale": "Original Native safety-zone stop request; realized footprint, designation, curb and exceptions need independent source review.",
       "recording_description": {
@@ -358,9 +517,7 @@
             "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
           }
         ],
-        "context_inputs": [
-          "context-survey.json"
-        ],
+        "context_inputs": [],
         "limitations": [
           "Requested position is not realized distance; measure original footprint",
           "Authored markers do not establish an official safety zone or adjacent curb",
@@ -399,11 +556,28 @@
           "value": null,
           "unit": "structured"
         }
-      }
+      },
+      "paired_probe_id": "c150660-curb-end-distance",
+      "deliberate_differences": [
+        "requested_curb_end_gap_ft",
+        "position_request"
+      ],
+      "probe": {
+        "primary_variable": "requested_curb_end_gap_ft",
+        "comparison_or_standard": "30 feet from either opposite curb-end point or between zone and curb",
+        "target_value_or_branch": "25.0 ft",
+        "threshold_ref": "activation.numeric_conditions[0]",
+        "operator": "<=",
+        "unit": "ft",
+        "test_value": 25.0
+      },
+      "epsilon_used": "5 ft engineering probe spacing, not legal tolerance"
     },
     {
       "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__end_30",
       "target_law_id": "NRS-484B-450-1h",
+      "cell_id": "C150660",
+      "actor": "motor_vehicle_driver",
       "target_type": "boundary_probe",
       "rationale": "Original Native safety-zone stop request; realized footprint, designation, curb and exceptions need independent source review.",
       "recording_description": {
@@ -490,9 +664,7 @@
             "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
           }
         ],
-        "context_inputs": [
-          "context-survey.json"
-        ],
+        "context_inputs": [],
         "limitations": [
           "Requested position is not realized distance; measure original footprint",
           "Authored markers do not establish an official safety zone or adjacent curb",
@@ -531,11 +703,28 @@
           "value": null,
           "unit": "structured"
         }
-      }
+      },
+      "paired_probe_id": "c150660-curb-end-distance",
+      "deliberate_differences": [
+        "requested_curb_end_gap_ft",
+        "position_request"
+      ],
+      "probe": {
+        "primary_variable": "requested_curb_end_gap_ft",
+        "comparison_or_standard": "30 feet from either opposite curb-end point or between zone and curb",
+        "target_value_or_branch": "30.0 ft",
+        "threshold_ref": "activation.numeric_conditions[0]",
+        "operator": "<=",
+        "unit": "ft",
+        "test_value": 30.0
+      },
+      "epsilon_used": "5 ft engineering probe spacing, not legal tolerance"
     },
     {
       "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__end_35",
       "target_law_id": "NRS-484B-450-1h",
+      "cell_id": "C150660",
+      "actor": "motor_vehicle_driver",
       "target_type": "boundary_probe",
       "rationale": "Original Native safety-zone stop request; realized footprint, designation, curb and exceptions need independent source review.",
       "recording_description": {
@@ -622,9 +811,7 @@
             "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
           }
         ],
-        "context_inputs": [
-          "context-survey.json"
-        ],
+        "context_inputs": [],
         "limitations": [
           "Requested position is not realized distance; measure original footprint",
           "Authored markers do not establish an official safety zone or adjacent curb",
@@ -663,11 +850,28 @@
           "value": null,
           "unit": "structured"
         }
-      }
+      },
+      "paired_probe_id": "c150660-curb-end-distance",
+      "deliberate_differences": [
+        "requested_curb_end_gap_ft",
+        "position_request"
+      ],
+      "probe": {
+        "primary_variable": "requested_curb_end_gap_ft",
+        "comparison_or_standard": "30 feet from either opposite curb-end point or between zone and curb",
+        "target_value_or_branch": "35.0 ft",
+        "threshold_ref": "activation.numeric_conditions[0]",
+        "operator": "<=",
+        "unit": "ft",
+        "test_value": 35.0
+      },
+      "epsilon_used": "5 ft engineering probe spacing, not legal tolerance"
     },
     {
       "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__start_25",
       "target_law_id": "NRS-484B-450-1h",
+      "cell_id": "C150660",
+      "actor": "motor_vehicle_driver",
       "target_type": "boundary_probe",
       "rationale": "Original Native safety-zone stop request; realized footprint, designation, curb and exceptions need independent source review.",
       "recording_description": {
@@ -754,9 +958,7 @@
             "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
           }
         ],
-        "context_inputs": [
-          "context-survey.json"
-        ],
+        "context_inputs": [],
         "limitations": [
           "Requested position is not realized distance; measure original footprint",
           "Authored markers do not establish an official safety zone or adjacent curb",
@@ -795,11 +997,28 @@
           "value": null,
           "unit": "structured"
         }
-      }
+      },
+      "paired_probe_id": "c150660-curb-end-distance",
+      "deliberate_differences": [
+        "requested_curb_end_gap_ft",
+        "position_request"
+      ],
+      "probe": {
+        "primary_variable": "requested_curb_end_gap_ft",
+        "comparison_or_standard": "30 feet from either opposite curb-end point or between zone and curb",
+        "target_value_or_branch": "25.0 ft",
+        "threshold_ref": "activation.numeric_conditions[0]",
+        "operator": "<=",
+        "unit": "ft",
+        "test_value": 25.0
+      },
+      "epsilon_used": "5 ft engineering probe spacing, not legal tolerance"
     },
     {
       "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__start_30",
       "target_law_id": "NRS-484B-450-1h",
+      "cell_id": "C150660",
+      "actor": "motor_vehicle_driver",
       "target_type": "boundary_probe",
       "rationale": "Original Native safety-zone stop request; realized footprint, designation, curb and exceptions need independent source review.",
       "recording_description": {
@@ -886,9 +1105,7 @@
             "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
           }
         ],
-        "context_inputs": [
-          "context-survey.json"
-        ],
+        "context_inputs": [],
         "limitations": [
           "Requested position is not realized distance; measure original footprint",
           "Authored markers do not establish an official safety zone or adjacent curb",
@@ -927,11 +1144,28 @@
           "value": null,
           "unit": "structured"
         }
-      }
+      },
+      "paired_probe_id": "c150660-curb-end-distance",
+      "deliberate_differences": [
+        "requested_curb_end_gap_ft",
+        "position_request"
+      ],
+      "probe": {
+        "primary_variable": "requested_curb_end_gap_ft",
+        "comparison_or_standard": "30 feet from either opposite curb-end point or between zone and curb",
+        "target_value_or_branch": "30.0 ft",
+        "threshold_ref": "activation.numeric_conditions[0]",
+        "operator": "<=",
+        "unit": "ft",
+        "test_value": 30.0
+      },
+      "epsilon_used": "5 ft engineering probe spacing, not legal tolerance"
     },
     {
       "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__start_35",
       "target_law_id": "NRS-484B-450-1h",
+      "cell_id": "C150660",
+      "actor": "motor_vehicle_driver",
       "target_type": "boundary_probe",
       "rationale": "Original Native safety-zone stop request; realized footprint, designation, curb and exceptions need independent source review.",
       "recording_description": {
@@ -1018,9 +1252,7 @@
             "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
           }
         ],
-        "context_inputs": [
-          "context-survey.json"
-        ],
+        "context_inputs": [],
         "limitations": [
           "Requested position is not realized distance; measure original footprint",
           "Authored markers do not establish an official safety zone or adjacent curb",
@@ -1059,12 +1291,29 @@
           "value": null,
           "unit": "structured"
         }
-      }
+      },
+      "paired_probe_id": "c150660-curb-end-distance",
+      "deliberate_differences": [
+        "requested_curb_end_gap_ft",
+        "position_request"
+      ],
+      "probe": {
+        "primary_variable": "requested_curb_end_gap_ft",
+        "comparison_or_standard": "30 feet from either opposite curb-end point or between zone and curb",
+        "target_value_or_branch": "35.0 ft",
+        "threshold_ref": "activation.numeric_conditions[0]",
+        "operator": "<=",
+        "unit": "ft",
+        "test_value": 35.0
+      },
+      "epsilon_used": "5 ft engineering probe spacing, not legal tolerance"
     },
     {
       "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__stand_between",
       "target_law_id": "NRS-484B-450-1h",
-      "target_type": "controlled_branch_probe",
+      "cell_id": "C150660",
+      "actor": "motor_vehicle_driver",
+      "target_type": "boundary_probe",
       "rationale": "Original Native safety-zone stop request; realized footprint, designation, curb and exceptions need independent source review.",
       "recording_description": {
         "channels": [
@@ -1150,9 +1399,7 @@
             "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
           }
         ],
-        "context_inputs": [
-          "context-survey.json"
-        ],
+        "context_inputs": [],
         "limitations": [
           "Requested position is not realized distance; measure original footprint",
           "Authored markers do not establish an official safety zone or adjacent curb",
@@ -1191,12 +1438,27 @@
           "value": null,
           "unit": "structured"
         }
+      },
+      "paired_probe_id": "c150660-stand_between",
+      "deliberate_differences": [
+        "activity_request"
+      ],
+      "probe": {
+        "primary_variable": "activity_request",
+        "comparison_or_standard": "30 feet from either opposite curb-end point or between zone and curb",
+        "target_value_or_branch": "between/stand/none",
+        "threshold_ref": null,
+        "operator": "categorical",
+        "unit": "category",
+        "test_value": "stand"
       }
     },
     {
       "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__park_between",
       "target_law_id": "NRS-484B-450-1h",
-      "target_type": "controlled_branch_probe",
+      "cell_id": "C150660",
+      "actor": "motor_vehicle_driver",
+      "target_type": "boundary_probe",
       "rationale": "Original Native safety-zone stop request; realized footprint, designation, curb and exceptions need independent source review.",
       "recording_description": {
         "channels": [
@@ -1282,9 +1544,7 @@
             "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
           }
         ],
-        "context_inputs": [
-          "context-survey.json"
-        ],
+        "context_inputs": [],
         "limitations": [
           "Requested position is not realized distance; measure original footprint",
           "Authored markers do not establish an official safety zone or adjacent curb",
@@ -1323,12 +1583,27 @@
           "value": null,
           "unit": "structured"
         }
+      },
+      "paired_probe_id": "c150660-park_between",
+      "deliberate_differences": [
+        "activity_request"
+      ],
+      "probe": {
+        "primary_variable": "activity_request",
+        "comparison_or_standard": "30 feet from either opposite curb-end point or between zone and curb",
+        "target_value_or_branch": "between/park/none",
+        "threshold_ref": null,
+        "operator": "categorical",
+        "unit": "category",
+        "test_value": "park"
       }
     },
     {
       "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__conflict_between",
       "target_law_id": "NRS-484B-450-1h",
-      "target_type": "controlled_branch_probe",
+      "cell_id": "C150660",
+      "actor": "motor_vehicle_driver",
+      "target_type": "boundary_probe",
       "rationale": "Original Native safety-zone stop request; realized footprint, designation, curb and exceptions need independent source review.",
       "recording_description": {
         "channels": [
@@ -1414,9 +1689,7 @@
             "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
           }
         ],
-        "context_inputs": [
-          "context-survey.json"
-        ],
+        "context_inputs": [],
         "limitations": [
           "Requested position is not realized distance; measure original footprint",
           "Authored markers do not establish an official safety zone or adjacent curb",
@@ -1455,12 +1728,27 @@
           "value": null,
           "unit": "structured"
         }
+      },
+      "paired_probe_id": "c150660-conflict_between",
+      "deliberate_differences": [
+        "exception_request"
+      ],
+      "probe": {
+        "primary_variable": "exception_request",
+        "comparison_or_standard": "30 feet from either opposite curb-end point or between zone and curb",
+        "target_value_or_branch": "between/stop/traffic_conflict",
+        "threshold_ref": null,
+        "operator": "categorical",
+        "unit": "category",
+        "test_value": "traffic_conflict"
       }
     },
     {
       "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__law_between",
       "target_law_id": "NRS-484B-450-1h",
-      "target_type": "controlled_branch_probe",
+      "cell_id": "C150660",
+      "actor": "motor_vehicle_driver",
+      "target_type": "boundary_probe",
       "rationale": "Original Native safety-zone stop request; realized footprint, designation, curb and exceptions need independent source review.",
       "recording_description": {
         "channels": [
@@ -1546,9 +1834,7 @@
             "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
           }
         ],
-        "context_inputs": [
-          "context-survey.json"
-        ],
+        "context_inputs": [],
         "limitations": [
           "Requested position is not realized distance; measure original footprint",
           "Authored markers do not establish an official safety zone or adjacent curb",
@@ -1587,12 +1873,27 @@
           "value": null,
           "unit": "structured"
         }
+      },
+      "paired_probe_id": "c150660-law_between",
+      "deliberate_differences": [
+        "exception_request"
+      ],
+      "probe": {
+        "primary_variable": "exception_request",
+        "comparison_or_standard": "30 feet from either opposite curb-end point or between zone and curb",
+        "target_value_or_branch": "between/stop/other_law",
+        "threshold_ref": null,
+        "operator": "categorical",
+        "unit": "category",
+        "test_value": "other_law"
       }
     },
     {
       "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__officer_between",
       "target_law_id": "NRS-484B-450-1h",
-      "target_type": "controlled_branch_probe",
+      "cell_id": "C150660",
+      "actor": "motor_vehicle_driver",
+      "target_type": "boundary_probe",
       "rationale": "Original Native safety-zone stop request; realized footprint, designation, curb and exceptions need independent source review.",
       "recording_description": {
         "channels": [
@@ -1678,9 +1979,7 @@
             "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
           }
         ],
-        "context_inputs": [
-          "context-survey.json"
-        ],
+        "context_inputs": [],
         "limitations": [
           "Requested position is not realized distance; measure original footprint",
           "Authored markers do not establish an official safety zone or adjacent curb",
@@ -1719,12 +2018,27 @@
           "value": null,
           "unit": "structured"
         }
+      },
+      "paired_probe_id": "c150660-officer_between",
+      "deliberate_differences": [
+        "exception_request"
+      ],
+      "probe": {
+        "primary_variable": "exception_request",
+        "comparison_or_standard": "30 feet from either opposite curb-end point or between zone and curb",
+        "target_value_or_branch": "between/stop/officer_direction",
+        "threshold_ref": null,
+        "operator": "categorical",
+        "unit": "category",
+        "test_value": "officer_direction"
       }
     },
     {
       "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__device_between",
       "target_law_id": "NRS-484B-450-1h",
-      "target_type": "controlled_branch_probe",
+      "cell_id": "C150660",
+      "actor": "motor_vehicle_driver",
+      "target_type": "boundary_probe",
       "rationale": "Original Native safety-zone stop request; realized footprint, designation, curb and exceptions need independent source review.",
       "recording_description": {
         "channels": [
@@ -1810,9 +2124,7 @@
             "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
           }
         ],
-        "context_inputs": [
-          "context-survey.json"
-        ],
+        "context_inputs": [],
         "limitations": [
           "Requested position is not realized distance; measure original footprint",
           "Authored markers do not establish an official safety zone or adjacent curb",
@@ -1851,6 +2163,19 @@
           "value": null,
           "unit": "structured"
         }
+      },
+      "paired_probe_id": "c150660-device_between",
+      "deliberate_differences": [
+        "exception_request"
+      ],
+      "probe": {
+        "primary_variable": "exception_request",
+        "comparison_or_standard": "30 feet from either opposite curb-end point or between zone and curb",
+        "target_value_or_branch": "between/stop/device_direction",
+        "threshold_ref": null,
+        "operator": "categorical",
+        "unit": "category",
+        "test_value": "device_direction"
       }
     }
   ]

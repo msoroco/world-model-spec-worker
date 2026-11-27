@@ -79,7 +79,7 @@ def prove() -> dict:
              "position_m": [5.0, 2.0],
              "position": {"x": 5.0, "y": 2.0, "z": 1.0},
              "heading_deg": 0.0, "velocity_mps": [0.0, 0.0, 0.0],
-             "speed_mps": 0.0}
+             "speed_mps": 0.0, "speed_mph": 0.0}
             for i in range(FRAME_COUNT)])
         rows(attempt / "video_frames.jsonl", [
             {"video_frame": i, "carla_frame": 1000 + i,
@@ -95,7 +95,7 @@ def prove() -> dict:
             "events": ["capture_finished", "encoders_closed", "restoration_verified"],
             "sources": {name: sha(attempt / name) for name in names}})
         names += ("capture-seal.json",)
-        review = attempt / "source-review.json"
+        review = attempt / "original-review.json"
         review_content = {"case_id": case_id,
                           "source_sha256": {name: sha(attempt / name) for name in names},
                           "reviewer": "controlled-fixture", "restricted_purpose": "test-purpose",
@@ -123,6 +123,55 @@ def prove() -> dict:
         assert all(len((attempt / "channels" / (name + ".jsonl")).read_text().splitlines()) == FRAME_COUNT
                    for name in ("st.curb_zone", "dev.regulatory_sign", "ru.occupant_count",
                                 "sig.door_open", "ru.pedestrian", "ru.motor_vehicle"))
+        episode_proofs = {}
+        for suffix, departure in (("stop_only", 300), ("stand_only", 500)):
+            episode_actors = copy.deepcopy(actors)
+            episode_trace = []
+            for i, row in enumerate(episode_actors):
+                x = 5.0 + max(0, i - departure) * 0.05
+                moving = i > departure
+                row["ego_body_m"] = [x - 2, 1, x + 2, 3]
+                row["ego_speed_mps"] = 1.0 if moving else 0.0
+                row["departure_requested"] = i >= departure
+                center_x = (row["ego_body_m"][0] + row["ego_body_m"][2]) / 2
+                episode_trace.append({"frame": 1000 + i, "time_s": i / FPS,
+                    "position_m": [center_x, 2.0],
+                    "position": {"x": x, "y": 2.0, "z": 1.0},
+                    "heading_deg": 0.0, "velocity_mps": [1.0 if moving else 0.0, 0.0, 0.0],
+                    "speed_mps": row["ego_speed_mps"],
+                    "speed_mph": row["ego_speed_mps"] / 0.44704})
+            rows(attempt / "actor-frames.jsonl", episode_actors)
+            rows(attempt / "trace.jsonl", episode_trace)
+            capture["case_id"] = AID + "__" + suffix
+            write(attempt / "capture-manifest.json", capture)
+            seal = json.loads((attempt / "capture-seal.json").read_text())
+            seal["sources"] = {name: sha(attempt / name) for name in names if name != "capture-seal.json"}
+            write(attempt / "capture-seal.json", seal)
+            episode_review = copy.deepcopy(review_content)
+            episode_review["case_id"] = capture["case_id"]
+            episode_review["source_sha256"] = {name: sha(attempt / name) for name in names}
+            write(review, episode_review)
+            measured = validate(attempt, review)
+            assert measured["departure_requested_frames"] == FRAME_COUNT - departure
+            assert measured["moving_after_departure_frames"] == FRAME_COUNT - departure - 1
+            episode_proofs[suffix] = {
+                "departure_requested_frames": measured["departure_requested_frames"],
+                "moving_after_departure_frames": measured["moving_after_departure_frames"],
+                "stopped_in_zone_frames": measured["stopped_in_zone_frames"]}
+        rows(attempt / "actor-frames.jsonl", actors)
+        rows(attempt / "trace.jsonl", [
+            {"frame": 1000 + i, "time_s": i / FPS, "position_m": [5.0, 2.0],
+             "position": {"x": 5.0, "y": 2.0, "z": 1.0}, "heading_deg": 0.0,
+             "velocity_mps": [0.0, 0.0, 0.0], "speed_mps": 0.0,
+             "speed_mph": 0.0}
+            for i in range(FRAME_COUNT)])
+        capture["case_id"] = case_id
+        write(attempt / "capture-manifest.json", capture)
+        seal = json.loads((attempt / "capture-seal.json").read_text())
+        seal["sources"] = {name: sha(attempt / name) for name in names if name != "capture-seal.json"}
+        write(attempt / "capture-seal.json", seal)
+        review_content["source_sha256"] = {name: sha(attempt / name) for name in names}
+        write(review, review_content)
         negatives = {}
         negatives["wrong_case_review"] = expect_rejection(
             attempt, review, review,
@@ -203,6 +252,7 @@ def prove() -> dict:
                 "positive": {"stopped_in_zone_frames": positive["stopped_in_zone_frames"],
                              "nearby_passenger_identity_change_frames_with_door_request": positive["nearby_passenger_identity_change_frames_with_door_request"],
                              "requested_waiting_or_entering_overlap_frames": positive["requested_waiting_or_entering_overlap_frames"]},
+                "episode_proofs": episode_proofs,
                 "negative_rejections": negatives,
                 "fixture_video_bytes": "four 600-frame FFV1 color videos fully decoded; no physical visibility claim",
                 "finalizer": {"original_source_join": True, "frames": FRAME_COUNT,

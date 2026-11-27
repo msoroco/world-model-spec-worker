@@ -238,7 +238,14 @@ def execute(case_id, output_dir, host, port):
             "traffic_conflict": None, "applicable_law_direction": None,
             "officer_direction": None, "device_direction": None,
             "actual_pixels_reviewed": None, "independent_reviewer": None,
-            "zone_raw_sha256": None, "road_sha256": None}, indent=2) + "\n")
+            "zone_raw_sha256": None, "road_sha256": None,
+            "video_frames_sha256": None,
+            "video_sha256": {name + ".mkv": None for name in
+                             ("overview", "approach", "reference_corner", "driver_reference")}},
+            indent=2) + "\n")
+        (output / "acquisition-provenance.json").write_text(json.dumps({
+            "provenance_kind": "native", "diagnostic_fixture": False,
+            "case_id": case_id, "physical_acceptance_claimed": False}, indent=2) + "\n")
         complete = True
         return {"case_id": case_id, "frames": FRAMES, "requested_target_x_m": target,
                 "physical_acceptance_claimed": False}

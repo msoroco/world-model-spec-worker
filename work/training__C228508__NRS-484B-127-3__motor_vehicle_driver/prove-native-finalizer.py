@@ -48,9 +48,10 @@ def build(folder, suffix, candidate):
                  else centers[name])
             y = -5.25 if name == 'potential_entrant' else -1.75
             half = 3.0 if name == 'potential_entrant' else 2.25
-            actors[name] = {'native_road_id': 1, 'native_lane_id': -2 if name == 'potential_entrant' else -1,
+            actors[name] = {'native_road_id': 1, 'native_lane_id': (-2 if index < 120 else -1) if name == 'potential_entrant' else -1,
                             'native_body_xy_m': rectangle(x, y, half),
                             'native_center_xy_m': [x, y],
+                            'native_velocity_xy_mps': [CANDIDATES[candidate], 0],
                             'speed_mps': CANDIDATES[candidate]}
         rows.append({'native_frame': 1000 + index, 'time_s': (index + 1) / 20,
                      'actors': actors, 'requested_group_speed_mps': CANDIDATES[candidate]})
@@ -84,6 +85,8 @@ assert observed['probe_a-primary']['minimum_clear_space_m'] == {
 assert observed['probe_b-primary']['minimum_clear_space_m'] == {
     'lead_to_combination_m': 8.0, 'combination_to_rear_m': 8.0}
 assert all(not v['legal_verdict_claimed'] and not v['trailer_coupling_verified'] for v in observed.values())
+assert all(v['entrant_transition_observed'] for v in observed.values())
+assert all(v['all_caravan_actors_forward_frames'] == 600 for v in observed.values())
 
 negative = {}
 with tempfile.TemporaryDirectory(dir=SCRATCH) as name:
@@ -101,6 +104,8 @@ with tempfile.TemporaryDirectory(dir=SCRATCH) as name:
 mutations = {
     'missing_rear': (lambda rows: rows[1]['actors'].pop('rear'), 'complete caravan actor inventory'),
     'wrong_lane': (lambda rows: rows[1]['actors']['trailer_proxy'].update({'native_lane_id': -2}), 'lane/road identity'),
+    'entrant_left_corridor': (lambda rows: rows[1]['actors']['potential_entrant'].update({'native_lane_id': -3}), 'lane/road identity'),
+    'reversed_caravan_actor': (lambda rows: rows[1]['actors']['rear'].update({'native_velocity_xy_mps': [-2, 0]}), 'reversed direction'),
     'frame_gap': (lambda rows: rows[1].update({'native_frame': 9999}), 'frame/time join'),
     'body_overlap': (lambda rows: rows[1]['actors']['lead'].update({'native_body_xy_m': rectangle(rows[1]['actors']['ego_combination']['native_center_xy_m'][0], -1.75, 2.25)}), 'overlap or reverse'),
     'missing_body_corner': (lambda rows: rows[1]['actors']['rear'].update({'native_body_xy_m': []}), 'four-corner actor body'),

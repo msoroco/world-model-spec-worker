@@ -33,7 +33,7 @@ def reject(request: dict) -> str:
 
 def prove() -> dict:
     checked = {suffix: check(build(suffix)) for suffix in CASES}
-    assert len(checked) == 4
+    assert len(checked) == len(CASES) == 6
     assert all(value["frames"] == 600 and not value["original_native_observed"]
                for value in checked.values())
     actor = Actor()

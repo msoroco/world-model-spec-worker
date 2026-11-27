@@ -102,7 +102,7 @@ def main() -> None:
                                                                   "actor-frames.jsonl", "camera-frames.jsonl",
                                                                   "trace.jsonl", "video_frames.jsonl",
                                                                   "capture-manifest.json", "capture-seal.json",
-                                                                  "source-review.json"]},
+                                                                  "original-review.json"]},
                         "static_checks": ["Exact six-case restricted-purpose, stop, stand and exception request matrix",
                                           "30-second four-camera Native source joins",
                                           "Original sign authority and purpose remain independently reviewed"],

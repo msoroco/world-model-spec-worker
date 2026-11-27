@@ -246,7 +246,7 @@ def prove() -> dict:
                             "actor-frames.jsonl", "camera-frames.jsonl", "trace.jsonl",
                             "video_frames.jsonl", "capture-seal.json") + tuple(
                                 f"{name}.mkv" for name in CAMERAS)
-            review_path = attempt / "source-review.json"
+            review_path = attempt / "original-review.json"
             review_path.write_text(json.dumps({
                 "case_id": result["case_id"],
                 "source_sha256": {name: sha(attempt / name) for name in source_names},

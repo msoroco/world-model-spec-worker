@@ -1,0 +1,85 @@
+{
+  "template_id": "NRS-484B-450-1h@motor_vehicle_driver",
+  "law_id": "NRS-484B-450-1h",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "A person shall not stop, stand or park a vehicle, except when necessary to avoid conflict with other traffic or in compliance with law or the directions of a police officer or official traffic-control device, in any of the following places: Between a safety zone and the adjacent curb or within 30 feet of points on the curb immediately opposite the ends of a safety zone.",
+  "structure": {
+    "law_id": "NRS-484B-450-1h",
+    "activation": {
+      "condition": "A vehicle stops, stands or parks between a safety zone and the adjacent curb or within 30 feet of either opposite curb-end point.",
+      "numeric_conditions": [
+        {
+          "variable": "footprint distance to either opposite curb-end point",
+          "operator": "<=",
+          "value": 30,
+          "unit": "ft",
+          "source_clause": "within 30 feet of points on the curb immediately opposite the ends of a safety zone"
+        }
+      ]
+    },
+    "obligation": {
+      "description": "Do not stop, stand or park in the specified safety-zone area unless a source exception applies.",
+      "type": "must_not",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "trigger": "Necessary to avoid conflict with other traffic",
+        "effect": "Exception when necessity is established from original traffic evidence.",
+        "replacement_obligation": "Retain original traffic evidence for independent review.",
+        "source_clause": "except when necessary to avoid conflict with other traffic"
+      },
+      {
+        "trigger": "In compliance with law",
+        "effect": "Exception when another law actually governs the activity.",
+        "replacement_obligation": "Retain source authority for independent review.",
+        "source_clause": "in compliance with law"
+      },
+      {
+        "trigger": "Directions of a police officer",
+        "effect": "Exception when an actual police direction applies.",
+        "replacement_obligation": "Retain original officer direction evidence for review.",
+        "source_clause": "the directions of a police officer"
+      },
+      {
+        "trigger": "Official traffic-control device",
+        "effect": "Exception when an official device direction applies.",
+        "replacement_obligation": "Retain original device authority and indication evidence for review.",
+        "source_clause": "official traffic-control device"
+      }
+    ],
+    "timing": {
+      "description": "Observe the complete stop, stand or park interval and source context.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": []
+  },
+  "parameter_refs": [
+    {
+      "name": "position_request",
+      "kind": "controller",
+      "range_or_domain": "between zone and curb, before start, or past end; original footprint independently measured"
+    },
+    {
+      "name": "requested_curb_end_gap_ft",
+      "kind": "controller",
+      "range_or_domain": "25, 30, 35 or 45 feet requested; actual closest footprint distance measured"
+    },
+    {
+      "name": "activity_request",
+      "kind": "controller",
+      "range_or_domain": "stop, stand or park attempt; original purpose and state independently reviewed"
+    },
+    {
+      "name": "exception_request",
+      "kind": "controller",
+      "range_or_domain": "none, traffic conflict, other law, officer direction or device direction"
+    },
+    {
+      "name": "observed_zone_and_exception_state",
+      "kind": "subject_behavior",
+      "range_or_domain": "original footprint, zone designation, curb and authority source review or unknown"
+    }
+  ]
+}

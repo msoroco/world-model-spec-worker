@@ -7,7 +7,7 @@ the Native map really establishes a safety zone or a stopping exception.
 
 from __future__ import annotations
 
-from math import atan2, hypot, isfinite
+from math import atan2, hypot, isclose, isfinite
 
 FRAME_COUNT = 600
 FRAME_RATE = 20
@@ -71,7 +71,9 @@ def measure_frame(corners: list, zone: dict) -> dict:
         "fully_between_zone_and_curb": all(lo <= x <= hi and curb <= y <= near for x, y in pts),
         "distance_to_opposite_start_m": distances[0],
         "distance_to_opposite_end_m": distances[1],
-        "within_30_feet_of_opposite_end_points": any(d <= THIRTY_FEET_M for d in distances),
+        "within_30_feet_of_opposite_end_points": any(
+            d <= THIRTY_FEET_M or isclose(d, THIRTY_FEET_M, rel_tol=0, abs_tol=1e-12)
+            for d in distances),
         "thirty_feet_m": THIRTY_FEET_M,
         "zone_validity_conclusion": None,
         "exception_conclusion": None,

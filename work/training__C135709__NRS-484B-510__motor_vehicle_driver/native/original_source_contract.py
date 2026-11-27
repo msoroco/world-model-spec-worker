@@ -196,7 +196,9 @@ def validate(attempt: Path, review_path: Path) -> dict:
                 f"invalid original ego speed at {i}")
         center = [(ego_box[0] + ego_box[2]) / 2, (ego_box[1] + ego_box[3]) / 2]
         require(trace[i].get("position_m") == center and
-                trace[i].get("speed_mps") == row["ego_speed_mps"],
+                trace[i].get("speed_mps") == row["ego_speed_mps"] and
+                finite_number(trace[i].get("speed_mph")) and
+                abs(trace[i]["speed_mph"] * 0.44704 - row["ego_speed_mps"]) < 1e-6,
                 f"original trace/body motion differs at {i}")
         require(isinstance(row.get("passenger_actor_ids_near_vehicle"), list) and
                 all(isinstance(x, int) for x in row["passenger_actor_ids_near_vehicle"]),

@@ -1,0 +1,45 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C135709__NRS-484B-510__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "partial",
+  "cases": [
+    {
+      "case_id": "training__C135709__NRS-484B-510__motor_vehicle_driver__witness_1",
+      "kind": "delivery",
+      "construction": "cases/witness_1/construction.json",
+      "construction_sha256": "ff39096f486a131249e4346aea64e91a23aa3606a4fa70cc3a9cb3ce13774fe1",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "At 4 m/s the full ego footprint may overshoot the narrow restricted zone"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/witness_1/fallback1/construction.json",
+          "construction_sha256": "961c5119756338e7422a4edfb3b7e0bf4b1c586d7fa902ae9a1f3091376cd759",
+          "trigger": {
+            "source": "original ego body and zone survey",
+            "metric": "full footprint inside surveyed zone at rest",
+            "failure_condition": "primary footprint overshoots zone"
+          },
+          "changed_knobs": [
+            "approach_speed_cap_mps: 4.0 to 3.0"
+          ]
+        }
+      ],
+      "delivery_readiness": "incomplete",
+      "measurement_contract": "measurement-witness_1.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-analysis-report"
+      },
+      "fixture_recipe": "work/training__C135709__NRS-484B-510__motor_vehicle_driver/selected-recipe-witness_1.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
+    }
+  ]
+}

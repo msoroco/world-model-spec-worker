@@ -36,7 +36,7 @@ DESCRIPTION = {
                   "sampling_rate_hz": 20, "time_window": "600 frames / 30 s",
                   "uncertainty": "50 ms sampling; geometry tolerance is engineering only"}
                  for name, unit, method in CHANNELS],
-    "context_inputs": ["context-survey.json"],
+    "context_inputs": [],
     "limitations": [
         "Requested position is not realized distance; measure original footprint",
         "Authored markers do not establish an official safety zone or adjacent curb",
