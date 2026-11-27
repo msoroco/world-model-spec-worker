@@ -1,7 +1,7 @@
 {
   "assignment_id": "testing__C229023__LVMC-11-30-030__motor_vehicle_driver",
   "input_sha256": "b075e6be7434d41e57e510466ca622da4f9d68ccdbbc506f3da74f38323a0759",
-  "status": "partial",
+  "status": "ready",
   "readiness_kind": "delivery_prepared",
   "applied_update": 0,
   "tests": [
@@ -316,11 +316,17 @@
       "exit_code": 0,
       "log": "cpu-root-runner-selection.log",
       "sha256": "f02508abc321bde6149e78d8becda28d574d1e8aa4f64de12bdcefc60210eeb0"
+    },
+    {
+      "command": "TMPDIR=$PWD/.runtime-work/c229023-post-tmp SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c229023-post-runtime SCENARIO_WORKER_DIAGNOSTIC_COMPATIBILITY=1 .venv-cpu/bin/python work/testing__C229023__LVMC-11-30-030__motor_vehicle_driver/prove_saved_handoff.py --scratch .runtime-work/c229023-post-proof-v2",
+      "exit_code": 0,
+      "log": "saved-handoff-proof.log",
+      "sha256": "da4c25d47edc90e1cc18b08786f9fc910dd28047f0ad2095966860f648382d6c"
     }
   ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Six exact cases lack tested recorded-only post_capture saved-processing and failure-feedback commands; repairing and proving them on CPU.",
+  "reason": "Six selected source-shaped CPU saved-processing paths passed, with six missing-trace recorded-only feedback receipts; physical GPU acceptance remains pending.",
   "first_gpu_delivery_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --run \"$RUN\" --assignment testing__C229023__LVMC-11-30-030__motor_vehicle_driver --case testing__C229023__LVMC-11-30-030__motor_vehicle_driver__unmarked_wait --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
 }
