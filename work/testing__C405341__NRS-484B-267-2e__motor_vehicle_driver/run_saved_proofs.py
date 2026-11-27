@@ -8,7 +8,7 @@ import shutil
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-SCRATCH = ROOT / '.runtime-work/c405341'
+SCRATCH = ROOT / '.runtime-work/c405341-2e'
 VALIDATOR = ROOT / '.runtime-work/c233829/decoder/.lake/build/bin/adapterCheck'
 
 
@@ -17,17 +17,17 @@ def run(entry):
     name = case.removeprefix(HERE.name + '__')
     attempt = next(
         (candidate for candidate in (
-            SCRATCH / ('compat-' + name + '-v2'),)
+            SCRATCH / ('compat-' + name + '-v3'),)
          if (candidate / 'compatibility.json').is_file() and
          json.loads((candidate / 'compatibility.json').read_text()).get('construction_sha256') == entry['construction_sha256']),
         None)
     if attempt is None:
         return name, 1, 'current compatibility attempt missing'
-    replay_attempt = SCRATCH / ('saved-input-emergency-v2-' + name)
+    replay_attempt = SCRATCH / ('saved-input-emergency-v3-' + name)
     if not replay_attempt.exists():
         shutil.copytree(attempt, replay_attempt, copy_function=os.link)
         (replay_attempt / 'candidate-selection.json').unlink(missing_ok=True)
-    output = SCRATCH / ('saved-emergency-v2-' + name)
+    output = SCRATCH / ('saved-emergency-v3-' + name)
     for prior in sorted(output.glob('v*/processing.json'), reverse=True):
         receipt = json.loads(prior.read_text())
         if (receipt.get('passed') is True and receipt.get('recorded_only') is True and

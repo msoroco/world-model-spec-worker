@@ -25,6 +25,7 @@ CASES = (
     Case("traffic_unsafe_adjacent", lane_choice="adjacent", condition="traffic_unsafe"),
     Case("roadway_impossible_adjacent", lane_choice="adjacent", condition="roadway_impossible"),
     Case("weather_unsafe_adjacent", lane_choice="adjacent", condition="weather_unsafe"),
+    Case("other_hazard_adjacent", lane_choice="adjacent", condition="other_hazard"),
     Case("officer_directs_adjacent", lane_choice="adjacent", officer_direction=True),
     Case("visible_movement_preparation", motion_state="preparing_movement"),
     Case("visible_hand_signal_preparation", motion_state="preparing_hand_signal"),
@@ -91,6 +92,11 @@ def plan(case, map_source, actor_source, authority, context, engineering=None):
                 "original adverse weather source required")
         for key in ("weather_readback_source", "road_surface_source", "visibility_source"):
             source_text(context, key)
+    if case.condition == "other_hazard":
+        require(context.get("other_hazard_kind") == "fallen_cargo" and
+                context.get("other_hazard_occupies_nonadjacent_path") is True,
+                "source-backed other hazard path occupation required")
+        source_text(context, "other_hazard_geometry_source")
     if case.motion_state == "preparing_hand_signal":
         require(actor_source.get("driver_hand_signal_capability") is True,
                 "original driver hand-signal capability required")
@@ -142,6 +148,8 @@ def execute(adapter, case, map_source, actor_source, authority, context, enginee
         adapter.configure_source_bound_traffic(context)
     if case.condition == "weather_unsafe":
         adapter.configure_source_bound_weather(context)
+    if case.condition == "other_hazard":
+        adapter.configure_source_bound_hazard(context)
     if case.officer_direction:
         adapter.configure_officer_direction(specification["officer_direction"])
     adapter.configure_ego_lane_route(ego, specification["ego_control"])

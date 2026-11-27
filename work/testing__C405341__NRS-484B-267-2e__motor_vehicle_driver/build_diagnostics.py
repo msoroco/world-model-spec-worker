@@ -50,11 +50,14 @@ def frame(index, case):
             "officer_direction": "stay adjacent" if case.officer_direction and 18 <= time_s < 25 else None,
             "traffic_path_occupied": case.condition == "traffic_unsafe" and 17 <= time_s < 28,
             "weather_adverse": case.condition == "weather_unsafe",
+            "other_hazard_path_occupied": case.condition == "other_hazard" and 17 <= time_s < 28,
             "road_surface_state": "wet" if case.condition == "weather_unsafe" else "dry",
             "approaching_unit": case.approaching,
             "lane_source": "synthetic-native-lane-map", "motion_source": "synthetic-native-pose",
             "light_source": "synthetic-native-light-state", "traffic_source": "synthetic-native-traffic-body",
-            "weather_source": "synthetic-native-weather", "control_source": "synthetic-ego-controls"}
+            "weather_source": "synthetic-native-weather",
+            "other_hazard_source": "synthetic-native-cargo-geometry",
+            "control_source": "synthetic-ego-controls"}
 
 
 def build():
@@ -90,7 +93,9 @@ def build():
             "traffic_trajectory_source": "synthetic-native-traffic-body" if case.condition == "traffic_unsafe" else None,
             "weather_readback_source": "synthetic-native-weather" if case.condition == "weather_unsafe" else None,
             "road_surface_source": "synthetic-native-surface" if case.condition == "weather_unsafe" else None,
-            "law_enforcement_officer_source": "synthetic-officer-context" if case.officer_direction else None})
+            "law_enforcement_officer_source": "synthetic-officer-context" if case.officer_direction else None,
+            "other_hazard_kind": "fallen_cargo" if case.condition == "other_hazard" else None,
+            "other_hazard_geometry_source": "synthetic-native-cargo-geometry" if case.condition == "other_hazard" else None})
         camera_rows = [dict(frame_index=i, native_frame=100+i, time_s=i/20,
                             camera_frames={view: 100+i for view in VIEWS}) for i in range(900)]
         (folder / "camera-frame-map.jsonl").write_text(

@@ -1,14 +1,10 @@
-"""Independent original emergency-unit delivery audit; diagnostics rejected."""
-
+"""Independent original lane-selection delivery audit; diagnostics rejected."""
 from __future__ import annotations
-
 import argparse
 import hashlib
 import json
-from math import hypot
 from pathlib import Path
 import subprocess
-
 from analysis import check_joins, check_source, measure_case, required, rows, HISTORY
 from emergency_construction import CASES
 from native_packet import AID, VIEWS
@@ -17,6 +13,10 @@ from native_packet import AID, VIEWS
 def require(ok, message):
     if not ok:
         raise ValueError(message)
+
+
+def sha(path):
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
 def decode(path, expected):
@@ -39,79 +39,77 @@ def decode(path, expected):
             "frame_md5": frame_md5}
 
 
-def audit_cues(cues, history, case):
-    require(len(cues) == len(history) == 900, "driver-view cue frame inventory incomplete")
-    visible_movement, visible_hand = [], []
-    for index, (cue, motion) in enumerate(zip(cues, history)):
+def audit_pixels(cues, history, case, expected_md5):
+    require(len(cues) == len(history) == len(expected_md5) == 900,
+            "driver-view lane/cue frame inventory incomplete")
+    movement, hand, lane = [], [], []
+    for index, (cue, motion, digest) in enumerate(zip(cues, history, expected_md5)):
         require(cue.get("frame") == motion["frame"] == index and
                 cue.get("native_frame") == motion["native_frame"],
-                "driver-view cue frame join changed")
+                "driver-view lane/cue frame join changed")
         require(cue.get("camera") == "driver_reference" and cue.get("pixel_review_source") and
-                cue.get("reviewer") and cue.get("roi_pixels") and cue.get("frame_md5"),
-                "actual reviewed driver-view pixels missing")
-        require(cue.get("movement_visible") == motion["movement_visible"],
-                "driver-view movement visibility disagrees with motion packet")
+                cue.get("reviewer") and cue.get("roi_pixels") and cue.get("frame_md5") == digest,
+                "actual reviewed driver-view pixels missing or stale")
+        require(cue.get("movement_visible") == motion["movement_visible"] and
+                cue.get("hand_signal_visible") == motion["driver_hand_signal_visible"],
+                "driver-view cue disagrees with original motion packet")
+        require(cue.get("ego_lane_id") == motion["ego_lane_id"],
+                "reviewed ego body lane disagrees with original lane packet")
         if cue["movement_visible"]:
-            visible_movement.append(index)
-        if cue.get("hand_signal_visible") is True:
-            visible_hand.append(index)
-    if case.cue == "movement":
-        require(bool(visible_movement) == case.visible,
-                "physical movement visibility differs from selected case")
-    else:
-        require(visible_hand, "reviewed driver hand signal missing")
-    return {"movement_visible_frames": len(visible_movement),
-            "hand_signal_visible_frames": len(visible_hand)}
+            movement.append(index)
+        if cue["hand_signal_visible"]:
+            hand.append(index)
+        lane.append(cue["ego_lane_id"])
+    if case.motion_state == "preparing_movement":
+        require(movement, "reviewed movement preparation cue missing")
+    if case.motion_state == "preparing_hand_signal":
+        require(hand, "reviewed driver hand signal missing")
+    return {"movement_visible_frames": len(movement),
+            "hand_signal_visible_frames": len(hand),
+            "ego_lane_original_frames": lane}
 
 
 def audit_attempt(attempt, processed, case_id, decoder=decode):
     attempt, processed = Path(attempt), Path(processed)
     require(attempt.is_dir() and not attempt.is_symlink(), "original attempt missing")
     cases = {AID + "__" + case.suffix: case for case in CASES}
-    require(case_id in cases, "unknown exact emergency case")
+    require(case_id in cases, "unknown exact emergency lane case")
+    case = cases[case_id]
     diagnostic, source = check_source(attempt, case_id)
-    require(not diagnostic, "source-bound original emergency seal required")
+    require(not diagnostic, "source-bound original emergency lane seal required")
     seal = json.loads(required(attempt, "capture-seal.json").read_text(encoding="utf-8"))
     require(seal.get("case_id") == case_id, "original seal exact case mismatch")
-    source["capture-seal.json"] = hashlib.sha256(required(attempt, "capture-seal.json").read_bytes()).hexdigest()
+    source["capture-seal.json"] = sha(attempt / "capture-seal.json")
     for name in ("emergency-site.json", "driver-view-cues.jsonl", "authority-readback.json",
                  "scene-context.json"):
         path = required(attempt, name)
-        require(seal.get("sources", {}).get(name) == hashlib.sha256(path.read_bytes()).hexdigest(),
-                "original emergency source is not byte sealed: " + name)
+        require(seal.get("sources", {}).get(name) == sha(path),
+                "original emergency lane source is not byte sealed: " + name)
     authority = json.loads(required(attempt, "authority-readback.json").read_text(encoding="utf-8"))
     context = json.loads(required(attempt, "scene-context.json").read_text(encoding="utf-8"))
-    for key in ("road_source_sha256", "weather_sha256", "ego_route_sha256",
-                "camera_plan_sha256", "unit_route_sha256"):
+    site = json.loads(required(attempt, "emergency-site.json").read_text(encoding="utf-8"))
+    for key in ("road_source_sha256", "weather_sha256", "traffic_sha256",
+                "ego_route_sha256", "camera_plan_sha256", "unit_route_sha256",
+                "lane_graph_sha256"):
         require(context.get(key), "reviewed original scene context missing: " + key)
-    require(authority.get("class") == cases[case_id].unit_class and
+    require(site.get("source_kind") == "reviewed_native_lane_site",
+            "reviewed Native lane graph required")
+    require(authority.get("class") == case.unit_class and
             authority.get("qualifying_flashing_equipment_verified") is True and
             authority.get("authorization_source") and authority.get("equipment_source") and
             authority.get("light_rule_source") == "DEF-NRS-484A-480-3",
             "reviewed original emergency authority/equipment missing")
     history = rows(required(attempt, HISTORY))
     check_joins(attempt, history)
-    require(all(row.get("motion_source") and row.get("light_source") and
-                row.get("visibility_source") and row.get("control_source")
-                for row in history), "original emergency source bindings incomplete")
-    require(any(row.get("flashing_light_on") is True for row in history),
-            "qualifying flashing-light use absent from original frames")
-    first_distance = hypot(history[0]["ego_xy"][0] - history[0]["emergency_xy"][0],
-                           history[0]["ego_xy"][1] - history[0]["emergency_xy"][1])
-    require(any(hypot(row["ego_xy"][0] - row["emergency_xy"][0],
-                      row["ego_xy"][1] - row["emergency_xy"][1]) < first_distance
-                for row in history), "ego approach to emergency unit absent")
-    site = json.loads(required(attempt, "emergency-site.json").read_text(encoding="utf-8"))
-    measurement = measure_case(cases[case_id], site, history)
-    cues = audit_cues(rows(required(attempt, "driver-view-cues.jsonl")), history, cases[case_id])
+    measurement = measure_case(case, site, history)
     decoded = {}
     for name in VIEWS:
         size = (1920, 1080) if name == "overview" else (1280, 720)
         decoded[name] = decoder(required(attempt, name + ".mkv"), size)
         require(decoded[name].get("decoded_frames") == 900,
                 "original full camera decode missing")
-    require([cue["frame_md5"] for cue in cues] == decoded["driver_reference"].get("frame_md5"),
-            "reviewed driver-view pixels differ from original decoded frames")
+    pixel = audit_pixels(rows(required(attempt, "driver-view-cues.jsonl")), history,
+                         case, decoded["driver_reference"].get("frame_md5", []))
     require(processed.is_file() and not processed.is_symlink(),
             "saved original physical result missing")
     result = json.loads(processed.read_text(encoding="utf-8"))
@@ -121,12 +119,18 @@ def audit_attempt(attempt, processed, case_id, decoder=decode):
             result.get("legal_verdict_claimed") is False,
             "source-bound original nonclaim physical result required")
     return {"format": "c405341-2e-original-delivery-audit-v1", "case_id": case_id,
-        "original_frame_count": 900, "measurement": measurement, "cue_pixel_audit": cues,
-        "authority": authority, "scene_context": context,
+        "original_frame_count": 900, "measurement": measurement, "lane_pixel_audit": pixel,
+        "authority": authority, "scene_context": context, "lane_site": site,
+        "original_condition_counts": {"flashing_frames": sum(bool(row["flashing_light_on"]) for row in history),
+            "approaching_frames": sum(bool(row["approaching_unit"]) for row in history),
+            "traffic_occupied_frames": sum(bool(row["traffic_path_occupied"]) for row in history),
+            "other_hazard_frames": sum(bool(row["other_hazard_path_occupied"]) for row in history),
+            "weather_adverse_frames": sum(bool(row["weather_adverse"]) for row in history),
+            "officer_direction_frames": sum(bool(row["officer_direction"]) for row in history)},
         "camera_decodes": decoded, "source_sha256": source,
-        "processed_result_sha256": hashlib.sha256(processed.read_bytes()).hexdigest(),
+        "processed_result_sha256": sha(processed),
         "physical_visibility": "requires_independent_review",
-        "prepared_to_stop": "unresolved", "legal_status": "unresolved"}
+        "legal_possible_and_safe": "unresolved", "legal_status": "unresolved"}
 
 
 def main():
@@ -137,7 +141,7 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     if args.output.exists():
-        raise ValueError("retain prior emergency delivery audit")
+        raise ValueError("retain prior emergency lane delivery audit")
     args.output.write_text(json.dumps(audit_attempt(args.attempt, args.processed,
                                                     args.case), indent=2) + "\n",
                            encoding="utf-8")

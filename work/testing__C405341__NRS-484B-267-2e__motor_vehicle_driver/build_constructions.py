@@ -75,7 +75,7 @@ def build():
     plan = json.loads(plan_path.read_text(encoding="utf-8"))
     ids = [AID + "__" + case.suffix for case in CASES]
     if [row["case_id"] for row in plan["cases"]] != ids:
-        raise ValueError("exact eleven-case plan changed")
+        raise ValueError("exact twelve-case plan changed")
     plan["selected_branch"] = plan["selected_branches"][0]["branch"]
     plan["observations"] = [{"name": row["name"], "mandatory": True}
                             for row in description()["channels"]]

@@ -5,7 +5,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-SCRATCH = ROOT / '.runtime-work/c405341'
+SCRATCH = ROOT / '.runtime-work/c405341-2e'
 
 
 def sha(path):
@@ -18,7 +18,7 @@ def main():
     for entry in manifest['cases']:
         case = entry['case_id']
         name = case.removeprefix(HERE.name + '__')
-        receipt = SCRATCH / ('saved-emergency-v2-' + name) / 'v0001/processing.json'
+        receipt = SCRATCH / ('saved-emergency-v3-' + name) / 'v0001/processing.json'
         data = json.loads(receipt.read_text(encoding='utf-8'))
         if not (data.get('passed') is True and data.get('recorded_only') is True and
                 data.get('native_revision', {}).get('construction_sha256') == entry['construction_sha256']):

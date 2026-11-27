@@ -1,0 +1,2395 @@
+{
+  "cell_id": "C404479",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweep_specs": [
+    {
+      "sweep_id": "abreast_overtake_review",
+      "target_law_id": "NRS-484B-267-2d",
+      "judgment_refs": [
+        {
+          "phrase": "Upon approaching",
+          "note": "Observe ego-to-unit relative longitudinal distance on original same-direction routes without a numeric legal cutoff."
+        },
+        {
+          "phrase": "preparing to move",
+          "note": "Observe a driver-visible hand signal or movement before the ego approach."
+        },
+        {
+          "phrase": "drive abreast of or overtake",
+          "note": "Observe original-frame longitudinal body overlap and complete behind-to-ahead ordering with actual body extents."
+        }
+      ],
+      "status": "incomplete",
+      "mode": "joint",
+      "axes": [],
+      "landmarks": [],
+      "rationale": "Approach and body-order alternatives are prepared; legal judgment requires original source review.",
+      "missing_inputs": [
+        "original approach, body footprints and driver-view camera histories",
+        "independent legal judgment of abreast/overtake context"
+      ],
+      "variable_assignments": {
+        "unit_class": {
+          "kind": "world_setup",
+          "value": "authorized_emergency",
+          "unit": "class"
+        },
+        "light_request": {
+          "kind": "world_setup",
+          "value": "qualified_active",
+          "unit": "class"
+        },
+        "immediate_requested": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        },
+        "passing_maneuver": {
+          "kind": "controller",
+          "value": "hold_behind",
+          "unit": "class"
+        },
+        "officer_direction_requested": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "approach_direction": {
+          "kind": "world_setup",
+          "value": "same_direction",
+          "unit": "class"
+        },
+        "unit_state": {
+          "kind": "world_setup",
+          "value": "moving",
+          "unit": "class"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "byte-sealed 20 Hz Native source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "unit_motion",
+            "unit": "metres",
+            "method": "original vehicle pose difference",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "unit_state",
+            "unit": "moving/preparing",
+            "method": "original unit poses and visible preparation cue",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "same_direction_routes",
+            "unit": "route tangents",
+            "method": "original parallel route tangent readbacks",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "qualifying_flashing_lights",
+            "unit": "on/off",
+            "method": "original emergency light state",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "target_authorization",
+            "unit": "source",
+            "method": "reviewed authorized emergency or regulatory official status",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "subject_driver",
+            "unit": "source",
+            "method": "reviewed ordinary other-vehicle class and actual driver control",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "relative_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and route direction",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "driver_view_movement_cue",
+            "unit": "visible cue",
+            "method": "original driver-view unit movement or hand-signal cue",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "abreast_overtake_order",
+            "unit": "original frames",
+            "method": "body-footprint overlap and behind-to-ahead ordering",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "ego_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and speed",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "ego_response",
+            "unit": "control",
+            "method": "original brake and speed history",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "direction",
+            "method": "source-bound original direction if any",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Same-direction approach and body-footprint ordering remain source-dependent, with no invented statutory threshold.",
+          "NRS 484A.480(3) equipment qualification and target authorization need independent source review.",
+          "Actual light visibility, approach, abreast state and overtaking require original pixels and independent review."
+        ]
+      }
+    }
+  ],
+  "sweeps_expanded": true,
+  "cases": [
+    {
+      "case_id": "testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "status": "draft",
+      "rationale": "Shared same-direction moving emergency-unit context without a legal finding.",
+      "variable_assignments": {
+        "unit_class": {
+          "kind": "world_setup",
+          "value": "authorized_emergency",
+          "unit": "class"
+        },
+        "light_request": {
+          "kind": "world_setup",
+          "value": "qualified_active",
+          "unit": "class"
+        },
+        "immediate_requested": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        },
+        "passing_maneuver": {
+          "kind": "controller",
+          "value": "hold_behind",
+          "unit": "class"
+        },
+        "officer_direction_requested": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "approach_direction": {
+          "kind": "world_setup",
+          "value": "same_direction",
+          "unit": "class"
+        },
+        "unit_state": {
+          "kind": "world_setup",
+          "value": "moving",
+          "unit": "class"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Upon approaching",
+        "preparing to move",
+        "drive abreast of or overtake"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "byte-sealed 20 Hz Native source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "unit_motion",
+            "unit": "metres",
+            "method": "original vehicle pose difference",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "unit_state",
+            "unit": "moving/preparing",
+            "method": "original unit poses and visible preparation cue",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "same_direction_routes",
+            "unit": "route tangents",
+            "method": "original parallel route tangent readbacks",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "qualifying_flashing_lights",
+            "unit": "on/off",
+            "method": "original emergency light state",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "target_authorization",
+            "unit": "source",
+            "method": "reviewed authorized emergency or regulatory official status",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "subject_driver",
+            "unit": "source",
+            "method": "reviewed ordinary other-vehicle class and actual driver control",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "relative_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and route direction",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "driver_view_movement_cue",
+            "unit": "visible cue",
+            "method": "original driver-view unit movement or hand-signal cue",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "abreast_overtake_order",
+            "unit": "original frames",
+            "method": "body-footprint overlap and behind-to-ahead ordering",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "ego_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and speed",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "ego_response",
+            "unit": "control",
+            "method": "original brake and speed history",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "direction",
+            "method": "source-bound original direction if any",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Same-direction approach and body-footprint ordering remain source-dependent, with no invented statutory threshold.",
+          "NRS 484A.480(3) equipment qualification and target authorization need independent source review.",
+          "Actual light visibility, approach, abreast state and overtaking require original pixels and independent review."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__moving_hold_behind",
+      "target_law_id": "NRS-484B-267-2d",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact same-direction approach, longitudinal body order, light use, officer direction or target-class alternative; no legal verdict.",
+      "paired_probe_id": "same_direction_abreast_overtake",
+      "deliberate_differences": [
+        "unit_class",
+        "light_request",
+        "immediate_requested",
+        "passing_maneuver",
+        "officer_direction_requested",
+        "approach_direction",
+        "unit_state"
+      ],
+      "probe": {
+        "primary_variable": "passing_maneuver",
+        "comparison_or_standard": "Compare sealed original approach, lights, body-footprint order and officer context with the clause.",
+        "target_value_or_branch": "moving_hold_behind"
+      },
+      "variable_assignments": {
+        "unit_class": {
+          "kind": "world_setup",
+          "value": "authorized_emergency",
+          "unit": "class"
+        },
+        "light_request": {
+          "kind": "world_setup",
+          "value": "qualified_active",
+          "unit": "class"
+        },
+        "immediate_requested": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        },
+        "passing_maneuver": {
+          "kind": "controller",
+          "value": "hold_behind",
+          "unit": "class"
+        },
+        "officer_direction_requested": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "approach_direction": {
+          "kind": "world_setup",
+          "value": "same_direction",
+          "unit": "class"
+        },
+        "unit_state": {
+          "kind": "world_setup",
+          "value": "moving",
+          "unit": "class"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Upon approaching",
+        "preparing to move",
+        "drive abreast of or overtake"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "byte-sealed 20 Hz Native source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "unit_motion",
+            "unit": "metres",
+            "method": "original vehicle pose difference",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "unit_state",
+            "unit": "moving/preparing",
+            "method": "original unit poses and visible preparation cue",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "same_direction_routes",
+            "unit": "route tangents",
+            "method": "original parallel route tangent readbacks",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "qualifying_flashing_lights",
+            "unit": "on/off",
+            "method": "original emergency light state",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "target_authorization",
+            "unit": "source",
+            "method": "reviewed authorized emergency or regulatory official status",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "subject_driver",
+            "unit": "source",
+            "method": "reviewed ordinary other-vehicle class and actual driver control",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "relative_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and route direction",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "driver_view_movement_cue",
+            "unit": "visible cue",
+            "method": "original driver-view unit movement or hand-signal cue",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "abreast_overtake_order",
+            "unit": "original frames",
+            "method": "body-footprint overlap and behind-to-ahead ordering",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "ego_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and speed",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "ego_response",
+            "unit": "control",
+            "method": "original brake and speed history",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "direction",
+            "method": "source-bound original direction if any",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Same-direction approach and body-footprint ordering remain source-dependent, with no invented statutory threshold.",
+          "NRS 484A.480(3) equipment qualification and target authorization need independent source review.",
+          "Actual light visibility, approach, abreast state and overtaking require original pixels and independent review."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__moving_overtake",
+      "target_law_id": "NRS-484B-267-2d",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact same-direction approach, longitudinal body order, light use, officer direction or target-class alternative; no legal verdict.",
+      "paired_probe_id": "same_direction_abreast_overtake",
+      "deliberate_differences": [
+        "unit_class",
+        "light_request",
+        "immediate_requested",
+        "passing_maneuver",
+        "officer_direction_requested",
+        "approach_direction",
+        "unit_state"
+      ],
+      "probe": {
+        "primary_variable": "passing_maneuver",
+        "comparison_or_standard": "Compare sealed original approach, lights, body-footprint order and officer context with the clause.",
+        "target_value_or_branch": "moving_overtake"
+      },
+      "variable_assignments": {
+        "unit_class": {
+          "kind": "world_setup",
+          "value": "authorized_emergency",
+          "unit": "class"
+        },
+        "light_request": {
+          "kind": "world_setup",
+          "value": "qualified_active",
+          "unit": "class"
+        },
+        "immediate_requested": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        },
+        "passing_maneuver": {
+          "kind": "controller",
+          "value": "overtake",
+          "unit": "class"
+        },
+        "officer_direction_requested": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "approach_direction": {
+          "kind": "world_setup",
+          "value": "same_direction",
+          "unit": "class"
+        },
+        "unit_state": {
+          "kind": "world_setup",
+          "value": "moving",
+          "unit": "class"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Upon approaching",
+        "preparing to move",
+        "drive abreast of or overtake"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "byte-sealed 20 Hz Native source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "unit_motion",
+            "unit": "metres",
+            "method": "original vehicle pose difference",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "unit_state",
+            "unit": "moving/preparing",
+            "method": "original unit poses and visible preparation cue",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "same_direction_routes",
+            "unit": "route tangents",
+            "method": "original parallel route tangent readbacks",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "qualifying_flashing_lights",
+            "unit": "on/off",
+            "method": "original emergency light state",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "target_authorization",
+            "unit": "source",
+            "method": "reviewed authorized emergency or regulatory official status",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "subject_driver",
+            "unit": "source",
+            "method": "reviewed ordinary other-vehicle class and actual driver control",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "relative_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and route direction",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "driver_view_movement_cue",
+            "unit": "visible cue",
+            "method": "original driver-view unit movement or hand-signal cue",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "abreast_overtake_order",
+            "unit": "original frames",
+            "method": "body-footprint overlap and behind-to-ahead ordering",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "ego_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and speed",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "ego_response",
+            "unit": "control",
+            "method": "original brake and speed history",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "direction",
+            "method": "source-bound original direction if any",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Same-direction approach and body-footprint ordering remain source-dependent, with no invented statutory threshold.",
+          "NRS 484A.480(3) equipment qualification and target authorization need independent source review.",
+          "Actual light visibility, approach, abreast state and overtaking require original pixels and independent review."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__moving_abreast",
+      "target_law_id": "NRS-484B-267-2d",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact same-direction approach, longitudinal body order, light use, officer direction or target-class alternative; no legal verdict.",
+      "paired_probe_id": "same_direction_abreast_overtake",
+      "deliberate_differences": [
+        "unit_class",
+        "light_request",
+        "immediate_requested",
+        "passing_maneuver",
+        "officer_direction_requested",
+        "approach_direction",
+        "unit_state"
+      ],
+      "probe": {
+        "primary_variable": "passing_maneuver",
+        "comparison_or_standard": "Compare sealed original approach, lights, body-footprint order and officer context with the clause.",
+        "target_value_or_branch": "moving_abreast"
+      },
+      "variable_assignments": {
+        "unit_class": {
+          "kind": "world_setup",
+          "value": "authorized_emergency",
+          "unit": "class"
+        },
+        "light_request": {
+          "kind": "world_setup",
+          "value": "qualified_active",
+          "unit": "class"
+        },
+        "immediate_requested": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        },
+        "passing_maneuver": {
+          "kind": "controller",
+          "value": "abreast",
+          "unit": "class"
+        },
+        "officer_direction_requested": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "approach_direction": {
+          "kind": "world_setup",
+          "value": "same_direction",
+          "unit": "class"
+        },
+        "unit_state": {
+          "kind": "world_setup",
+          "value": "moving",
+          "unit": "class"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Upon approaching",
+        "preparing to move",
+        "drive abreast of or overtake"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "byte-sealed 20 Hz Native source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "unit_motion",
+            "unit": "metres",
+            "method": "original vehicle pose difference",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "unit_state",
+            "unit": "moving/preparing",
+            "method": "original unit poses and visible preparation cue",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "same_direction_routes",
+            "unit": "route tangents",
+            "method": "original parallel route tangent readbacks",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "qualifying_flashing_lights",
+            "unit": "on/off",
+            "method": "original emergency light state",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "target_authorization",
+            "unit": "source",
+            "method": "reviewed authorized emergency or regulatory official status",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "subject_driver",
+            "unit": "source",
+            "method": "reviewed ordinary other-vehicle class and actual driver control",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "relative_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and route direction",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "driver_view_movement_cue",
+            "unit": "visible cue",
+            "method": "original driver-view unit movement or hand-signal cue",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "abreast_overtake_order",
+            "unit": "original frames",
+            "method": "body-footprint overlap and behind-to-ahead ordering",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "ego_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and speed",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "ego_response",
+            "unit": "control",
+            "method": "original brake and speed history",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "direction",
+            "method": "source-bound original direction if any",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Same-direction approach and body-footprint ordering remain source-dependent, with no invented statutory threshold.",
+          "NRS 484A.480(3) equipment qualification and target authorization need independent source review.",
+          "Actual light visibility, approach, abreast state and overtaking require original pixels and independent review."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__unit_overtakes_ego",
+      "target_law_id": "NRS-484B-267-2d",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact same-direction approach, longitudinal body order, light use, officer direction or target-class alternative; no legal verdict.",
+      "paired_probe_id": "same_direction_abreast_overtake",
+      "deliberate_differences": [
+        "unit_class",
+        "light_request",
+        "immediate_requested",
+        "passing_maneuver",
+        "officer_direction_requested",
+        "approach_direction",
+        "unit_state"
+      ],
+      "probe": {
+        "primary_variable": "passing_maneuver",
+        "comparison_or_standard": "Compare sealed original approach, lights, body-footprint order and officer context with the clause.",
+        "target_value_or_branch": "unit_overtakes_ego"
+      },
+      "variable_assignments": {
+        "unit_class": {
+          "kind": "world_setup",
+          "value": "authorized_emergency",
+          "unit": "class"
+        },
+        "light_request": {
+          "kind": "world_setup",
+          "value": "qualified_active",
+          "unit": "class"
+        },
+        "immediate_requested": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean"
+        },
+        "passing_maneuver": {
+          "kind": "controller",
+          "value": "unit_overtakes",
+          "unit": "class"
+        },
+        "officer_direction_requested": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "approach_direction": {
+          "kind": "world_setup",
+          "value": "same_direction",
+          "unit": "class"
+        },
+        "unit_state": {
+          "kind": "world_setup",
+          "value": "moving",
+          "unit": "class"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Upon approaching",
+        "preparing to move",
+        "drive abreast of or overtake"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "byte-sealed 20 Hz Native source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "unit_motion",
+            "unit": "metres",
+            "method": "original vehicle pose difference",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "unit_state",
+            "unit": "moving/preparing",
+            "method": "original unit poses and visible preparation cue",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "same_direction_routes",
+            "unit": "route tangents",
+            "method": "original parallel route tangent readbacks",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "qualifying_flashing_lights",
+            "unit": "on/off",
+            "method": "original emergency light state",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "target_authorization",
+            "unit": "source",
+            "method": "reviewed authorized emergency or regulatory official status",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "subject_driver",
+            "unit": "source",
+            "method": "reviewed ordinary other-vehicle class and actual driver control",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "relative_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and route direction",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "driver_view_movement_cue",
+            "unit": "visible cue",
+            "method": "original driver-view unit movement or hand-signal cue",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "abreast_overtake_order",
+            "unit": "original frames",
+            "method": "body-footprint overlap and behind-to-ahead ordering",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "ego_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and speed",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "ego_response",
+            "unit": "control",
+            "method": "original brake and speed history",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "direction",
+            "method": "source-bound original direction if any",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Same-direction approach and body-footprint ordering remain source-dependent, with no invented statutory threshold.",
+          "NRS 484A.480(3) equipment qualification and target authorization need independent source review.",
+          "Actual light visibility, approach, abreast state and overtaking require original pixels and independent review."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__preparing_visible_hand_signal",
+      "target_law_id": "NRS-484B-267-2d",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact same-direction approach, longitudinal body order, light use, officer direction or target-class alternative; no legal verdict.",
+      "paired_probe_id": "same_direction_abreast_overtake",
+      "deliberate_differences": [
+        "unit_class",
+        "light_request",
+        "immediate_requested",
+        "passing_maneuver",
+        "officer_direction_requested",
+        "approach_direction",
+        "unit_state"
+      ],
+      "probe": {
+        "primary_variable": "passing_maneuver",
+        "comparison_or_standard": "Compare sealed original approach, lights, body-footprint order and officer context with the clause.",
+        "target_value_or_branch": "preparing_visible_hand_signal"
+      },
+      "variable_assignments": {
+        "unit_class": {
+          "kind": "world_setup",
+          "value": "authorized_emergency",
+          "unit": "class"
+        },
+        "light_request": {
+          "kind": "world_setup",
+          "value": "qualified_active",
+          "unit": "class"
+        },
+        "immediate_requested": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        },
+        "passing_maneuver": {
+          "kind": "controller",
+          "value": "hold_behind",
+          "unit": "class"
+        },
+        "officer_direction_requested": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "approach_direction": {
+          "kind": "world_setup",
+          "value": "same_direction",
+          "unit": "class"
+        },
+        "unit_state": {
+          "kind": "world_setup",
+          "value": "preparing",
+          "unit": "class"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Upon approaching",
+        "preparing to move",
+        "drive abreast of or overtake"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "byte-sealed 20 Hz Native source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "unit_motion",
+            "unit": "metres",
+            "method": "original vehicle pose difference",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "unit_state",
+            "unit": "moving/preparing",
+            "method": "original unit poses and visible preparation cue",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "same_direction_routes",
+            "unit": "route tangents",
+            "method": "original parallel route tangent readbacks",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "qualifying_flashing_lights",
+            "unit": "on/off",
+            "method": "original emergency light state",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "target_authorization",
+            "unit": "source",
+            "method": "reviewed authorized emergency or regulatory official status",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "subject_driver",
+            "unit": "source",
+            "method": "reviewed ordinary other-vehicle class and actual driver control",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "relative_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and route direction",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "driver_view_movement_cue",
+            "unit": "visible cue",
+            "method": "original driver-view unit movement or hand-signal cue",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "abreast_overtake_order",
+            "unit": "original frames",
+            "method": "body-footprint overlap and behind-to-ahead ordering",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "ego_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and speed",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "ego_response",
+            "unit": "control",
+            "method": "original brake and speed history",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "direction",
+            "method": "source-bound original direction if any",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Same-direction approach and body-footprint ordering remain source-dependent, with no invented statutory threshold.",
+          "NRS 484A.480(3) equipment qualification and target authorization need independent source review.",
+          "Actual light visibility, approach, abreast state and overtaking require original pixels and independent review."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__lights_inactive",
+      "target_law_id": "NRS-484B-267-2d",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact same-direction approach, longitudinal body order, light use, officer direction or target-class alternative; no legal verdict.",
+      "paired_probe_id": "same_direction_abreast_overtake",
+      "deliberate_differences": [
+        "unit_class",
+        "light_request",
+        "immediate_requested",
+        "passing_maneuver",
+        "officer_direction_requested",
+        "approach_direction",
+        "unit_state"
+      ],
+      "probe": {
+        "primary_variable": "passing_maneuver",
+        "comparison_or_standard": "Compare sealed original approach, lights, body-footprint order and officer context with the clause.",
+        "target_value_or_branch": "lights_inactive"
+      },
+      "variable_assignments": {
+        "unit_class": {
+          "kind": "world_setup",
+          "value": "authorized_emergency",
+          "unit": "class"
+        },
+        "light_request": {
+          "kind": "world_setup",
+          "value": "qualified_inactive",
+          "unit": "class"
+        },
+        "immediate_requested": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        },
+        "passing_maneuver": {
+          "kind": "controller",
+          "value": "hold_behind",
+          "unit": "class"
+        },
+        "officer_direction_requested": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "approach_direction": {
+          "kind": "world_setup",
+          "value": "same_direction",
+          "unit": "class"
+        },
+        "unit_state": {
+          "kind": "world_setup",
+          "value": "moving",
+          "unit": "class"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Upon approaching",
+        "preparing to move",
+        "drive abreast of or overtake"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "byte-sealed 20 Hz Native source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "unit_motion",
+            "unit": "metres",
+            "method": "original vehicle pose difference",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "unit_state",
+            "unit": "moving/preparing",
+            "method": "original unit poses and visible preparation cue",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "same_direction_routes",
+            "unit": "route tangents",
+            "method": "original parallel route tangent readbacks",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "qualifying_flashing_lights",
+            "unit": "on/off",
+            "method": "original emergency light state",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "target_authorization",
+            "unit": "source",
+            "method": "reviewed authorized emergency or regulatory official status",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "subject_driver",
+            "unit": "source",
+            "method": "reviewed ordinary other-vehicle class and actual driver control",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "relative_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and route direction",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "driver_view_movement_cue",
+            "unit": "visible cue",
+            "method": "original driver-view unit movement or hand-signal cue",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "abreast_overtake_order",
+            "unit": "original frames",
+            "method": "body-footprint overlap and behind-to-ahead ordering",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "ego_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and speed",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "ego_response",
+            "unit": "control",
+            "method": "original brake and speed history",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "direction",
+            "method": "source-bound original direction if any",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Same-direction approach and body-footprint ordering remain source-dependent, with no invented statutory threshold.",
+          "NRS 484A.480(3) equipment qualification and target authorization need independent source review.",
+          "Actual light visibility, approach, abreast state and overtaking require original pixels and independent review."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__lights_unqualified",
+      "target_law_id": "NRS-484B-267-2d",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact same-direction approach, longitudinal body order, light use, officer direction or target-class alternative; no legal verdict.",
+      "paired_probe_id": "same_direction_abreast_overtake",
+      "deliberate_differences": [
+        "unit_class",
+        "light_request",
+        "immediate_requested",
+        "passing_maneuver",
+        "officer_direction_requested",
+        "approach_direction",
+        "unit_state"
+      ],
+      "probe": {
+        "primary_variable": "passing_maneuver",
+        "comparison_or_standard": "Compare sealed original approach, lights, body-footprint order and officer context with the clause.",
+        "target_value_or_branch": "lights_unqualified"
+      },
+      "variable_assignments": {
+        "unit_class": {
+          "kind": "world_setup",
+          "value": "authorized_emergency",
+          "unit": "class"
+        },
+        "light_request": {
+          "kind": "world_setup",
+          "value": "unqualified_active",
+          "unit": "class"
+        },
+        "immediate_requested": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        },
+        "passing_maneuver": {
+          "kind": "controller",
+          "value": "hold_behind",
+          "unit": "class"
+        },
+        "officer_direction_requested": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "approach_direction": {
+          "kind": "world_setup",
+          "value": "same_direction",
+          "unit": "class"
+        },
+        "unit_state": {
+          "kind": "world_setup",
+          "value": "moving",
+          "unit": "class"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Upon approaching",
+        "preparing to move",
+        "drive abreast of or overtake"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "byte-sealed 20 Hz Native source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "unit_motion",
+            "unit": "metres",
+            "method": "original vehicle pose difference",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "unit_state",
+            "unit": "moving/preparing",
+            "method": "original unit poses and visible preparation cue",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "same_direction_routes",
+            "unit": "route tangents",
+            "method": "original parallel route tangent readbacks",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "qualifying_flashing_lights",
+            "unit": "on/off",
+            "method": "original emergency light state",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "target_authorization",
+            "unit": "source",
+            "method": "reviewed authorized emergency or regulatory official status",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "subject_driver",
+            "unit": "source",
+            "method": "reviewed ordinary other-vehicle class and actual driver control",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "relative_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and route direction",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "driver_view_movement_cue",
+            "unit": "visible cue",
+            "method": "original driver-view unit movement or hand-signal cue",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "abreast_overtake_order",
+            "unit": "original frames",
+            "method": "body-footprint overlap and behind-to-ahead ordering",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "ego_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and speed",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "ego_response",
+            "unit": "control",
+            "method": "original brake and speed history",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "direction",
+            "method": "source-bound original direction if any",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Same-direction approach and body-footprint ordering remain source-dependent, with no invented statutory threshold.",
+          "NRS 484A.480(3) equipment qualification and target authorization need independent source review.",
+          "Actual light visibility, approach, abreast state and overtaking require original pixels and independent review."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__officer_directs_otherwise",
+      "target_law_id": "NRS-484B-267-2d",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact same-direction approach, longitudinal body order, light use, officer direction or target-class alternative; no legal verdict.",
+      "paired_probe_id": "same_direction_abreast_overtake",
+      "deliberate_differences": [
+        "unit_class",
+        "light_request",
+        "immediate_requested",
+        "passing_maneuver",
+        "officer_direction_requested",
+        "approach_direction",
+        "unit_state"
+      ],
+      "probe": {
+        "primary_variable": "passing_maneuver",
+        "comparison_or_standard": "Compare sealed original approach, lights, body-footprint order and officer context with the clause.",
+        "target_value_or_branch": "officer_directs_otherwise"
+      },
+      "variable_assignments": {
+        "unit_class": {
+          "kind": "world_setup",
+          "value": "authorized_emergency",
+          "unit": "class"
+        },
+        "light_request": {
+          "kind": "world_setup",
+          "value": "qualified_active",
+          "unit": "class"
+        },
+        "immediate_requested": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        },
+        "passing_maneuver": {
+          "kind": "controller",
+          "value": "overtake",
+          "unit": "class"
+        },
+        "officer_direction_requested": {
+          "kind": "world_setup",
+          "value": true,
+          "unit": "boolean"
+        },
+        "approach_direction": {
+          "kind": "world_setup",
+          "value": "same_direction",
+          "unit": "class"
+        },
+        "unit_state": {
+          "kind": "world_setup",
+          "value": "moving",
+          "unit": "class"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Upon approaching",
+        "preparing to move",
+        "drive abreast of or overtake"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "byte-sealed 20 Hz Native source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "unit_motion",
+            "unit": "metres",
+            "method": "original vehicle pose difference",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "unit_state",
+            "unit": "moving/preparing",
+            "method": "original unit poses and visible preparation cue",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "same_direction_routes",
+            "unit": "route tangents",
+            "method": "original parallel route tangent readbacks",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "qualifying_flashing_lights",
+            "unit": "on/off",
+            "method": "original emergency light state",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "target_authorization",
+            "unit": "source",
+            "method": "reviewed authorized emergency or regulatory official status",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "subject_driver",
+            "unit": "source",
+            "method": "reviewed ordinary other-vehicle class and actual driver control",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "relative_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and route direction",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "driver_view_movement_cue",
+            "unit": "visible cue",
+            "method": "original driver-view unit movement or hand-signal cue",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "abreast_overtake_order",
+            "unit": "original frames",
+            "method": "body-footprint overlap and behind-to-ahead ordering",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "ego_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and speed",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "ego_response",
+            "unit": "control",
+            "method": "original brake and speed history",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "direction",
+            "method": "source-bound original direction if any",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Same-direction approach and body-footprint ordering remain source-dependent, with no invented statutory threshold.",
+          "NRS 484A.480(3) equipment qualification and target authorization need independent source review.",
+          "Actual light visibility, approach, abreast state and overtaking require original pixels and independent review."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__regulatory_official_hold_behind",
+      "target_law_id": "NRS-484B-267-2d",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact same-direction approach, longitudinal body order, light use, officer direction or target-class alternative; no legal verdict.",
+      "paired_probe_id": "same_direction_abreast_overtake",
+      "deliberate_differences": [
+        "unit_class",
+        "light_request",
+        "immediate_requested",
+        "passing_maneuver",
+        "officer_direction_requested",
+        "approach_direction",
+        "unit_state"
+      ],
+      "probe": {
+        "primary_variable": "passing_maneuver",
+        "comparison_or_standard": "Compare sealed original approach, lights, body-footprint order and officer context with the clause.",
+        "target_value_or_branch": "regulatory_official_hold_behind"
+      },
+      "variable_assignments": {
+        "unit_class": {
+          "kind": "world_setup",
+          "value": "regulatory_official",
+          "unit": "class"
+        },
+        "light_request": {
+          "kind": "world_setup",
+          "value": "qualified_active",
+          "unit": "class"
+        },
+        "immediate_requested": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        },
+        "passing_maneuver": {
+          "kind": "controller",
+          "value": "hold_behind",
+          "unit": "class"
+        },
+        "officer_direction_requested": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "approach_direction": {
+          "kind": "world_setup",
+          "value": "same_direction",
+          "unit": "class"
+        },
+        "unit_state": {
+          "kind": "world_setup",
+          "value": "moving",
+          "unit": "class"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Upon approaching",
+        "preparing to move",
+        "drive abreast of or overtake"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "byte-sealed 20 Hz Native source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "unit_motion",
+            "unit": "metres",
+            "method": "original vehicle pose difference",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "unit_state",
+            "unit": "moving/preparing",
+            "method": "original unit poses and visible preparation cue",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "same_direction_routes",
+            "unit": "route tangents",
+            "method": "original parallel route tangent readbacks",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "qualifying_flashing_lights",
+            "unit": "on/off",
+            "method": "original emergency light state",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "target_authorization",
+            "unit": "source",
+            "method": "reviewed authorized emergency or regulatory official status",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "subject_driver",
+            "unit": "source",
+            "method": "reviewed ordinary other-vehicle class and actual driver control",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "relative_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and route direction",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "driver_view_movement_cue",
+            "unit": "visible cue",
+            "method": "original driver-view unit movement or hand-signal cue",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "abreast_overtake_order",
+            "unit": "original frames",
+            "method": "body-footprint overlap and behind-to-ahead ordering",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "ego_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and speed",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "ego_response",
+            "unit": "control",
+            "method": "original brake and speed history",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "direction",
+            "method": "source-bound original direction if any",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Same-direction approach and body-footprint ordering remain source-dependent, with no invented statutory threshold.",
+          "NRS 484A.480(3) equipment qualification and target authorization need independent source review.",
+          "Actual light visibility, approach, abreast state and overtaking require original pixels and independent review."
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C404479__NRS-484B-267-2d__motor_vehicle_driver__no_approach",
+      "target_law_id": "NRS-484B-267-2d",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact same-direction approach, longitudinal body order, light use, officer direction or target-class alternative; no legal verdict.",
+      "paired_probe_id": "same_direction_abreast_overtake",
+      "deliberate_differences": [
+        "unit_class",
+        "light_request",
+        "immediate_requested",
+        "passing_maneuver",
+        "officer_direction_requested",
+        "approach_direction",
+        "unit_state"
+      ],
+      "probe": {
+        "primary_variable": "passing_maneuver",
+        "comparison_or_standard": "Compare sealed original approach, lights, body-footprint order and officer context with the clause.",
+        "target_value_or_branch": "no_approach"
+      },
+      "variable_assignments": {
+        "unit_class": {
+          "kind": "world_setup",
+          "value": "authorized_emergency",
+          "unit": "class"
+        },
+        "light_request": {
+          "kind": "world_setup",
+          "value": "qualified_active",
+          "unit": "class"
+        },
+        "immediate_requested": {
+          "kind": "controller",
+          "value": false,
+          "unit": "boolean"
+        },
+        "passing_maneuver": {
+          "kind": "controller",
+          "value": "hold_behind",
+          "unit": "class"
+        },
+        "officer_direction_requested": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        },
+        "approach_direction": {
+          "kind": "world_setup",
+          "value": "same_direction",
+          "unit": "class"
+        },
+        "unit_state": {
+          "kind": "world_setup",
+          "value": "moving",
+          "unit": "class"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Upon approaching",
+        "preparing to move",
+        "drive abreast of or overtake"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "byte-sealed 20 Hz Native source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "unit_motion",
+            "unit": "metres",
+            "method": "original vehicle pose difference",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "unit_state",
+            "unit": "moving/preparing",
+            "method": "original unit poses and visible preparation cue",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "same_direction_routes",
+            "unit": "route tangents",
+            "method": "original parallel route tangent readbacks",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "qualifying_flashing_lights",
+            "unit": "on/off",
+            "method": "original emergency light state",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "target_authorization",
+            "unit": "source",
+            "method": "reviewed authorized emergency or regulatory official status",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "subject_driver",
+            "unit": "source",
+            "method": "reviewed ordinary other-vehicle class and actual driver control",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "relative_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and route direction",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "driver_view_movement_cue",
+            "unit": "visible cue",
+            "method": "original driver-view unit movement or hand-signal cue",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "abreast_overtake_order",
+            "unit": "original frames",
+            "method": "body-footprint overlap and behind-to-ahead ordering",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "ego_approach",
+            "unit": "metres and m/s",
+            "method": "original ego/unit positions and speed",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "ego_response",
+            "unit": "control",
+            "method": "original brake and speed history",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "direction",
+            "method": "source-bound original direction if any",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native route and source packet",
+            "uncertainty": "physical realization and legal abreast/overtake judgment remain unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Same-direction approach and body-footprint ordering remain source-dependent, with no invented statutory threshold.",
+          "NRS 484A.480(3) equipment qualification and target authorization need independent source review.",
+          "Actual light visibility, approach, abreast state and overtaking require original pixels and independent review."
+        ]
+      }
+    }
+  ]
+}

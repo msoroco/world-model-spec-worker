@@ -1329,6 +1329,197 @@
       }
     },
     {
+      "case_id": "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__other_hazard_adjacent",
+      "target_law_id": "NRS-484B-267-2e",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Exact lane choice, condition, officer direction, activation or statutory alternative; no legal verdict.",
+      "paired_probe_id": "emergency_lane_choice_and_context",
+      "deliberate_differences": [
+        "unit_class",
+        "motion_state",
+        "lane_choice_requested",
+        "condition_kind",
+        "qualifying_lights_requested",
+        "ego_approaching_requested",
+        "officer_direction_requested"
+      ],
+      "probe": {
+        "primary_variable": "lane_choice_requested",
+        "comparison_or_standard": "Compare original unit lane, ego footprint trajectory and source-backed conditions with the clause.",
+        "target_value_or_branch": "other_hazard_adjacent"
+      },
+      "variable_assignments": {
+        "unit_class": {
+          "kind": "world_setup",
+          "value": "authorized_emergency",
+          "unit": "class"
+        },
+        "motion_state": {
+          "kind": "world_setup",
+          "value": "moving",
+          "unit": "kind"
+        },
+        "lane_choice_requested": {
+          "kind": "controller",
+          "value": "adjacent",
+          "unit": "lane"
+        },
+        "condition_kind": {
+          "kind": "world_setup",
+          "value": "other_hazard",
+          "unit": "kind"
+        },
+        "qualifying_lights_requested": {
+          "kind": "world_setup",
+          "value": true,
+          "unit": "boolean"
+        },
+        "ego_approaching_requested": {
+          "kind": "controller",
+          "value": true,
+          "unit": "boolean"
+        },
+        "officer_direction_requested": {
+          "kind": "world_setup",
+          "value": false,
+          "unit": "boolean"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "If possible",
+        "unsafe or impossible",
+        "any indication that is visible to an approaching driver"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sealed_native_original_frames",
+            "unit": "frame identity",
+            "method": "byte-sealed 20 Hz Native source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native lane graph and source packet",
+            "uncertainty": "physical realization and statutory safety/possibility judgment unverified"
+          },
+          {
+            "name": "unit_motion",
+            "unit": "metres",
+            "method": "original unit pose history",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native lane graph and source packet",
+            "uncertainty": "physical realization and statutory safety/possibility judgment unverified"
+          },
+          {
+            "name": "qualifying_flashing_lights",
+            "unit": "on/off",
+            "method": "original qualifying light state",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native lane graph and source packet",
+            "uncertainty": "physical realization and statutory safety/possibility judgment unverified"
+          },
+          {
+            "name": "visible_preparation_cue",
+            "unit": "visible/occluded",
+            "method": "original driver-view pixels and cue source",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native lane graph and source packet",
+            "uncertainty": "physical realization and statutory safety/possibility judgment unverified"
+          },
+          {
+            "name": "ego_approach",
+            "unit": "metres and m/s",
+            "method": "original ego and unit positions and speeds",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native lane graph and source packet",
+            "uncertainty": "physical realization and statutory safety/possibility judgment unverified"
+          },
+          {
+            "name": "lane_adjacency",
+            "unit": "Native lane IDs",
+            "method": "original map adjacency readback and body footprint lane join",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native lane graph and source packet",
+            "uncertainty": "physical realization and statutory safety/possibility judgment unverified"
+          },
+          {
+            "name": "nonadjacent_lane_access",
+            "unit": "route and geometry",
+            "method": "original lane graph and connected route readback",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native lane graph and source packet",
+            "uncertainty": "physical realization and statutory safety/possibility judgment unverified"
+          },
+          {
+            "name": "ego_lane_trajectory",
+            "unit": "Native lane IDs",
+            "method": "original ego footprint lane occupation over full approach",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native lane graph and source packet",
+            "uncertainty": "physical realization and statutory safety/possibility judgment unverified"
+          },
+          {
+            "name": "traffic_path_occupation",
+            "unit": "vehicles and geometry",
+            "method": "original traffic bodies and lane-change corridor",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native lane graph and source packet",
+            "uncertainty": "physical realization and statutory safety/possibility judgment unverified"
+          },
+          {
+            "name": "roadway_condition",
+            "unit": "geometry",
+            "method": "original lane network, closure and drivable surface",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native lane graph and source packet",
+            "uncertainty": "physical realization and statutory safety/possibility judgment unverified"
+          },
+          {
+            "name": "weather_condition",
+            "unit": "weather and road surface",
+            "method": "original weather, visibility and grip readback",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native lane graph and source packet",
+            "uncertainty": "physical realization and statutory safety/possibility judgment unverified"
+          },
+          {
+            "name": "officer_direction",
+            "unit": "direction",
+            "method": "original law-enforcement officer direction",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native lane graph and source packet",
+            "uncertainty": "physical realization and statutory safety/possibility judgment unverified"
+          },
+          {
+            "name": "video_four_views",
+            "unit": "frame identity",
+            "method": "four synchronized original camera views",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames",
+            "reference_frame": "reviewed Native lane graph and source packet",
+            "uncertainty": "physical realization and statutory safety/possibility judgment unverified"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Possible, unsafe and impossible remain statutory judgments without invented numeric thresholds.",
+          "An available lane is measured separately from whether using it is safe in the circumstances.",
+          "Equipment, authorization, officer authority and hand cue require independent original-source review."
+        ]
+      }
+    },
+    {
       "case_id": "testing__C405341__NRS-484B-267-2e__motor_vehicle_driver__officer_directs_adjacent",
       "target_law_id": "NRS-484B-267-2e",
       "target_type": "boundary_probe",

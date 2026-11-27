@@ -31,14 +31,14 @@ def measure(case: Case, site: dict, frames: list[dict]) -> dict:
     required = ("original_frame", "ego_xy", "emergency_xy", "ego_lane_id", "unit_lane_id",
                 "flashing_light_on", "ego_speed_mps", "unit_speed_mps", "movement_visible",
                 "driver_hand_signal_visible", "officer_direction", "traffic_path_occupied",
-                "weather_adverse", "road_surface_state", "approaching_unit",
+                "weather_adverse", "road_surface_state", "other_hazard_path_occupied", "approaching_unit",
                 "lane_source", "motion_source", "light_source", "traffic_source",
-                "weather_source", "control_source")
+                "weather_source", "other_hazard_source", "control_source")
     for row in frames:
         require(all(k in row for k in required), "original lane frame fields missing")
         require(row["unit_lane_id"] == site["unit_lane_id"], "unit lane identity changed")
         for key in ("lane_source", "motion_source", "light_source", "traffic_source",
-                    "weather_source", "control_source"):
+                    "weather_source", "other_hazard_source", "control_source"):
             require(isinstance(row[key], str) and row[key], key + " original source missing")
     moving = [i for i in range(1, 900) if hypot(
         frames[i]["emergency_xy"][0] - frames[i-1]["emergency_xy"][0],
@@ -72,6 +72,11 @@ def measure(case: Case, site: dict, frames: list[dict]) -> dict:
         require(any(row["traffic_path_occupied"] for row in frames),
                 "original nonadjacent traffic path occupation required")
         require(site.get("traffic_trajectory_source"), "traffic trajectory source missing")
+    if case.condition == "other_hazard":
+        require(site.get("other_hazard_kind") == "fallen_cargo" and
+                site.get("other_hazard_geometry_source") and
+                any(row["other_hazard_path_occupied"] for row in frames),
+                "original other-hazard geometry/path occupation required")
     if case.condition == "weather_unsafe":
         require(any(row["weather_adverse"] for row in frames) and
                 site.get("weather_readback_source") and site.get("road_surface_source"),
@@ -87,6 +92,7 @@ def measure(case: Case, site: dict, frames: list[dict]) -> dict:
         "unit_lane_id": site["unit_lane_id"],
         "nonadjacent_route_connected": site["nonadjacent_route_connected"],
         "traffic_occupied_original_frames": [row["original_frame"] for row in frames if row["traffic_path_occupied"]],
+        "other_hazard_original_frames": [row["original_frame"] for row in frames if row["other_hazard_path_occupied"]],
         "weather_adverse_original_frames": [row["original_frame"] for row in frames if row["weather_adverse"]],
         "preparation_cue_original_frames": [row["original_frame"] for row in frames if row["movement_visible"] or row["driver_hand_signal_visible"]],
         "officer_direction_original_frames": [row["original_frame"] for row in frames if row["officer_direction"]],

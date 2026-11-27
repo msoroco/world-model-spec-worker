@@ -1,4 +1,4 @@
-"""Emit assignment-local six-case and four-comparison queue intent."""
+"""Emit assignment-local twelve-case and ten-comparison queue intent."""
 import hashlib
 import json
 from pathlib import Path
@@ -15,7 +15,7 @@ def main():
     manifest_path = HERE / 'execution-manifest.json'
     manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
     plan = json.loads((HERE / 'case-plan.json').read_text(encoding='utf-8'))
-    if len(manifest['cases']) != 6 or len(plan['comparisons']) != 4:
+    if len(manifest['cases']) != 12 or len(plan['comparisons']) != 10:
         raise ValueError('exact emergency-unit queue coverage incomplete')
     comparison_script = HERE / 'comparison_audit.py'
     comparisons = []
@@ -41,7 +41,7 @@ def main():
         common = ('--repo "$PWD" --batch full-test-delivery --db "$DB" '
                   f'--assignment {AID} --case {case}')
         prepare = prefix + 'prepare-delivery ' + common
-        execute = ('SCENARIO_PIPELINE_OUTPUT_ROOT="$PWD/.runtime-work/c405341-local-capture" '
+        execute = ('SCENARIO_PIPELINE_OUTPUT_ROOT="$PWD/.runtime-work/c405341-2e-local-capture" '
                    + prefix + 'execute-delivery ' + common +
                    ' --run "$RUN" --job "$JOB_ID" --python "$CARLA_PYTHON"'
                    ' --host "$CARLA_HOST" --port "$CARLA_PORT"')
@@ -72,10 +72,10 @@ def main():
             'command': row['command']} for row in comparisons],
         'source_prerequisites': ['reviewed paved-road ego and unit routes',
             'authorized emergency or regulatory official class and qualifying flashing equipment',
-            'constructed occluder, officer direction and driver hand-signal capability where selected',
+            'source-bound traffic, weather, roadway, other hazard condition, officer direction and visible preparation cues where selected',
             'four reviewed camera poses and source-hashed Native adapter'],
-        'remaining_review': ['Native unit movement, driver-view pixels and ego response',
-            'prepared-to-stop legal judgment remains unresolved']}
+        'remaining_review': ['Native unit movement, ego lane footprint, traffic/weather context and driver-view pixels',
+            'statutory possibility and safety judgments remain unresolved']}
     (HERE / 'gpu-queue-proposal.json').write_text(json.dumps(proposal, indent=2) + '\n',
                                                   encoding='utf-8')
 

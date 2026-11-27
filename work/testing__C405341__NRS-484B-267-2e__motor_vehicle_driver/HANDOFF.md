@@ -1,22 +1,13 @@
 # testing__C405341__NRS-484B-267-2e__motor_vehicle_driver
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: partial CPU construction and offline preparation. This is not delivery-ready.
 
-Exact law: NRS 484B.267(2)(e); with 484B.267(4) — Upon approaching an authorized emergency vehicle or an official vehicle of a regulatory agency which is moving or preparing to move in any direction, including, without limitation, arriving at or leaving the scene of a crash or other incident, and making use of flashing lights meeting the requirements of subsection 3 of NRS 484A.480 [DEF-NRS-484A-480-3], the driver of any other vehicle shall, except when otherwise directed by a law enforcement officer: If possible, drive in a lane that is not adjacent to the lane in which the authorized emergency vehicle or official vehicle of a regulatory agency is moving, unless roadway, traffic, weather or other conditions make doing so unsafe or impossible. As used in this section, “preparing to move” means any indication that is visible to an approaching driver that an authorized emergency vehicle or an official vehicle of a regulatory agency is about to move, including, without limitation: (a) A movement of the vehicle; or (b) The use of hand signals by the driver of the vehicle.
-Assigned branch(es): Moving emergency vehicle; conditional lane selection.
-Cell: C405341 (paved_road, travel, emergency_vehicle); actor: motor_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+Exact clause: NRS 484B.267(2)(e), including visible movement/hand-signal preparation under subsection (4). Frozen accepted evidence has zero recordings; no original lane or conditional-context evidence is reused.
 
-## Next CPU actions
+Eleven selected exact cases and nine controlled comparisons are in case-plan.json. They cover available nonadjacent lane use versus adjacent use; traffic, roadway, weather and law-enforcement direction circumstances; emergency/regulatory target; moving versus visible preparation cues; flashing and approach activation. No numeric safety or possibility threshold is invented.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C405341__NRS-484B-267-2e__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+Construction: build_constructions.py materializes all exact inline bundles. emergency_construction.py gates reviewed Native lane graph, connected routes, qualifying equipment, authorization, original condition sources and controller actions. runner.py opens only a hash-bound reviewed Native adapter and restores/readbacks world state. lane_probe.py and analysis.py require all 900 original frame/camera joins, lane and condition histories, and source hashes. Diagnostic recipes under diagnostics/ are synthetic software fixtures only.
 
-## Proven checks and dependency boundary
+Proofs completed: 15/15 exact primary/fallback runtime.py offline checks; prove_physical.py exercises three physical state outcomes and lifecycle for all 11 cases; 10 CPU construction/audit tests pass in cpu-tests.log. Positive/negative compatibility is running.
 
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
-
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+Next CPU actions: complete prove_compatibility.py and repair any failures; run saved-only processing for all 11; bind independent delivery acceptance, comparison audit commands and direct queue proposal; rerun complete strict assignment gate and fix any failure before marking ready. Actual CARLA lane trajectories, target movement, traffic/weather realization and original pixel review remain later GPU/local checks.
