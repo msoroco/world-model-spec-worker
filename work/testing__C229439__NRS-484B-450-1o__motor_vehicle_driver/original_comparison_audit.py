@@ -19,6 +19,7 @@ FIELDS = {
     'law_direction_exception': 'law_direction',
     'police_direction_exception': 'police_direction',
     'device_direction_exception': 'device_direction',
+    'prohibited_halt_mode': 'prohibited_halt_mode',
 }
 EXCEPTIONS = ('traffic_conflict', 'law_direction', 'police_direction', 'device_direction')
 
@@ -110,9 +111,14 @@ def audit(comparison_id, left_path, right_path, *, diagnostic=False):
         for key in ('blueprint', 'vehicle_class_source', 'driver_identity_source'):
             require(left['vehicle'].get(key) == right['vehicle'].get(key),
                     'matched vehicle/driver source differs: ' + key)
-    for key in ('exact_instruction', 'governed_polygon', 'prohibited_actions'):
+    device_fixed = ('governed_polygon',) if comparison_id == 'prohibited_halt_mode' else (
+        'exact_instruction', 'governed_polygon', 'prohibited_actions')
+    for key in device_fixed:
         require(left['device'].get(key) == right['device'].get(key),
                 'matched device instruction differs: ' + key)
+    if comparison_id == 'prohibited_halt_mode':
+        require(left['device']['exact_instruction'] != right['device']['exact_instruction'],
+                'deliberate source difference absent: matching instruction')
     field = FIELDS[comparison_id]
     paired = list(zip(left['rows'], right['rows']))
     require(len(paired) == 900, 'matched original frame count differs')
@@ -122,10 +128,19 @@ def audit(comparison_id, left_path, right_path, *, diagnostic=False):
         require(abs((a['time_s'] - left['rows'][0]['time_s']) -
                     (b['time_s'] - right['rows'][0]['time_s'])) <= 0.001,
                 'relative original frame cadence differs')
-        require(a['halt_activity'] == b['halt_activity'],
-                'matched observed halt activity differs')
-        require(a['prohibited_actions'] == b['prohibited_actions'],
-                'matched prohibited actions differ')
+        if comparison_id != 'prohibited_halt_mode':
+            require(a['halt_activity'] == b['halt_activity'],
+                    'matched observed halt activity differs')
+            require(a['prohibited_actions'] == b['prohibited_actions'],
+                    'matched prohibited actions differ')
+        elif a['halt_activity'] in ('stop', 'stand') or b['halt_activity'] in ('stop', 'stand'):
+            require(a['halt_activity'] == left['attempt']['halt_action'] and
+                    b['halt_activity'] == right['attempt']['halt_action'] and
+                    a['prohibited_actions'] == [a['halt_activity']] and
+                    b['prohibited_actions'] == [b['halt_activity']] and
+                    a['device_instruction'] == left['device']['exact_instruction'] and
+                    b['device_instruction'] == right['device']['exact_instruction'],
+                    'observed halt and sign instruction do not match')
         for other in EXCEPTIONS:
             if other != field:
                 require(a[other] == b[other],
@@ -133,9 +148,13 @@ def audit(comparison_id, left_path, right_path, *, diagnostic=False):
         if field != 'device_effective':
             require(a['device_effective'] == b['device_effective'],
                     'non-deliberate effective state differs')
-        if a['halt_activity'] == left['attempt']['halt_action']:
+        if (a['halt_activity'] == left['attempt']['halt_action'] and
+                b['halt_activity'] == right['attempt']['halt_action']):
             matched += 1
-            changed += a[field] != b[field]
+            changed += (a['halt_activity'] != b['halt_activity'] and
+                        a['prohibited_actions'] != b['prohibited_actions'] and
+                        a['device_instruction'] != b['device_instruction']) if (
+                            comparison_id == 'prohibited_halt_mode') else a[field] != b[field]
     require(matched > 0, 'no matched observed halt frames')
     require(changed > 0, 'deliberate source difference absent: ' + field)
     return {'comparison_id': comparison_id, 'case_ids': entry['case_ids'],

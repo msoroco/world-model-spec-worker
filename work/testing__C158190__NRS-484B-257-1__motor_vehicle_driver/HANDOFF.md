@@ -127,3 +127,18 @@ Four new tests exercise the positive measurement and comparison, and reject a mi
 | --- | --- |
 | `stop_view_measurement.py` | `0c4083a416e51f64b31d0debef2b251aa3bfff70be483c24cc4287728bf55fa0` |
 | `tests/test_stop_view_measurement.py` | `89f7804e76ca1e3b7e6462810ff5a6666652b265a9b73145b117a3f997a1b067` |
+
+## November 27 final owner revalidation
+
+Current pinned preflight, all 42 assignment tests, the source-hashed compatible-cell audit, the exact source inventory, and scoped `--complete` passed. The exact scoped `--complete --require-delivery-ready` command exited 1 at the truthful partial-status check. The immutable selected branch requires a yield sign, while the immutable C158190 cell fixes a stop sign; the frozen witness points the yield branch to C158208, whose distinct package is already CPU-ready. The source inventory still contains two accepted metadata rows and zero original site, trace, or video files. These facts prevent a source-backed C158190 yield-sign delivery under the fixed control. The separate stop-sign construction and measurement candidate remains unselected because it cannot satisfy the assigned yield branch.
+
+No CPU implementation gap remains for the three selected yield diagnostics: offline, positive/negative compatibility, saved-only diagnostic processing, synthetic physical/lifecycle fixtures, independent delivery/comparison audits, and semantic proposals were previously proved. A reviewer must correct the branch/control allocation in frozen source, or authorize the compatible C158208 binding, before a truthful C158190 ready claim can be made. Resume by ingesting that corrected source, selecting control-compatible cases, rerunning all bound CPU proofs, and then the exact scoped strict gate. Original physical and legal acceptance remain unverified.
+
+| Current check | Exit | SHA-256 |
+| --- | ---: | --- |
+| `cpu-nov27c-preflight.log` | 0 | `0903e681b63642868a2ddf5bf6b4dce5417a704622ac7eb654e1dcf0234425ab` |
+| `cpu-nov27c-tests.log` | 0 | `5d6592613d7e2740304ed4b798ddc543555177139ef0b15cd278ed8c8a614f1c` |
+| `cpu-nov27c-binding.log` | 0 | `c578df3e091d5dc0084bd2dfbe71f331510baddad6ec2e3c4d5808a8f9d37979` |
+| `cpu-nov27c-source.log` | 0 | `36dc781879cb0fbeb1dfa590e2264e96eb8840fdb96b20f6bf5abadb65eb80fe` |
+| `cpu-nov27c-static.log` | 0 | `fc15fb1752fad1ac61dffd700aaaea71ef4633cfbcc3965bd69b2e3481373422` |
+| `cpu-nov27c-strict.log` | 1 | `0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638` |

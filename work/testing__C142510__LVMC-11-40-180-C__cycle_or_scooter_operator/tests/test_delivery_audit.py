@@ -36,8 +36,24 @@ class DeliveryAuditTests(unittest.TestCase):
                 'legal_status': 'unresolved', 'physical_acceptance': False}
         return result
 
-    def test_three_exact_comparison_contracts(self):
-        self.assertEqual(len(audit_comparisons(self.reports())), 3)
+    def test_five_exact_comparison_contracts(self):
+        reports = audit_comparisons(self.reports())
+        self.assertEqual(len(reports), 5)
+        self.assertEqual(sum(r['measured_difference'] == 'rider_kind' for r in reports), 2)
+
+    def test_rider_kind_pair_rejects_changed_response(self):
+        reports = self.reports()
+        key = ASSIGNMENT + '__electric_bicycle_signal_before_yield'
+        reports[key]['measurement']['brake_frames_before_pass'] = []
+        with self.assertRaisesRegex(ValueError, 'fixed rider response changed'):
+            audit_comparisons(reports)
+
+    def test_rider_kind_pair_rejects_changed_signal(self):
+        reports = self.reports()
+        key = ASSIGNMENT + '__electric_scooter_signal_before_yield'
+        reports[key]['measurement']['detected_signal_before_pass'] = False
+        with self.assertRaisesRegex(ValueError, 'fixed signal timing changed'):
+            audit_comparisons(reports)
 
     def test_fixed_source_change_rejected(self):
         reports = self.reports()

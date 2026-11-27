@@ -1,4 +1,4 @@
-"""Mock-only positive and source-negative wiring proof for seven original comparisons."""
+"""Mock-only positive and source-negative wiring proof for original comparisons."""
 import hashlib
 import json
 from pathlib import Path
@@ -37,10 +37,10 @@ def reports():
 def main():
     mock = reports()
     diagnostic = audit_comparisons(mock)
-    if len(diagnostic) != 7 or any(item['legal_status'] != 'unresolved' or
+    if len(diagnostic) != 9 or any(item['legal_status'] != 'unresolved' or
                                     item['physical_acceptance'] is not False
                                     for item in diagnostic):
-        raise ValueError('seven comparison wiring probes incomplete')
+        raise ValueError('nine comparison wiring probes incomplete')
     first = next(iter(mock))
     mock[first]['source_kind'] = 'synthetic_diagnostic_fixture'
     try:
@@ -57,7 +57,7 @@ def main():
                'missing_original_source_rejected': True,
                'comparison_ids': [item['comparison_id'] for item in diagnostic]}
     (HERE / 'grid-comparison-receipt.json').write_text(json.dumps(receipt, indent=2) + '\n')
-    print('seven mock-only comparison wiring probes passed; synthetic original claim rejected')
+    print('nine mock-only comparison wiring probes passed; synthetic original claim rejected')
 
 
 if __name__ == '__main__':

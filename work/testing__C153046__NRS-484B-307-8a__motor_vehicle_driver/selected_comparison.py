@@ -16,7 +16,9 @@ DIFFERENCE = {
     'pedestrian_yield': 'conflict_response_request',
     'traffic_yield': 'conflict_response_request',
     'engineering_stop_margin': 'stop_hold_margin_m',
+    'engineering_stop_margin_interior': 'stop_hold_margin_m',
     'engineering_yield_release': 'yield_release_delay_s',
+    'engineering_yield_release_interior': 'yield_release_delay_s',
 }
 
 

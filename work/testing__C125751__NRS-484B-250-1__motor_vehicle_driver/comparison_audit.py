@@ -13,7 +13,7 @@ from source_bindings import validate_review_refs
 
 
 def audit_pair(left: dict, right: dict, *, variable: str):
-    if variable not in {'entry_order', 'signal_state'}:
+    if variable not in {'entry_order', 'signal_state', 'crossing_response'}:
         raise ValueError('undeclared comparison variable')
     required = ('map_sha256', 'review_sha256', 'crossing_id', 'ego_route_sha256',
                 'other_route_sha256', 'camera_plan_sha256', 'duration_frames',
@@ -34,15 +34,48 @@ def audit_pair(left: dict, right: dict, *, variable: str):
         b = right['other_entry_frame'] < right['ego_entry_frame']
         if a == b:
             raise ValueError('declared entry order did not vary')
-    else:
+    elif variable == 'signal_state':
         if set(left['signal_states_observed']) == set(right['signal_states_observed']):
             raise ValueError('declared signal state did not vary')
         if ((left['other_entry_frame'] < left['ego_entry_frame']) !=
                 (right['other_entry_frame'] < right['ego_entry_frame'])):
             raise ValueError('entry order changed in signal comparison')
+    else:
+        if [left['case_id'], right['case_id']] != [ASSIGNMENT + '__precedence',
+                                                  ASSIGNMENT + '__advance']:
+            raise ValueError('response comparison needs precedence and advance cases')
+        if (not left.get('signal_initial_state') or
+                not isinstance(left.get('signal_transition_frames'), list) or
+                not left['signal_transition_frames'] or
+                set(left['signal_states_observed']) != set(right['signal_states_observed']) or
+                left.get('signal_initial_state') != right.get('signal_initial_state') or
+                left.get('signal_transition_frames') != right.get('signal_transition_frames')):
+            raise ValueError('signal state changed in response comparison')
+        for report in (left, right):
+            clear = report.get('other_clear_frame')
+            if not isinstance(clear, int) or isinstance(clear, bool):
+                raise ValueError('measured other clearance absent')
+            if not (report['other_entry_frame'] < clear and
+                    report['other_entry_frame'] < report['ego_entry_frame']):
+                raise ValueError('other-first crossing chronology absent')
+        if (left['other_entry_frame'] != right['other_entry_frame'] or
+                left['other_clear_frame'] != right['other_clear_frame']):
+            raise ValueError('other vehicle entry or clearance changed in response comparison')
+        if left['ego_entry_frame'] < left['other_clear_frame']:
+            raise ValueError('precedence case did not wait for other clearance')
+        if right['ego_entry_frame'] >= right['other_clear_frame']:
+            raise ValueError('advance case did not enter before other clearance')
     return {'comparison_variable': variable, 'case_ids': [left['case_id'], right['case_id']],
             'fixed_conditions_checked': list(required), 'physical_review_pending': True,
-            'legal_judgment': 'unresolved'}
+            'legal_judgment': 'unresolved',
+            **({'measured_crossing_response': {
+                'precedence_entered_before_other_cleared': False,
+                'advance_entered_before_other_cleared': True,
+                'precedence_entry_minus_other_clear_frames':
+                    left['ego_entry_frame'] - left['other_clear_frame'],
+                'advance_entry_minus_other_clear_frames':
+                    right['ego_entry_frame'] - right['other_clear_frame']}}
+               if variable == 'crossing_response' else {})}
 
 
 def _source_report(attempt):
@@ -101,7 +134,8 @@ def main():
     parser.add_argument('--right', type=Path)
     parser.add_argument('--left-attempt', type=Path)
     parser.add_argument('--right-attempt', type=Path)
-    parser.add_argument('--variable', choices=('entry_order', 'signal_state'), required=True)
+    parser.add_argument('--variable', choices=('entry_order', 'signal_state',
+                                               'crossing_response'), required=True)
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     if args.left_attempt and args.right_attempt and not args.left and not args.right:

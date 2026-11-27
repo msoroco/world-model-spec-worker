@@ -118,7 +118,8 @@ def audit_comparisons(reports):
         need(left.get('fixed_site') == right.get('fixed_site') and
              left.get('source_sha256', {}).get('road.xodr') ==
              right.get('source_sha256', {}).get('road.xodr') and
-             left.get('rider_kind') == right.get('rider_kind'),
+             (comparison['declared_difference'] == 'rider_kind' or
+              left.get('rider_kind') == right.get('rider_kind')),
              'fixed original sidewalk or participant source changed')
         measured = compare(left['measurement'], right['measurement'],
                            comparison['declared_difference'])

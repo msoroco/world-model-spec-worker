@@ -11,7 +11,9 @@ FIELD = {
     'law_direction_exception': 'law_direction',
     'police_direction_exception': 'police_direction',
     'device_direction_exception': 'device_direction',
+    'prohibited_halt_mode': 'prohibited_halt_mode',
 }
+EXCEPTIONS = ('traffic_conflict', 'law_direction', 'police_direction', 'device_direction')
 
 
 def source(short, filename):
@@ -37,13 +39,42 @@ def audit(comparison_id, negative=False):
         raise ValueError('matched vehicle identity differs')
     field = FIELD[comparison_id]
     relevant = [(a, b) for a, b in zip(rows[0][0], rows[1][0])
-                if a['halt_activity'] in ('park', 'stop', 'stand')]
+                if a['halt_activity'] in ('park', 'stop', 'stand') and
+                b['halt_activity'] in ('park', 'stop', 'stand')]
     if not relevant:
         raise ValueError('no compared halt frames')
-    if negative:
-        for a, b in relevant:
-            b[field] = a[field]
-    changed = sum(a[field] != b[field] for a, b in relevant)
+    if comparison_id == 'prohibited_halt_mode':
+        devices = [source(short, 'device-source.json') for short in (left, right)]
+        for a, b in zip(rows[0][0], rows[1][0]):
+            for fixed in ('device_effective', *EXCEPTIONS):
+                if a[fixed] != b[fixed]:
+                    raise ValueError('non-deliberate condition differs: ' + fixed)
+        for row in (relevant[0][0], relevant[0][1]):
+            action = row['halt_activity']
+            if row['prohibited_actions'] != [action]:
+                raise ValueError('halt and prohibited instruction do not match')
+        left_instruction = relevant[0][0]['device_instruction']
+        right_instruction = relevant[0][1]['device_instruction']
+        if (left_instruction != devices[0][0]['exact_instruction'] or
+                right_instruction != devices[1][0]['exact_instruction']):
+            raise ValueError('device instruction source join differs')
+        if negative:
+            for a, b in relevant:
+                b['halt_activity'] = a['halt_activity']
+                b['prohibited_actions'] = a['prohibited_actions']
+                b['device_instruction'] = a['device_instruction']
+            right_instruction = left_instruction
+        changed = sum(a['halt_activity'] != b['halt_activity'] and
+                      a['prohibited_actions'] != b['prohibited_actions'] and
+                      a['device_instruction'] != b['device_instruction']
+                      for a, b in relevant)
+        if changed != len(relevant):
+            raise ValueError('deliberate source difference absent: ' + field)
+    else:
+        if negative:
+            for a, b in relevant:
+                b[field] = a[field]
+        changed = sum(a[field] != b[field] for a, b in relevant)
     if changed == 0:
         raise ValueError('deliberate source difference absent: ' + field)
     return {'comparison_id': comparison_id, 'case_ids': entry['case_ids'],

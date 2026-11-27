@@ -1,6 +1,12 @@
 # C125751 NRS 484B.250(1) motor vehicle driver handoff
 
-Status: **delivery prepared** on the current pinned CPU runtime. The exact scoped strict delivery-ready check passes. The dated partial notes below record earlier work; the final section supersedes their status and proof paths. No physical or statutory outcome is claimed.
+Status: **delivery prepared** on the current pinned CPU runtime. The exact scoped strict delivery-ready check passes. The dated notes below record earlier work; the 2026-11-27 section is current. No physical or statutory outcome is claimed.
+
+## 2026-11-27 full-branch response comparison
+
+The full-branch matrix found that the selected exact `advance` case had no comparison row, although the existing canonical cases proposal already names its `accepted_response_review` probe. `case-plan.json` and `execution-manifest.json` now bind that comparison to `precedence` and `advance`. It changes the requested ego response from yield to advance while holding the median source, reviewed roadway/device context, routes, actor blueprints, 1100-frame camera contract, other vehicle entry and clearance frames, other-before-ego entry order, and original signal transition history fixed. The independent `comparison_audit.py` reopens sealed original attempts, checks their Native lifecycle and acquisition hashes, then requires original-frame crossing measurements: the precedence ego enters after the other vehicle clears, whereas the advance ego enters while the other remains in the crossing. A failure to realize that measured contrast rejects the comparison; neither request values nor this temporal probe are treated as a legal right-of-way verdict.
+
+All 30 assignment tests pass in `cpu-tests-response-review.log`, including response positive and changed-map, changed-signal, changed-order and missing-contrast rejections. The standalone CLI positive receipt is `comparison-diagnostic-accepted_response_review.json`; the saved-attempt negative in `cpu-comparison-negative-accepted_response_review.log` rejects synthetic Native lifecycle. The prior four exact constructions and their offline, compatibility, saved-only, physical and delivery receipts are unchanged. `gpu-queue-comparison-proposal.json` supplies exactly one comparison command and catalog key for lead integration, with no new recording or case-order change. The exact scoped strict command `.venv-cpu/bin/python worker_check.py --assignment testing__C125751__NRS-484B-250-1__motor_vehicle_driver --complete --require-delivery-ready` passed after these bindings. Original median geometry, live signal, movement, pixels, acceptance and statutory applicability remain for local independent review.
 
 ## Exact scope and case disposition
 

@@ -77,6 +77,33 @@ class ComparisonAuditTest(unittest.TestCase):
         self.assertEqual(audit_pair(report('a', True, 'Green'), report('b', True, 'Red'),
                                     variable='signal_state')['comparison_variable'], 'signal_state')
 
+    def test_accepted_response_is_measured_and_isolated(self):
+        waiting = report(ASSIGNMENT + '__precedence', True, 'Green')
+        advancing = report(ASSIGNMENT + '__advance', True, 'Green')
+        waiting['other_clear_frame'] = advancing['other_clear_frame'] = 10
+        advancing['ego_entry_frame'] = 7
+        for item in (waiting, advancing):
+            item['signal_initial_state'] = 'Green'
+            item['signal_transition_frames'] = [{'frame': 0, 'state': 'Green'}]
+        observed = audit_pair(waiting, advancing, variable='crossing_response')
+        self.assertTrue(observed['measured_crossing_response']
+                        ['advance_entered_before_other_cleared'])
+        changed = dict(advancing, signal_states_observed=['Red'])
+        with self.assertRaisesRegex(ValueError, 'signal state changed'):
+            audit_pair(waiting, changed, variable='crossing_response')
+        changed = dict(advancing, ego_entry_frame=12)
+        with self.assertRaisesRegex(ValueError, 'advance case did not enter'):
+            audit_pair(waiting, changed, variable='crossing_response')
+        changed = dict(advancing, other_clear_frame=11)
+        with self.assertRaisesRegex(ValueError, 'other vehicle entry or clearance changed'):
+            audit_pair(waiting, changed, variable='crossing_response')
+        changed = dict(advancing, map_sha256='different')
+        with self.assertRaisesRegex(ValueError, 'fixed condition differs'):
+            audit_pair(waiting, changed, variable='crossing_response')
+        changed = dict(advancing, other_entry_frame=20)
+        with self.assertRaisesRegex(ValueError, 'other-first crossing chronology'):
+            audit_pair(waiting, changed, variable='crossing_response')
+
     def test_rejects_missing_fixed_condition_or_unchanged_variable(self):
         a, b = report('a', True, 'Green'), report('b', False, 'Green')
         b['camera_plan_sha256'] = None

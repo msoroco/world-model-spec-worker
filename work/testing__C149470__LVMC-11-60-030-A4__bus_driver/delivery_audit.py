@@ -154,10 +154,9 @@ def audit_comparisons(reports: dict[str, dict], comparison_id: str | None = None
                any(not isinstance(value, str) or len(value) != 64
                    for value in hashes.values()) for hashes in source_hashes):
             raise ValueError('comparison source inventory missing')
-        allowed_changes = ({'bus_route'} if comparison['comparison_id'] ==
-                           'parallel_engineering_grid' else
-                           {'traffic_route'} if comparison['comparison_id'] ==
-                           'traffic_engineering_grid' else set())
+        comparison_name = comparison['comparison_id']
+        allowed_changes = ({'bus_route'} if comparison_name.startswith('parallel_engineering_') else
+                           {'traffic_route'} if comparison_name.startswith('traffic_engineering_') else set())
         if any(source_hashes[0][name] != source_hashes[1][name]
                for name in FIXED_COMPARISON_SOURCES if name not in allowed_changes):
             raise ValueError('comparison fixed original source changed')

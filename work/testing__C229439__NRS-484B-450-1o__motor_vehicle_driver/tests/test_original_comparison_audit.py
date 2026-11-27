@@ -16,6 +16,7 @@ PAIRS = (
     ('law_direction_exception', 'park_effective', 'park_law_direction'),
     ('police_direction_exception', 'park_effective', 'park_police_direction'),
     ('device_direction_exception', 'park_effective', 'park_device_direction'),
+    ('prohibited_halt_mode', 'stop_effective', 'stand_effective'),
 )
 
 
@@ -50,7 +51,7 @@ class OriginalComparisonTest(unittest.TestCase):
                   self.attempt('park_effective'), diagnostic=True)
 
     def test_changed_source_hash_rejected(self):
-        with tempfile.TemporaryDirectory() as tmp:
+        with tempfile.TemporaryDirectory(dir=ROOT.parents[1] / '.runtime-work') as tmp:
             right = self.copy_sources('park_not_effective', Path(tmp) / 'right')
             rows = right / 'actor_rows.json'
             rows.write_bytes(rows.read_bytes() + b' ')
@@ -59,7 +60,7 @@ class OriginalComparisonTest(unittest.TestCase):
                       diagnostic=True)
 
     def test_wrong_case_rejected(self):
-        with tempfile.TemporaryDirectory() as tmp:
+        with tempfile.TemporaryDirectory(dir=ROOT.parents[1] / '.runtime-work') as tmp:
             right = self.copy_sources('park_not_effective', Path(tmp) / 'right')
             path = right / 'attempt.json'
             attempt = json.loads(path.read_text())
@@ -71,7 +72,7 @@ class OriginalComparisonTest(unittest.TestCase):
 
     def test_erased_difference_rejected(self):
         import hashlib
-        with tempfile.TemporaryDirectory() as tmp:
+        with tempfile.TemporaryDirectory(dir=ROOT.parents[1] / '.runtime-work') as tmp:
             right = self.copy_sources('park_not_effective', Path(tmp) / 'right')
             left_rows = json.loads((self.attempt('park_effective') / 'actor_rows.json').read_text())
             rows_path = right / 'actor_rows.json'
@@ -86,6 +87,23 @@ class OriginalComparisonTest(unittest.TestCase):
             attempt_path.write_text(json.dumps(attempt) + '\n')
             with self.assertRaisesRegex(ValueError, 'deliberate source difference absent'):
                 audit('device_effective_time', self.attempt('park_effective'), right,
+                      diagnostic=True)
+
+    def test_halt_mode_rejects_non_deliberate_effective_change(self):
+        import hashlib
+        with tempfile.TemporaryDirectory(dir=ROOT.parents[1] / '.runtime-work') as tmp:
+            right = self.copy_sources('stand_effective', Path(tmp) / 'right')
+            rows_path = right / 'actor_rows.json'
+            rows = json.loads(rows_path.read_text())
+            rows[300]['device_effective'] = False
+            rows_path.write_text(json.dumps(rows) + '\n')
+            attempt_path = right / 'attempt.json'
+            attempt = json.loads(attempt_path.read_text())
+            attempt['source_context']['actor_rows.json']['sha256'] = hashlib.sha256(
+                rows_path.read_bytes()).hexdigest()
+            attempt_path.write_text(json.dumps(attempt) + '\n')
+            with self.assertRaisesRegex(ValueError, 'non-deliberate effective state differs'):
+                audit('prohibited_halt_mode', self.attempt('stop_effective'), right,
                       diagnostic=True)
 
 

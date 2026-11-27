@@ -90,3 +90,17 @@ The pinned runtime preflight passed (`cpu-nov27b-preflight.log`, SHA-256 `b33a0b
 All six original `acceptance.trace_source` and `acceptance.video_source` absolute paths in the frozen accepted metadata are absent on this worker host. Their metadata cannot establish measured turn direction, signal distance, or camera coverage. The `accepted_source.py` and `review_accepted.py` admission path remains available if the exact archived bytes and associated source packet are provided; it does not turn a left-turn recording into a right-turn case.
 
 The next CPU delivery step requires an authorized branch/cell allocation consistent with the fixed maneuver. The selected business-district right-turn comparison is already CPU-prepared on compatible C378304. A genuine C178244 left-turn assignment would permit this owner to build selected left-turn constructions and proof receipts; without that allocation, a C178244 right-turn construction would contradict the frozen cell. Preserve this package as partial and rerun the exact scoped strict command after any authorized allocation update.
+
+## November 27 final scoped CPU and source reconciliation
+
+The current pinned runtime preflight, all 33 focused source-bound tests, the separate compatible-cell binding audit, and the assignment-scoped complete check passed. The exact assignment-scoped strict gate exited 1 solely because this result remains truthfully partial; its log is retained below. The source review was repeated against all six frozen accepted metadata records: every original trace and video path remains absent, so the historical left-turn memberships cannot establish actual signal distance, original turn direction, or the selected right-turn outcome. The frozen selected branch/cell contradiction cannot be repaired inside this returned package without changing the assignment’s immutable identity or representing a left turn as a right turn. No source-backed right-turn construction for C178244 is permissible under its fixed left-turn maneuver.
+
+The authorized resume input is a corrected branch/cell allocation that places business right-turn on the already prepared compatible C378304 assignment and, if intended, allocates a left-turn branch to C178244. Then construct and prove exact C178244 selected cases for that corrected scope. Until then this package remains partial.
+
+| Current receipt | Exit | SHA256 |
+| --- | ---: | --- |
+| `cpu-nov27-final-preflight.log` | 0 | `b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63` |
+| `cpu-nov27-final-tests.log` | 0 | `7abc7cd72823e83929b040e7fd0a910be269d3ab0f8dd51331e2113b5292f7f2` |
+| `cpu-nov27-final-binding.log` | 0 | `bde18ff5acae9166c3059717b115f0c9b10079e248ef39d48a9ad65bb2b82210` |
+| `cpu-nov27-final-static.log` | 0 | `f0d9b4c1febf22e3df2ea98e277eb6dd5767c1433d5b35d13f070446a8e33aec` |
+| `cpu-nov27-final-strict.log` | 1 | `0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638` |

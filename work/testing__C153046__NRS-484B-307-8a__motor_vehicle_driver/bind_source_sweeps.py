@@ -47,6 +47,18 @@ def main() -> None:
                                  'controller request only; legal outcome unresolved'],
             'status': 'draft_requested_only_realized_measurement_pending',
             'realized_difference_claimed': False})
+        # The sorted middle point is an independently requested construction.
+        # Bind it to the same fixed baseline so every sweep point has an
+        # original-source controlled pair without adding a recording.
+        plan['comparisons'].append({
+            'comparison_id': name + '_interior',
+            'case_ids': [cases[0]['case_id'], cases[1]['case_id']],
+            'deliberate_differences': [variable],
+            'fixed_conditions': ['same exact law and source-reviewed site',
+                                 'same official red signal and original-frame measurement',
+                                 'controller request only; legal outcome unresolved'],
+            'status': 'draft_requested_only_realized_measurement_pending',
+            'realized_difference_claimed': False})
     plan['requirement_dispositions'][0]['case_ids'] = [case['case_id'] for case in plan['cases']]
     plan['planning_status'] = 'fourteen_selected_source_gated_engineering_grid_cases'
     plan['runtime_uncertainties'] = [
