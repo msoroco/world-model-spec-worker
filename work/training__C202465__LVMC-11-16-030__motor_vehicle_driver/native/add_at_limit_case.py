@@ -27,6 +27,16 @@ def main():
         comparison["case_ids"] = [base["case_id"], case_id]
         comparison["deliberate_differences"] = ["traversal speed request and measured original speed at 15 mph"]
         plan["comparisons"].insert(1, comparison)
+    plan["camera_plan"] = {
+        "profile": "overview1080-capability", "duration_s": 30,
+        "composition": "synchronized_four_view_primary",
+        "coverage": [
+            {"view": "overview", "subject": "at-grade crossing, ego approach, both railway directions and two source rail vehicles", "interval": "entire 30 second original run"},
+            {"view": "approach", "subject": "ego final 100 foot approach and crossing traversal", "interval": "approach through clearance"},
+            {"view": "reference_corner", "subject": "signed left and right rail sight endpoints, crossing geometry and device", "interval": "last 100 feet of approach"},
+            {"view": "driver_reference", "subject": "ego eye proxy, flagman duty and signal indication", "interval": "last 100 feet of approach through crossing clearance"},
+        ],
+    }
     PATH.write_text(json.dumps(plan, indent=2, ensure_ascii=False) + "\n")
     print("planned cases", len(plan["cases"]), "comparisons", len(plan["comparisons"]))
 

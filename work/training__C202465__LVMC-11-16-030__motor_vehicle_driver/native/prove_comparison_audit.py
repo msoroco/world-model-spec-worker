@@ -19,7 +19,8 @@ def reject(fn, phrase):
 plan = json.loads((Path(__file__).resolve().parents[1] / 'case-plan.json').read_text())
 designs = {c['case_id']: c['construction_design'] for c in plan['cases']}
 axis = {
-    'speed_15_mph': 'speed', 'left_sight': 'sight', 'right_sight': 'sight',
+    'speed_15_mph': 'speed', 'speed_at_15_mph': 'speed',
+    'left_sight': 'sight', 'right_sight': 'sight',
     'crossing_view': 'sight', 'flagman_exception': 'flagman',
     'inactive_signal_exception': 'signal_state', 'signal_indication': 'signal_state',
     'signal_visibility': 'signal_visibility',
@@ -60,4 +61,4 @@ for comparison in plan['comparisons']:
            'diagnostic fixture')
     reject(lambda: audit(a, b, dict(spec, case_ids=list(reversed(spec['case_ids'])))),
            'case identity')
-print('PASS: eight source-bound comparison axes and stale/missing-source rejection paths')
+print('PASS: nine source-bound comparison axes and stale/missing-source rejection paths')

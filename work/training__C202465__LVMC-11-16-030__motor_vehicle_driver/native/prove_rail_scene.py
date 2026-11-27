@@ -63,18 +63,21 @@ assert not ray_clear((-50, 0), (0, -100), blockers)
 assert ray_clear((-50, 0), (0, 100), blockers)
 assert ray_clear((-50, 0), (0, 0), blockers)
 slow = make_rows("slower_traversal")
+at = make_rows("at_limit_traversal")
 fast = make_rows("faster_traversal")
 slow_measure = measure_trace(slow, crossing)
+at_measure = measure_trace(at, crossing)
 fast_measure = measure_trace(fast, crossing)
 assert slow_measure["last_100_feet_missing_view_frames"] > 0
 assert slow_measure["maximum_traversal_speed_mps"] < slow_measure["fifteen_mph_mps"]
+assert at_measure["maximum_traversal_speed_mps"] == at_measure["fifteen_mph_mps"]
 assert fast_measure["maximum_traversal_speed_mps"] > fast_measure["fifteen_mph_mps"]
 assert slow_measure["flagman_on_duty_frames"] == 0
 assert measure_trace(make_rows("slower_traversal", duty=True), crossing)["flagman_on_duty_frames"] == FRAME_COUNT
 assert measure_trace(make_rows("slower_traversal", inactive=True), crossing)["visible_inactive_signal_frames"] == FRAME_COUNT
 assert measure_trace(make_rows("slower_traversal", barrier=[]), crossing)["last_100_feet_missing_view_frames"] == 0
 plan = json.loads((Path(__file__).resolve().parents[1] / "case-plan.json").read_text())
-assert len(plan["cases"]) == 9 and len(plan["comparisons"]) == 8
+assert len(plan["cases"]) == 10 and len(plan["comparisons"]) == 9
 for case in plan["cases"]:
     design = case["construction_design"]
     state = design["exception_state"]

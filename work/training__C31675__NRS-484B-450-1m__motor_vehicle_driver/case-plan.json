@@ -139,24 +139,36 @@
   ],
   "observations": [
     {
-      "name": "ego_pose",
-      "unit": "m,deg",
+      "name": "bridge_relation",
+      "unit": "categorical",
       "mandatory": true,
-      "purpose": "Actual pose, trajectory and footprint over full event"
+      "purpose": "Source-bound relation of original vehicle body footprint to surveyed bridge deck at 20 Hz, preserving source pose and map."
     },
     {
-      "name": "stationary_footprint_on_bridge",
+      "name": "stationary_candidate",
       "unit": "bool",
       "mandatory": true,
-      "purpose": "Record bridge surface geometry, vehicle footprint, stop interval and stop cause."
+      "purpose": "Measured stationary interval from original speed and body trace; halt purpose and exceptions remain separate sourced context."
+    },
+    {
+      "name": "speed_mps",
+      "unit": "m/s",
+      "mandatory": true,
+      "purpose": "Original 20 Hz speed for rest versus bridge crossing."
+    },
+    {
+      "name": "source_camera_frame_join",
+      "unit": "frame index",
+      "mandatory": true,
+      "purpose": "Four synchronized original camera frame joins over the full 600-frame event."
     }
   ],
   "source_observation_mapping": {
     "drv.standing_or_parked": {
       "evidence": "Authored exact Native source plan and current offline CPU check; physical observation and legal finding pending",
       "channels": [
-        "bridge-trace.jsonl",
-        "trace.jsonl"
+        "stationary_candidate",
+        "halt_purpose_context"
       ],
       "source_refs": [
         "inputs/training__C31675__NRS-484B-450-1m__motor_vehicle_driver/assignment.json"
@@ -165,8 +177,7 @@
     "st.elevated_structure": {
       "evidence": "Authored exact Native source plan and current offline CPU check; physical observation and legal finding pending",
       "channels": [
-        "bridge-map.json",
-        "road.xodr"
+        "bridge_relation"
       ],
       "source_refs": [
         "inputs/training__C31675__NRS-484B-450-1m__motor_vehicle_driver/assignment.json"
@@ -175,8 +186,7 @@
     "rel.occupies": {
       "evidence": "Authored exact Native source plan and current offline CPU check; physical observation and legal finding pending",
       "channels": [
-        "bridge-trace.jsonl",
-        "bridge-map.json"
+        "bridge_relation"
       ],
       "source_refs": [
         "inputs/training__C31675__NRS-484B-450-1m__motor_vehicle_driver/assignment.json"
@@ -185,8 +195,7 @@
     "kin.velocity": {
       "evidence": "Authored exact Native source plan and current offline CPU check; physical observation and legal finding pending",
       "channels": [
-        "bridge-trace.jsonl",
-        "trace.jsonl"
+        "speed_mps"
       ],
       "source_refs": [
         "inputs/training__C31675__NRS-484B-450-1m__motor_vehicle_driver/assignment.json"
@@ -195,7 +204,8 @@
     "drv.forced_halt": {
       "evidence": "Authored exact Native source plan and current offline CPU check; physical observation and legal finding pending",
       "channels": [
-        "bridge-trace.jsonl"
+        "traffic_conflict_context",
+        "halt_purpose_context"
       ],
       "source_refs": [
         "inputs/training__C31675__NRS-484B-450-1m__motor_vehicle_driver/assignment.json"
@@ -250,6 +260,33 @@
           "sha256": "76400081536b6bd12fa24540f0e7a51c9f609532dd34fe90022d9aaf7417637b"
         },
         "why_existing_insufficient": "Review context lists eight accepted memberships and labels, but no source-hashed original measurement or receipt_sources for any recording; original equivalence cannot be checked."
+      }
+    ]
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "original ego body, bridge deck and all participant geometry",
+        "interval": "0-30 s, 20 Hz synchronized"
+      },
+      {
+        "view": "approach",
+        "subject": "original ego body, bridge deck and all participant geometry",
+        "interval": "0-30 s, 20 Hz synchronized"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "original ego body, bridge deck and all participant geometry",
+        "interval": "0-30 s, 20 Hz synchronized"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "original ego body, bridge deck and all participant geometry",
+        "interval": "0-30 s, 20 Hz synchronized"
       }
     ]
   }

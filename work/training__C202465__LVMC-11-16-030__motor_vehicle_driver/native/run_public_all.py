@@ -22,7 +22,7 @@ def sha(path):
 
 def run():
     manifest = json.loads(MANIFEST.read_text())
-    scratch = ROOT / ".runtime-work" / ("c202465-lvmc-public-" + sha(MANIFEST)[:12])
+    scratch = ROOT / ".runtime-work" / ("c202465-lvmc-public-fixedspeed-" + sha(MANIFEST)[:12])
     scratch.mkdir(parents=True, exist_ok=True)
     env = dict(os.environ, PYTHONDONTWRITEBYTECODE="1",
                TMPDIR=str(ROOT / ".runtime-work"),
@@ -62,20 +62,21 @@ def run():
                     or receipt.get("candidate_id") != candidate
                     or receipt.get("construction_sha256") != selected["construction_sha256"]):
                 raise ValueError("Public receipt binds another selection")
-            selected["public_compatibility"] = {
+            selected["compatibility"] = {
                 "receipt": str((proof_dir / "receipt.json").relative_to(WORK)),
-                "receipt_sha256": sha(proof_dir / "receipt.json"),
-                "construction_sha256": selected["construction_sha256"],
-                "passed": True,
-                "scope": "diagnostic software compatibility only",
+                "sha256": sha(proof_dir / "receipt.json"),
+                "log": str((proof_dir / "analysis.log").relative_to(WORK)),
+                "negative_log": str((proof_dir / "negative.log").relative_to(WORK)),
             }
+            if candidate == "primary":
+                entry["negative"] = {"log": selected["compatibility"]["negative_log"]}
             MANIFEST.write_text(json.dumps(manifest, indent=2) + "\n")
             outcome = {"case_id": entry["case_id"], "candidate": candidate,
                        "receipt_sha256": sha(proof_dir / "receipt.json")}
             outcomes.append(outcome)
             print("PASS", suffix, candidate, flush=True)
     summary = {"format": "lvmc-public-compatibility-summary-v1",
-               "passed": len(outcomes) == 18, "count": len(outcomes), "outcomes": outcomes}
+               "passed": len(outcomes) == 2 * len(manifest["cases"]), "count": len(outcomes), "outcomes": outcomes}
     (WORK / "selected-public-proof-summary.json").write_text(json.dumps(summary, indent=2) + "\n")
     return summary
 

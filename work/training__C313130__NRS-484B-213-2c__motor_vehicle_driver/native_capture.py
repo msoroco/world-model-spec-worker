@@ -41,10 +41,19 @@ def repo():
 def body(ego):
     transform = ego.get_transform()
     vertices = ego.bounding_box.get_world_vertices(transform)
-    points = sorted({(round(v.x, 6), round(v.y, 6)) for v in vertices})
-    if len(points) != 4:
-        raise ValueError("Original four-corner body unavailable")
-    return [list(p) for p in points]
+    if len(vertices) != 8 or any(not math.isfinite(value) for vertex in vertices
+                                    for value in (vertex.x, vertex.y)):
+        raise ValueError("Original eight-vertex body unavailable")
+    # A pitched or rolled 3D box can project to more than four distinct XY
+    # points. Retain the conservative axis-aligned envelope of all eight.
+    low_x = min(vertex.x for vertex in vertices)
+    high_x = max(vertex.x for vertex in vertices)
+    low_y = min(vertex.y for vertex in vertices)
+    high_y = max(vertex.y for vertex in vertices)
+    if low_x >= high_x or low_y >= high_y:
+        raise ValueError("Degenerate original body envelope")
+    return [[round(x, 6), round(y, 6)] for x, y in
+            ((low_x, low_y), (low_x, high_y), (high_x, low_y), (high_x, high_y))]
 
 
 def control(carla, ego, target_y, gain):

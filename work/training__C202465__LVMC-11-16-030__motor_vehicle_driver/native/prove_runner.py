@@ -35,4 +35,4 @@ for case in plan['cases']:
         reject(lambda: check(dict(cfg, actor='rail_vehicle')), 'identity')
         reject(lambda: check(dict(cfg, cameras=cameras[:3])), 'four original')
         reject(lambda: check(dict(cfg, candidate_id='unreviewed')), 'candidate')
-print('PASS: 9 exact cases x 2 declared Native candidates and negative preflights')
+print('PASS: 10 exact cases x 2 declared Native candidates and negative preflights')

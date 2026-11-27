@@ -12,7 +12,8 @@ from exit_candidate import CAMERAS, measure
 AUTHORITY = ('access-authority.txt', 'device-authority.txt', 'device-content.txt',
              'device-erection.txt', 'exit-extent.txt')
 SOURCES = ('road.xodr', 'access-review.json', 'device-review.json',
-           'actor-poses.jsonl', 'video_frames.jsonl', *AUTHORITY)
+           'actor-poses.jsonl', 'video_frames.jsonl', *AUTHORITY,
+           *(name + '.mkv' for name in CAMERAS))
 
 
 def _required(root, name):
@@ -30,8 +31,6 @@ def observation(root):
     """Measure an exit only after separate access/device source hash joins."""
     root = Path(root)
     paths = {name: _required(root, name) for name in SOURCES}
-    for name in CAMERAS:
-        _required(root, name + '.mkv')
     raw = {name: path.read_bytes() for name, path in paths.items()}
     access = json.loads(raw['access-review.json'])
     device = json.loads(raw['device-review.json'])
@@ -48,6 +47,8 @@ def observation(root):
         raise ValueError('Exit pose/access review source differs')
     if device.get('frame_map_sha256') != _sha(raw['video_frames.jsonl']):
         raise ValueError('Exit frame/device review source differs')
+    if device.get('overview_sha256') != _sha(raw['overview.mkv']):
+        raise ValueError('Exit device review pixel source differs')
     for name in AUTHORITY:
         owner = access if name == 'access-authority.txt' else device
         if owner.get('source_sha256', {}).get(name) != _sha(raw[name]):

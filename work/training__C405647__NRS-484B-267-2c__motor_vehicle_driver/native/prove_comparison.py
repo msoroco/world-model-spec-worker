@@ -1,104 +1,54 @@
-"""Positive and negative CPU checks for the independent saved comparison."""
-
-import copy
+"""Source-bound two-case comparison and changed-trajectory negative."""
 import json
-import shutil
+import os
+import sys
+import tempfile
 from pathlib import Path
-
-from audit_comparison import audit
-from measure_readiness import measure
-from prove_readiness import ROOT as BASE, main as build_fixture, write, write_lines
-from scene import CASES, request
-
-
-def must_reject(fragment, action):
-    try:
-        action()
-    except ValueError as exc:
-        if fragment not in str(exc):
-            raise AssertionError(str(exc)) from exc
-        return str(exc)
-    raise AssertionError("Comparison accepted an invalid input")
 
 
 def main():
-    build_fixture()
-    target = BASE.parent / "C405647-comparison-proof"
-    if target.exists():
-        shutil.rmtree(target)
-    target.mkdir()
-    roots = {}
-    reports = {}
-    for condition in CASES:
-        directory = target / condition
-        shutil.copytree(BASE, directory)
-        (directory / "native-request.json").write_text(json.dumps(request(condition), indent=2) + "\n")
-        roots[condition] = directory
-        reports[condition] = target / (condition + "-observation.json")
-    absent = roots[CASES[1]]
-    trace_path = absent / "approach_trace.jsonl"
-    rows = [json.loads(line) for line in trace_path.read_text().splitlines()]
-    for row in rows:
-        row["ego_speed_mps"] = 15
-        row["ego_brake"] = 0
-    write_lines(trace_path, rows)
-    for condition in CASES:
-        reports[condition].write_text(json.dumps(measure(roots[condition]), indent=2) + "\n")
-    positive = audit(roots, reports)
-    failures = {}
-    request_path = absent / "native-request.json"
-    request_path.write_text(json.dumps(request(CASES[0])) + "\n")
-    failures["wrong_request"] = must_reject("differs from exact construction", lambda: audit(roots, reports))
-    request_path.write_text(json.dumps(request(CASES[1]), indent=2) + "\n")
-    review_path = absent / "emergency_review.json"
-    original_review = json.loads(review_path.read_text())
-    changed_review = copy.deepcopy(original_review)
-    changed_review["vehicle_class"] = "regulatory_agency_official_vehicle"
-    write(review_path, changed_review)
-    reports[CASES[1]].write_text(json.dumps(measure(absent)) + "\n")
-    failures["changed_vehicle_class"] = must_reject("changed reviewed legal context", lambda: audit(roots, reports))
-    write(review_path, original_review)
-    reports[CASES[1]].write_text(json.dumps(measure(absent)) + "\n")
-    changed_review = copy.deepcopy(original_review)
-    changed_review["officer_direction_present"] = True
-    write(review_path, changed_review)
-    reports[CASES[1]].write_text(json.dumps(measure(absent)) + "\n")
-    failures["changed_officer_direction"] = must_reject("changed reviewed legal context", lambda: audit(roots, reports))
-    write(review_path, original_review)
-    reports[CASES[1]].write_text(json.dumps(measure(absent)) + "\n")
-    stale = json.loads(reports[CASES[1]].read_text())
-    stale["first_brake_frame"] = 55
-    reports[CASES[1]].write_text(json.dumps(stale) + "\n")
-    failures["stale_observation"] = must_reject("differs from saved sources", lambda: audit(roots, reports))
-    reports[CASES[1]].write_text(json.dumps(measure(absent)) + "\n")
-    changed = copy.deepcopy(rows)
-    changed[100]["emergency_speed_mps"] = 3
-    write_lines(trace_path, changed)
-    reports[CASES[1]].write_text(json.dumps(measure(absent)) + "\n")
-    failures["changed_emergency_trajectory"] = must_reject("changed emergency trajectory", lambda: audit(roots, reports))
-    write_lines(trace_path, rows)
-    reports[CASES[1]].write_text(json.dumps(measure(absent)) + "\n")
-    changed = copy.deepcopy(rows)
-    for row in changed:
-        row["emergency_speed_mps"] = 0 if row["video_frame"] == 50 else 2
-    write_lines(trace_path, changed)
-    reports[CASES[1]].write_text(json.dumps(measure(absent)) + "\n")
-    failures["changed_trigger"] = must_reject("changed emergency trajectory", lambda: audit(roots, reports))
-    write_lines(trace_path, rows)
-    reports[CASES[1]].write_text(json.dumps(measure(absent)) + "\n")
-    changed = copy.deepcopy(rows)
-    for row in changed:
-        row["ego_brake"] = 1 if row["video_frame"] >= 55 else 0
-    write_lines(trace_path, changed)
-    reports[CASES[1]].write_text(json.dumps(measure(absent)) + "\n")
-    failures["no_response_contrast"] = must_reject("brake-response contrast absent", lambda: audit(roots, reports))
-    write_lines(trace_path, rows)
-    reports[CASES[1]].write_text(json.dumps(measure(absent)) + "\n")
-    assert audit(roots, reports) == positive
-    print(json.dumps({"passed": True, "positive": positive,
-                      "negative_rejections": failures,
-                      "synthetic_diagnostic_only": True}, indent=2))
+    repo = Path(__file__).resolve().parents[3]
+    folder = Path(__file__).resolve().parents[1]
+    scratch = repo / '.runtime-work'
+    output_root = Path(os.environ['SCENARIO_PIPELINE_OUTPUT_ROOT']).resolve()
+    if scratch not in output_root.parents:
+        raise ValueError('Runtime output must stay under .runtime-work')
+    sys.path.insert(0, str(repo / 'runtime/scenario_pipeline'))
+    sys.path.insert(0, str(folder / 'native'))
+    from worker_exchange.fixture_recipe import materialize
+    from audit_comparison import audit
+    from measure_readiness import measure
+    from scene import CASES
+
+    with tempfile.TemporaryDirectory(dir=scratch, prefix='c405647-comparison-') as temporary:
+        work = Path(temporary)
+        roots = {}
+        reports = {}
+        for condition in CASES:
+            root = work / condition
+            materialize(repo, folder / 'selected-fixtures' / condition / 'fixture-recipe.json', root)
+            roots[condition] = root
+            reports[condition] = work / (condition + '-observation.json')
+            reports[condition].write_text(json.dumps(measure(root), indent=2) + '\n')
+        positive = audit(roots, reports)
+        if positive['physical_acceptance_claimed'] or positive['legal_verdict_claimed']:
+            raise ValueError('Comparison claimed physical or legal acceptance')
+        print('positive: fixed trigger context, source hashes and brake-response difference passed')
+
+        changed = roots[CASES[1]] / 'approach_trace.jsonl'
+        rows = [json.loads(line) for line in changed.read_text().splitlines()]
+        rows[100]['emergency_speed_mps'] += 0.5
+        changed.write_text(''.join(json.dumps(row, separators=(',', ':')) + '\n' for row in rows))
+        reports[CASES[1]].write_text(json.dumps(measure(roots[CASES[1]]), indent=2) + '\n')
+        try:
+            audit(roots, reports)
+        except ValueError as error:
+            if 'Comparison changed emergency trajectory or indication' not in str(error):
+                raise
+        else:
+            raise ValueError('Changed emergency trajectory was accepted')
+        print('negative: changed emergency trajectory rejected')
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

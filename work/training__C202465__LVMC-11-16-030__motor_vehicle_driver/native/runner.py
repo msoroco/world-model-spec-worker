@@ -32,7 +32,7 @@ def sha(path):
 def check(config):
     if (config.get("case_id", "").removeprefix(ASSIGNMENT + "__") not in
             {"selected_bd9b70e5__" + suffix for suffix in (
-                "condition_a", "condition_b", "clear_both", "right_obscured",
+                "condition_a", "condition_at", "condition_b", "clear_both", "right_obscured",
                 "crossing_obscured", "flagman_duty", "signal_inactive",
                 "signal_active", "signal_not_visible")}
             or (config.get("law_id"), config.get("cell_id"), config.get("actor")) !=

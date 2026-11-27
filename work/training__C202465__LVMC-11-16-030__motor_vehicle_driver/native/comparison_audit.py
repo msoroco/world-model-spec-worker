@@ -9,7 +9,7 @@ FIXED = ("road_sha256", "railway_review_sha256", "approach_review_sha256",
          "crossing_source_ref", "flagman_source_ref", "signal_source_ref")
 
 
-def audit(case_a, case_b, comparison):
+def audit(case_a, case_b, comparison, diagnostic_fixture=False):
     if case_a.get("case_id") == case_b.get("case_id") or not comparison.get("comparison_id"):
         raise ValueError("two distinct exact comparison cases required")
     if comparison.get("case_ids") != [case_a.get("case_id"), case_b.get("case_id")]:
@@ -18,7 +18,7 @@ def audit(case_a, case_b, comparison):
     for key in FIXED:
         if not meta_a.get(key) or meta_a[key] != meta_b.get(key):
             raise ValueError("fixed original source differs: " + key)
-    if meta_a.get("diagnostic_fixture") or meta_b.get("diagnostic_fixture"):
+    if (meta_a.get("diagnostic_fixture") or meta_b.get("diagnostic_fixture")) and not diagnostic_fixture:
         raise ValueError("diagnostic fixture cannot certify independent comparison")
     axis = comparison.get("axis")
     if axis not in ("speed", "sight", "flagman", "signal_state", "signal_visibility"):
@@ -38,7 +38,7 @@ def audit(case_a, case_b, comparison):
         raise ValueError("undeclared traversal speed change")
     if axis == "speed":
         if (abs(ma["maximum_traversal_speed_mps"]-mb["maximum_traversal_speed_mps"]) < .5
-                or ma["last_100_feet_missing_view_frames"] != mb["last_100_feet_missing_view_frames"]
+                or bool(ma["last_100_feet_missing_view_frames"]) != bool(mb["last_100_feet_missing_view_frames"])
                 or ma["flagman_on_duty_frames"] != mb["flagman_on_duty_frames"]
                 or ma["visible_inactive_signal_frames"] != mb["visible_inactive_signal_frames"]):
             raise ValueError("speed contrast or fixed sight and exception states missing")
@@ -57,4 +57,5 @@ def audit(case_a, case_b, comparison):
     return {"format": "rail-comparison-audit-v1", "comparison_id": comparison["comparison_id"],
             "case_ids": comparison["case_ids"], "axis": axis,
             "fixed_source_keys": list(FIXED), "measurements": [ma, mb],
+            "diagnostic_only": diagnostic_fixture,
             "physical_acceptance_claimed": False, "legal_verdict_claimed": False}

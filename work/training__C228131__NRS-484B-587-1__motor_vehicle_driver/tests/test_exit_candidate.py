@@ -4,11 +4,13 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
+from types import SimpleNamespace
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'native'))
 from exit_candidate import CAMERAS, FRAMES, measure, target
 from exit_geometry import check as geometry_check
 from exit_finalize import AUTHORITY, observation
+from exit_runner import check as runner_check, control as exit_control
 
 
 def make_sources(mode):
@@ -40,6 +42,40 @@ def make_sources(mode):
 
 
 class ExitCandidate(unittest.TestCase):
+    def test_unselected_native_runner_plan_and_controller(self):
+        cameras = [{'name': name, 'width': 1920 if name == 'overview' else 1280,
+                    'height': 1080 if name == 'overview' else 720}
+                   for name in CAMERAS]
+        base = {'law_id': 'NRS-484B-587-1', 'cell_id': 'C62507',
+                'actor': 'motor_vehicle_driver', 'rate_hz': 20,
+                'duration_s': 30, 'steer_gain': 0.1, 'cameras': cameras}
+        for mode in ('indicated_exit', 'outside_exit'):
+            with self.subTest(mode=mode):
+                config = {**base, 'case_id': 'candidate__' + mode,
+                          'exit_mode': mode}
+                plan = runner_check(config)
+                self.assertEqual(plan['frames'], 600)
+                self.assertEqual(plan['source_cameras'], CAMERAS)
+                self.assertFalse(plan['original_physical_or_legal_status_verified'])
+                first = target(mode, 0)
+                subject = SimpleNamespace(
+                    get_transform=lambda: SimpleNamespace(
+                        location=SimpleNamespace(x=first['x_m'], y=first['y_m']),
+                        rotation=SimpleNamespace(yaw=0)),
+                    get_velocity=lambda: SimpleNamespace(x=0, y=0))
+                request = exit_control(config, 0, subject)
+                self.assertEqual(request['requested_x_m'], first['x_m'])
+                self.assertEqual(request['requested_y_m'], first['y_m'])
+                self.assertGreater(request['throttle'], 0)
+                self.assertLessEqual(abs(request['steer']), 0.35)
+        with self.assertRaisesRegex(ValueError, 'identity differs'):
+            runner_check({**base, 'cell_id': 'C228131',
+                          'case_id': 'candidate__indicated_exit',
+                          'exit_mode': 'indicated_exit'})
+        with self.assertRaisesRegex(ValueError, 'case'):
+            runner_check({**base, 'case_id': 'candidate__indicated_exit',
+                          'exit_mode': 'outside_exit'})
+
     def test_mirrored_indicated_and_outside_exit(self):
         geometry = geometry_check()
         self.assertTrue(geometry['exit_paving_crosses_edge'])
@@ -97,7 +133,9 @@ class ExitCandidate(unittest.TestCase):
                 for name, raw in data.items():
                     (root / name).write_bytes(raw)
                 for name in CAMERAS:
-                    (root / (name + '.mkv')).write_bytes(b'diagnostic placeholder')
+                    camera = name + '.mkv'
+                    data[camera] = ('diagnostic ' + name).encode()
+                    (root / camera).write_bytes(data[camera])
                 (root / 'fixture-provenance.json').write_text('{}\n')
                 digest = lambda name: hashlib.sha256(data[name]).hexdigest()
                 access = {'review_status': 'synthetic_diagnostic', 'reviewer': 'diagnostic-access',
@@ -108,6 +146,7 @@ class ExitCandidate(unittest.TestCase):
                 device = {'review_status': 'synthetic_diagnostic', 'reviewer': 'diagnostic-device',
                           'source': 'diagnostic-device-source', 'road_sha256': digest('road.xodr'),
                           'frame_map_sha256': digest('video_frames.jsonl'),
+                          'overview_sha256': digest('overview.mkv'),
                           'source_sha256': {name: digest(name) for name in AUTHORITY[1:]},
                           'device_official': True, 'device_erected': True,
                           'device_indicates_exit': True, 'indicated_exit_x_interval_m': [-1, 1]}
@@ -117,6 +156,11 @@ class ExitCandidate(unittest.TestCase):
                 self.assertEqual(facts['exit_events'][0]['within_indicated_exit'], indicated)
                 self.assertFalse(facts['video_decode_verified'])
                 self.assertFalse(facts['original_device_pixels_verified'])
+                self.assertEqual(facts['source_sha256']['overview.mkv'], digest('overview.mkv'))
+                (root / 'overview.mkv').write_bytes(b'altered diagnostic camera')
+                with self.assertRaisesRegex(ValueError, 'pixel source differs'):
+                    observation(root)
+                (root / 'overview.mkv').write_bytes(data['overview.mkv'])
                 (root / 'exit-extent.txt').write_text('altered source\n')
                 with self.assertRaisesRegex(ValueError, 'Exit authority source differs'):
                     observation(root)

@@ -98,7 +98,7 @@ def build_case(template, case, overview_sha):
     bodies,rays,exceptions,trace,evidence = [],[],[],[],[]
     for i in range(600):
         frame = 1000+i
-        x = round(-50+speed*i/20,4)
+        x = round(-50+speed*i/20, 2 if design['speed_mode'] == 'at_limit_traversal' else 4)
         rail_traffic = [
             {'source_ref':'synthetic:left-rail-vehicle','kind':'rail_vehicle',
              'side':'left','center_xy_m':[0,-70+.01*i]},
@@ -116,6 +116,16 @@ def build_case(template, case, overview_sha):
                         {'source_ref':'synthetic:railway','crossing_xy_m':[0,0],
                          'unit_direction_xy':[0,1],'grade_crossing':True},
                         rail_traffic,barrier,flagman,signal)
+        if design['speed_mode'] == 'at_limit_traversal':
+            def quantize(value):
+                if isinstance(value, float):
+                    return round(value, 5)
+                if isinstance(value, list):
+                    return [quantize(item) for item in value]
+                if isinstance(value, dict):
+                    return {key: quantize(item) for key, item in value.items()}
+                return value
+            row = quantize(row)
         body = {'frame':frame,'actor_id':1,'actor_type_id':'vehicle.synthetic.cpu',
                 'body_vertices_m':[[x+dx,dy,z] for dx in (-2,2)
                                    for dy in (-1,1) for z in (0,1)],
@@ -159,7 +169,7 @@ def build_case(template, case, overview_sha):
         motion['position_m'][0]=x
         motion['position_m'][1:]=[0,0.5]
         motion['speed_mps']=speed
-        motion['speed_mph']=speed*2.2369362921
+        motion['speed_mph']=speed/.44704
         motion['velocity_mps']=[speed,0,0]
         motion['frame']=frame
         trace.append(motion)

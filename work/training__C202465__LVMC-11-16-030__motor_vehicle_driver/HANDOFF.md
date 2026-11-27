@@ -2,6 +2,14 @@
 
 Status: partial. A source-shaped rail-sight and speed proof is present; this is not a deployable delivery package.
 
+## 2026-11-27 exact boundary and canonical stage continuation
+
+The original nine-case public compatibility sweep passed all 18 primary/fallback selections through Native validation, selected measurements, negative-source rejection, semantic conversion, Lean decoding, four-camera source and final video decoding. This exposed no remaining software compatibility gap in those revisions. The rail statute also needs an exact 15 mph middle probe: `condition_at` now makes ten selected cases and nine comparisons, with below/at/above speed requests bound to the same reviewed sight design. Ten case constructions and fallback plans passed all 20 exact current-runtime offline checks. The repaired 20-selection public sweep is running; this paragraph does not claim those pending receipts.
+
+`native/build_semantic.py` now authors source-quoted relevance and law template, both unresolved judgment observables, cell bindings, a baseline, ten selected canonical cases and incomplete judgment sweeps. Direct `semantic_delivery.validate` passed seven canonical stages and all ten selected IDs. This is draft semantic coverage, not a legal outcome. Four-view camera poses and an exact 30-second profile plan are authored. `native/build_physical_proofs.py` passed complete, incomplete and missing-evidence diagnostic status triads and lifecycle checks for all ten cases; those fixtures are marked synthetic and do not assert physical acceptance. All ten rail source/controller/join/finalizer/comparison unit proofs pass after the boundary addition.
+
+Source-bound saved-only processing, independent original-source delivery audits, case comparison receipts and exact scoped strict delivery acceptance remain next. Keep `result.json` partial until the strict assignment gate passes.
+
 ## 2026-11-27 saved CPU and compatibility continuation
 
 The saved-only finalizer now writes a source-hashed authored crossing context object, binds the four original source-review records, joins all 600 Native body/ray/exception/camera frames, and emits original-source-derived channels and measurement reports. `native/prove_finalize.py` passed its 600-frame positive and missing-rail-ray negative checks. The diagnostic generator now aligns participant body vertices and ego telemetry, which repaired the semantic adapter participant geometry rejection. The first exact `condition_a` primary public compatibility run passed Native validation, selected measurement verification, negative source removal, semantic adapter conversion, Lean decoder, render, four source cameras and final decode. `native/run_public_all.py` is extending that public proof to all 18 selected primary/fallback constructions; until every receipt is present, no delivery readiness is claimed.

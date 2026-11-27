@@ -1,0 +1,75 @@
+{
+  "template_id": "LVMC-11-16-030@motor_vehicle_driver",
+  "law_id": "LVMC-11-16-030",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "The prima facie speed limit shall be fifteen miles per hour when traversing a grade crossing of a steam, electric or any other motor railway, if during the last one hundred feet of the approach to such crossing the driver does not have a clear and unobstructed view of such crossing and of any traffic on such railway for a distance of four hundred feet in both directions along such railway. This Section shall not apply in the case of any railway grade crossing where a human flagman is on duty or clearly visible electrical or mechanical railway crossing signal device is installed but does not then indicate the immediate approach of a railway train or car.",
+  "structure": {
+    "activation": {
+      "condition": "Motor vehicle traverses a grade crossing of a steam, electric or other motor railway after the stated approach visibility condition.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "type": "must",
+      "description": "Observe the fifteen mile per hour prima facie traversal speed limit when the source conditions apply; legal classification remains external.",
+      "numeric_conditions": [
+        {
+          "variable": "ego_speed",
+          "operator": "<=",
+          "value": 15,
+          "unit": "mph"
+        }
+      ]
+    },
+    "exceptions": [
+      {
+        "trigger": "human flagman on duty",
+        "effect": "Section does not apply",
+        "replacement_obligation": "none stated in this Section",
+        "source_clause": "where a human flagman is on duty"
+      },
+      {
+        "trigger": "clearly visible installed signal does not indicate immediate train or car approach",
+        "effect": "Section does not apply",
+        "replacement_obligation": "none stated in this Section",
+        "source_clause": "clearly visible electrical or mechanical railway crossing signal device is installed but does not then indicate the immediate approach of a railway train or car"
+      }
+    ],
+    "timing": {
+      "description": "Assess crossing and railway traffic sight during the final one hundred feet of approach, and speed during traversal.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "clear and unobstructed view",
+        "note": "actual subject sight of crossing and rail traffic requires original source review"
+      },
+      {
+        "phrase": "clearly visible electrical or mechanical railway crossing signal device",
+        "note": "device visibility and indication require original per-frame review"
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "ego_speed",
+      "kind": "subject_behavior",
+      "range_or_domain": "original traversal speed"
+    },
+    {
+      "name": "commanded_approach_speed",
+      "kind": "controller",
+      "range_or_domain": "physical speed request in m/s"
+    },
+    {
+      "name": "rail_sight_mode",
+      "kind": "world_setup",
+      "range_or_domain": "reviewed left, right and crossing sight geometry"
+    },
+    {
+      "name": "rail_exception_state",
+      "kind": "world_setup",
+      "range_or_domain": "reviewed flagman duty and crossing device state"
+    }
+  ]
+}

@@ -14,8 +14,10 @@ def reject(fn, phrase):
 
 
 slow = control(0, 0, "slower_traversal")
+at = control(0, 0, "at_limit_traversal")
 fast = control(0, 0, "faster_traversal")
 assert slow["requested_speed_mps"] < FIFTEEN_MPH_MPS < fast["requested_speed_mps"]
+assert at["requested_speed_mps"] == FIFTEEN_MPH_MPS
 assert slow["throttle"] > 0 and fast["throttle"] > 0
 assert control(100, 10, "slower_traversal")["brake"] > 0
 assert control(100, 6, "slower_traversal")["physical_target_met"] is None

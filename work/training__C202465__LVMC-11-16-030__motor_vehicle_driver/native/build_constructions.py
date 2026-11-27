@@ -56,7 +56,8 @@ camera_data = [
 ]
 cameras = [{'name': name, 'width': width, 'height': height, 'fps': 20,
             'fov_deg': 85, 'mount_xyz_relative_to_crossing_m': xyz,
-            'yaw_deg': yaw, 'pitch_deg': pitch} for
+            'yaw_deg': yaw, 'pitch_deg': pitch,
+            'pose_strategy': 'fixed surveyed crossing-relative viewpoint; verify original lane and rail coverage before dispatch'} for
            name, width, height, xyz, yaw, pitch in camera_data]
 
 source_names = ('runner.py', 'controller.py', 'rail_native_rays.py',
@@ -149,6 +150,10 @@ for case in plan['cases']:
                                     'failure_condition': 'primary controller misses requested traversal speed'},
                         'changed_knobs': ['feedback_gain 1.0 to 1.25']}],
     })
+
+root_config = json.loads((ROOT / 'config.json').read_text())
+root_config['supported_case_ids'] = [entry['case_id'] for entry in manifest_cases]
+write(ROOT / 'config.json', root_config)
 
 runtime_sha = sha(Path('runtime/SOURCE-MANIFEST.json'))
 write(ROOT / 'proposals/cases.json', {

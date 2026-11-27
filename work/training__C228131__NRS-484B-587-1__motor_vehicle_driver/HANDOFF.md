@@ -91,3 +91,34 @@ C228131 remains frozen as `enter_road`, so this exit cannot be silently selected
 `native/exit_finalize.py` now joins separate access and device reviews to the exact road, pose, frame-map and five authority source hashes before invoking the 600-frame saved exit meter. It requires four named camera source paths and rejects altered exit-extent bytes or a missing device review. Its diagnostic receipt explicitly leaves video decode and original pixels unverified. The two synthetic indicated/outside exit positives and altered-source negatives passed in `exit-candidate-tests.log` (SHA-256 `e2b69a7b2aa9288d391dd212bb85c43b72dd4e4ac53da63f50274a7dcafc50b6`). Finalizer SHA-256: `916518f276236415910f0a23ef6562a8963cdd8b4c8c0118f9b3fa94910137c0`. This is unselected reusable CPU code, not a captured exit or claim of official authority.
 
 The remaining exact binding gap is mechanical: C228131 is `enter_road`; both exported `exit_road` candidates C62472/C62507 have empty `candidate_ego_parties`, and `runtime/scenario_pipeline/worker_exchange/branch_coverage.py` rejects supplemental assignments whose actor is absent from that list. The current frozen sources therefore cannot select a `motor_vehicle_driver` exit package by editing this assignment. A source-validated catalog/actor binding is required before preparing and strictly checking the two selected exit cases, public and saved chains, delivery/comparison audits and semantic proposals. Entry readiness remains as previously proved; this assignment remains `partial`.
+
+## 2026-11-27 outbound acquisition continuation
+
+`native/exit_runner.py` now requests an original 600-frame, 20 Hz motor-vehicle
+route from the authored highway toward the frontage road. It configures and
+joins four source cameras, records body poses, frame maps and controls, and
+retains the Native world restore and lifecycle seal. Its `check()` enforces the
+C62507 / NRS-484B-587-1 / motor_vehicle_driver candidate identity, exact exit
+case suffix, duration, camera names and controller gain. The runner does not
+assert actor eligibility or physical completion. `tests/test_exit_candidate.py`
+exercises the indicated and outside controller requests and rejects the frozen
+C228131 entry identity and mismatched case suffix. All eight package tests pass
+with exit code 0 in `exit-candidate-tests.log` (SHA-256
+`c30577b8adddde95e8b161ea59b1b75f038a5f9527b3b94af4abbe8a6d4b2c67`).
+`native/exit_finalize.py` now hashes all four camera sources and requires the
+device review to bind the exact overview bytes. A changed overview source is
+rejected even when the frame map is unchanged; video decode and actual pixels
+remain unverified. Current finalizer SHA-256 is
+`e8b09dd576c9faf2c44b0f9d9cd40d1cace8393179f715ecccb190bab4a934ed`.
+The `exit-candidate-proposal.json` binds this acquisition
+runner and finalizer and remains explicitly unselected (SHA-256
+`a7400e5f8ca1f5cd68ae8c2d96a7c7c9058975632866dde7362ccc9dcbd55194`).
+
+Resume after a source-validated same-role exit cell binding: adapt this runner
+and finalizer to that exact assignment, create indicated/outside exit cases and
+their comparison, run each primary and justified fallback through current
+`runtime.py offline`, `runtime.py compatibility` and recorded-only processing,
+then bind semantic, physical, delivery and comparison CPU proofs. Run the exact
+assignment strict gate before changing status to ready. Original Native lane
+connectivity, official device authority, pixels and actual exit remain local
+physical and source review tasks.

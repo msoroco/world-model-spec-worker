@@ -40,6 +40,7 @@ for i in range(FRAME_COUNT):
                                      "right": [0, 70 - .01*i]},
     })
 assert speed_request("slower_traversal") < FIFTEEN_MPH_MPS
+assert speed_request("at_limit_traversal") == FIFTEEN_MPH_MPS
 assert speed_request("faster_traversal") > FIFTEEN_MPH_MPS
 reject(lambda: speed_request("legal_violation"), "unknown traversal")
 m = measure_trace(rows, crossing)
