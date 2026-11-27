@@ -36,7 +36,7 @@ def rectangle(bounds):
 
 def rows(path):
     if not path.is_file():
-        raise ValueError("Missing required original source: " + path.name)
+        raise ValueError("Missing required source: " + path.name)
     values = [json.loads(line) for line in path.read_text().splitlines()]
     if len(values) != 600:
         raise ValueError("Incomplete 600-frame original source: " + path.name)
@@ -47,7 +47,7 @@ def measure_attempt(attempt):
     attempt = Path(attempt)
     for name in ("request.json", "divided-road-context.json", "source-review.json"):
         if not (attempt / name).is_file():
-            raise ValueError("Missing required original source: " + name)
+            raise ValueError("Missing required source: " + name)
     request = json.loads((attempt / "request.json").read_text())
     context = json.loads((attempt / "divided-road-context.json").read_text())
     review = json.loads((attempt / "source-review.json").read_text())

@@ -146,61 +146,70 @@
   ],
   "source_observation_mapping": {
     "st.median_or_divider": {
-      "evidence": "Proposed capture only: the dividing space, barrier or section, with its opening attribute. No Native channel or Core atom proof yet.",
+      "evidence": "Authored two-section median and original road-object readback feed a 600-frame full-body crossing meter; original geometry remains unverified.",
       "channels": [
         "median_crossing_location"
       ],
       "source_refs": [
-        "inputs/training__C82860__NRS-484B-227-1__motor_vehicle_driver/assignment.json"
+        "work/training__C82860__NRS-484B-227-1__motor_vehicle_driver/native/runner.py",
+        "work/training__C82860__NRS-484B-227-1__motor_vehicle_driver/native/measure_uturn.py"
       ]
     },
     "st.roadway": {
-      "evidence": "Proposed capture only: the two separate roadways of the divided highway. No Native channel or Core atom proof yet.",
+      "evidence": "The runner records both opposing roadway IDs, headings, driving-lane centers and widths; the meter checks them against the authored request.",
       "channels": [
         "median_crossing_location"
       ],
       "source_refs": [
-        "inputs/training__C82860__NRS-484B-227-1__motor_vehicle_driver/assignment.json"
+        "work/training__C82860__NRS-484B-227-1__motor_vehicle_driver/native/runner.py",
+        "work/training__C82860__NRS-484B-227-1__motor_vehicle_driver/native/measure_uturn.py"
       ]
     },
     "rel.occupies": {
-      "evidence": "Proposed capture only: which roadway the footprint is on, and any overlap of the dividing space. No Native channel or Core atom proof yet.",
+      "evidence": "The saved meter joins each original-shaped body polygon to roadway and median polygons over 600 frames.",
       "channels": [
         "median_crossing_location"
       ],
       "source_refs": [
-        "inputs/training__C82860__NRS-484B-227-1__motor_vehicle_driver/assignment.json"
+        "work/training__C82860__NRS-484B-227-1__motor_vehicle_driver/native/measure_uturn.py",
+        "work/training__C82860__NRS-484B-227-1__motor_vehicle_driver/analysis/divided_road.py"
       ]
     },
     "st.lane_direction": {
-      "evidence": "Proposed capture only: the right-hand roadway for the subject's direction. No Native channel or Core atom proof yet.",
+      "evidence": "Original roadway readback headings and lane centers identify the requested right-hand approach; the saved meter rejects shifted lanes.",
       "channels": [
+        "ego_pose",
         "median_crossing_location"
       ],
       "source_refs": [
-        "inputs/training__C82860__NRS-484B-227-1__motor_vehicle_driver/assignment.json"
+        "work/training__C82860__NRS-484B-227-1__motor_vehicle_driver/native/runner.py",
+        "work/training__C82860__NRS-484B-227-1__motor_vehicle_driver/native/measure_uturn.py"
       ]
     },
     "drv.turning": {
-      "evidence": "Proposed capture only: a left or semicircular turn. No Native channel or Core atom proof yet.",
+      "evidence": "The runner retains source heading and body history across the requested turn; saved U-turn measurements remain factual, not a legal label.",
       "channels": [
+        "ego_pose",
         "median_crossing_location"
       ],
       "source_refs": [
-        "inputs/training__C82860__NRS-484B-227-1__motor_vehicle_driver/assignment.json"
+        "work/training__C82860__NRS-484B-227-1__motor_vehicle_driver/native/runner.py",
+        "work/training__C82860__NRS-484B-227-1__motor_vehicle_driver/native/finalize.py"
       ]
     },
     "drv.u_turn": {
-      "evidence": "Proposed capture only: a U-turn. No Native channel or Core atom proof yet.",
+      "evidence": "The selected U-turn request and full source heading/body history support a saved turn-event measurement; physical completion remains unverified.",
       "channels": [
+        "ego_pose",
         "median_crossing_location"
       ],
       "source_refs": [
-        "inputs/training__C82860__NRS-484B-227-1__motor_vehicle_driver/assignment.json"
+        "work/training__C82860__NRS-484B-227-1__motor_vehicle_driver/native/runner.py",
+        "work/training__C82860__NRS-484B-227-1__motor_vehicle_driver/native/finalize.py"
       ]
     },
     "st.intersection": {
-      "evidence": "Proposed capture only: an established crossover or intersection. No Native channel or Core atom proof yet.",
+      "evidence": "Pending additional crossover or public-authority intersection construction and original administrative source review; the current two U-turn requests do not establish this branch.",
       "channels": [
         "median_crossing_location"
       ],
@@ -209,12 +218,14 @@
       ]
     },
     "drv.wrong_way": {
-      "evidence": "Proposed capture only: driving on the roadway of the opposite direction. No Native channel or Core atom proof yet.",
+      "evidence": "Original roadway heading and full-body roadway occupancy support a wrong-way observation after capture; no legal outcome is inferred.",
       "channels": [
+        "ego_pose",
         "median_crossing_location"
       ],
       "source_refs": [
-        "inputs/training__C82860__NRS-484B-227-1__motor_vehicle_driver/assignment.json"
+        "work/training__C82860__NRS-484B-227-1__motor_vehicle_driver/native/runner.py",
+        "work/training__C82860__NRS-484B-227-1__motor_vehicle_driver/analysis/divided_road.py"
       ]
     }
   },
@@ -247,11 +258,11 @@
     }
   ],
   "runtime_uncertainties": [
-    "No exact Native construction, four distinct candidate plans, offline feasibility checks, or positive/negative compatibility proofs have been produced.",
-    "No saved-only processing, semantic-stage validation, independent audit or comparison audit has passed.",
+    "Four exact primary/fallback Native construction bundles pass pinned offline materialization; original CARLA motion, map readback and camera pixels remain unverified.",
+    "Saved-only finalizer and source/comparison audits pass synthetic CPU tests; public compatibility and recorded-only runtime receipts remain unfinished.",
+    "Five-stage canonical semantic draft validates against the two-case draft manifest; branch expansion remains unselected pending source and catalog review.",
     "Membership rows do not prove statutory coverage or accepted equivalence; no source-hashed reuse receipt was verified.",
-    "CARLA execution, physical realization, camera framing and legal judgments are unverified.",
-    "Physical gap alone does not prove public authority; left-turn/crossover/intersection alternatives need separate cases."
+    "A physical gap alone does not prove public authority; left-turn, semicircular-turn, crossover and intersection alternatives need separate source and construction review."
   ],
   "selection_targets": [
     "demo-train",

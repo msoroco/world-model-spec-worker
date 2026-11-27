@@ -22,6 +22,14 @@ class DividedRoadComparisonTest(unittest.TestCase):
         self.barrier.mkdir()
         fixture(self.opening, "authorized_opening")
         fixture(self.barrier, "barrier_crossing")
+        for folder in (self.opening, self.barrier):
+            case = json.loads((folder / "request.json").read_text())["case_id"]
+            (folder / "config.json").write_text(json.dumps({
+                "selected_case_id": case, "cell_id": "C82860",
+                "law_id": "NRS-484B-227-1", "actor": "motor_vehicle_driver",
+                "rate_hz": 20, "duration_s": 30, "frames": 600,
+                "cameras": ["overview", "approach", "median_reference", "driver_reference"],
+                "physical_completion": "full-body U-turn"}) + "\n")
 
     def tearDown(self):
         self.tmp.cleanup()
@@ -45,6 +53,18 @@ class DividedRoadComparisonTest(unittest.TestCase):
         context["native_roadways"][0]["heading_deg"] = 2
         (self.barrier / "divided-road-context.json").write_text(json.dumps(context) + "\n")
         with self.assertRaisesRegex(ValueError, "Fixed original road or median context differs"):
+            audit(self.opening, self.barrier)
+
+    def test_changed_camera_or_duration_rejected(self):
+        path = self.barrier / "config.json"
+        original = json.loads(path.read_text())
+        changed = dict(original, duration_s=29)
+        path.write_text(json.dumps(changed) + "\n")
+        with self.assertRaisesRegex(ValueError, "Fixed camera, duration"):
+            audit(self.opening, self.barrier)
+        changed = dict(original, cameras=["overview"])
+        path.write_text(json.dumps(changed) + "\n")
+        with self.assertRaisesRegex(ValueError, "Fixed camera, duration"):
             audit(self.opening, self.barrier)
 
 

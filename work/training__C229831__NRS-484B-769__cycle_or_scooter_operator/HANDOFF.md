@@ -91,3 +91,11 @@ Current files and SHA-256:
 - `result.json` `15899a5989ea2ce2a72b91233cfa8a8cd13909ec67e08ccfa1da3407eb72ca32`
 
 Next CPU actions: bind these sources to exact materialized selected-case constructions and canonical saved `write_result`; run runtime offline/positive and missing-source compatibility for each case and justified physical fallback; author stage proposals plus independent delivery and comparison audits; then run the exact strict assignment gate. No package readiness claim is made.
+
+## 2026-11-27 exact selected CPU proof checkpoint
+
+Three selected 600-frame Native construction bundles and one physical fallback each are authored in `execution-manifest.json` and `native/selected-drafts/`. `runtime.py offline` passed for all six selected candidates. Public `runtime.py compatibility` passed six positive source-bound diagnostics and six missing `rider_arm.jsonl` negative diagnostics. Each compatibility receipt and log is bound under `proofs/{a,b,c}/{primary,fallback1}/`. Compatibility materializes a synthetic saved-source fixture, decodes four streams, joins original-looking arm and roadway rows, and measures 40 right-arm frames for probe a, zero signal frames for b, and 40 upward left-arm frames for c. It does not prove an actual Native capture.
+
+`native/prove_physical.py` exercised `worker_exchange.native_output.physical_result` for complete, incomplete and missing motion in all three cases; nine results/logs are bound under `proofs/{a,b,c}/physical/` through `physical_preparation`. These are declared synthetic fixtures and make no physical or legal acceptance claim. `native/finalize_sources.py` now checks capture seal and every original stream hash. `finalize.py` is a canonical saved-only finalizer and the focused Native suite passed 22 tests. Scoped `worker_check.py --assignment training__C229831__NRS-484B-769__cycle_or_scooter_operator --complete` passed.
+
+Remaining: full canonical semantic stage proposals, independent delivery and comparison acceptance scripts/receipts, saved processing and case-plan source mappings, then exact strict scoped check. Original CARLA pixels, mounted rider arm and completed real turn remain unverified. Status partial.

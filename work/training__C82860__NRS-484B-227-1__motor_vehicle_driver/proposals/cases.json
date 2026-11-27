@@ -1,0 +1,168 @@
+{
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C82860",
+  "status": "draft",
+  "sweeps_expanded": true,
+  "cases": [
+    {
+      "case_id": "training__C82860__NRS-484B-227-1__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Unselected divided-road definition; no original authority or legal outcome asserted.",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "method": "original Native transform and body vertices",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native divided roadways 828601 and 828602",
+            "uncertainty": "Original body, median, roadway and authority review pending"
+          },
+          {
+            "name": "median_crossing_location",
+            "unit": "structured",
+            "method": "saved body polygon against original median and roadway readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native divided roadways 828601 and 828602",
+            "uncertainty": "Original body, median, roadway and authority review pending"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "An authored median gap does not prove public authority.",
+          "Original motion and four-camera pixels require source review."
+        ]
+      },
+      "unresolved_judgment_calls": [],
+      "variable_assignments": {
+        "target_crossing_x_m": {
+          "kind": "controller",
+          "unit": "m",
+          "value": 0
+        },
+        "physical_median_crossing_location": {
+          "kind": "world_setup",
+          "unit": "category",
+          "value": "opening"
+        }
+      }
+    },
+    {
+      "case_id": "training__C82860__NRS-484B-227-1__motor_vehicle_driver__authorized_opening",
+      "target_law_id": "NRS-484B-227-1",
+      "target_type": "compliant_attempt",
+      "probe": {
+        "primary_variable": "physical_median_crossing_location",
+        "comparison_or_standard": "physical opening versus continuous median section; authority independently reviewed",
+        "target_value_or_branch": "opening"
+      },
+      "paired_probe_id": "C82860-median-crossing",
+      "deliberate_differences": [
+        "target_crossing_x_m",
+        "physical_median_crossing_location"
+      ],
+      "rationale": "Record the original U-turn body, roadway and median crossing. The physical crossing and separate public-authority source remain subject to local review; no legal result is asserted.",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "method": "original Native transform and body vertices",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native divided roadways 828601 and 828602",
+            "uncertainty": "Original body, median, roadway and authority review pending"
+          },
+          {
+            "name": "median_crossing_location",
+            "unit": "structured",
+            "method": "saved body polygon against original median and roadway readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native divided roadways 828601 and 828602",
+            "uncertainty": "Original body, median, roadway and authority review pending"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "An authored median gap does not prove public authority.",
+          "Original motion and four-camera pixels require source review."
+        ]
+      },
+      "unresolved_judgment_calls": [],
+      "variable_assignments": {
+        "target_crossing_x_m": {
+          "kind": "controller",
+          "unit": "m",
+          "value": 0
+        },
+        "physical_median_crossing_location": {
+          "kind": "world_setup",
+          "unit": "category",
+          "value": "opening"
+        }
+      }
+    },
+    {
+      "case_id": "training__C82860__NRS-484B-227-1__motor_vehicle_driver__barrier_crossing",
+      "target_law_id": "NRS-484B-227-1",
+      "target_type": "violating_attempt",
+      "probe": {
+        "primary_variable": "physical_median_crossing_location",
+        "comparison_or_standard": "physical opening versus continuous median section; authority independently reviewed",
+        "target_value_or_branch": "continuous_section"
+      },
+      "paired_probe_id": "C82860-median-crossing",
+      "deliberate_differences": [
+        "target_crossing_x_m",
+        "physical_median_crossing_location"
+      ],
+      "rationale": "Record the original U-turn body, roadway and median crossing. The physical crossing and separate public-authority source remain subject to local review; no legal result is asserted.",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "method": "original Native transform and body vertices",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native divided roadways 828601 and 828602",
+            "uncertainty": "Original body, median, roadway and authority review pending"
+          },
+          {
+            "name": "median_crossing_location",
+            "unit": "structured",
+            "method": "saved body polygon against original median and roadway readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native divided roadways 828601 and 828602",
+            "uncertainty": "Original body, median, roadway and authority review pending"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "An authored median gap does not prove public authority.",
+          "Original motion and four-camera pixels require source review."
+        ]
+      },
+      "unresolved_judgment_calls": [],
+      "variable_assignments": {
+        "target_crossing_x_m": {
+          "kind": "controller",
+          "unit": "m",
+          "value": 10
+        },
+        "physical_median_crossing_location": {
+          "kind": "world_setup",
+          "unit": "category",
+          "value": "continuous_section"
+        }
+      }
+    }
+  ],
+  "semantic_status": "draft",
+  "sweep_specs": []
+}

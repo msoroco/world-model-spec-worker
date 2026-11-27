@@ -45,7 +45,7 @@ class FinalizeSavedTest(unittest.TestCase):
 
     def test_missing_saved_body_source_rejected_before_result(self):
         (self.folder / "native-uturn.jsonl").unlink()
-        with self.assertRaisesRegex(ValueError, "Missing required original source"):
+        with self.assertRaisesRegex(ValueError, "Missing required source"):
             finalize(self.folder, self.folder / "analysis-report.json")
         self.assertFalse((self.folder / "result.json").exists())
 

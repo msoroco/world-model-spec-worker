@@ -6,7 +6,12 @@ import json
 from pathlib import Path
 import sys
 
-from measure_uturn import measure_attempt
+from measure_uturn import measure_attempt as _measure_attempt
+
+
+def measure_attempt(attempt):
+    """Selected contract entrypoint for the saved U-turn meter."""
+    return _measure_attempt(attempt)
 
 CAMERAS = ("overview", "approach", "median_reference", "driver_reference")
 SOURCES = ("request.json", "divided-road-context.json", "source-review.json",
@@ -25,7 +30,7 @@ def finalize(attempt, output):
                  "body_history.jsonl", "capture/evidence.jsonl", *SOURCES,
                  *(name + ".mkv" for name in CAMERAS)):
         if not (attempt / name).is_file():
-            raise ValueError("Missing required original source: " + name)
+            raise ValueError("Missing required source: " + name)
     config = json.loads((attempt / "config.json").read_text())
     construction = json.loads((attempt / "construction.json").read_text())
     request = json.loads((attempt / "request.json").read_text())
