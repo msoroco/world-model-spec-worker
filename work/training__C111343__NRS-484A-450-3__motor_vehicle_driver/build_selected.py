@@ -1,4 +1,4 @@
-"""Bind exact two-case yield-crosswalk Native bundles to frozen sources."""
+"""Bind six exact yield-reference Native bundles to frozen sources."""
 
 import hashlib
 import json
@@ -32,7 +32,7 @@ def description():
         "sampling_rate_hz": 20,
         "method": "first recorded rest front-bumper extent versus original selected stopping reference",
         "time_window": "all 600 frames through intersection entry",
-        "reference_frame": "source-hashed original map crosswalk and vehicle body",
+        "reference_frame": "source-hashed original selected map reference and vehicle body",
         "uncertainty": "0.1 m/s rest diagnostic; no legal safety threshold or compliance judgment"}],
         "context_inputs": [{"name": name, "unit": "structured",
             "method": "original Native source hash and per-frame identity join"}
@@ -54,7 +54,8 @@ def config(slug):
         "requested_stop_front_x_m": scene["controller"]["requested_stop_front_x_m"],
         "cameras": [{"name": item["name"], "width": item["size"][0],
             "height": item["size"][1], "fps": 20, "fov_deg": 80,
-            "pose_strategy": item["pose_strategy"]} for item in scene["cameras"]],
+            "pose_strategy": item["pose_strategy"]} for item in sorted(scene["cameras"],
+                key=lambda item: ("overview", "approach", "reference_corner", "driver_reference").index(item["name"]))],
         "recording_description": record, "physical_acceptance_claimed": False,
         "legal_verdict": None, "safety_stop_required": "unassessed"}
 
@@ -116,7 +117,7 @@ def build(slug):
         "static_checks": ["governing YIELD sign and selected stopping-reference hierarchy map readback",
                           "two spawned vehicles", "four original 20 Hz cameras", "600 frame joins"],
         "termination_rules": ["600 frames", "source camera encoder closure and world restore"],
-        "mechanisms": ["CARLA OpenDRIVE intersection and crosswalk object",
+        "mechanisms": ["CARLA OpenDRIVE intersection and selected stopping-reference object",
                        "independently controlled ego and intersecting vehicle",
                        "source-joined four-view FFV1 and Native telemetry"]}
     path = HERE / "selected" / slug / "construction.json"
@@ -138,13 +139,13 @@ def build(slug):
             "native_handoff": {"python_env_var": "CARLA_PYTHON", "host_env_var": "CARLA_HOST",
                                "port_env_var": "CARLA_PORT"},
             "candidate_risk": {"status": "physical",
-                "reason": "Actual brake tracking near the crosswalk or four-camera visibility may fail"},
+                "reason": "Actual brake tracking near the selected stopping reference or four-camera visibility may fail"},
             "candidates": [{"id": "fallback1", "construction": str(fallback_path.relative_to(HERE)),
                 "construction_sha256": sha(fallback_path),
                 "changed_knobs": ["requested_stop_front_x_m: " + str(cfg["requested_stop_front_x_m"])
                                   + " to " + str(fallback_config["requested_stop_front_x_m"])],
-                "trigger": {"source": "original saved ego_body.jsonl and near_crosswalk.json",
-                    "metric": "first rest full-body front-bumper x versus near-side crosswalk edge",
+                "trigger": {"source": "original saved ego_body.jsonl and " + reference_file,
+                    "metric": "first rest full-body front-bumper x versus selected stopping reference",
                     "failure_condition": "Primary requested rest is not physically realized or body visibility is inadequate"}}]}
 
 
@@ -156,7 +157,11 @@ def main():
         "physical_acceptance_claimed": False, "cases": entries}
     put(HERE / "draft-native-manifest.json", manifest)
     put(HERE / "config.json", config("before_crosswalk"))
-    (HERE / "construction.json").write_bytes((HERE / entries[0]["construction"]).read_bytes())
+    root_construction = json.loads((HERE / entries[0]["construction"]).read_text())
+    for item in root_construction["files"]:
+        if item["path"].startswith(("inputs/", "work/")):
+            item["source"] = item["path"]
+    put(HERE / "construction.json", root_construction)
     return {"cases": len(entries), "manifest_sha256": sha(HERE / "draft-native-manifest.json")}
 
 

@@ -396,13 +396,13 @@
       "disposition_index": 3
     }
   ],
-  "source_observation_mapping": [
-    {
-      "term": "dev.traffic_signal",
+  "source_observation_mapping": {
+    "dev.traffic_signal": {
       "method": "Frame-synchronized green-arrow-alone and illumination program; original device pixels still require review",
       "source": "signal_frames.jsonl",
       "evidence": "original_native_source_pending",
       "channels": [
+        "dev.traffic_signal",
         "signal_native_and_pixels"
       ],
       "source_refs": [
@@ -412,12 +412,12 @@
         }
       ]
     },
-    {
-      "term": "dev.governs",
+    "dev.governs": {
       "method": "Original head orientation, approach and device authority require independent physical review",
       "source": "unresolved_physical_context",
       "evidence": "original_native_source_pending",
       "channels": [
+        "dev.governs",
         "signal_native_and_pixels"
       ],
       "source_refs": [
@@ -427,12 +427,12 @@
         }
       ]
     },
-    {
-      "term": "drv.turning",
+    "drv.turning": {
       "method": "Ego heading direction during original intersection motion, with route geometry review pending",
       "source": "motion_frames.jsonl",
       "evidence": "original_native_source_pending",
       "channels": [
+        "drv.turning",
         "participant_native_and_video"
       ],
       "source_refs": [
@@ -442,12 +442,12 @@
         }
       ]
     },
-    {
-      "term": "kin.heading",
+    "kin.heading": {
       "method": "Original ego transform heading joined by Native frame and time",
       "source": "motion_frames.jsonl",
       "evidence": "original_native_source_pending",
       "channels": [
+        "kin.heading",
         "participant_native_and_video"
       ],
       "source_refs": [
@@ -457,12 +457,12 @@
         }
       ]
     },
-    {
-      "term": "drv.entering_intersection",
+    "drv.entering_intersection": {
       "method": "First original ego center inside sourced intersection bounds",
       "source": "motion_frames.jsonl and intersection-context.json",
       "evidence": "original_native_source_pending",
       "channels": [
+        "drv.entering_intersection",
         "participant_native_and_video"
       ],
       "source_refs": [
@@ -472,12 +472,12 @@
         }
       ]
     },
-    {
-      "term": "ru.pedestrian",
+    "ru.pedestrian": {
       "method": "Original pedestrian position and identity; lawfulness remains independently unverified",
       "source": "motion_frames.jsonl",
       "evidence": "original_native_source_pending",
       "channels": [
+        "ru.pedestrian",
         "participant_native_and_video"
       ],
       "source_refs": [
@@ -487,12 +487,12 @@
         }
       ]
     },
-    {
-      "term": "st.crosswalk",
+    "st.crosswalk": {
       "method": "Sourced adjacent crosswalk bounds; diagnostic geometry is not original physical review",
       "source": "intersection-context.json",
       "evidence": "original_native_source_pending",
       "channels": [
+        "st.crosswalk",
         "participant_native_and_video"
       ],
       "source_refs": [
@@ -502,12 +502,12 @@
         }
       ]
     },
-    {
-      "term": "drv.in_intersection",
+    "drv.in_intersection": {
       "method": "Original other-traffic position within sourced intersection bounds; lawfulness remains independently unverified",
       "source": "motion_frames.jsonl and intersection-context.json",
       "evidence": "original_native_source_pending",
       "channels": [
+        "drv.in_intersection",
         "participant_native_and_video"
       ],
       "source_refs": [
@@ -517,12 +517,12 @@
         }
       ]
     },
-    {
-      "term": "drv.yields_to",
+    "drv.yields_to": {
       "method": "Temporal overlap of moving ego with crosswalk pedestrian or other intersection traffic; yielding causation needs independent review",
       "source": "motion_frames.jsonl",
       "evidence": "original_native_source_pending",
       "channels": [
+        "drv.yields_to",
         "participant_native_and_video"
       ],
       "source_refs": [
@@ -532,7 +532,7 @@
         }
       ]
     }
-  ],
+  },
   "cpu_measurement_contract": "arrow-measurement-contract.json",
   "evidence_review": {
     "reviewer": "worker source inventory review",
@@ -564,5 +564,33 @@
         "why_existing_insufficient": "No accepted source-backed recording is in the frozen membership snapshot"
       }
     ]
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "subject": "ego turn, original signal head, pedestrian, other traffic and complete approach/clearance",
+        "interval": "all 600 frames",
+        "view": "overview"
+      },
+      {
+        "subject": "original facing signal pixels and approach entry",
+        "interval": "all 600 frames",
+        "view": "approach"
+      },
+      {
+        "subject": "adjacent crosswalk, pedestrian body and other intersection traffic",
+        "interval": "all 600 frames",
+        "view": "reference_corner"
+      },
+      {
+        "subject": "driver route heading, governed arrow and turn",
+        "interval": "all 600 frames",
+        "view": "driver_reference"
+      }
+    ],
+    "physical_risk": "Original map signal facing, arrow-only icon visibility and participant occupancy require local Native and independent review"
   }
 }

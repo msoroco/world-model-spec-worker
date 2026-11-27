@@ -26,6 +26,8 @@ def sha(path):
 
 def arrow_program_source(facts):
     return {'arrow_program_frames':facts['arrow_program_frames'],
+            'unknown_original_arrow_pixel_frames':facts['unknown_original_arrow_pixel_frames'],
+            'arrow_pixel_review_pending':facts['arrow_pixel_review_pending'],
             'first_unlit_intersection_motion_frame':facts['first_unlit_intersection_motion_frame']}
 
 

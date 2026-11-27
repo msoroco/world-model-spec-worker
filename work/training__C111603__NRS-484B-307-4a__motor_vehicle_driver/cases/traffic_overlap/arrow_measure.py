@@ -42,6 +42,7 @@ def measure(folder):
     first_enter = first_wrong_direction = first_unlit_motion = None
     first_ped_overlap = first_traffic_overlap = None
     arrow_frames = 0
+    unknown_signal_frames = 0
     first_frame = signal[0].get('native_frame')
     first_signal_time = signal[0].get('time_s')
     first_motion_time = motion[0].get('time_s')
@@ -54,9 +55,15 @@ def measure(folder):
         if (abs(s.get('time_s', -1) - first_signal_time - index / 20) > 1e-5
                 or abs(m.get('time_s', -1) - first_motion_time - index / 20) > 1e-5):
             raise ValueError('Original Native time join differs')
-        if type(s.get('green_arrow_alone')) is not bool or type(s.get('illuminated')) is not bool:
+        arrow = s.get('green_arrow_alone')
+        illuminated = s.get('illuminated')
+        if (arrow is None or illuminated is None):
+            if arrow is not None or illuminated is not None or s.get('original_pixels_review_pending') is not True:
+                raise ValueError('Original arrow pixels unresolved without explicit review status')
+            unknown_signal_frames += 1
+        elif type(arrow) is not bool or type(illuminated) is not bool:
             raise ValueError('Signal program state incomplete')
-        if s['green_arrow_alone'] and s['illuminated']:
+        if arrow is True and illuminated is True:
             arrow_frames += 1
         for key in ('ego_xy_m', 'pedestrian_xy_m', 'other_traffic_xy_m', 'ego_heading_xy'):
             value = m.get(key)
@@ -69,7 +76,7 @@ def measure(folder):
         if ego_inside and first_enter is None:
             first_enter = index
         moving = ego_inside and speed > 0.1
-        if moving and not (s['green_arrow_alone'] and s['illuminated']) and first_unlit_motion is None:
+        if moving and arrow is not None and illuminated is not None and not (arrow and illuminated) and first_unlit_motion is None:
             first_unlit_motion = index
         direction = 'left' if m['ego_heading_xy'][1] > 0.5 else 'right' if m['ego_heading_xy'][1] < -0.5 else None
         if moving and direction is not None and direction != context['arrow_direction'] and first_wrong_direction is None:
@@ -84,7 +91,10 @@ def measure(folder):
             'source_sha256': {name: sha(path) for name, path in (
                 ('intersection-context.json', context_path), ('signal_frames.jsonl', signal_path),
                 ('motion_frames.jsonl', motion_path))},
-            'arrow_program_frames': arrow_frames, 'first_ego_entry_frame': first_enter,
+            'arrow_program_frames': arrow_frames,
+            'unknown_original_arrow_pixel_frames': unknown_signal_frames,
+            'arrow_pixel_review_pending': unknown_signal_frames > 0,
+            'first_ego_entry_frame': first_enter,
             'first_unlit_intersection_motion_frame': first_unlit_motion,
             'first_direction_mismatch_frame': first_wrong_direction,
             'first_pedestrian_crosswalk_motion_overlap_frame': first_ped_overlap,
