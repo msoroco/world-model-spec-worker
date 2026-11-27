@@ -6,6 +6,7 @@ from pathlib import Path
 
 from measure_readiness import CAMERAS, FRAMES, lines, measure
 from scene import CASES, request
+from audit_capture import audit as audit_capture
 
 CHANNELS = ('ego_motion', 'emergency_motion', 'flashing_lights',
             'visible_indication', 'officer_direction', 'braking_response')
@@ -38,6 +39,9 @@ def finalize(attempt, output):
     if {item['name'] for item in described} != set(CHANNELS):
         raise ValueError('Exact recording channel inventory differs')
     observed = measure(attempt)
+    capture_audit = None
+    if observed['source_kind'] != 'synthetic_diagnostic':
+        capture_audit = audit_capture(attempt, condition)
     frames, trace = lines(attempt / 'video_frames.jsonl'), lines(attempt / 'approach_trace.jsonl')
     review = json.loads((attempt / 'emergency_review.json').read_text())
     if len(frames) != FRAMES or len(trace) != FRAMES:
@@ -69,6 +73,7 @@ def finalize(attempt, output):
               'measurements': {'approach_readiness': {
                   'method': 'measure_readiness', 'value': observed,
                   'sources': observed['sources']}},
+              'original_capture_audit': capture_audit,
               'physical_acceptance_claimed': False, 'legal_verdict_claimed': False}
     requested_brake = int(condition == 'braking_capacity_available')
     observed_brake = int(observed['first_brake_frame'] is not None)

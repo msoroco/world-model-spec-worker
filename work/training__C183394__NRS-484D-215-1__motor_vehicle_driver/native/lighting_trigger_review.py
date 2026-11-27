@@ -7,12 +7,14 @@ import hashlib
 import json
 from datetime import datetime, timedelta
 from pathlib import Path
+import xml.etree.ElementTree as ET
 
 BRANCHES = ('civil_sun_interval', '1000ft_discernibility', 'official_device_direction')
 REQUIRED = {
     'civil_sun_interval': {'frame_clock', 'sun_events'},
     '1000ft_discernibility': {'target_range', 'forward_video', 'frame_map'},
-    'official_device_direction': {'device_authority', 'device_state', 'forward_video', 'frame_map'},
+    'official_device_direction': {'device_authority', 'device_state', 'forward_video',
+                                  'frame_map', 'road_map', 'lighting_source'},
 }
 
 
@@ -78,12 +80,28 @@ def verify(review, root, case_id):
     else:
         authority = json.loads(verified['device_authority'].read_text())
         state = json.loads(verified['device_state'].read_text())
+        lighting = json.loads(verified['lighting_source'].read_text())
+        signal_id = review.get('device_signal_id')
+        signal_name = review.get('device_signal_name')
+        signals = [item for item in ET.fromstring(verified['road_map'].read_text()).findall('.//signal')
+                   if item.attrib.get('id') == signal_id]
+        if not signal_id or not signal_name or len(signals) != 1 or \
+                signals[0].attrib.get('name') != signal_name or \
+                signals[0].attrib.get('type') != 'lamp_use_instruction' or \
+                lighting.get('lighting_trigger') != 'official_device' or \
+                lighting.get('authored_device_signal', {}).get('id') != signal_id or \
+                lighting.get('authored_device_signal', {}).get('name') != signal_name:
+            raise ValueError('Original device/map/source identity differs')
         if authority.get('official_status_verified') != review.get('device_official_status_verified') or \
-                state.get('direction_applies_to_ego') != review.get('device_direction_applies_to_ego'):
+                state.get('direction_applies_to_ego') != review.get('device_direction_applies_to_ego') or \
+                authority.get('signal_id') != signal_id or state.get('signal_id') != signal_id or \
+                authority.get('directive') != 'use_lamps' or state.get('directive') != 'use_lamps' or \
+                not authority.get('issuing_authority') or not authority.get('installation_record'):
             raise ValueError('Original device review differs from source')
         if review.get('device_official_status_verified') is not True or \
                 review.get('device_direction_applies_to_ego') is not True or \
-                not review.get('reviewed_frame_ids'):
+                not review.get('reviewed_frame_ids') or \
+                any(type(i) is not int or i < 0 or i >= 600 for i in review['reviewed_frame_ids']):
             raise ValueError('Original official-device direction review missing')
     if review.get('synthetic_diagnostic') is True:
         raise ValueError('Synthetic trigger cannot attest original activation')

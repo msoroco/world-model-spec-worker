@@ -3,6 +3,11 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parent / 'native'))
+from civil_clock_review import verify as verify_civil_clock
+from lighting_trigger_review import verify as verify_incorporated_trigger
 
 CHECKS = ('native_source', 'all_participants', 'time_join',
           'full_video_decode', 'actual_pixels', 'physical_completion')
@@ -86,6 +91,20 @@ def audit(args):
         'video': args.video}.items()}
     review = inside(attempt, args.review)
     check_review(json.loads(review.read_text()), args.case, paths)
+    trigger = json.loads(paths['lighting_trigger'].read_text()).get('lighting_trigger')
+    trigger_review = inside(attempt, 'civil-clock-review.json' if trigger == 'night_interval'
+                            else 'incorporated-trigger-review.json')
+    trigger_value = json.loads(trigger_review.read_text())
+    if trigger == 'night_interval':
+        verify_civil_clock(trigger_value, attempt, args.case)
+    elif trigger in ('poor_visibility', 'official_device'):
+        expected = ('1000ft_discernibility' if trigger == 'poor_visibility'
+                    else 'official_device_direction')
+        if trigger_value.get('branch') != expected:
+            raise ValueError('Independent trigger review differs from exact branch')
+        verify_incorporated_trigger(trigger_value, attempt, args.case)
+    else:
+        raise ValueError('Unknown incorporated lighting trigger source')
     for evidence in result['recording_evidence']:
         inside(attempt, evidence['reference'])
     trace = inside(attempt, args.trace)
@@ -105,7 +124,9 @@ def audit(args):
         'source_decode_receipt_path': str(decode),
         'source_decode_receipt_sha256': sha(decode),
         'source_decode_auditor_sha256': verified['auditor_sha256'],
-        'human_review_sha256': sha(review), 'legal_verdict_claimed': False}
+        'human_review_sha256': sha(review),
+        'incorporated_trigger_review_sha256': sha(trigger_review),
+        'legal_verdict_claimed': False}
     output.write_text(json.dumps(payload, indent=2) + '\n')
     return payload
 

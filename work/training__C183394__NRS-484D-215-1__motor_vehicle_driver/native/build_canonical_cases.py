@@ -72,6 +72,21 @@ for branch, policy in [('visibility_dim', 'dim_within_500'),
     case['unresolved_judgment_calls'] = base['unresolved_judgment_calls']
     cases.append(case)
 
+for branch, policy in [('device_dim', 'dim_within_500'),
+                       ('device_high', 'retain_high')]:
+    case = deepcopy(base)
+    case.update(case_id=f'{PACKAGE.name}__{branch}', target_law_id=template['law_id'],
+                target_type='judgment_sweep', paired_probe_id=f'{PACKAGE.name}__device_directive_beam',
+                deliberate_differences=['beam_request_policy'],
+                rationale='Same adjacent shoulder and opposed vehicle with authored lamp-use signal; original device authority, applicability and decoded visibility remain independent review.',
+                probe={'primary_variable': 'beam_request_policy',
+                       'comparison_or_standard': 'fixed original road, oncoming trajectory, authored signal readback and time',
+                       'target_value_or_branch': policy,
+                       'fixed_device_request': 'authored_lamp_use_instruction_official_status_unverified'})
+    case['variable_assignments']['beam_request_policy'] = {'kind': 'controller', 'value': policy}
+    case['unresolved_judgment_calls'] = base['unresolved_judgment_calls']
+    cases.append(case)
+
 specs = []
 for index, judgment in enumerate(template['structure']['judgment_calls_needed']):
     specs.append({'sweep_id': f'{PACKAGE.name}__judgment_{index}', 'target_law_id': template['law_id'],
@@ -90,4 +105,4 @@ stages.validate('cases', result, {'request': request, 'dependencies': [binding],
 destination = proposal / 'canonical_cases.json'
 destination.write_text(json.dumps(result, indent=2, ensure_ascii=False) + '\n')
 (proposal / 'cases.json').write_text(json.dumps(result, indent=2, ensure_ascii=False) + '\n')
-print(f'PASS: canonical baseline, two beam contrast cases, linked 499/500/501 ft probes, two visibility cases, and three explicit incomplete judgment sweep plans; {destination.relative_to(PACKAGE)}')
+print(f'PASS: canonical baseline, two beam contrast cases, linked 499/500/501 ft probes, two visibility cases, two device cases, and three explicit incomplete judgment sweep plans; {destination.relative_to(PACKAGE)}')

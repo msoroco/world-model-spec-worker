@@ -5,6 +5,7 @@ from pathlib import Path
 import tempfile
 
 from lighting_trigger_review import sha, verify
+from device_scene import road_opendrive
 
 
 def put(root, name, value):
@@ -54,11 +55,22 @@ with tempfile.TemporaryDirectory(dir=os.environ['TMPDIR']) as temp:
     device = dict(common, branch='official_device_direction',
                   device_official_status_verified=True,
                   device_direction_applies_to_ego=True,
+                  device_signal_id='100',
+                  device_signal_name='AUTHORED_LAMP_USE_INSTRUCTION',
                   reviewed_frame_ids=[100, 101])
     device['sources'] = {'device_authority': put(root, 'authority.json',
-        {'official_status_verified': True}), 'device_state': put(root, 'state.json',
-        {'direction_applies_to_ego': True}), 'forward_video': visibility['sources']['forward_video'],
-        'frame_map': visibility['sources']['frame_map']}
+        {'official_status_verified': True, 'signal_id': '100', 'directive': 'use_lamps',
+         'issuing_authority': 'diagnostic source-shaped authority',
+         'installation_record': 'diagnostic installation record'}),
+        'device_state': put(root, 'state.json',
+        {'direction_applies_to_ego': True, 'signal_id': '100', 'directive': 'use_lamps'}),
+        'forward_video': visibility['sources']['forward_video'],
+        'frame_map': visibility['sources']['frame_map'],
+        'road_map': put(root, 'device-road.xodr', road_opendrive()+'\n'),
+        'lighting_source': put(root, 'device-lighting.json',
+        {'lighting_trigger': 'official_device',
+         'authored_device_signal': {'id': '100',
+                                    'name': 'AUTHORED_LAMP_USE_INSTRUCTION'}})}
     assert verify(device, root, case)['original_trigger_reviewed']
     wrong = dict(device, synthetic_diagnostic=True)
     try:
@@ -75,5 +87,12 @@ with tempfile.TemporaryDirectory(dir=os.environ['TMPDIR']) as temp:
         pass
     else:
         raise AssertionError('Changed video source accepted')
-print(json.dumps({'tested_branches': 3, 'negative_guards': 4,
+    wrong = dict(device, device_signal_id='999')
+    try:
+        verify(wrong, root, case)
+    except ValueError:
+        pass
+    else:
+        raise AssertionError('Unbound authored signal accepted')
+print(json.dumps({'tested_branches': 3, 'negative_guards': 5,
                   'diagnostic_only': True, 'original_trigger_observed': False}))

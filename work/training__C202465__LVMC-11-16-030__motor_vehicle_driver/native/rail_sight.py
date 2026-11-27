@@ -48,6 +48,12 @@ def measure_trace(rows: list[dict], crossing: dict) -> dict:
                 raise ValueError("crossing, visibility and exception sources required")
         if not row.get("observer_pose_source") or not row.get("rail_ray_source"):
             raise ValueError("dynamic observer and two-direction ray source required")
+        try:
+            observer = tuple(float(v) for v in row["observer_xy_m"])
+        except (KeyError, TypeError, ValueError) as exc:
+            raise ValueError("original observer position required") from exc
+        if len(observer) != 2 or not all(isfinite(v) for v in observer):
+            raise ValueError("invalid original observer position")
         started_outside |= distance > HUNDRED_FEET_M
         if 0 < distance <= HUNDRED_FEET_M:
             approach.append(row)
@@ -59,8 +65,8 @@ def measure_trace(rows: list[dict], crossing: dict) -> dict:
         inactive_signal += int(row["crossing_signal_installed_visible"] and not row["signal_indicates_train_approach"])
     if not started_outside or not approach or not traversal_speeds:
         raise ValueError("complete approach and grade-crossing traversal required")
-    if len({r["observer_pose_source"] for r in approach}) < 2:
-        raise ValueError("moving observer source required throughout approach")
+    if len({tuple(r["observer_xy_m"]) for r in approach}) < 2:
+        raise ValueError("moving observer position required throughout approach")
     return {
         "frames": FRAME_COUNT,
         "duration_s": FRAME_COUNT / FRAME_RATE,

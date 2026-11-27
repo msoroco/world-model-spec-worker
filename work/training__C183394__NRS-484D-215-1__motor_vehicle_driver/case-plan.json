@@ -51,7 +51,9 @@
         "training__C183394__NRS-484D-215-1__motor_vehicle_driver__distance_at_500ft",
         "training__C183394__NRS-484D-215-1__motor_vehicle_driver__distance_above_500ft",
         "training__C183394__NRS-484D-215-1__motor_vehicle_driver__visibility_dim",
-        "training__C183394__NRS-484D-215-1__motor_vehicle_driver__visibility_high"
+        "training__C183394__NRS-484D-215-1__motor_vehicle_driver__visibility_high",
+        "training__C183394__NRS-484D-215-1__motor_vehicle_driver__device_dim",
+        "training__C183394__NRS-484D-215-1__motor_vehicle_driver__device_high"
       ]
     },
     {
@@ -67,7 +69,9 @@
         "training__C183394__NRS-484D-215-1__motor_vehicle_driver__distance_at_500ft",
         "training__C183394__NRS-484D-215-1__motor_vehicle_driver__distance_above_500ft",
         "training__C183394__NRS-484D-215-1__motor_vehicle_driver__visibility_dim",
-        "training__C183394__NRS-484D-215-1__motor_vehicle_driver__visibility_high"
+        "training__C183394__NRS-484D-215-1__motor_vehicle_driver__visibility_high",
+        "training__C183394__NRS-484D-215-1__motor_vehicle_driver__device_dim",
+        "training__C183394__NRS-484D-215-1__motor_vehicle_driver__device_high"
       ]
     },
     {
@@ -276,6 +280,60 @@
         "lighting-trigger-alternatives",
         "lowermost-equipment-identity"
       ]
+    },
+    {
+      "case_id": "training__C183394__NRS-484D-215-1__motor_vehicle_driver__device_dim",
+      "target_law_id": "NRS-484D-215-1",
+      "target_type": "delivery",
+      "planning_status": "cpu_construction_offline_proven_compatibility_pending",
+      "source_branch": "NRS 484D.100 official-device directive alternative on same adjacent shoulder and opposed oncoming vehicle",
+      "comparison_variable": "beam_request_policy_with_fixed_authored_device",
+      "condition_index": 7,
+      "fixed_conditions": {
+        "cell_id": "C183394",
+        "layout": "paved_shoulder",
+        "maneuver": "travel",
+        "control": "other_vehicle",
+        "actor": "motor_vehicle_driver",
+        "law_id": "NRS-484D-215-1",
+        "selection_targets": [
+          "full-train"
+        ]
+      },
+      "source_text": "Whenever a motor vehicle is being operated on the traveled portion of the highway, or shoulder adjacent thereto, during the times specified in NRS 484D.100 [NRS-484D-100-1], the driver shall use a distribution of light, or composite beam, directed high enough and of sufficient intensity to reveal persons and vehicles at a safe distance in advance of the vehicle, subject to the following requirements and limitations: Whenever a driver of a vehicle approaches an oncoming vehicle within 500 feet, the driver shall use a distribution of light, or composite beam, so aimed that the glaring rays are not projected into the eyes of the oncoming driver. The lowermost distribution of light, or composite beam, specified in subsection 2 of NRS 484D.210 [DEF-NRS-484D-210-1-2] shall be deemed to avoid glare at all times, regardless of road contour and loading.",
+      "claim": "Authored OpenDRIVE lamp-use signal and Native map readback request only; official authority, applicability, original optical evidence and legal outcome unverified.",
+      "gap_ids": [
+        "no-accepted-original",
+        "lighting-trigger-alternatives",
+        "lowermost-equipment-identity"
+      ]
+    },
+    {
+      "case_id": "training__C183394__NRS-484D-215-1__motor_vehicle_driver__device_high",
+      "target_law_id": "NRS-484D-215-1",
+      "target_type": "delivery",
+      "planning_status": "cpu_construction_offline_proven_compatibility_pending",
+      "source_branch": "NRS 484D.100 official-device directive alternative on same adjacent shoulder and opposed oncoming vehicle",
+      "comparison_variable": "beam_request_policy_with_fixed_authored_device",
+      "condition_index": 8,
+      "fixed_conditions": {
+        "cell_id": "C183394",
+        "layout": "paved_shoulder",
+        "maneuver": "travel",
+        "control": "other_vehicle",
+        "actor": "motor_vehicle_driver",
+        "law_id": "NRS-484D-215-1",
+        "selection_targets": [
+          "full-train"
+        ]
+      },
+      "source_text": "Whenever a motor vehicle is being operated on the traveled portion of the highway, or shoulder adjacent thereto, during the times specified in NRS 484D.100 [NRS-484D-100-1], the driver shall use a distribution of light, or composite beam, directed high enough and of sufficient intensity to reveal persons and vehicles at a safe distance in advance of the vehicle, subject to the following requirements and limitations: Whenever a driver of a vehicle approaches an oncoming vehicle within 500 feet, the driver shall use a distribution of light, or composite beam, so aimed that the glaring rays are not projected into the eyes of the oncoming driver. The lowermost distribution of light, or composite beam, specified in subsection 2 of NRS 484D.210 [DEF-NRS-484D-210-1-2] shall be deemed to avoid glare at all times, regardless of road contour and loading.",
+      "claim": "Authored OpenDRIVE lamp-use signal and Native map readback request only; official authority, applicability, original optical evidence and legal outcome unverified.",
+      "gap_ids": [
+        "no-accepted-original",
+        "lighting-trigger-alternatives",
+        "lowermost-equipment-identity"
+      ]
     }
   ],
   "comparisons": [
@@ -346,6 +404,28 @@
         "duration_s": 30
       },
       "measurement": "Original oncoming actor range and decoded forward video review at 1000 feet are decisive; fog request does not establish statutory discernibility."
+    },
+    {
+      "comparison_id": "training__C183394__NRS-484D-215-1__motor_vehicle_driver__device_directive_beam_comparison",
+      "case_ids": [
+        "training__C183394__NRS-484D-215-1__motor_vehicle_driver__device_dim",
+        "training__C183394__NRS-484D-215-1__motor_vehicle_driver__device_high"
+      ],
+      "deliberate_differences": [
+        "beam request policy: dim within measured 500 feet versus retain high"
+      ],
+      "fixed_conditions": {
+        "cell_id": "C183394",
+        "law_id": "NRS-484D-215-1",
+        "actor": "motor_vehicle_driver",
+        "road": "same adjacent paved shoulder and opposed oncoming OpenDRIVE with one authored lamp-use signal",
+        "authored_signal_id": "100",
+        "authored_signal_name": "AUTHORED_LAMP_USE_INSTRUCTION",
+        "camera_count": 4,
+        "rate_hz": 20,
+        "duration_s": 30
+      },
+      "measurement": "Original signal map readback, decoded visibility, directive applicability and independent official authority review required; authored signal alone does not prove statutory activation."
     }
   ],
   "observations": [

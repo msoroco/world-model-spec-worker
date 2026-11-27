@@ -708,89 +708,24 @@
   ],
   "observations": [
     {
-      "name": "drv.overtaking",
+      "name": "ego_pose",
       "mandatory": true,
-      "reason": "the subject overtakes"
+      "reason": "Requested ego trajectory and replay pose support the selected pass measurements."
     },
     {
-      "name": "drv.passing_side",
+      "name": "right_pass_geometry",
       "mandatory": true,
-      "reason": "the pass is on the right"
+      "reason": "Road projection, overtaken vehicle and side clearance support right-pass comparisons."
     },
     {
-      "name": "sig.turn_indicator",
+      "name": "four_source_views",
       "mandatory": true,
-      "reason": "(a) the overtaken vehicle signalling a left turn"
+      "reason": "Synchronized source views support later original Native review."
     },
     {
-      "name": "drv.turning",
+      "name": "pavement_context",
       "mandatory": true,
-      "reason": "(a) the overtaken vehicle making a left turn"
-    },
-    {
-      "name": "st.lane_adjacency",
-      "mandatory": true,
-      "reason": "(b),(d) two or more lines of moving vehicles in the direction"
-    },
-    {
-      "name": "st.lane_marking",
-      "mandatory": true,
-      "reason": "(c) pavement not marked as a traffic lane"
-    },
-    {
-      "name": "drv.standing_or_parked",
-      "mandatory": true,
-      "reason": "(b),(c) the pavement is not occupied by parked vehicles"
-    },
-    {
-      "name": "st.obstruction",
-      "mandatory": true,
-      "reason": "(b),(c),(d) unobstructed pavement"
-    },
-    {
-      "name": "kin.path_length",
-      "mandatory": true,
-      "reason": "(c)(1) the 200-foot limit on travel in the unmarked section"
-    },
-    {
-      "name": "st.intersection",
-      "mandatory": true,
-      "reason": "(c)(2) no intersection traversed"
-    },
-    {
-      "name": "st.driveway_or_alley_entrance",
-      "mandatory": true,
-      "reason": "(c)(2) no private way passed"
-    },
-    {
-      "name": "st.one_way_roadway",
-      "mandatory": true,
-      "reason": "(d) traffic restricted to one direction"
-    },
-    {
-      "name": "st.shoulder",
-      "mandatory": true,
-      "reason": "the excepted classes' shoulder use"
-    },
-    {
-      "name": "dev.regulatory_sign",
-      "mandatory": true,
-      "reason": "code shoulder_use_permitted for the transit-bus case"
-    },
-    {
-      "name": "ru.emergency_vehicle",
-      "mandatory": true,
-      "reason": "the exempted classes"
-    },
-    {
-      "name": "ru.official_vehicle",
-      "mandatory": true,
-      "reason": "tow, coroner, incident-management vehicles"
-    },
-    {
-      "name": "ru.transit_bus",
-      "mandatory": true,
-      "reason": "a public transit motor bus"
+      "reason": "Authored pavement, occupancy, obstruction and one-way context support selected clauses."
     }
   ],
   "candidate_plans": [],
@@ -857,5 +792,126 @@
         "interval": "0-30 s"
       }
     ]
+  },
+  "source_observation_mapping": {
+    "drv.overtaking": {
+      "evidence": "The requested ego and lead tracks define the pass; original Native outcome is pending.",
+      "channels": [
+        "right_pass_geometry"
+      ],
+      "source_refs": []
+    },
+    "drv.passing_side": {
+      "evidence": "Lateral track and road projection expose the requested right side; original Native outcome is pending.",
+      "channels": [
+        "right_pass_geometry"
+      ],
+      "source_refs": []
+    },
+    "sig.turn_indicator": {
+      "evidence": "Paragraph (a) turn signal is outside the selected paragraph (d) cell; no turn signal is claimed.",
+      "channels": [],
+      "source_refs": [
+        "inputs/training__C146314__NRS-484B-210-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "drv.turning": {
+      "evidence": "Paragraph (a) left turn is outside the selected paragraph (d) cell; no left turn is claimed.",
+      "channels": [],
+      "source_refs": [
+        "inputs/training__C146314__NRS-484B-210-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "st.lane_adjacency": {
+      "evidence": "The two same-direction moving lines are requested in the frozen one-way cell; paragraph (b) opposing direction remains shared pending.",
+      "channels": [
+        "pavement_context"
+      ],
+      "source_refs": []
+    },
+    "st.lane_marking": {
+      "evidence": "Authored road marks and source views support the paragraph (c) marked versus unmarked comparison; legal pavement status remains unverified.",
+      "channels": [
+        "pavement_context"
+      ],
+      "source_refs": []
+    },
+    "drv.standing_or_parked": {
+      "evidence": "Selected paragraph (c) comparison requests parked occupancy; paragraph (b) two-direction occupancy remains shared pending.",
+      "channels": [
+        "pavement_context"
+      ],
+      "source_refs": []
+    },
+    "st.obstruction": {
+      "evidence": "Selected comparison requests clear versus blocked pavement; original Native observation remains pending.",
+      "channels": [
+        "pavement_context"
+      ],
+      "source_refs": []
+    },
+    "kin.path_length": {
+      "evidence": "Requested route and track distance test the 200-foot boundary; actual replay distance remains pending.",
+      "channels": [
+        "right_pass_geometry"
+      ],
+      "source_refs": []
+    },
+    "st.intersection": {
+      "evidence": "Authored road geometry and source views support intersection comparison; actual replay context remains pending.",
+      "channels": [
+        "pavement_context"
+      ],
+      "source_refs": []
+    },
+    "st.driveway_or_alley_entrance": {
+      "evidence": "Authored road geometry and source views support private-way comparison; actual replay context remains pending.",
+      "channels": [
+        "pavement_context"
+      ],
+      "source_refs": []
+    },
+    "st.one_way_roadway": {
+      "evidence": "Frozen cell names one-way multilane; legal one-way designation still needs original Native/source review.",
+      "channels": [
+        "pavement_context"
+      ],
+      "source_refs": []
+    },
+    "st.shoulder": {
+      "evidence": "Selected subsection (4) comparison requests shoulder occupancy; actual shoulder classification remains pending.",
+      "channels": [
+        "pavement_context"
+      ],
+      "source_refs": []
+    },
+    "dev.regulatory_sign": {
+      "evidence": "Transit-bus sign exception is outside assigned motor-vehicle-driver actor; no sign observation is claimed.",
+      "channels": [],
+      "source_refs": [
+        "inputs/training__C146314__NRS-484B-210-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "ru.emergency_vehicle": {
+      "evidence": "Emergency-vehicle class exception is outside assigned actor; no class observation is claimed.",
+      "channels": [],
+      "source_refs": [
+        "inputs/training__C146314__NRS-484B-210-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "ru.official_vehicle": {
+      "evidence": "Official-vehicle class exception is outside assigned actor; no class observation is claimed.",
+      "channels": [],
+      "source_refs": [
+        "inputs/training__C146314__NRS-484B-210-1__motor_vehicle_driver/assignment.json"
+      ]
+    },
+    "ru.transit_bus": {
+      "evidence": "Transit-bus class exception is outside assigned actor; no class observation is claimed.",
+      "channels": [],
+      "source_refs": [
+        "inputs/training__C146314__NRS-484B-210-1__motor_vehicle_driver/assignment.json"
+      ]
+    }
   }
 }

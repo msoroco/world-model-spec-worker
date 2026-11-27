@@ -5,6 +5,7 @@ from pathlib import Path
 import shutil
 import sys
 import tempfile
+from unittest.mock import patch
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[2]
@@ -61,6 +62,22 @@ def main():
             assert 'Retain original finalization' in str(exc)
         else:
             raise AssertionError('Overwritten finalization accepted')
+        forged = Path(tempfile.mkdtemp(prefix='c405647-forged-original-', dir=scratch))
+        try:
+            for name in ('config.json', 'construction.json', 'native-request.json',
+                         'video_frames.jsonl', 'approach_trace.jsonl', 'emergency_review.json',
+                         'trace.jsonl', *(camera + '.mkv' for camera in CAMERAS)):
+                shutil.copyfile(attempt / name, forged / name)
+            try:
+                with patch('finalize.measure', return_value=dict(
+                        result['measured_values'], source_kind='original_source_review')):
+                    finalize(forged, forged / 'saved-analysis.json')
+            except ValueError as exc:
+                assert 'Missing original capture source' in str(exc)
+            else:
+                raise AssertionError('Original claim without capture lifecycle accepted')
+        finally:
+            shutil.rmtree(forged)
         other = Path(tempfile.mkdtemp(prefix='c405647-finalize-unbraked-', dir=scratch))
         try:
             unavailable = REPO / '.runtime-work' / 'c405647-unavailable-primary-v7'
@@ -87,6 +104,7 @@ def main():
                           'source_kind': result['provenance_kind'], 'channels': 6,
                           'frames_per_channel': 600, 'duplicate_rejected': True,
                           'missing_motion_rejected': True, 'cross_case_rejected': True,
+                          'missing_original_capture_rejected': True,
                           'unbraked_case_passed': True,
                           'physical_acceptance_claimed': False,
                           'legal_verdict_claimed': False}))

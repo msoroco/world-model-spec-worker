@@ -34,6 +34,7 @@ for i in range(FRAME_COUNT):
         "crossing_signal_installed_visible": False,
         "signal_indicates_train_approach": False,
         "observer_pose_source": f"synthetic_native_sample_pose_{i}",
+        "observer_xy_m": [distance * -1, 0.0],
         "rail_ray_source": f"synthetic_native_sample_left_right_{i}",
     })
 assert speed_request("slower_traversal") < FIFTEEN_MPH_MPS
@@ -50,8 +51,8 @@ reject(lambda: measure_trace(bad, crossing), "20 Hz join")
 bad = [dict(row) for row in rows]
 bad[200]["rail_ray_source"] = ""
 reject(lambda: measure_trace(bad, crossing), "two-direction ray source")
-bad = [dict(row, observer_pose_source="constant diagnostic pose") for row in rows]
-reject(lambda: measure_trace(bad, crossing), "moving observer source")
+bad = [dict(row, observer_xy_m=[-50.0, 0.0]) for row in rows]
+reject(lambda: measure_trace(bad, crossing), "moving observer position")
 bad_crossing = dict(crossing, railway_source="")
 reject(lambda: measure_trace(rows, bad_crossing), "provenance required")
 print("PASS: 600-frame rail-crossing sight and speed positive/negative CPU proof")

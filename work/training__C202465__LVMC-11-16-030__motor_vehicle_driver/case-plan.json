@@ -40,24 +40,40 @@
       "evidence_or_gap": "Exact source text inventoried; Native realization, comparison proof and measured evidence pending.",
       "case_ids": [
         "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__condition_a",
-        "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__condition_b"
+        "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__condition_b",
+        "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__clear_both",
+        "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__right_obscured",
+        "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__crossing_obscured",
+        "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__flagman_duty",
+        "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__signal_inactive",
+        "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__signal_active",
+        "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__signal_not_visible"
       ]
     },
     {
       "requirement": "text-1",
       "source": "LVMC 11.16.030",
       "source_text": "This Section shall not apply in the case of any railway grade crossing where a human flagman is on duty or clearly visible electrical or mechanical railway crossing signal device is installed but does not then indicate the immediate approach of a railway train or car.",
-      "status": "exception_pending",
-      "evidence_or_gap": "The flagman and inactive installed crossing signal carve-outs are statutory exceptions. Applicability requires physical signal/flagman status and official crossing context. No case or legal outcome is yet selected for this exception.",
-      "case_ids": []
+      "status": "selected_required",
+      "evidence_or_gap": "Exception alternatives assigned exact same-cell controls; Native device and duty source proof pending.",
+      "case_ids": [
+        "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__condition_b",
+        "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__flagman_duty",
+        "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__signal_inactive",
+        "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__signal_active",
+        "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__signal_not_visible"
+      ]
     },
     {
       "requirement": "reviewed-scope-0",
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
       "source_text": "Crossing traversal under the stated sight conditions without either exception.",
-      "status": "alternative_pending",
-      "evidence_or_gap": "Exact source text inventoried; Native realization, comparison proof and measured evidence pending.",
-      "case_ids": []
+      "status": "selected_required",
+      "evidence_or_gap": "Reviewed witness assigned slow/fast blocked-sight comparison; source and CPU delivery proofs pending.",
+      "case_ids": [
+        "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__condition_a",
+        "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__condition_b"
+      ]
     }
   ],
   "cases": [
@@ -67,7 +83,7 @@
       "target_type": "planned_delivery_comparison",
       "planning_status": "unverified",
       "source_branch": "Crossing traversal under the stated sight conditions without either exception.",
-      "comparison_variable": "traversal_speed_and_crossing_sight",
+      "comparison_variable": "traversal_speed",
       "condition_index": 0,
       "fixed_conditions": {
         "cell_id": "C202465",
@@ -81,7 +97,14 @@
         ]
       },
       "source_text": "The prima facie speed limit shall be fifteen miles per hour when traversing a grade crossing of a steam, electric or any other motor railway, if during the last one hundred feet of the approach to such crossing the driver does not have a clear and unobstructed view of such crossing and of any traffic on such railway for a distance of four hundred feet in both directions along such railway. This Section shall not apply in the case of any railway grade crossing where a human flagman is on duty or clearly visible electrical or mechanical railway crossing signal device is installed but does not then indicate the immediate approach of a railway train or car.",
-      "claim": "No legal outcome or physical execution is asserted."
+      "construction_design": {
+        "sight_mode": "left_sight_obscured",
+        "speed_mode": "slower_traversal",
+        "exception_state": "none",
+        "route": "same at-grade approach and traversal",
+        "rail_traffic": "same two original rail vehicles moving on opposite signed rails"
+      },
+      "claim": "Selected sight condition; speed below 15 mph. No legal outcome or physical execution asserted."
     },
     {
       "case_id": "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__condition_b",
@@ -89,7 +112,7 @@
       "target_type": "planned_delivery_comparison",
       "planning_status": "unverified",
       "source_branch": "Crossing traversal under the stated sight conditions without either exception.",
-      "comparison_variable": "traversal_speed_and_crossing_sight",
+      "comparison_variable": "traversal_speed",
       "condition_index": 1,
       "fixed_conditions": {
         "cell_id": "C202465",
@@ -103,18 +126,228 @@
         ]
       },
       "source_text": "The prima facie speed limit shall be fifteen miles per hour when traversing a grade crossing of a steam, electric or any other motor railway, if during the last one hundred feet of the approach to such crossing the driver does not have a clear and unobstructed view of such crossing and of any traffic on such railway for a distance of four hundred feet in both directions along such railway. This Section shall not apply in the case of any railway grade crossing where a human flagman is on duty or clearly visible electrical or mechanical railway crossing signal device is installed but does not then indicate the immediate approach of a railway train or car.",
-      "claim": "No legal outcome or physical execution is asserted."
+      "construction_design": {
+        "sight_mode": "left_sight_obscured",
+        "speed_mode": "faster_traversal",
+        "exception_state": "none",
+        "route": "same at-grade approach and traversal",
+        "rail_traffic": "same two original rail vehicles moving on opposite signed rails"
+      },
+      "claim": "Same sight geometry; speed above 15 mph. No legal outcome or physical execution asserted."
+    },
+    {
+      "case_id": "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__clear_both",
+      "target_law_id": "LVMC-11-16-030",
+      "target_type": "planned_delivery_comparison",
+      "planning_status": "unverified",
+      "source_branch": "Crossing traversal under the stated sight conditions without either exception.",
+      "comparison_variable": "sight_geometry",
+      "condition_index": 2,
+      "fixed_conditions": {
+        "cell_id": "C202465",
+        "layout": "rail_crossing",
+        "maneuver": "cross_railway",
+        "control": "rail_track",
+        "actor": "motor_vehicle_driver",
+        "law_id": "LVMC-11-16-030",
+        "selection_targets": [
+          "full-train"
+        ]
+      },
+      "source_text": "The prima facie speed limit shall be fifteen miles per hour when traversing a grade crossing of a steam, electric or any other motor railway, if during the last one hundred feet of the approach to such crossing the driver does not have a clear and unobstructed view of such crossing and of any traffic on such railway for a distance of four hundred feet in both directions along such railway. This Section shall not apply in the case of any railway grade crossing where a human flagman is on duty or clearly visible electrical or mechanical railway crossing signal device is installed but does not then indicate the immediate approach of a railway train or car.",
+      "construction_design": {
+        "sight_mode": "clear_both",
+        "speed_mode": "faster_traversal",
+        "exception_state": "none",
+        "route": "same at-grade approach and traversal",
+        "rail_traffic": "same two original rail vehicles moving on opposite signed rails"
+      },
+      "claim": "Both rail directions and crossing visible. No legal outcome or physical execution asserted."
+    },
+    {
+      "case_id": "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__right_obscured",
+      "target_law_id": "LVMC-11-16-030",
+      "target_type": "planned_delivery_comparison",
+      "planning_status": "unverified",
+      "source_branch": "Crossing traversal under the stated sight conditions without either exception.",
+      "comparison_variable": "sight_geometry",
+      "condition_index": 3,
+      "fixed_conditions": {
+        "cell_id": "C202465",
+        "layout": "rail_crossing",
+        "maneuver": "cross_railway",
+        "control": "rail_track",
+        "actor": "motor_vehicle_driver",
+        "law_id": "LVMC-11-16-030",
+        "selection_targets": [
+          "full-train"
+        ]
+      },
+      "source_text": "The prima facie speed limit shall be fifteen miles per hour when traversing a grade crossing of a steam, electric or any other motor railway, if during the last one hundred feet of the approach to such crossing the driver does not have a clear and unobstructed view of such crossing and of any traffic on such railway for a distance of four hundred feet in both directions along such railway. This Section shall not apply in the case of any railway grade crossing where a human flagman is on duty or clearly visible electrical or mechanical railway crossing signal device is installed but does not then indicate the immediate approach of a railway train or car.",
+      "construction_design": {
+        "sight_mode": "right_sight_obscured",
+        "speed_mode": "faster_traversal",
+        "exception_state": "none",
+        "route": "same at-grade approach and traversal",
+        "rail_traffic": "same two original rail vehicles moving on opposite signed rails"
+      },
+      "claim": "Only right railway direction obstructed. No legal outcome or physical execution asserted."
+    },
+    {
+      "case_id": "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__crossing_obscured",
+      "target_law_id": "LVMC-11-16-030",
+      "target_type": "planned_delivery_comparison",
+      "planning_status": "unverified",
+      "source_branch": "Crossing traversal under the stated sight conditions without either exception.",
+      "comparison_variable": "sight_geometry",
+      "condition_index": 4,
+      "fixed_conditions": {
+        "cell_id": "C202465",
+        "layout": "rail_crossing",
+        "maneuver": "cross_railway",
+        "control": "rail_track",
+        "actor": "motor_vehicle_driver",
+        "law_id": "LVMC-11-16-030",
+        "selection_targets": [
+          "full-train"
+        ]
+      },
+      "source_text": "The prima facie speed limit shall be fifteen miles per hour when traversing a grade crossing of a steam, electric or any other motor railway, if during the last one hundred feet of the approach to such crossing the driver does not have a clear and unobstructed view of such crossing and of any traffic on such railway for a distance of four hundred feet in both directions along such railway. This Section shall not apply in the case of any railway grade crossing where a human flagman is on duty or clearly visible electrical or mechanical railway crossing signal device is installed but does not then indicate the immediate approach of a railway train or car.",
+      "construction_design": {
+        "sight_mode": "crossing_obscured",
+        "speed_mode": "faster_traversal",
+        "exception_state": "none",
+        "route": "same at-grade approach and traversal",
+        "rail_traffic": "same two original rail vehicles moving on opposite signed rails"
+      },
+      "claim": "Crossing view obstructed independently of railway traffic. No legal outcome or physical execution asserted."
+    },
+    {
+      "case_id": "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__flagman_duty",
+      "target_law_id": "LVMC-11-16-030",
+      "target_type": "planned_delivery_comparison",
+      "planning_status": "unverified",
+      "source_branch": "Statutory flagman or crossing-signal exception control",
+      "comparison_variable": "exception_state",
+      "condition_index": 5,
+      "fixed_conditions": {
+        "cell_id": "C202465",
+        "layout": "rail_crossing",
+        "maneuver": "cross_railway",
+        "control": "rail_track",
+        "actor": "motor_vehicle_driver",
+        "law_id": "LVMC-11-16-030",
+        "selection_targets": [
+          "full-train"
+        ]
+      },
+      "source_text": "The prima facie speed limit shall be fifteen miles per hour when traversing a grade crossing of a steam, electric or any other motor railway, if during the last one hundred feet of the approach to such crossing the driver does not have a clear and unobstructed view of such crossing and of any traffic on such railway for a distance of four hundred feet in both directions along such railway. This Section shall not apply in the case of any railway grade crossing where a human flagman is on duty or clearly visible electrical or mechanical railway crossing signal device is installed but does not then indicate the immediate approach of a railway train or car.",
+      "construction_design": {
+        "sight_mode": "left_sight_obscured",
+        "speed_mode": "faster_traversal",
+        "exception_state": "flagman_on_duty",
+        "route": "same at-grade approach and traversal",
+        "rail_traffic": "same two original rail vehicles moving on opposite signed rails"
+      },
+      "claim": "On-duty human flagman exception control. No legal outcome or physical execution asserted."
+    },
+    {
+      "case_id": "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__signal_inactive",
+      "target_law_id": "LVMC-11-16-030",
+      "target_type": "planned_delivery_comparison",
+      "planning_status": "unverified",
+      "source_branch": "Statutory flagman or crossing-signal exception control",
+      "comparison_variable": "exception_state",
+      "condition_index": 6,
+      "fixed_conditions": {
+        "cell_id": "C202465",
+        "layout": "rail_crossing",
+        "maneuver": "cross_railway",
+        "control": "rail_track",
+        "actor": "motor_vehicle_driver",
+        "law_id": "LVMC-11-16-030",
+        "selection_targets": [
+          "full-train"
+        ]
+      },
+      "source_text": "The prima facie speed limit shall be fifteen miles per hour when traversing a grade crossing of a steam, electric or any other motor railway, if during the last one hundred feet of the approach to such crossing the driver does not have a clear and unobstructed view of such crossing and of any traffic on such railway for a distance of four hundred feet in both directions along such railway. This Section shall not apply in the case of any railway grade crossing where a human flagman is on duty or clearly visible electrical or mechanical railway crossing signal device is installed but does not then indicate the immediate approach of a railway train or car.",
+      "construction_design": {
+        "sight_mode": "left_sight_obscured",
+        "speed_mode": "faster_traversal",
+        "exception_state": "visible_inactive_signal",
+        "route": "same at-grade approach and traversal",
+        "rail_traffic": "same two original rail vehicles moving on opposite signed rails"
+      },
+      "claim": "Installed, visible, non-indicating signal exception control. No legal outcome or physical execution asserted."
+    },
+    {
+      "case_id": "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__signal_active",
+      "target_law_id": "LVMC-11-16-030",
+      "target_type": "planned_delivery_comparison",
+      "planning_status": "unverified",
+      "source_branch": "Statutory flagman or crossing-signal exception control",
+      "comparison_variable": "exception_state",
+      "condition_index": 7,
+      "fixed_conditions": {
+        "cell_id": "C202465",
+        "layout": "rail_crossing",
+        "maneuver": "cross_railway",
+        "control": "rail_track",
+        "actor": "motor_vehicle_driver",
+        "law_id": "LVMC-11-16-030",
+        "selection_targets": [
+          "full-train"
+        ]
+      },
+      "source_text": "The prima facie speed limit shall be fifteen miles per hour when traversing a grade crossing of a steam, electric or any other motor railway, if during the last one hundred feet of the approach to such crossing the driver does not have a clear and unobstructed view of such crossing and of any traffic on such railway for a distance of four hundred feet in both directions along such railway. This Section shall not apply in the case of any railway grade crossing where a human flagman is on duty or clearly visible electrical or mechanical railway crossing signal device is installed but does not then indicate the immediate approach of a railway train or car.",
+      "construction_design": {
+        "sight_mode": "left_sight_obscured",
+        "speed_mode": "faster_traversal",
+        "exception_state": "visible_active_signal",
+        "route": "same at-grade approach and traversal",
+        "rail_traffic": "same two original rail vehicles moving on opposite signed rails"
+      },
+      "claim": "Visible signal indicating immediate approach; negative exception control. No legal outcome or physical execution asserted."
+    },
+    {
+      "case_id": "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__signal_not_visible",
+      "target_law_id": "LVMC-11-16-030",
+      "target_type": "planned_delivery_comparison",
+      "planning_status": "unverified",
+      "source_branch": "Statutory flagman or crossing-signal exception control",
+      "comparison_variable": "exception_state",
+      "condition_index": 8,
+      "fixed_conditions": {
+        "cell_id": "C202465",
+        "layout": "rail_crossing",
+        "maneuver": "cross_railway",
+        "control": "rail_track",
+        "actor": "motor_vehicle_driver",
+        "law_id": "LVMC-11-16-030",
+        "selection_targets": [
+          "full-train"
+        ]
+      },
+      "source_text": "The prima facie speed limit shall be fifteen miles per hour when traversing a grade crossing of a steam, electric or any other motor railway, if during the last one hundred feet of the approach to such crossing the driver does not have a clear and unobstructed view of such crossing and of any traffic on such railway for a distance of four hundred feet in both directions along such railway. This Section shall not apply in the case of any railway grade crossing where a human flagman is on duty or clearly visible electrical or mechanical railway crossing signal device is installed but does not then indicate the immediate approach of a railway train or car.",
+      "construction_design": {
+        "sight_mode": "left_sight_obscured",
+        "speed_mode": "faster_traversal",
+        "exception_state": "installed_not_visible",
+        "route": "same at-grade approach and traversal",
+        "rail_traffic": "same two original rail vehicles moving on opposite signed rails"
+      },
+      "claim": "Installed signal without visible-device proof; negative exception control. No legal outcome or physical execution asserted."
     }
   ],
   "comparisons": [
     {
-      "comparison_id": "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__comparison",
+      "comparison_id": "training__C202465__LVMC-11-16-030__motor_vehicle_driver__speed_15_mph",
       "case_ids": [
         "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__condition_a",
         "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__condition_b"
       ],
       "deliberate_differences": [
-        "traversal_speed_and_crossing_sight"
+        "traversal speed request and measured original speed"
       ],
       "fixed_conditions": {
         "cell_id": "C202465",
@@ -128,7 +361,168 @@
         ]
       },
       "status": "planned_only",
-      "audit_gap": "No Native construction, measured trace or independent saved audit exists."
+      "audit_gap": "Native source capture, saved comparison audit and independent acceptance pending."
+    },
+    {
+      "comparison_id": "training__C202465__LVMC-11-16-030__motor_vehicle_driver__left_sight",
+      "case_ids": [
+        "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__condition_b",
+        "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__clear_both"
+      ],
+      "deliberate_differences": [
+        "left railway direction occlusion"
+      ],
+      "fixed_conditions": {
+        "cell_id": "C202465",
+        "layout": "rail_crossing",
+        "maneuver": "cross_railway",
+        "control": "rail_track",
+        "actor": "motor_vehicle_driver",
+        "law_id": "LVMC-11-16-030",
+        "selection_targets": [
+          "full-train"
+        ]
+      },
+      "status": "planned_only",
+      "audit_gap": "Native source capture, saved comparison audit and independent acceptance pending."
+    },
+    {
+      "comparison_id": "training__C202465__LVMC-11-16-030__motor_vehicle_driver__right_sight",
+      "case_ids": [
+        "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__clear_both",
+        "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__right_obscured"
+      ],
+      "deliberate_differences": [
+        "right railway direction occlusion"
+      ],
+      "fixed_conditions": {
+        "cell_id": "C202465",
+        "layout": "rail_crossing",
+        "maneuver": "cross_railway",
+        "control": "rail_track",
+        "actor": "motor_vehicle_driver",
+        "law_id": "LVMC-11-16-030",
+        "selection_targets": [
+          "full-train"
+        ]
+      },
+      "status": "planned_only",
+      "audit_gap": "Native source capture, saved comparison audit and independent acceptance pending."
+    },
+    {
+      "comparison_id": "training__C202465__LVMC-11-16-030__motor_vehicle_driver__crossing_view",
+      "case_ids": [
+        "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__clear_both",
+        "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__crossing_obscured"
+      ],
+      "deliberate_differences": [
+        "crossing region occlusion"
+      ],
+      "fixed_conditions": {
+        "cell_id": "C202465",
+        "layout": "rail_crossing",
+        "maneuver": "cross_railway",
+        "control": "rail_track",
+        "actor": "motor_vehicle_driver",
+        "law_id": "LVMC-11-16-030",
+        "selection_targets": [
+          "full-train"
+        ]
+      },
+      "status": "planned_only",
+      "audit_gap": "Native source capture, saved comparison audit and independent acceptance pending."
+    },
+    {
+      "comparison_id": "training__C202465__LVMC-11-16-030__motor_vehicle_driver__flagman_exception",
+      "case_ids": [
+        "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__condition_b",
+        "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__flagman_duty"
+      ],
+      "deliberate_differences": [
+        "human flagman duty readback"
+      ],
+      "fixed_conditions": {
+        "cell_id": "C202465",
+        "layout": "rail_crossing",
+        "maneuver": "cross_railway",
+        "control": "rail_track",
+        "actor": "motor_vehicle_driver",
+        "law_id": "LVMC-11-16-030",
+        "selection_targets": [
+          "full-train"
+        ]
+      },
+      "status": "planned_only",
+      "audit_gap": "Native source capture, saved comparison audit and independent acceptance pending."
+    },
+    {
+      "comparison_id": "training__C202465__LVMC-11-16-030__motor_vehicle_driver__inactive_signal_exception",
+      "case_ids": [
+        "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__condition_b",
+        "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__signal_inactive"
+      ],
+      "deliberate_differences": [
+        "visible installed signal not indicating immediate train approach"
+      ],
+      "fixed_conditions": {
+        "cell_id": "C202465",
+        "layout": "rail_crossing",
+        "maneuver": "cross_railway",
+        "control": "rail_track",
+        "actor": "motor_vehicle_driver",
+        "law_id": "LVMC-11-16-030",
+        "selection_targets": [
+          "full-train"
+        ]
+      },
+      "status": "planned_only",
+      "audit_gap": "Native source capture, saved comparison audit and independent acceptance pending."
+    },
+    {
+      "comparison_id": "training__C202465__LVMC-11-16-030__motor_vehicle_driver__signal_indication",
+      "case_ids": [
+        "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__signal_inactive",
+        "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__signal_active"
+      ],
+      "deliberate_differences": [
+        "signal indicates immediate train approach"
+      ],
+      "fixed_conditions": {
+        "cell_id": "C202465",
+        "layout": "rail_crossing",
+        "maneuver": "cross_railway",
+        "control": "rail_track",
+        "actor": "motor_vehicle_driver",
+        "law_id": "LVMC-11-16-030",
+        "selection_targets": [
+          "full-train"
+        ]
+      },
+      "status": "planned_only",
+      "audit_gap": "Native source capture, saved comparison audit and independent acceptance pending."
+    },
+    {
+      "comparison_id": "training__C202465__LVMC-11-16-030__motor_vehicle_driver__signal_visibility",
+      "case_ids": [
+        "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__signal_inactive",
+        "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__signal_not_visible"
+      ],
+      "deliberate_differences": [
+        "installed signal visibility"
+      ],
+      "fixed_conditions": {
+        "cell_id": "C202465",
+        "layout": "rail_crossing",
+        "maneuver": "cross_railway",
+        "control": "rail_track",
+        "actor": "motor_vehicle_driver",
+        "law_id": "LVMC-11-16-030",
+        "selection_targets": [
+          "full-train"
+        ]
+      },
+      "status": "planned_only",
+      "audit_gap": "Native source capture, saved comparison audit and independent acceptance pending."
     }
   ],
   "observations": [
@@ -211,71 +605,119 @@
   ],
   "source_observation_mapping": {
     "st.railway_crossing": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Source-shaped Native per-frame rail_scene.sight_row and rail_sight.measure_trace; actual railway identity, visibility, actors and legal applicability remain unverified.",
+      "channels": [
+        "railway.source_ref",
+        "grade_crossing",
+        "crossing_xy_m"
+      ],
       "source_refs": [
+        "native/rail_scene.py",
+        "native/rail_sight.py",
         "inputs/training__C202465__LVMC-11-16-030__motor_vehicle_driver/assignment.json"
       ]
     },
     "drv.approaching": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Source-shaped Native per-frame rail_scene.sight_row and rail_sight.measure_trace; actual railway identity, visibility, actors and legal applicability remain unverified.",
+      "channels": [
+        "ego.distance_to_crossing_m",
+        "ego.observer_xy_m"
+      ],
       "source_refs": [
+        "native/rail_scene.py",
+        "native/rail_sight.py",
         "inputs/training__C202465__LVMC-11-16-030__motor_vehicle_driver/assignment.json"
       ]
     },
     "st.sight_distance": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Source-shaped Native per-frame rail_scene.sight_row and rail_sight.measure_trace; actual railway identity, visibility, actors and legal applicability remain unverified.",
+      "channels": [
+        "rail_left_clear_distance_m",
+        "rail_right_clear_distance_m",
+        "crossing_visible"
+      ],
       "source_refs": [
+        "native/rail_scene.py",
+        "native/rail_sight.py",
         "inputs/training__C202465__LVMC-11-16-030__motor_vehicle_driver/assignment.json"
       ]
     },
     "rel.visible": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Source-shaped Native per-frame rail_scene.sight_row and rail_sight.measure_trace; actual railway identity, visibility, actors and legal applicability remain unverified.",
+      "channels": [
+        "left_traffic_visible",
+        "right_traffic_visible"
+      ],
       "source_refs": [
+        "native/rail_scene.py",
+        "native/rail_sight.py",
         "inputs/training__C202465__LVMC-11-16-030__motor_vehicle_driver/assignment.json"
       ]
     },
     "kin.speed": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Source-shaped Native per-frame rail_scene.sight_row and rail_sight.measure_trace; actual railway identity, visibility, actors and legal applicability remain unverified.",
+      "channels": [
+        "ego.speed_mps"
+      ],
       "source_refs": [
+        "native/rail_scene.py",
+        "native/rail_sight.py",
         "inputs/training__C202465__LVMC-11-16-030__motor_vehicle_driver/assignment.json"
       ]
     },
     "ru.rail_vehicle": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Source-shaped Native per-frame rail_scene.sight_row and rail_sight.measure_trace; actual railway identity, visibility, actors and legal applicability remain unverified.",
+      "channels": [
+        "rail_vehicle_source_refs",
+        "center_xy_m"
+      ],
       "source_refs": [
+        "native/rail_scene.py",
+        "native/rail_sight.py",
         "inputs/training__C202465__LVMC-11-16-030__motor_vehicle_driver/assignment.json"
       ]
     },
     "dev.human_direction": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Source-shaped Native per-frame rail_scene.sight_row and rail_sight.measure_trace; actual railway identity, visibility, actors and legal applicability remain unverified.",
+      "channels": [
+        "flagman_on_duty",
+        "flagman_source_ref"
+      ],
       "source_refs": [
+        "native/rail_scene.py",
+        "native/rail_sight.py",
         "inputs/training__C202465__LVMC-11-16-030__motor_vehicle_driver/assignment.json"
       ]
     },
     "dev.railway_signal_or_gate": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Source-shaped Native per-frame rail_scene.sight_row and rail_sight.measure_trace; actual railway identity, visibility, actors and legal applicability remain unverified.",
+      "channels": [
+        "crossing_signal_installed_visible",
+        "signal_indicates_train_approach",
+        "signal_source_ref"
+      ],
       "source_refs": [
+        "native/rail_scene.py",
+        "native/rail_sight.py",
         "inputs/training__C202465__LVMC-11-16-030__motor_vehicle_driver/assignment.json"
       ]
     },
     "rel.centre_distance": {
-      "evidence": "Native measurement design pending; summary term is not a pinned Core atom.",
-      "channels": [],
+      "evidence": "Source-shaped Native per-frame rail_scene.sight_row and rail_sight.measure_trace; actual railway identity, visibility, actors and legal applicability remain unverified.",
+      "channels": [
+        "distance_to_crossing_m",
+        "rail_left_clear_distance_m",
+        "rail_right_clear_distance_m"
+      ],
       "source_refs": [
+        "native/rail_scene.py",
+        "native/rail_sight.py",
         "inputs/training__C202465__LVMC-11-16-030__motor_vehicle_driver/assignment.json"
       ]
     }
   },
   "legal_analysis_note": "The flagman and inactive installed crossing signal carve-outs are statutory exceptions. Applicability requires physical signal/flagman status and official crossing context. The current comparison remains an unverified draft and cannot establish calendar or official-device facts from synthetic labels.",
-  "readiness": "planning_only",
+  "readiness": "construction_design_and_synthetic_geometry_only",
   "physical_prerequisites": "Build a real railway grade crossing, crossing traffic sightlines in both directions at 400 feet throughout the last 100 feet, 15-mph traversal, and flagman/device exceptions.",
   "legal_interpretation_limit": "A static straight ray or decorative railroad prop cannot establish the required visibility cause and governed grade crossing."
 }
