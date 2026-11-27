@@ -60,6 +60,8 @@ class StopSignBranchTest(unittest.TestCase):
         self.site = {
             "assignment_id": MODULE.ASSIGNMENT,
             "cell_id": "C158190",
+            "intersection_id": "intersection-fixture",
+            "ego_route_id": "one-way-ego-route",
             "control": "stop_sign",
             "source_kind": "original_site_survey",
             "review_status": "reviewed",
@@ -68,13 +70,19 @@ class StopSignBranchTest(unittest.TestCase):
             "stop_line_present": False,
             "near_crosswalk_present": False,
             "sidewalk_derived_crosswalk_present": False,
-            "stop_sign": {"governed_approach_id": "one-way-ego"},
+            "stop_sign": {"governed_approach_id": "one-way-ego",
+                          "transform": {"x": 1.0, "y": 2.0, "z": 0.0, "yaw": 90.0}},
             "approach_view_stations": [
                 {"station_id": "far", "distance_to_intersection_m": 12.0, "reviewed_visible": False},
                 {"station_id": "near", "distance_to_intersection_m": 3.0, "reviewed_visible": True},
             ],
             "through_vehicle": {"route_source_id": "through-east"},
-            "case_plans": {self.case: {"ego_response": "stop_then_yield", "through_start_delay_s": 2.0}},
+            "case_plans": {
+                self.case: {"ego_response": "stop_then_yield", "through_start_delay_s": 2.0,
+                            "stop_hold_s": 3.0},
+                MODULE.ASSIGNMENT + "__stop_nearest_view_uninterrupted": {
+                    "ego_response": "stop_then_cross", "through_start_delay_s": 2.0,
+                    "stop_hold_s": 0.5}},
             "source_records": {},
         }
         for index, key in enumerate(MODULE.SOURCES):
@@ -102,12 +110,11 @@ class StopSignBranchTest(unittest.TestCase):
 
     def test_second_controlled_response_uses_same_fixed_site(self):
         second = MODULE.ASSIGNMENT + "__stop_nearest_view_uninterrupted"
-        self.site["case_plans"][second] = {"ego_response": "stop_then_cross", "through_start_delay_s": 9.0}
         self.save()
         adapter = Adapter()
         receipt = MODULE.construct(adapter, self.path, second)
         self.assertEqual(receipt["planned_response"], "stop_then_cross")
-        self.assertEqual(adapter.calls[-2], ("spawn", "through-east", 9.0))
+        self.assertEqual(adapter.calls[-2], ("spawn", "through-east", 2.0))
 
     def test_yield_relabel_rejected_before_native_calls(self):
         self.site["control"] = "yield_sign"

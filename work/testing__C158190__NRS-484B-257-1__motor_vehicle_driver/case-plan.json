@@ -6,12 +6,12 @@
     "coverage": [
       {
         "interval": "all 45 s",
-        "subject": "yield sign, no line/crosswalk and full intersection",
+        "subject": "stop sign, no line/crosswalk and full intersection",
         "view": "overview"
       },
       {
         "interval": "approach and crossing",
-        "subject": "ego response at nearest view point",
+        "subject": "ego stop and response at nearest view point",
         "view": "approach"
       },
       {
@@ -30,20 +30,20 @@
   },
   "cases": [
     {
-      "branch": "Yield sign; neither stop line nor crosswalk; nearest-view location.",
-      "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_slow_hazard",
-      "construction_implementation": "yield_scene_construction.py",
+      "branch": "Stop sign; neither stop line nor near-side or sidewalk-derived crosswalk; nearest view.",
+      "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__stop_nearest_view_response",
+      "construction_implementation": "stop_sign_branch.py and carla_stop_operator.py",
       "construction_status": "source_gated_selected_cpu_implementation",
       "gap_ids": [
         "unverified-law-coverage"
       ],
       "kind": "planned_controlled_construction",
-      "measurement": "20 Hz ego speed and entry bracket, original through-vehicle relative motion, no-line/no-crosswalk and nearest view readback; no invented hazard cutoff.",
-      "motion_and_comparison_audit": "through_motion_measurement.py",
+      "measurement": "Original 20 Hz stop at sampled nearest-view station, complete crossing and through-highway motion; legal hazard and priority unresolved.",
+      "motion_and_comparison_audit": "stop_view_measurement.py",
       "new_capture_selected": true,
-      "physical_risk": "A stop-sign annotated cell may lack a real yield sign and absent stop line/crosswalk; site controls must be constructed and read back without relabeling.",
-      "requested_close_through_vehicle": true,
-      "requested_yield_action": "slow",
+      "physical_risk": "Native may fail to stop at the sampled visible station or the surveyed sign/markings may differ from map readback.",
+      "requested_stop_action": "stop_then_yield",
+      "requested_stop_hold_s": 3.0,
       "required_original_packets": [
         "site_sign_and_exception_state",
         "stop_line_and_near_crosswalk_absence",
@@ -55,45 +55,20 @@
       "source_preflight": "source_audit.py"
     },
     {
-      "branch": "Yield sign; neither stop line nor crosswalk; nearest-view location.",
-      "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_stop_hazard",
-      "construction_implementation": "yield_scene_construction.py",
+      "branch": "Stop sign; neither stop line nor near-side or sidewalk-derived crosswalk; nearest view.",
+      "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__stop_nearest_view_uninterrupted",
+      "construction_implementation": "stop_sign_branch.py and carla_stop_operator.py",
       "construction_status": "source_gated_selected_cpu_implementation",
       "gap_ids": [
         "unverified-law-coverage"
       ],
       "kind": "planned_controlled_construction",
-      "measurement": "20 Hz ego speed and entry bracket, original through-vehicle relative motion, no-line/no-crosswalk and nearest view readback; no invented hazard cutoff.",
-      "motion_and_comparison_audit": "through_motion_measurement.py",
+      "measurement": "Original 20 Hz stop at sampled nearest-view station, complete crossing and through-highway motion; legal hazard and priority unresolved.",
+      "motion_and_comparison_audit": "stop_view_measurement.py",
       "new_capture_selected": true,
-      "physical_risk": "A stop-sign annotated cell may lack a real yield sign and absent stop line/crosswalk; site controls must be constructed and read back without relabeling.",
-      "requested_close_through_vehicle": true,
-      "requested_yield_action": "stop",
-      "required_original_packets": [
-        "site_sign_and_exception_state",
-        "stop_line_and_near_crosswalk_absence",
-        "approach_view_station_readback",
-        "ego_motion_and_intersection_occupancy",
-        "through_vehicle_motion",
-        "four_camera_video"
-      ],
-      "source_preflight": "source_audit.py"
-    },
-    {
-      "branch": "Yield sign; neither stop line nor crosswalk; nearest-view location.",
-      "case_id": "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_slow_no_hazard",
-      "construction_implementation": "yield_scene_construction.py",
-      "construction_status": "source_gated_selected_cpu_implementation",
-      "gap_ids": [
-        "unverified-law-coverage"
-      ],
-      "kind": "planned_controlled_construction",
-      "measurement": "20 Hz ego speed and entry bracket, original through-vehicle relative motion, no-line/no-crosswalk and nearest view readback; no invented hazard cutoff.",
-      "motion_and_comparison_audit": "through_motion_measurement.py",
-      "new_capture_selected": true,
-      "physical_risk": "A stop-sign annotated cell may lack a real yield sign and absent stop line/crosswalk; site controls must be constructed and read back without relabeling.",
-      "requested_close_through_vehicle": false,
-      "requested_yield_action": "slow",
+      "physical_risk": "Native may fail to stop at the sampled visible station or the surveyed sign/markings may differ from map readback.",
+      "requested_stop_action": "stop_then_cross",
+      "requested_stop_hold_s": 0.5,
       "required_original_packets": [
         "site_sign_and_exception_state",
         "stop_line_and_near_crosswalk_absence",
@@ -108,34 +83,18 @@
   "cell_id": "C158190",
   "comparisons": [
     {
-      "audit_implementation": "through_motion_measurement.py",
+      "audit_implementation": "stop_view_measurement.py",
       "case_ids": [
-        "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_slow_hazard",
-        "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_stop_hazard"
+        "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__stop_nearest_view_response",
+        "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__stop_nearest_view_uninterrupted"
       ],
-      "comparison_id": "slow_vs_stop",
+      "comparison_id": "stop_nearest_view_response",
       "deliberate_differences": [
-        "ego slows versus stops before entry"
+        "engineering hold duration after sampled stop; observed crossing relative to through-vehicle motion"
       ],
       "fixed_conditions": [
-        "same proper yield sign, no stop line/crosswalk and same nearest view point",
-        "same intersection, ego path, actor identities and capture except named variable"
-      ],
-      "status": "source_gated_cpu_audit_tested"
-    },
-    {
-      "audit_implementation": "through_motion_measurement.py",
-      "case_ids": [
-        "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_slow_hazard",
-        "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_slow_no_hazard"
-      ],
-      "comparison_id": "through_hazard",
-      "deliberate_differences": [
-        "through-vehicle approach relative timing and distance"
-      ],
-      "fixed_conditions": [
-        "same proper yield sign, no stop line/crosswalk and same nearest view point",
-        "same intersection, ego path, actor identities and capture except named variable"
+        "same proper stop sign, no stop line/crosswalk and same nearest visible station",
+        "same original map, ego route, through route/start, actor, camera profile and duration"
       ],
       "status": "source_gated_cpu_audit_tested"
     }
@@ -235,7 +194,7 @@
   "observations": [
     {
       "mandatory": true,
-      "name": "yield_sign_and_marking",
+      "name": "stop_sign_and_marking",
       "source": "original Native 20 Hz readback"
     },
     {
@@ -264,7 +223,7 @@
       "source": "original Native 20 Hz readback"
     }
   ],
-  "planning_status": "selected_source_pending_cpu_construction",
+  "planning_status": "selected_fixed_stop_sign_cpu_construction",
   "prior_review_context": {
     "comparison_ids": [
       "stop_near_side_sidewalk_derived_crosswalk"
@@ -274,13 +233,12 @@
   "requirement_dispositions": [
     {
       "case_ids": [
-        "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_slow_hazard",
-        "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_stop_hazard",
-        "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__yield_slow_no_hazard"
+        "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__stop_nearest_view_response",
+        "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__stop_nearest_view_uninterrupted"
       ],
       "disposition_index": 0,
-      "evidence_or_gap": "Three selected source-gated cases and two fixed-site comparisons; original reviewed yield-control site, view and through motion absent",
-      "requirement": "Proper yield sign with no stop line or near crosswalk; nearest view, slow or stop, and yield to through-highway immediate hazards during crossing",
+      "evidence_or_gap": "Two fixed-stop-sign cases and one controlled response comparison; original site and physical motion remain unreviewed.",
+      "requirement": "Proper stop sign with no stop line or near crosswalk; stop at the nearest point with a view and yield to through-highway vehicles already within or immediately approaching during crossing.",
       "source": "NRS 484B.257(1)",
       "status": "selected_required"
     }
@@ -328,11 +286,21 @@
     }
   ],
   "runtime_uncertainties": [
-    "Frozen C158190 cell control is stop_sign while selected branch requires yield_sign. Source-reviewed approval for a yield-control variant is absent.",
-    "Only two accepted metadata files are exported. No original trace, video, sign/marking survey, view-ray survey, or through-highway route/motion packet is exported.",
-    "The source-gated construction adapter and through-motion comparison audit pass synthetic CPU tests, but selected manifest, saved finalizer, canonical semantic proposals and delivery proofs require an actual reviewed site source and current Native integration."
+    "Frozen selected_branch text names a yield sign, but frozen C158190 cell fixes stop_sign. The compatible C158208 assignment carries the yield branch; these local cases carry only the fixed stop-sign branch.",
+    "Original reviewed stop-site survey, original trace, video, sign/marking survey, view-ray survey and through-highway route/motion are absent from this CPU checkout.",
+    "Synthetic fixtures prove software plumbing only; Native stop location, through-traffic timing, physical camera pixels and legal right-of-way need original local review."
   ],
   "selected_branch": "Yield sign; neither stop line nor crosswalk; nearest-view location.",
+  "selected_branch_resolution": {
+    "claim": "These stop cases do not satisfy the frozen yield-sign branch; shared law coverage must bind that branch to the compatible assignment.",
+    "compatible_yield_assignment_id": "testing__C158208__NRS-484B-257-1__motor_vehicle_driver",
+    "frozen_selected_branch": "Yield sign; neither stop line nor crosswalk; nearest-view location.",
+    "local_case_ids": [
+      "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__stop_nearest_view_response",
+      "testing__C158190__NRS-484B-257-1__motor_vehicle_driver__stop_nearest_view_uninterrupted"
+    ],
+    "local_fixed_control": "stop_sign"
+  },
   "selected_branches": [
     {
       "actor": "motor_vehicle_driver",

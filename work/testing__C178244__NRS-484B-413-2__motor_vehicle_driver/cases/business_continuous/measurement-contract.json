@@ -1,0 +1,48 @@
+{
+  "format": "worker-measurement-contract",
+  "negative": {
+    "error_contains": "Missing required source: original-turn-signal.json",
+    "remove": [
+      "original-turn-signal.json"
+    ]
+  },
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "inputs": [
+        "original-site.json"
+      ],
+      "kind": "sourced_context",
+      "method": "build_report",
+      "output_key": "site_context_measurement",
+      "requirement": "Source-reviewed highway, business district or area, and left-turn context",
+      "source": "NRS 484B.413(2) exact text; frozen C178244 left-turn cell",
+      "value_type": "object"
+    },
+    {
+      "disposition_index": 1,
+      "inputs": [
+        "original-turn-signal.json",
+        "video_frames.jsonl"
+      ],
+      "kind": "measured",
+      "method": "build_report",
+      "output_key": "signal_distance_measurement",
+      "requirement": "Continuous left signal over not less than the last 100 feet traveled before course change in business district or area",
+      "source": "NRS 484B.413(2) exact text",
+      "value_type": "object"
+    },
+    {
+      "disposition_index": 6,
+      "inputs": [
+        "original-turn-signal.json"
+      ],
+      "kind": "measured",
+      "method": "build_report",
+      "output_key": "weather_independence_measurement",
+      "requirement": "The turn-signal rule is observed regardless of weather",
+      "source": "NRS 484B.413(2) exact text",
+      "value_type": "object"
+    }
+  ]
+}

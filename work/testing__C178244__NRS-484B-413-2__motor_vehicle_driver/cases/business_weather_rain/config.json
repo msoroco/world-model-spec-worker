@@ -1,0 +1,160 @@
+{
+  "actor": "motor_vehicle_driver",
+  "assignment_id": "testing__C178244__NRS-484B-413-2__motor_vehicle_driver",
+  "cameras": [
+    {
+      "fov_deg": 90,
+      "height": 1080,
+      "name": "overview",
+      "pose_strategy": "reviewed fixed highway and district overview",
+      "width": 1920
+    },
+    {
+      "fov_deg": 90,
+      "height": 720,
+      "name": "approach",
+      "pose_strategy": "reviewed fixed full signal approach and left-turn path",
+      "width": 1280
+    },
+    {
+      "fov_deg": 90,
+      "height": 720,
+      "name": "reference_corner",
+      "pose_strategy": "reviewed fixed district frontage and turn corner",
+      "width": 1280
+    },
+    {
+      "fov_deg": 90,
+      "height": 720,
+      "name": "driver_reference",
+      "pose_strategy": "reviewed ego mounted forward and left reference",
+      "width": 1280
+    }
+  ],
+  "case": {
+    "case_id": "testing__C178244__NRS-484B-413-2__motor_vehicle_driver__business_weather_rain",
+    "recording_description": {
+      "channels": [
+        {
+          "method": "original CARLA tick identity",
+          "name": "native_frame",
+          "reference_frame": "original CARLA world and frame identity",
+          "sampling_rate_hz": 20,
+          "time_window": "full 900-frame, 45-second attempt",
+          "uncertainty": "one retained 20 Hz sample",
+          "unit": "frame"
+        },
+        {
+          "method": "original ego transform position readback",
+          "name": "ego_xy",
+          "reference_frame": "original CARLA world and frame identity",
+          "sampling_rate_hz": 20,
+          "time_window": "full 900-frame, 45-second attempt",
+          "uncertainty": "one retained 20 Hz sample",
+          "unit": "m"
+        },
+        {
+          "method": "original vehicle light-state readback",
+          "name": "left_signal",
+          "reference_frame": "original CARLA world and frame identity",
+          "sampling_rate_hz": 20,
+          "time_window": "full 900-frame, 45-second attempt",
+          "uncertainty": "one retained 20 Hz sample",
+          "unit": "boolean"
+        },
+        {
+          "method": "original ego heading against reviewed approach",
+          "name": "course_change",
+          "reference_frame": "original CARLA world and frame identity",
+          "sampling_rate_hz": 20,
+          "time_window": "full 900-frame, 45-second attempt",
+          "uncertainty": "one retained 20 Hz sample",
+          "unit": "boolean"
+        },
+        {
+          "method": "original Native weather readback",
+          "name": "weather",
+          "reference_frame": "original CARLA world and frame identity",
+          "sampling_rate_hz": 20,
+          "time_window": "full 900-frame, 45-second attempt",
+          "uncertainty": "one retained 20 Hz sample",
+          "unit": "categorical"
+        },
+        {
+          "method": "four synchronized original camera sources",
+          "name": "four_camera_frames",
+          "reference_frame": "original CARLA world and frame identity",
+          "sampling_rate_hz": 20,
+          "time_window": "full 900-frame, 45-second attempt",
+          "uncertainty": "one retained 20 Hz sample",
+          "unit": "native pixels"
+        }
+      ],
+      "context_inputs": [
+        {
+          "method": "SHA-bound local review packet",
+          "name": "highway",
+          "unit": "source record"
+        },
+        {
+          "method": "SHA-bound local review packet",
+          "name": "district_frontage_and_use",
+          "unit": "source record"
+        },
+        {
+          "method": "SHA-bound local review packet",
+          "name": "freight_loading_zone",
+          "unit": "source record"
+        },
+        {
+          "method": "SHA-bound local review packet",
+          "name": "driver_and_vehicle",
+          "unit": "source record"
+        }
+      ],
+      "limitations": [
+        "Controller target is not the observed signaling distance.",
+        "Original district and highway facts require independent review."
+      ]
+    },
+    "target": {
+      "signal_continuity_request": "continuous",
+      "signal_start_distance_ft": 101.0,
+      "weather_request": "rain"
+    }
+  },
+  "cell_id": "C178244",
+  "controller_lead_samples": 1,
+  "course": "left_turn",
+  "duration_s": 45,
+  "law_id": "NRS-484B-413-2",
+  "physical_completion": {
+    "body_key": "body_vertices_m",
+    "criterion": "turn",
+    "destination_road": null,
+    "engineering_tolerances_not_legal": true,
+    "heading_key": "heading_deg",
+    "minimum_progress_m": 10,
+    "minimum_samples": 2,
+    "motion_source": "body_history.jsonl",
+    "turn_degrees": 90,
+    "turn_sign": 1,
+    "turn_tolerance_deg": 30
+  },
+  "rate_hz": 20,
+  "required_atoms": [],
+  "selected_case_id": "testing__C178244__NRS-484B-413-2__motor_vehicle_driver__business_weather_rain",
+  "source_packets": [],
+  "supported_case_ids": [
+    "testing__C178244__NRS-484B-413-2__motor_vehicle_driver__residence_continuous",
+    "testing__C178244__NRS-484B-413-2__motor_vehicle_driver__residence_short",
+    "testing__C178244__NRS-484B-413-2__motor_vehicle_driver__residence_at_100ft",
+    "testing__C178244__NRS-484B-413-2__motor_vehicle_driver__other_area_continuous",
+    "testing__C178244__NRS-484B-413-2__motor_vehicle_driver__other_area_short",
+    "testing__C178244__NRS-484B-413-2__motor_vehicle_driver__other_area_at_300ft",
+    "testing__C178244__NRS-484B-413-2__motor_vehicle_driver__business_weather_rain",
+    "testing__C178244__NRS-484B-413-2__motor_vehicle_driver__business_short",
+    "testing__C178244__NRS-484B-413-2__motor_vehicle_driver__business_at_100ft",
+    "testing__C178244__NRS-484B-413-2__motor_vehicle_driver__business_continuous"
+  ]
+}

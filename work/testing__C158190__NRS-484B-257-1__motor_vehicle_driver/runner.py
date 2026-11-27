@@ -20,6 +20,9 @@ ROOT = Path(__file__).resolve().parent
 
 def check(site_path=None, site_sha256=None):
     config = json.loads((ROOT / "config.json").read_text())
+    if config.get("selected_case_id", "").endswith(("__stop_nearest_view_response", "__stop_nearest_view_uninterrupted")):
+        from stop_runner import check as check_stop
+        return check_stop(site_path, site_sha256)
     if (config.get("assignment_id") != ASSIGNMENT or
             config.get("cell_id") != "C158190" or
             config.get("law_id") != "NRS-484B-257-1" or
@@ -59,6 +62,11 @@ def main():
     parser.add_argument("--port", type=int, default=2000)
     parser.add_argument("--output-dir", type=Path)
     args = parser.parse_args()
+    config = json.loads((ROOT / "config.json").read_text())
+    if config.get("selected_case_id", "").endswith(("__stop_nearest_view_response", "__stop_nearest_view_uninterrupted")):
+        from stop_runner import main as stop_main
+        stop_main()
+        return
     if args.check:
         print(check()["case_id"])
         return

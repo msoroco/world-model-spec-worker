@@ -61,6 +61,9 @@ def validate_site(site_path: str | Path, case_id: str) -> dict:
     if (site.get("assignment_id") != ASSIGNMENT or site.get("cell_id") != "C158190"
             or site.get("control") != "stop_sign"):
         raise ValueError("fixed C158190 stop-sign identity required")
+    for name in ("intersection_id", "ego_route_id"):
+        if not isinstance(site.get(name), str) or not site[name]:
+            raise ValueError("reviewed stop-site identity required: " + name)
     if site.get("source_kind") != "original_site_survey" or site.get("review_status") != "reviewed":
         raise ValueError("independently reviewed original stop-site survey required")
     if site.get("police_control_active") is not False or site.get("traffic_signal_control_active") is not False:
@@ -72,6 +75,12 @@ def validate_site(site_path: str | Path, case_id: str) -> dict:
     if (not isinstance(sign, dict) or not isinstance(sign.get("governed_approach_id"), str)
             or not sign["governed_approach_id"]):
         raise ValueError("proper stop sign and governed approach required")
+    if not isinstance(sign.get("transform"), dict) or any(
+            not isinstance(sign["transform"].get(axis), (int, float)) or
+            isinstance(sign["transform"].get(axis), bool) or
+            not math.isfinite(sign["transform"][axis])
+            for axis in ("x", "y", "z", "yaw")):
+        raise ValueError("reviewed stop-sign transform required")
     stations = site.get("approach_view_stations")
     if not isinstance(stations, list) or len(stations) < 2:
         raise ValueError("two original nearest-view stations required")
@@ -102,8 +111,20 @@ def validate_site(site_path: str | Path, case_id: str) -> dict:
     if plan.get("ego_response") != CASES[case_id]:
         raise ValueError("exact stop-branch response differs")
     _finite(plan.get("through_start_delay_s"), "through-vehicle delay")
+    hold = _finite(plan.get("stop_hold_s"), "stop hold")
+    if hold < 0.25 or hold > 20:
+        raise ValueError("bounded engineering stop hold required")
+    counterpart = next(other for other in CASES if other != case_id)
+    if counterpart not in plans or plans[counterpart].get("ego_response") != CASES[counterpart]:
+        raise ValueError("controlled stop-response counterpart required")
+    if plan.get("through_start_delay_s") != plans[counterpart].get("through_start_delay_s"):
+        raise ValueError("through traffic timing must stay fixed")
+    other_hold = _finite(plans[counterpart].get("stop_hold_s"), "counterpart stop hold")
+    if (hold <= other_hold) != (CASES[case_id] == "stop_then_cross") or hold == other_hold:
+        raise ValueError("stop-response engineering intervention differs")
     _check_source_bytes(site, path)
     site["_site_sha256"] = hashlib.sha256(raw).hexdigest()
+    site["_source_path"] = str(path)
     return site
 
 

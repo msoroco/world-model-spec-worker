@@ -83,9 +83,11 @@ def inspect_original(path: str | Path, case_id: str) -> dict:
     stop_indices = []
     sightings = {}
     for index, frame in enumerate(frames):
-        if not isinstance(frame, dict) or frame.get("frame") != index:
+        if not isinstance(frame, dict) or type(frame.get("frame")) is not int or frame["frame"] != index:
             raise ValueError("consecutive original frame identity required")
         timestamp = _number(frame.get("time_s"), "frame time")
+        if abs(timestamp - index / 20) > .002:
+            raise ValueError("original 20 Hz frame/time join required")
         if index and not 0.049 <= timestamp - _number(frames[index - 1].get("time_s"), "prior time") <= 0.051:
             raise ValueError("original 20 Hz time join required")
         speed = _number(frame.get("ego_speed_mps"), "ego speed")
@@ -94,10 +96,14 @@ def inspect_original(path: str | Path, case_id: str) -> dict:
         if frame["ego_within_intersection"]:
             crossing.append(index)
         elif speed == 0:
-            stop_indices.append(index)
+            station_distance = _number(frame.get("distance_to_intersection_m"), "stop station distance")
+            if abs(station_distance - nearest_distance) <= 0.5:
+                stop_indices.append(index)
         participants = frame.get("through_vehicles")
         if not isinstance(participants, list):
             raise ValueError("original through-highway history required at every frame")
+        if frame["ego_within_intersection"] and not participants:
+            raise ValueError("through-highway participant missing during crossing")
         ids = set()
         for vehicle in participants:
             if not isinstance(vehicle, dict) or not isinstance(vehicle.get("id"), str) or not vehicle["id"]:

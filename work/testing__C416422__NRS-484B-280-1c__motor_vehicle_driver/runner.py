@@ -19,7 +19,7 @@ def load_scene(path=None):
     identity = (scene.get("law_id"), scene.get("cell_id"), scene.get("actor"),
                 scene.get("layout"), scene.get("maneuver"), scene.get("control"))
     expected = ("NRS-484B-280-1c", "C416422", "motor_vehicle_driver",
-                "single_lane_per_direction", "travel", "pedestrian")
+                "single_lane_per_direction", "travel", "sidewalk")
     if identity != expected:
         raise ValueError("wrong frozen law or cell identity")
     if scene.get("response_policy") not in ("prompt_brake", "deferred_brake"):

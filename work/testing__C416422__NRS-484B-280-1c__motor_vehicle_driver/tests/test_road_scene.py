@@ -43,6 +43,17 @@ class RoadSceneTests(unittest.TestCase):
     def save(self):
         self.site_path.write_text(json.dumps(self.site))
 
+    def test_authored_scene_preserves_frozen_cell_control(self):
+        authored = json.loads((ROOT / "scene.json").read_text())
+        assignment_path = ROOT / "assignment.json"
+        if assignment_path.is_file():
+            assignment = json.loads(assignment_path.read_text())
+            self.assertEqual(authored["control"], assignment["cell"]["control"])
+        runner_spec = importlib.util.spec_from_file_location("runner", ROOT / "runner.py")
+        runner = importlib.util.module_from_spec(runner_spec)
+        runner_spec.loader.exec_module(runner)
+        self.assertEqual(runner.load_scene()["control"], "sidewalk")
+
     def test_site_requires_original_map_and_sidewalk(self):
         self.assertEqual(scene.load_site(self.site_path)["layout"], "single_lane_per_direction")
         self.site["sidewalk_present"] = False

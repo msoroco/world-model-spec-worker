@@ -1,0 +1,231 @@
+"""Acquire source-bound original stop motion and synchronized four-view video."""
+
+from __future__ import annotations
+
+import copy
+import hashlib
+import json
+import math
+from pathlib import Path
+import subprocess
+
+from stop_sign_branch import ASSIGNMENT, CASES, SOURCES
+
+VIEWS = ("overview", "approach", "reference_corner", "driver_reference")
+SIZES = {"overview": (1920, 1080), "approach": (1280, 720),
+         "reference_corner": (1280, 720), "driver_reference": (1280, 720)}
+FRAMES = 900
+RATE = 20
+SOURCE_FIELDS = SOURCES
+
+
+def require(ok, message):
+    if not ok:
+        raise ValueError(message)
+
+
+def sha(path):
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def write_json(path, value):
+    Path(path).write_text(json.dumps(value, sort_keys=True, separators=(",", ":"),
+                                    allow_nan=False) + "\n")
+
+
+def _encoder(output, view):
+    width, height = SIZES[view]
+    return subprocess.Popen(
+        ["ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error", "-y",
+         "-f", "rawvideo", "-pixel_format", "rgb24", "-video_size", f"{width}x{height}",
+         "-framerate", str(RATE), "-i", "-", "-an", "-c:v", "ffv1", "-threads", "1",
+         str(output / (view + ".mkv"))], stdin=subprocess.PIPE,
+        stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
+
+
+def _validate_row(row, index, native_frame, site, case_id):
+    require(isinstance(row, dict) and type(row.get("frame")) is int and
+            row["frame"] == index and
+            type(row.get("native_frame")) is int and
+            row["native_frame"] == native_frame and
+            type(row.get("original_frame")) is int and
+            row["original_frame"] == native_frame and
+            type(row.get("time_s")) in (int, float) and
+            math.isfinite(row["time_s"]) and abs(row["time_s"] - index / RATE) <= .002,
+            "original Native frame/time join differs")
+    for name in ("actor_id", "vehicle_blueprint", "position_m", "heading_xy",
+                 "body_vertices_m", "ego_speed_mps", "ego_within_intersection",
+                 "distance_to_intersection_m", "through_vehicle_ids", "through_vehicles"):
+        require(name in row, "original stop motion field missing: " + name)
+    require(type(row["actor_id"]) is int and row["actor_id"] > 0 and
+            isinstance(row["vehicle_blueprint"], str) and
+            row["vehicle_blueprint"].startswith("vehicle."),
+            "original motor vehicle identity missing")
+    for name, length in (("position_m", 3), ("heading_xy", 2)):
+        values = row[name]
+        require(isinstance(values, list) and len(values) == length and
+                all(type(value) in (int, float) and math.isfinite(value) for value in values),
+                "original Native geometry differs: " + name)
+    require(isinstance(row["body_vertices_m"], list) and len(row["body_vertices_m"]) >= 4 and
+            all(isinstance(vertex, list) and len(vertex) == 3 and
+                all(type(value) in (int, float) and math.isfinite(value) for value in vertex)
+                for vertex in row["body_vertices_m"]), "original body geometry missing")
+    require(type(row["ego_within_intersection"]) is bool and
+            type(row["ego_speed_mps"]) in (int, float) and
+            math.isfinite(row["ego_speed_mps"]) and row["ego_speed_mps"] >= 0 and
+            type(row["distance_to_intersection_m"]) in (int, float) and
+            math.isfinite(row["distance_to_intersection_m"]) and
+            isinstance(row["through_vehicle_ids"], list) and
+            isinstance(row["through_vehicles"], list), "original stop/through observation missing")
+    if row["ego_within_intersection"]:
+        ids = row["through_vehicle_ids"]
+        vehicles = row["through_vehicles"]
+        require(bool(ids) and all(isinstance(value, str) and value for value in ids) and
+                len(ids) == len(set(ids)) and len(vehicles) == len(ids) and
+                all(isinstance(vehicle, dict) and vehicle.get("id") in ids and
+                    vehicle.get("through_highway") is True and
+                    type(vehicle.get("distance_to_conflict_m")) in (int, float) and
+                    math.isfinite(vehicle["distance_to_conflict_m"]) and
+                    type(vehicle.get("speed_mps")) in (int, float) and
+                    math.isfinite(vehicle["speed_mps"]) and vehicle["speed_mps"] >= 0
+                    for vehicle in vehicles) and
+                len({vehicle["id"] for vehicle in vehicles}) == len(ids),
+                "original through-vehicle crossing identity or motion missing")
+    require(row.get("case_id") == case_id and
+            row.get("control") == "stop_sign" and
+            row.get("stop_line_present") is False and
+            row.get("near_crosswalk_present") is False,
+            "original stop branch intervention differs")
+    for key in SOURCE_FIELDS:
+        require(row.get(key) == site[key], "original site source changed: " + key)
+
+
+def capture(world, adapter, site, case_id, output, site_sha256):
+    require(site.get("_site_sha256") == site_sha256,
+            "reviewed stop site source changed")
+    require(case_id in CASES, "unknown selected stop case")
+    output = Path(output)
+    for name in ("context.json", "original-trace.jsonl", "cameras.json", "receipt.json",
+                 "reviewed-site.json", "reviewed-sources.json", "comparison-packet.json",
+                 *(view + ".mkv" for view in VIEWS)):
+        require(not (output / name).exists(), "original attempt output already populated: " + name)
+    output.mkdir(parents=True, exist_ok=True)
+    site_path = Path(site.get("_source_path", ""))
+    require(site_path.is_file() and not site_path.is_symlink() and
+            hashlib.sha256(site_path.read_bytes()).hexdigest() == site_sha256,
+            "reviewed stop site bytes changed before capture")
+    (output / "reviewed-site.json").write_bytes(site_path.read_bytes())
+    source_index = {}
+    source_root = site_path.resolve().parent
+    for key in SOURCE_FIELDS:
+        record = site["source_records"][key]
+        source = source_root / record["path"]
+        require(source.is_file() and not source.is_symlink() and
+                hashlib.sha256(source.read_bytes()).hexdigest() == record["sha256"] == site[key],
+                "reviewed original source changed during capture: " + key)
+        target = output / ("reviewed-" + key + ".source")
+        target.write_bytes(source.read_bytes())
+        source_index[key] = {"path": target.name, "sha256": site[key]}
+    write_json(output / "reviewed-sources.json", source_index)
+    context = adapter.read_original_context(site, case_id)
+    require(isinstance(context, dict) and context.get("case_id") == case_id and
+            context.get("assignment_id") == ASSIGNMENT and
+            context.get("source_kind") == "original_native_readback" and
+            context.get("control") == "stop_sign" and
+            context.get("stop_line_present") is False and
+            context.get("near_crosswalk_present") is False and
+            context.get("sidewalk_derived_crosswalk_present") is False and
+            context.get("police_control_active") is False and
+            context.get("traffic_signal_control_active") is False,
+            "original governed stop/no-line/no-crosswalk readback missing")
+    for key in SOURCE_FIELDS:
+        require(context.get(key) == site[key], "original source differs: " + key)
+    require(context.get("intersection_id") == site["intersection_id"] and
+            context.get("ego_route_source_sha256") == site["ego_route_source_sha256"] and
+            isinstance(context.get("source_recording_id"), str) and
+            bool(context["source_recording_id"]) and
+            isinstance(context.get("approach_view_stations"), list) and
+            bool(context["approach_view_stations"]),
+            "original recording identity and view-ray stations required")
+    context["stop_sign_source_sha256"] = site["stop_sign_survey_sha256"]
+    context["view_ray_source_sha256"] = site["view_ray_survey_sha256"]
+    cameras = json.loads((Path(__file__).resolve().parent / "config.json").read_text())["cameras"]
+    context["camera_plan_sha256"] = hashlib.sha256(json.dumps(
+        cameras, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+    context["site_sha256"] = site_sha256
+    context["duration_frames"] = FRAMES
+    context["planned_response"] = CASES[case_id]
+    context["planned_stop_hold_s"] = site["case_plans"][case_id]["stop_hold_s"]
+    context_path = output / "context.json"
+    write_json(context_path, context)
+    prior = copy.copy(world.get_settings())
+    settings = copy.copy(prior)
+    settings.synchronous_mode = True
+    settings.fixed_delta_seconds = 1 / RATE
+    encoders = {}
+    trace_path = output / "original-trace.jsonl"
+    try:
+        world.apply_settings(settings)
+        current = world.get_settings()
+        require(current.synchronous_mode is True and
+                abs(current.fixed_delta_seconds - 1 / RATE) < 1e-9,
+                "Native 20 Hz settings readback failed")
+        for view in VIEWS:
+            encoders[view] = _encoder(output, view)
+        start_time = last_frame = None
+        with trace_path.open("w") as trace:
+            for index in range(FRAMES):
+                adapter.control_frame(case_id, index)
+                native_frame = world.tick()
+                snapshot = world.get_snapshot()
+                now = float(snapshot.timestamp.elapsed_seconds)
+                require(type(native_frame) is int and snapshot.frame == native_frame and
+                        (last_frame is None or native_frame == last_frame + 1),
+                        "Native frame identity discontinuity")
+                if start_time is None:
+                    start_time = now
+                require(math.isfinite(now) and abs(now - start_time - index / RATE) <= .005,
+                        "Native timestamp discontinuity")
+                last_frame = native_frame
+                row = adapter.read_original_frame(case_id, index, native_frame)
+                _validate_row(row, index, native_frame, site, case_id)
+                trace.write(json.dumps(row, sort_keys=True, separators=(",", ":"),
+                                       allow_nan=False) + "\n")
+                for view in VIEWS:
+                    pixels = adapter.camera_rgb24(view, native_frame)
+                    width, height = SIZES[view]
+                    require(type(pixels) is bytes and len(pixels) == width * height * 3,
+                            "original synchronized RGB frame missing: " + view)
+                    encoders[view].stdin.write(pixels)
+        for view, process in encoders.items():
+            process.stdin.close()
+            error = process.stderr.read()
+            require(process.wait(timeout=300) == 0,
+                    "original camera encode failed: " + view + ": " + error.decode(errors="replace"))
+        streams = {view: {"path": view + ".mkv", "sha256": sha(output / (view + ".mkv")),
+                          "fps": RATE, "frame_count": FRAMES} for view in VIEWS}
+        camera_manifest = output / "cameras.json"
+        write_json(camera_manifest, {"assignment_id": ASSIGNMENT, "case_id": case_id,
+                                     "fps": RATE, "frame_count": FRAMES, "streams": streams})
+        receipt = output / "receipt.json"
+        write_json(receipt, {"assignment_id": ASSIGNMENT, "case_id": case_id,
+                             "source_kind": "original_native_capture", "diagnostic_fixture": False,
+                             "fps": RATE, "frame_count": FRAMES,
+                             "context_sha256": sha(context_path), "trace_sha256": sha(trace_path),
+                             "camera_manifest_sha256": sha(camera_manifest),
+                             "site_sha256": site_sha256,
+                             "reviewed_source_index_sha256": sha(output / "reviewed-sources.json")})
+        return {"context": str(context_path), "trace": str(trace_path),
+                "camera_manifest": str(camera_manifest), "receipt": str(receipt)}
+    finally:
+        for process in encoders.values():
+            if process.poll() is None:
+                if process.stdin and not process.stdin.closed:
+                    process.stdin.close()
+                process.terminate()
+                process.wait(timeout=30)
+        world.apply_settings(prior)
+        restored = world.get_settings()
+        require(restored.synchronous_mode == prior.synchronous_mode and
+                restored.fixed_delta_seconds == prior.fixed_delta_seconds,
+                "Native settings restoration readback failed")

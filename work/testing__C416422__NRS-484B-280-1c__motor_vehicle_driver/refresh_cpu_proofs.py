@@ -11,7 +11,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
-RUN = REPO / ".runtime-work/c416422-nov27-capture-v4"
+RUN = REPO / ".runtime-work/c416422-nov27-control-v6"
 PYTHON = REPO / ".venv-cpu/bin/python"
 MANIFEST = ROOT / "execution-manifest.json"
 VALIDATOR = REPO / ".runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck"
@@ -169,7 +169,7 @@ def main():
                         "log": "semantic-stage-check.log",
                         "sha256": sha(ROOT / "semantic-stage-check.log")}]
     write(result_path, result)
-    print("refreshed both primary and fallback exact cases, saved processing, audits, and 16 tests")
+    print("refreshed both primary and fallback exact cases, saved processing, audits, and 17 tests")
 
 
 if __name__ == "__main__":

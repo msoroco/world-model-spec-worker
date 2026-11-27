@@ -29,6 +29,9 @@ def sha(path):
 def measure(attempt):
     root = Path(attempt)
     config = json.loads(required(root, "config.json").read_text())
+    if config.get("selected_case_id", "").endswith(("__stop_nearest_view_response", "__stop_nearest_view_uninterrupted")):
+        from stop_analysis import measure as measure_stop
+        return measure_stop(attempt)
     construction = json.loads(required(root, "construction.json").read_text())
     case_id = config["selected_case_id"]
     suffix = case_id.removeprefix(ASSIGNMENT + "__")
@@ -70,6 +73,10 @@ def measure(attempt):
 
 
 def analyze(attempt, output):
+    config = json.loads(required(Path(attempt), "config.json").read_text())
+    if config.get("selected_case_id", "").endswith(("__stop_nearest_view_response", "__stop_nearest_view_uninterrupted")):
+        from stop_analysis import analyze as analyze_stop
+        return analyze_stop(attempt, output)
     root = Path(attempt)
     case_id, value, hashes, fixture, construction = measure(root)
     trace = [json.loads(line) for line in required(root, "trace.jsonl").read_text().splitlines()]

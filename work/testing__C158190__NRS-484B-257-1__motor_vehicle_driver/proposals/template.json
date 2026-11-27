@@ -5,12 +5,17 @@
     {
       "kind": "controller",
       "name": "approach_policy",
-      "range_or_domain": "slow or stop at the reviewed nearest-view reference"
+      "range_or_domain": "stop at the sampled nearest-view reference; vary engineering hold duration"
+    },
+    {
+      "kind": "controller",
+      "name": "stop_hold_s",
+      "range_or_domain": "source-reviewed engineering hold durations; not a legal time cutoff"
     },
     {
       "kind": "world_setup",
       "name": "through_state",
-      "range_or_domain": "source-reviewed close or clear approach"
+      "range_or_domain": "source-reviewed through-highway approach with fixed start timing"
     },
     {
       "kind": "world_setup",
@@ -19,7 +24,7 @@
     },
     {
       "kind": "world_setup",
-      "name": "yield_sign_present",
+      "name": "stop_sign_present",
       "range_or_domain": "reviewed true"
     },
     {
@@ -41,7 +46,7 @@
   "quote": "Except when traffic is being controlled by a police officer or a traffic-control signal: When proper signs have been erected, the driver of a vehicle shall stop or yield at a clearly marked stop line or, if there is none, before entering the crosswalk on the near side of the intersection or, if there is none, then at the point nearest the intersection where the driver has a view of approaching traffic on the through highway. After having stopped or, in the event of a yield sign, slowed or stopped, the driver shall yield the right-of-way to other vehicles which have entered the intersection from such through highway or which are approaching so closely on such through highway as to constitute an immediate hazard during the time such driver is moving across or within the intersection.",
   "structure": {
     "activation": {
-      "condition": "Proper yield sign governs the approach; neither marked stop line nor near crosswalk exists, and officer/signal control does not supersede the sign.",
+      "condition": "Proper stop sign governs the approach; neither marked stop line nor near crosswalk exists, and officer/signal control does not supersede the sign.",
       "numeric_conditions": []
     },
     "exceptions": [
@@ -68,12 +73,12 @@
     ],
     "law_id": "NRS-484B-257-1",
     "obligation": {
-      "description": "Slow or stop for the yield sign at the nearest point with a view, then yield to through-highway vehicles already within or immediately approaching during ego movement across or within.",
+      "description": "Stop for the stop sign at the nearest point with a view, then yield to through-highway vehicles already within or immediately approaching during ego movement across or within.",
       "numeric_conditions": [],
       "type": "must"
     },
     "timing": {
-      "description": "Sign response before the reviewed nearest-view reference and yielding throughout the movement across or within the intersection.",
+      "description": "Stop before entry at the reviewed nearest-view reference and preserve through-traffic history throughout the movement across or within the intersection.",
       "numeric_conditions": []
     }
   },

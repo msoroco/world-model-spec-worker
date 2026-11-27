@@ -1,0 +1,20 @@
+--- a/runtime/scenario_pipeline/worker_exchange/portable.py
++++ b/runtime/scenario_pipeline/worker_exchange/portable.py
+@@ -32,13 +32,15 @@
+ def validate_imports(repo, aid):
+     """Catch ordinary undeclared imports. Dynamic imports remain a declared limitation."""
+     source = Path(repo) / 'work' / aid
+-    inputs = read(Path(repo) / 'inputs' / aid / 'assignment.json')
++    from .branch_coverage import assignments, assignment_path
++    batch = read(Path(repo) / 'batch.json')
++    items = assignments(repo, batch) if batch.get('full_branch_coverage_required') else batch['assignments']
++    inputs = read(assignment_path(repo, aid, items[aid]))
+     # These modules are pinned by the portable runtime itself. Assignment
+     # declarations cover imports beyond that fixed dependency set.
+     allowed = (set(sys.stdlib_module_names) | RUNTIME_IMPORTS |
+                set(inputs.get('external_imports', [])) | {'worker_exchange'})
+-    batch = read(Path(repo) / 'batch.json')
+     if batch.get('runtime'):
+         from .preparation import runtime_for
+         runtime = runtime_for(repo, batch)
+         manifest = runtime / 'SOURCE-MANIFEST.json'

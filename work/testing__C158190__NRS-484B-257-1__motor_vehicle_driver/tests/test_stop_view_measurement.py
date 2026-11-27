@@ -49,6 +49,7 @@ class StopViewMeasurementTest(unittest.TestCase):
         for index in range(900):
             frames.append({"frame": index, "time_s": index / 20,
                            "ego_speed_mps": 0.0 if index == 100 else 2.0,
+                           "distance_to_intersection_m": max(0.0, 8.0 - index * 0.05),
                            "ego_within_intersection": 200 <= index <= 300,
                            "through_vehicles": [{"id": "through-1", "through_highway": True,
                                                  "distance_to_conflict_m": 20 - index / 20,
@@ -86,6 +87,17 @@ class StopViewMeasurementTest(unittest.TestCase):
         self.packet["frames"][250].pop("through_vehicles")
         self.save()
         with self.assertRaisesRegex(ValueError, "through-highway history"):
+            MODULE.inspect_original(self.path, self.response)
+
+    def test_stop_must_be_at_sampled_view_station_and_through_traffic_present(self):
+        self.packet["frames"][100]["distance_to_intersection_m"] = 8.0
+        self.save()
+        with self.assertRaisesRegex(ValueError, "pre-entry stop"):
+            MODULE.inspect_original(self.path, self.response)
+        self.packet["frames"][100]["distance_to_intersection_m"] = 3.0
+        self.packet["frames"][250]["through_vehicles"] = []
+        self.save()
+        with self.assertRaisesRegex(ValueError, "participant missing during crossing"):
             MODULE.inspect_original(self.path, self.response)
 
     def test_exact_pair_and_fixed_sources(self):
