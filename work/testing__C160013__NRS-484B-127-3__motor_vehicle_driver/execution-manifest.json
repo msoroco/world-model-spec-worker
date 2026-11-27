@@ -39,7 +39,12 @@
             "log": "cpu-offline-caravan_none_near-fallback1.log",
             "log_sha256": "05ae73c09ec4c5e01e0dd19dc322d0d059c87edd0df74b1aedf4d1297ef0b34b"
           },
-          "compatibility": {}
+          "compatibility": {
+            "receipt": "cpu-compat-caravan_none_near-fallback1-receipt.json",
+            "sha256": "c416751a8c04067f9d9f37c4bd34ef7356a3a32fbf914337c698da27f599e4ea",
+            "log": "cpu-compat-analysis-caravan_none_near-fallback1.log",
+            "negative_log": "cpu-compat-negative-caravan_none_near-fallback1.log"
+          }
         }
       ],
       "offline": {
@@ -48,6 +53,121 @@
         "construction_sha256": "ecfb079804244b164bde561ebeaafd98bf6c24dd450fc63d6e08a0c9d0082813",
         "log": "cpu-offline-caravan_none_near.log",
         "log_sha256": "c705cc3ddd6936f2171b6b12eda332ff3987a68a238755c2724d3d7bafd1c7a9"
+      },
+      "compatibility": {
+        "receipt": "cpu-compat-caravan_none_near-receipt.json",
+        "sha256": "81be1046e8d620d066a1507770ba93ddbdbb46048193ec5dbfd780e5161d661f",
+        "log": "cpu-compat-analysis-caravan_none_near.log"
+      },
+      "negative": {
+        "log": "cpu-compat-negative-caravan_none_near.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-caravan_none_near-receipt.json",
+        "sha256": "f0c857745174197c7f380a018525e481de8499c22db6acf2bf5597af7c4c67dd"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_near",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/delivery_audit.py --attempt $ORIGINAL_ATTEMPT --processed $PROCESSED_RESULT --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_near --output $AUDIT_OUTPUT",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c160013-1273/missing-original-caravan_none_near --processed /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c160013-1273/missing-result-caravan_none_near.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_near --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c160013-1273/missing-audit-caravan_none_near.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "7e6e46dd1a6995638455c91af0970e499d20bac403571f4280afedffee67dbab",
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-positive-caravan_none_near.log",
+        "test_log_sha256": "6eff3bb8dba679cc31eb2181bb34d9f443912f4b61c210f4b9b4ff412ed047b2",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt directory missing",
+        "negative_log": "cpu-delivery-negative-caravan_none_near.log",
+        "negative_log_sha256": "341d70d6cfd89613b1163e447f10818925a345ab8077c3d4c9137c81bcd25b19",
+        "scope": "CPU test fixture only; original Native capture, pixels and legal judgment remain unverified"
+      },
+      "acquisition": {
+        "sealed_native_original_frames": {
+          "entrypoint": "analysis.py",
+          "method": "analyze.check_source and check_frame_joins",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "group_role_ids": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.group_role_ids",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "vehicle_inventory": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.vehicle_inventory",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "original_body_vertices": {
+          "entrypoint": "analysis.py",
+          "method": "measure_original_frames body_interval",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "front_group_clear_gap_m": {
+          "entrypoint": "analysis.py",
+          "method": "measure_original_frames front body intervals",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "rear_group_clear_gap_m": {
+          "entrypoint": "analysis.py",
+          "method": "measure_original_frames rear body intervals",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "velocity_history": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.velocity_history",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "entrant_entry_occupancy": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.entrant_entry_occupancy",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "coupling_history": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.coupling_history",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "collision_history": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.collision_history",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "controller_commands": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.controller_commands",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "video_four_views": {
+          "entrypoint": "analysis.py",
+          "method": "analyze check_frame_joins and original four-camera source inventory",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_near --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_near --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-saved-caravan_none_near.log",
+        "test_log_sha256": "ad0140aafa70090e835a3fee111a798beefd3f3ffa737730a872fada33d2ab46",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original group motion and independent legal review remain pending"
       }
     },
     {
@@ -85,7 +205,12 @@
             "log": "cpu-offline-caravan_none_middle-fallback1.log",
             "log_sha256": "59831b8d12ac61ee6cd18b47f519721ef8057ae20453106818dbf8d30375f774"
           },
-          "compatibility": {}
+          "compatibility": {
+            "receipt": "cpu-compat-caravan_none_middle-fallback1-receipt.json",
+            "sha256": "006d4d86be52aedb219458df0e7e062f771a488989b00091c4f0371a3bea1832",
+            "log": "cpu-compat-analysis-caravan_none_middle-fallback1.log",
+            "negative_log": "cpu-compat-negative-caravan_none_middle-fallback1.log"
+          }
         }
       ],
       "offline": {
@@ -94,6 +219,121 @@
         "construction_sha256": "54e903db9158cd6f9106ce36de3deecff175eb5636f3ecc52dd9e4087d53f7ba",
         "log": "cpu-offline-caravan_none_middle.log",
         "log_sha256": "78dd7830f14911715d489f41b59079e3354a5a4da43077ce290ba4f1be6d84d2"
+      },
+      "compatibility": {
+        "receipt": "cpu-compat-caravan_none_middle-receipt.json",
+        "sha256": "7935b97eecc1f7930f4994061cd1903519f7cf869aeabdc396dd6df9813176d8",
+        "log": "cpu-compat-analysis-caravan_none_middle.log"
+      },
+      "negative": {
+        "log": "cpu-compat-negative-caravan_none_middle.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-caravan_none_middle-receipt.json",
+        "sha256": "24cdf8925ddb37e0fb59fcc4a15d32c054a843e78359a2c0bf1b130a9f67e003"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_middle",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/delivery_audit.py --attempt $ORIGINAL_ATTEMPT --processed $PROCESSED_RESULT --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_middle --output $AUDIT_OUTPUT",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c160013-1273/missing-original-caravan_none_middle --processed /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c160013-1273/missing-result-caravan_none_middle.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_middle --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c160013-1273/missing-audit-caravan_none_middle.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "7e6e46dd1a6995638455c91af0970e499d20bac403571f4280afedffee67dbab",
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-positive-caravan_none_middle.log",
+        "test_log_sha256": "d145dc803cd6416f29c79bfb59c5f6207a1e1cdba86d35ab2998de65db93901c",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt directory missing",
+        "negative_log": "cpu-delivery-negative-caravan_none_middle.log",
+        "negative_log_sha256": "341d70d6cfd89613b1163e447f10818925a345ab8077c3d4c9137c81bcd25b19",
+        "scope": "CPU test fixture only; original Native capture, pixels and legal judgment remain unverified"
+      },
+      "acquisition": {
+        "sealed_native_original_frames": {
+          "entrypoint": "analysis.py",
+          "method": "analyze.check_source and check_frame_joins",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "group_role_ids": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.group_role_ids",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "vehicle_inventory": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.vehicle_inventory",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "original_body_vertices": {
+          "entrypoint": "analysis.py",
+          "method": "measure_original_frames body_interval",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "front_group_clear_gap_m": {
+          "entrypoint": "analysis.py",
+          "method": "measure_original_frames front body intervals",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "rear_group_clear_gap_m": {
+          "entrypoint": "analysis.py",
+          "method": "measure_original_frames rear body intervals",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "velocity_history": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.velocity_history",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "entrant_entry_occupancy": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.entrant_entry_occupancy",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "coupling_history": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.coupling_history",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "collision_history": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.collision_history",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "controller_commands": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.controller_commands",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "video_four_views": {
+          "entrypoint": "analysis.py",
+          "method": "analyze check_frame_joins and original four-camera source inventory",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_middle --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_middle --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-saved-caravan_none_middle.log",
+        "test_log_sha256": "36cd25a15c746dacb575dbd25895d27af7f597c518547e3bd377867e6b0d3ef8",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original group motion and independent legal review remain pending"
       }
     },
     {
@@ -131,7 +371,12 @@
             "log": "cpu-offline-caravan_none_far-fallback1.log",
             "log_sha256": "8d7dafc22d667ee44614a6e229bb2fe3b4818ec1b1f039487a4d62553393c464"
           },
-          "compatibility": {}
+          "compatibility": {
+            "receipt": "cpu-compat-caravan_none_far-fallback1-receipt.json",
+            "sha256": "a79a35ce81aba8f735edac903fd031d261d52d98f066ad9d67aa6e1d1ec65c08",
+            "log": "cpu-compat-analysis-caravan_none_far-fallback1.log",
+            "negative_log": "cpu-compat-negative-caravan_none_far-fallback1.log"
+          }
         }
       ],
       "offline": {
@@ -140,6 +385,121 @@
         "construction_sha256": "dfae00d3a43df4fe85f7fd988ce0d83ccc618f1bdde2aa74ccb9efda103738e1",
         "log": "cpu-offline-caravan_none_far.log",
         "log_sha256": "f8827cff27b27de09456acf255bb0b7325bb855a922a109a919eee20a05cd5c5"
+      },
+      "compatibility": {
+        "receipt": "cpu-compat-caravan_none_far-receipt.json",
+        "sha256": "8e61c99846abf9c44dd838df57670d8a3c969c20f5c1a21eabdba8d6b48a0914",
+        "log": "cpu-compat-analysis-caravan_none_far.log"
+      },
+      "negative": {
+        "log": "cpu-compat-negative-caravan_none_far.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-caravan_none_far-receipt.json",
+        "sha256": "7d616634c44e2dac48e0ada892cbb4baad2ec0a0f607fa4ec71023974f8dd204"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_far",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/delivery_audit.py --attempt $ORIGINAL_ATTEMPT --processed $PROCESSED_RESULT --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_far --output $AUDIT_OUTPUT",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c160013-1273/missing-original-caravan_none_far --processed /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c160013-1273/missing-result-caravan_none_far.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_far --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c160013-1273/missing-audit-caravan_none_far.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "7e6e46dd1a6995638455c91af0970e499d20bac403571f4280afedffee67dbab",
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-positive-caravan_none_far.log",
+        "test_log_sha256": "94271be355268d1478703fd15b03edc4f9a9142a96dbdfe6ac4cd2257768de32",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt directory missing",
+        "negative_log": "cpu-delivery-negative-caravan_none_far.log",
+        "negative_log_sha256": "341d70d6cfd89613b1163e447f10818925a345ab8077c3d4c9137c81bcd25b19",
+        "scope": "CPU test fixture only; original Native capture, pixels and legal judgment remain unverified"
+      },
+      "acquisition": {
+        "sealed_native_original_frames": {
+          "entrypoint": "analysis.py",
+          "method": "analyze.check_source and check_frame_joins",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "group_role_ids": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.group_role_ids",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "vehicle_inventory": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.vehicle_inventory",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "original_body_vertices": {
+          "entrypoint": "analysis.py",
+          "method": "measure_original_frames body_interval",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "front_group_clear_gap_m": {
+          "entrypoint": "analysis.py",
+          "method": "measure_original_frames front body intervals",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "rear_group_clear_gap_m": {
+          "entrypoint": "analysis.py",
+          "method": "measure_original_frames rear body intervals",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "velocity_history": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.velocity_history",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "entrant_entry_occupancy": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.entrant_entry_occupancy",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "coupling_history": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.coupling_history",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "collision_history": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.collision_history",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "controller_commands": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.controller_commands",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "video_four_views": {
+          "entrypoint": "analysis.py",
+          "method": "analyze check_frame_joins and original four-camera source inventory",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_far --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_far --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-saved-caravan_none_far.log",
+        "test_log_sha256": "68f16a672843ccd7ffad0429813737a61d5ce71b5db424362da49f828c749431",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original group motion and independent legal review remain pending"
       }
     },
     {
@@ -177,7 +537,12 @@
             "log": "cpu-offline-caravan_towing_middle-fallback1.log",
             "log_sha256": "c861c5042a703d380771ebb93ccb935b726b497d1b14d35269f44eb6f128d839"
           },
-          "compatibility": {}
+          "compatibility": {
+            "receipt": "cpu-compat-caravan_towing_middle-fallback1-receipt.json",
+            "sha256": "431e70e8cf156fc34b42feaee63035964fe8005740315ce629a2b24929cf69cb",
+            "log": "cpu-compat-analysis-caravan_towing_middle-fallback1.log",
+            "negative_log": "cpu-compat-negative-caravan_towing_middle-fallback1.log"
+          }
         }
       ],
       "offline": {
@@ -186,6 +551,121 @@
         "construction_sha256": "6a35c057e99b86107ac5a4e94a2be9988079ec78e902cd22aa1ad597e9c07734",
         "log": "cpu-offline-caravan_towing_middle.log",
         "log_sha256": "8baa7ad90242c39b43e5afbb9161444d2c3dfe2bcde51a11e40050a63be42326"
+      },
+      "compatibility": {
+        "receipt": "cpu-compat-caravan_towing_middle-receipt.json",
+        "sha256": "dd3c748652c32fee9a42e984bbcf6ff5d0ab0b693c06d31a5dee0590f47ebeac",
+        "log": "cpu-compat-analysis-caravan_towing_middle.log"
+      },
+      "negative": {
+        "log": "cpu-compat-negative-caravan_towing_middle.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-caravan_towing_middle-receipt.json",
+        "sha256": "be1b977c7f3b5515df0cc1af172a128665557ec6c7e14185ae5c7b3a3715204f"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_towing_middle",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/delivery_audit.py --attempt $ORIGINAL_ATTEMPT --processed $PROCESSED_RESULT --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_towing_middle --output $AUDIT_OUTPUT",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c160013-1273/missing-original-caravan_towing_middle --processed /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c160013-1273/missing-result-caravan_towing_middle.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_towing_middle --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c160013-1273/missing-audit-caravan_towing_middle.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "7e6e46dd1a6995638455c91af0970e499d20bac403571f4280afedffee67dbab",
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-positive-caravan_towing_middle.log",
+        "test_log_sha256": "d50815d3032c77c372403d8181061b6a3ff3efa4de8f467f5fa37caa19620fb3",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt directory missing",
+        "negative_log": "cpu-delivery-negative-caravan_towing_middle.log",
+        "negative_log_sha256": "341d70d6cfd89613b1163e447f10818925a345ab8077c3d4c9137c81bcd25b19",
+        "scope": "CPU test fixture only; original Native capture, pixels and legal judgment remain unverified"
+      },
+      "acquisition": {
+        "sealed_native_original_frames": {
+          "entrypoint": "analysis.py",
+          "method": "analyze.check_source and check_frame_joins",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "group_role_ids": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.group_role_ids",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "vehicle_inventory": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.vehicle_inventory",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "original_body_vertices": {
+          "entrypoint": "analysis.py",
+          "method": "measure_original_frames body_interval",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "front_group_clear_gap_m": {
+          "entrypoint": "analysis.py",
+          "method": "measure_original_frames front body intervals",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "rear_group_clear_gap_m": {
+          "entrypoint": "analysis.py",
+          "method": "measure_original_frames rear body intervals",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "velocity_history": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.velocity_history",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "entrant_entry_occupancy": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.entrant_entry_occupancy",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "coupling_history": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.coupling_history",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "collision_history": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.collision_history",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "controller_commands": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.controller_commands",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "video_four_views": {
+          "entrypoint": "analysis.py",
+          "method": "analyze check_frame_joins and original four-camera source inventory",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_towing_middle --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_towing_middle --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-saved-caravan_towing_middle.log",
+        "test_log_sha256": "fc57ad860854a0c9c30922ef1586678a3e4d8582406d5343a9b8e9aa9ea2e47e",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original group motion and independent legal review remain pending"
       }
     },
     {
@@ -223,7 +703,12 @@
             "log": "cpu-offline-caravan_none_middle_combination_entrant-fallback1.log",
             "log_sha256": "20516d12b83e559154127a67ff74128a487d439f9e8928c58edc82f9c307829e"
           },
-          "compatibility": {}
+          "compatibility": {
+            "receipt": "cpu-compat-caravan_none_middle_combination_entrant-fallback1-receipt.json",
+            "sha256": "5aca35c65c04763e5d48a64c86e98112c7488be6ee86cde8edecbae044ed750d",
+            "log": "cpu-compat-analysis-caravan_none_middle_combination_entrant-fallback1.log",
+            "negative_log": "cpu-compat-negative-caravan_none_middle_combination_entrant-fallback1.log"
+          }
         }
       ],
       "offline": {
@@ -232,6 +717,121 @@
         "construction_sha256": "445988271f637ff7d28ea8a65234dfa355f6fe0c099d31d7b8a053dac09f1b09",
         "log": "cpu-offline-caravan_none_middle_combination_entrant.log",
         "log_sha256": "a2f60a909f80c7d5be95cc148ade2eaa86161136d6f65fd21363026a9c01107e"
+      },
+      "compatibility": {
+        "receipt": "cpu-compat-caravan_none_middle_combination_entrant-receipt.json",
+        "sha256": "5b3ccbe1b507476011074dc492cde1d26fb263f8edf4aa629210a14dee4e1491",
+        "log": "cpu-compat-analysis-caravan_none_middle_combination_entrant.log"
+      },
+      "negative": {
+        "log": "cpu-compat-negative-caravan_none_middle_combination_entrant.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-caravan_none_middle_combination_entrant-receipt.json",
+        "sha256": "54a5a8a0702cd5b468307ca8863be7badadf9ef9b34e77151a51822143bac3c5"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_middle_combination_entrant",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/delivery_audit.py --attempt $ORIGINAL_ATTEMPT --processed $PROCESSED_RESULT --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_middle_combination_entrant --output $AUDIT_OUTPUT",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c160013-1273/missing-original-caravan_none_middle_combination_entrant --processed /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c160013-1273/missing-result-caravan_none_middle_combination_entrant.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_middle_combination_entrant --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c160013-1273/missing-audit-caravan_none_middle_combination_entrant.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "7e6e46dd1a6995638455c91af0970e499d20bac403571f4280afedffee67dbab",
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-positive-caravan_none_middle_combination_entrant.log",
+        "test_log_sha256": "8323815df5996a1da4a2623443bc629a4cdb0f265620a476033bca08888061a3",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt directory missing",
+        "negative_log": "cpu-delivery-negative-caravan_none_middle_combination_entrant.log",
+        "negative_log_sha256": "341d70d6cfd89613b1163e447f10818925a345ab8077c3d4c9137c81bcd25b19",
+        "scope": "CPU test fixture only; original Native capture, pixels and legal judgment remain unverified"
+      },
+      "acquisition": {
+        "sealed_native_original_frames": {
+          "entrypoint": "analysis.py",
+          "method": "analyze.check_source and check_frame_joins",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "group_role_ids": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.group_role_ids",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "vehicle_inventory": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.vehicle_inventory",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "original_body_vertices": {
+          "entrypoint": "analysis.py",
+          "method": "measure_original_frames body_interval",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "front_group_clear_gap_m": {
+          "entrypoint": "analysis.py",
+          "method": "measure_original_frames front body intervals",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "rear_group_clear_gap_m": {
+          "entrypoint": "analysis.py",
+          "method": "measure_original_frames rear body intervals",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "velocity_history": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.velocity_history",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "entrant_entry_occupancy": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.entrant_entry_occupancy",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "coupling_history": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.coupling_history",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "collision_history": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.collision_history",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "controller_commands": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.controller_commands",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "video_four_views": {
+          "entrypoint": "analysis.py",
+          "method": "analyze check_frame_joins and original four-camera source inventory",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_middle_combination_entrant --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_middle_combination_entrant --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-saved-caravan_none_middle_combination_entrant.log",
+        "test_log_sha256": "5d2e13690cb5c84bd2fa6ffed2daaaa8191b952a9bc90e50cb7b25c9e946f63d",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original group motion and independent legal review remain pending"
       }
     },
     {
@@ -269,7 +869,12 @@
             "log": "cpu-offline-motorcade_none_near-fallback1.log",
             "log_sha256": "a40f86b58b614c97502d0f12ea76e00b9c011c38b063d6db6a126d07191d0e8c"
           },
-          "compatibility": {}
+          "compatibility": {
+            "receipt": "cpu-compat-motorcade_none_near-fallback1-receipt.json",
+            "sha256": "b78a2b5985cf09e3633303aae5bdb7e0f4f54f6df7828d430b91885ecc44433a",
+            "log": "cpu-compat-analysis-motorcade_none_near-fallback1.log",
+            "negative_log": "cpu-compat-negative-motorcade_none_near-fallback1.log"
+          }
         }
       ],
       "offline": {
@@ -278,6 +883,121 @@
         "construction_sha256": "a2fd55344b7393699b51974547baa19510b0954696547bccbea3237eed7cf9bd",
         "log": "cpu-offline-motorcade_none_near.log",
         "log_sha256": "e38c6ab46661056af21df8516d77d5eff29f8425ff266a50802dc5cc67027e1d"
+      },
+      "compatibility": {
+        "receipt": "cpu-compat-motorcade_none_near-receipt.json",
+        "sha256": "482b32551b2a0f4ae2c12106586a11328cd4ce0d9550eecf7ef1cd1f1bb8f1af",
+        "log": "cpu-compat-analysis-motorcade_none_near.log"
+      },
+      "negative": {
+        "log": "cpu-compat-negative-motorcade_none_near.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-motorcade_none_near-receipt.json",
+        "sha256": "bd20f56d00dfefb2be14f76f7c2d21e09aadc22b9de3698548e367d0199cc9ce"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_near",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/delivery_audit.py --attempt $ORIGINAL_ATTEMPT --processed $PROCESSED_RESULT --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_near --output $AUDIT_OUTPUT",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c160013-1273/missing-original-motorcade_none_near --processed /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c160013-1273/missing-result-motorcade_none_near.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_near --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c160013-1273/missing-audit-motorcade_none_near.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "7e6e46dd1a6995638455c91af0970e499d20bac403571f4280afedffee67dbab",
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-positive-motorcade_none_near.log",
+        "test_log_sha256": "28069c1069020138c3450f3f37192390034d5567739f8b185656fe8432ea713c",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt directory missing",
+        "negative_log": "cpu-delivery-negative-motorcade_none_near.log",
+        "negative_log_sha256": "341d70d6cfd89613b1163e447f10818925a345ab8077c3d4c9137c81bcd25b19",
+        "scope": "CPU test fixture only; original Native capture, pixels and legal judgment remain unverified"
+      },
+      "acquisition": {
+        "sealed_native_original_frames": {
+          "entrypoint": "analysis.py",
+          "method": "analyze.check_source and check_frame_joins",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "group_role_ids": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.group_role_ids",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "vehicle_inventory": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.vehicle_inventory",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "original_body_vertices": {
+          "entrypoint": "analysis.py",
+          "method": "measure_original_frames body_interval",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "front_group_clear_gap_m": {
+          "entrypoint": "analysis.py",
+          "method": "measure_original_frames front body intervals",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "rear_group_clear_gap_m": {
+          "entrypoint": "analysis.py",
+          "method": "measure_original_frames rear body intervals",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "velocity_history": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.velocity_history",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "entrant_entry_occupancy": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.entrant_entry_occupancy",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "coupling_history": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.coupling_history",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "collision_history": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.collision_history",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "controller_commands": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.controller_commands",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "video_four_views": {
+          "entrypoint": "analysis.py",
+          "method": "analyze check_frame_joins and original four-camera source inventory",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_near --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_near --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-saved-motorcade_none_near.log",
+        "test_log_sha256": "e7eddb939c394a84cddb1efd8e3a40b370d00656381f4cef32c772a52f35cdda",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original group motion and independent legal review remain pending"
       }
     },
     {
@@ -315,7 +1035,12 @@
             "log": "cpu-offline-motorcade_none_middle-fallback1.log",
             "log_sha256": "0847f08c94c00285bb00020b4bc649cc84d20e04af593c7620a0bc2579ac689f"
           },
-          "compatibility": {}
+          "compatibility": {
+            "receipt": "cpu-compat-motorcade_none_middle-fallback1-receipt.json",
+            "sha256": "9b3ba418ecd17aa2487485497d1e3ef3e9593c858dbdb7fc0f30df516657a15c",
+            "log": "cpu-compat-analysis-motorcade_none_middle-fallback1.log",
+            "negative_log": "cpu-compat-negative-motorcade_none_middle-fallback1.log"
+          }
         }
       ],
       "offline": {
@@ -324,6 +1049,121 @@
         "construction_sha256": "3c718cc98bc2b6888bcff9a68db43442f160a6fcc803d94754706f6f1229d574",
         "log": "cpu-offline-motorcade_none_middle.log",
         "log_sha256": "7ae0388df050a7e74fed349fa026504a2495c04ffcf695356fcd45078044fd37"
+      },
+      "compatibility": {
+        "receipt": "cpu-compat-motorcade_none_middle-receipt.json",
+        "sha256": "a2a42ad1f389611d66cd0c538c5b20afd16780a17642ad2911a7bed1f5cc3cec",
+        "log": "cpu-compat-analysis-motorcade_none_middle.log"
+      },
+      "negative": {
+        "log": "cpu-compat-negative-motorcade_none_middle.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-motorcade_none_middle-receipt.json",
+        "sha256": "4bc7daac603b2a0c1b31cb57b6add260f3f01035da9eccbf9809477e4b36272e"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_middle",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/delivery_audit.py --attempt $ORIGINAL_ATTEMPT --processed $PROCESSED_RESULT --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_middle --output $AUDIT_OUTPUT",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c160013-1273/missing-original-motorcade_none_middle --processed /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c160013-1273/missing-result-motorcade_none_middle.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_middle --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c160013-1273/missing-audit-motorcade_none_middle.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "7e6e46dd1a6995638455c91af0970e499d20bac403571f4280afedffee67dbab",
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-positive-motorcade_none_middle.log",
+        "test_log_sha256": "d2375ea223f4ddffefb313e5ab750a1384a0d9afed2c52e1a5684d851eab67ee",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt directory missing",
+        "negative_log": "cpu-delivery-negative-motorcade_none_middle.log",
+        "negative_log_sha256": "341d70d6cfd89613b1163e447f10818925a345ab8077c3d4c9137c81bcd25b19",
+        "scope": "CPU test fixture only; original Native capture, pixels and legal judgment remain unverified"
+      },
+      "acquisition": {
+        "sealed_native_original_frames": {
+          "entrypoint": "analysis.py",
+          "method": "analyze.check_source and check_frame_joins",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "group_role_ids": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.group_role_ids",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "vehicle_inventory": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.vehicle_inventory",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "original_body_vertices": {
+          "entrypoint": "analysis.py",
+          "method": "measure_original_frames body_interval",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "front_group_clear_gap_m": {
+          "entrypoint": "analysis.py",
+          "method": "measure_original_frames front body intervals",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "rear_group_clear_gap_m": {
+          "entrypoint": "analysis.py",
+          "method": "measure_original_frames rear body intervals",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "velocity_history": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.velocity_history",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "entrant_entry_occupancy": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.entrant_entry_occupancy",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "coupling_history": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.coupling_history",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "collision_history": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.collision_history",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "controller_commands": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.controller_commands",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "video_four_views": {
+          "entrypoint": "analysis.py",
+          "method": "analyze check_frame_joins and original four-camera source inventory",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_middle --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_middle --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-saved-motorcade_none_middle.log",
+        "test_log_sha256": "b9b887aecfdd0c698ee6c07e8b278e905ead3324fe7224e55feb13df761f5ae4",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original group motion and independent legal review remain pending"
       }
     },
     {
@@ -361,7 +1201,12 @@
             "log": "cpu-offline-motorcade_none_far-fallback1.log",
             "log_sha256": "404ee125da9d93beaac7f31c209f66ecbe49a7916f15507d55a8cedc59d2c00a"
           },
-          "compatibility": {}
+          "compatibility": {
+            "receipt": "cpu-compat-motorcade_none_far-fallback1-receipt.json",
+            "sha256": "5cd536e3150d0d096d0058492c59ace14da109793fc0af4450f675581a47d58d",
+            "log": "cpu-compat-analysis-motorcade_none_far-fallback1.log",
+            "negative_log": "cpu-compat-negative-motorcade_none_far-fallback1.log"
+          }
         }
       ],
       "offline": {
@@ -370,6 +1215,121 @@
         "construction_sha256": "6f0b3b0bd2f838152ace92e17f4fde4f7884d45a6b02a88bf5310be675485c6d",
         "log": "cpu-offline-motorcade_none_far.log",
         "log_sha256": "3257b91de4d4d6c53d52ee19de0612e4998212edd4b2f316edcb0e3212c340c9"
+      },
+      "compatibility": {
+        "receipt": "cpu-compat-motorcade_none_far-receipt.json",
+        "sha256": "beaea32c4a2d6e679835c5f0dbd25678ecc0cfb72c12b815910934f3ce1b45ec",
+        "log": "cpu-compat-analysis-motorcade_none_far.log"
+      },
+      "negative": {
+        "log": "cpu-compat-negative-motorcade_none_far.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-motorcade_none_far-receipt.json",
+        "sha256": "36238ca597e826de3b4f759183ad41d12f914f22847c3288fd8a7a174a7a2909"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_far",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/delivery_audit.py --attempt $ORIGINAL_ATTEMPT --processed $PROCESSED_RESULT --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_far --output $AUDIT_OUTPUT",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c160013-1273/missing-original-motorcade_none_far --processed /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c160013-1273/missing-result-motorcade_none_far.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_far --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c160013-1273/missing-audit-motorcade_none_far.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "7e6e46dd1a6995638455c91af0970e499d20bac403571f4280afedffee67dbab",
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-positive-motorcade_none_far.log",
+        "test_log_sha256": "82ca910082545047144f4c463ad1c495ec6a8393e8e4bbeab31b8faa1442cdb7",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt directory missing",
+        "negative_log": "cpu-delivery-negative-motorcade_none_far.log",
+        "negative_log_sha256": "341d70d6cfd89613b1163e447f10818925a345ab8077c3d4c9137c81bcd25b19",
+        "scope": "CPU test fixture only; original Native capture, pixels and legal judgment remain unverified"
+      },
+      "acquisition": {
+        "sealed_native_original_frames": {
+          "entrypoint": "analysis.py",
+          "method": "analyze.check_source and check_frame_joins",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "group_role_ids": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.group_role_ids",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "vehicle_inventory": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.vehicle_inventory",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "original_body_vertices": {
+          "entrypoint": "analysis.py",
+          "method": "measure_original_frames body_interval",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "front_group_clear_gap_m": {
+          "entrypoint": "analysis.py",
+          "method": "measure_original_frames front body intervals",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "rear_group_clear_gap_m": {
+          "entrypoint": "analysis.py",
+          "method": "measure_original_frames rear body intervals",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "velocity_history": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.velocity_history",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "entrant_entry_occupancy": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.entrant_entry_occupancy",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "coupling_history": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.coupling_history",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "collision_history": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.collision_history",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "controller_commands": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.controller_commands",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "video_four_views": {
+          "entrypoint": "analysis.py",
+          "method": "analyze check_frame_joins and original four-camera source inventory",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_far --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_far --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-saved-motorcade_none_far.log",
+        "test_log_sha256": "e5e6723e0fde8a444acb67db541d891e4150142508acfe49f9eb63f2c55826ea",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original group motion and independent legal review remain pending"
       }
     },
     {
@@ -407,7 +1367,12 @@
             "log": "cpu-offline-motorcade_towing_middle-fallback1.log",
             "log_sha256": "561a6542e9b7ad4e390b072b699edbe9b82b154ed60cd62155585fffb505140c"
           },
-          "compatibility": {}
+          "compatibility": {
+            "receipt": "cpu-compat-motorcade_towing_middle-fallback1-receipt.json",
+            "sha256": "325f465c9a43428ac58f021d1f0ea0fd0acd98f27ba51bda383c4c1d838eb7ff",
+            "log": "cpu-compat-analysis-motorcade_towing_middle-fallback1.log",
+            "negative_log": "cpu-compat-negative-motorcade_towing_middle-fallback1.log"
+          }
         }
       ],
       "offline": {
@@ -416,6 +1381,121 @@
         "construction_sha256": "42ab6ad8158bc6002354a975663c47a11d219054fae1b31ba138ec015c21e22a",
         "log": "cpu-offline-motorcade_towing_middle.log",
         "log_sha256": "69da0b79b8af7a8761605636837b471bfe0696610a239de9f93146c580e79146"
+      },
+      "compatibility": {
+        "receipt": "cpu-compat-motorcade_towing_middle-receipt.json",
+        "sha256": "ce6151e08644d25135944f58c873070758741b5c5bea4a06004884c4cc297749",
+        "log": "cpu-compat-analysis-motorcade_towing_middle.log"
+      },
+      "negative": {
+        "log": "cpu-compat-negative-motorcade_towing_middle.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-motorcade_towing_middle-receipt.json",
+        "sha256": "f0be1fce40413ed918f68abacbd9cd737aec660a2074566d67bb218860165c73"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_towing_middle",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/delivery_audit.py --attempt $ORIGINAL_ATTEMPT --processed $PROCESSED_RESULT --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_towing_middle --output $AUDIT_OUTPUT",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c160013-1273/missing-original-motorcade_towing_middle --processed /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c160013-1273/missing-result-motorcade_towing_middle.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_towing_middle --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c160013-1273/missing-audit-motorcade_towing_middle.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "7e6e46dd1a6995638455c91af0970e499d20bac403571f4280afedffee67dbab",
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-positive-motorcade_towing_middle.log",
+        "test_log_sha256": "9a73b75143df29b7455c9f222d2b1e7a1e65090527fb44bc56063575c8b12a94",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt directory missing",
+        "negative_log": "cpu-delivery-negative-motorcade_towing_middle.log",
+        "negative_log_sha256": "341d70d6cfd89613b1163e447f10818925a345ab8077c3d4c9137c81bcd25b19",
+        "scope": "CPU test fixture only; original Native capture, pixels and legal judgment remain unverified"
+      },
+      "acquisition": {
+        "sealed_native_original_frames": {
+          "entrypoint": "analysis.py",
+          "method": "analyze.check_source and check_frame_joins",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "group_role_ids": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.group_role_ids",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "vehicle_inventory": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.vehicle_inventory",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "original_body_vertices": {
+          "entrypoint": "analysis.py",
+          "method": "measure_original_frames body_interval",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "front_group_clear_gap_m": {
+          "entrypoint": "analysis.py",
+          "method": "measure_original_frames front body intervals",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "rear_group_clear_gap_m": {
+          "entrypoint": "analysis.py",
+          "method": "measure_original_frames rear body intervals",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "velocity_history": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.velocity_history",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "entrant_entry_occupancy": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.entrant_entry_occupancy",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "coupling_history": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.coupling_history",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "collision_history": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.collision_history",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "controller_commands": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.controller_commands",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "video_four_views": {
+          "entrypoint": "analysis.py",
+          "method": "analyze check_frame_joins and original four-camera source inventory",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_towing_middle --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_towing_middle --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-saved-motorcade_towing_middle.log",
+        "test_log_sha256": "f189f9f290159bed138a3f3d45b6c4780c2beeda06dc3ae9144b7442bbfe7879",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original group motion and independent legal review remain pending"
       }
     },
     {
@@ -453,7 +1533,12 @@
             "log": "cpu-offline-motorcade_none_middle_combination_entrant-fallback1.log",
             "log_sha256": "20aae7bf0731225dcf7ab7136945a552bb120928c890603d81d405c10026bd65"
           },
-          "compatibility": {}
+          "compatibility": {
+            "receipt": "cpu-compat-motorcade_none_middle_combination_entrant-fallback1-receipt.json",
+            "sha256": "e7cfb6d5210d7faecab6b435e2a78e0fd7981bced5366298d7dceedb9f50adf1",
+            "log": "cpu-compat-analysis-motorcade_none_middle_combination_entrant-fallback1.log",
+            "negative_log": "cpu-compat-negative-motorcade_none_middle_combination_entrant-fallback1.log"
+          }
         }
       ],
       "offline": {
@@ -462,6 +1547,121 @@
         "construction_sha256": "f7123f5bbd88d14790727fc2a7856aeb466971a4bc890151961c5e0a787699b2",
         "log": "cpu-offline-motorcade_none_middle_combination_entrant.log",
         "log_sha256": "044b290fd6b7c1ffa7b68eedfd2500d387ca676c561c1ae9b150b03929d48bb5"
+      },
+      "compatibility": {
+        "receipt": "cpu-compat-motorcade_none_middle_combination_entrant-receipt.json",
+        "sha256": "7e6ba1f8179174d52c242e2836517a1b870b906fc1fded74938b475663666264",
+        "log": "cpu-compat-analysis-motorcade_none_middle_combination_entrant.log"
+      },
+      "negative": {
+        "log": "cpu-compat-negative-motorcade_none_middle_combination_entrant.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-motorcade_none_middle_combination_entrant-receipt.json",
+        "sha256": "17eea171ed8005c450c1dbf448f3b025d3723734ea52a6afe70d56ffb0f847b7"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_middle_combination_entrant",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/delivery_audit.py --attempt $ORIGINAL_ATTEMPT --processed $PROCESSED_RESULT --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_middle_combination_entrant --output $AUDIT_OUTPUT",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/delivery_audit.py --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c160013-1273/missing-original-motorcade_none_middle_combination_entrant --processed /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c160013-1273/missing-result-motorcade_none_middle_combination_entrant.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_middle_combination_entrant --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c160013-1273/missing-audit-motorcade_none_middle_combination_entrant.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "7e6e46dd1a6995638455c91af0970e499d20bac403571f4280afedffee67dbab",
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-positive-motorcade_none_middle_combination_entrant.log",
+        "test_log_sha256": "31ddab530a2c0c7f5df91c0c8e0127be25287eea9414ee89a9e1dd629ff42956",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt directory missing",
+        "negative_log": "cpu-delivery-negative-motorcade_none_middle_combination_entrant.log",
+        "negative_log_sha256": "341d70d6cfd89613b1163e447f10818925a345ab8077c3d4c9137c81bcd25b19",
+        "scope": "CPU test fixture only; original Native capture, pixels and legal judgment remain unverified"
+      },
+      "acquisition": {
+        "sealed_native_original_frames": {
+          "entrypoint": "analysis.py",
+          "method": "analyze.check_source and check_frame_joins",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "group_role_ids": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.group_role_ids",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "vehicle_inventory": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.vehicle_inventory",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "original_body_vertices": {
+          "entrypoint": "analysis.py",
+          "method": "measure_original_frames body_interval",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "front_group_clear_gap_m": {
+          "entrypoint": "analysis.py",
+          "method": "measure_original_frames front body intervals",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "rear_group_clear_gap_m": {
+          "entrypoint": "analysis.py",
+          "method": "measure_original_frames rear body intervals",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "velocity_history": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.velocity_history",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "entrant_entry_occupancy": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.entrant_entry_occupancy",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "coupling_history": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.coupling_history",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "collision_history": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.collision_history",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "controller_commands": {
+          "entrypoint": "analysis.py",
+          "method": "analyze channels.controller_commands",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        },
+        "video_four_views": {
+          "entrypoint": "analysis.py",
+          "method": "analyze check_frame_joins and original four-camera source inventory",
+          "evidence": "sealed original-group-history.jsonl plus camera-frame-map.jsonl and video_frames.jsonl; diagnostic fixture explicitly identified"
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_middle_combination_entrant --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/execution-manifest.json --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__motorcade_none_middle_combination_entrant --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "cpu-saved-motorcade_none_middle_combination_entrant.log",
+        "test_log_sha256": "cfb788515483984452202425b551f6b682736500459bc5e041553d762565259c",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original group motion and independent legal review remain pending"
       }
     }
   ]

@@ -7,7 +7,7 @@
       "case_id": "testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__slow_center_wide",
       "kind": "delivery",
       "construction": "construction.json",
-      "construction_sha256": "ced519a0d80cffdbadd904b2f223d3bd3edb36d361e35c6301bfee42c56570ca",
+      "construction_sha256": "5826b49e96a7957192ce3fdb9ab1414011bc2245760af94f95f48f707828034d",
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py",
@@ -21,34 +21,160 @@
       },
       "candidate_risk": {
         "status": "none",
-        "reason": "Initial source-gated construction includes no selected alternate yet; physical clearance and camera risk remain under review before readiness."
+        "reason": "No reviewed original site or prop clearance measurements are supplied for this exact case. A preselected alternate position would invent physical evidence or alter the controlled legal comparison. The primary Native attempt checks source hashes, exact road/prop geometry, actor spawns, camera synchronization, and measured body clearance; a failed capture remains failed pending source-reviewed replanning."
       },
       "candidates": [],
       "compatibility": {
         "receipt": "cases/slow_center_wide/compatibility.json",
-        "sha256": "1576e0e0fc97320fe4a978ba9271730a391b2d162452084f5e3adde3bb230f49",
+        "sha256": "65bb1326610ee9744aaac1919056889d860694107d29fe16219292867e7515a3",
         "log": "cases/slow_center_wide/positive.log"
       },
       "negative": {
         "log": "cases/slow_center_wide/negative-analysis.log"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__slow_center_wide --output .runtime-work/c323986-6271a/offline-slow_center_wide-v2",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__slow_center_wide --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c323986-6271a/offline-slow_center_wide-v5",
         "exit_code": 0,
-        "construction_sha256": "ced519a0d80cffdbadd904b2f223d3bd3edb36d361e35c6301bfee42c56570ca",
+        "construction_sha256": "5826b49e96a7957192ce3fdb9ab1414011bc2245760af94f95f48f707828034d",
         "log": "proof-offline-slow_center_wide.log",
-        "log_sha256": "4ec681649081b9327d01add5c3fee2583c3ea0bc35053c9421e3f66c5f2fded8"
+        "log_sha256": "a64d93dfdeb2553803380b5e72bab19809baccdeaf887f52721999e014f7571a"
       },
       "physical_preparation": {
         "receipt": "cases/slow_center_wide/physical-preparation.json",
-        "sha256": "b698471b89a3bae3ca53d7dd61562e6138ff6806081d6ae9d08b2c3132b7a953"
+        "sha256": "1ef97a6a407b2eb0135691d6fd1b87a79f59a8e89c1b10b36e3b12a2513cb8dc"
+      },
+      "acquisition": {
+        "original_actor_motion": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_original_motion",
+          "evidence": "Per-tick original actor transforms and velocity in capture/original-motion.json"
+        },
+        "separate_follower_relation": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_follower_relation",
+          "evidence": "Independent actor IDs, transforms, and following interval in capture/separate-follower-relation.json"
+        },
+        "two_way_lane_count": {
+          "entrypoint": "reviewed_scene.py",
+          "method": "plan",
+          "evidence": "SHA-gated original site map lane count and opposing directions"
+        },
+        "paved_right_edge": {
+          "entrypoint": "reviewed_scene.py",
+          "method": "plan",
+          "evidence": "SHA-gated original site paved edge geometry"
+        },
+        "highway_right_edge": {
+          "entrypoint": "reviewed_scene.py",
+          "method": "plan",
+          "evidence": "SHA-gated original site highway boundary geometry"
+        },
+        "subject_body_footprint": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_original_motion",
+          "evidence": "Per-tick subject bounding box and world transform"
+        },
+        "roadside_obstruction_geometry": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.spawn_obstruction",
+          "evidence": "Spawned prop bounding box and transform readback"
+        },
+        "four_view_frame_map": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_camera_frames",
+          "evidence": "Four original camera PNG sequences indexed by sensor and simulation frame"
+        },
+        "nrs_484b_630_applicability_context": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved lane, pavement, and highway context; legal applicability remains unresolved"
+        },
+        "following_progress": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Original separate follower motion and gap progression"
+        },
+        "right_side_clearance": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved body/obstruction/roadside polygons and clearance measurement"
+        },
+        "body_right_position": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved body bounding box against paved and highway right edge"
+        },
+        "subject_speed_mps": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved actor motion velocity over original tick intervals"
+        },
+        "ego_to_paved_right_edge_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured subject body to original site paved edge"
+        },
+        "ego_to_highway_right_edge_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured subject body to original site highway edge"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured original subject speed in m/s"
+        },
+        "paved_right_edge_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Original site paved right edge coordinate in meters"
+        },
+        "ego_path_offset_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured original subject path lateral offset in meters"
+        }
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__slow_center_wide --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__slow_center_wide --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\" # inspect fresh vNNNN/feedback.json",
+        "recorded_only": true,
+        "diagnostic_fixture": true,
+        "test_exit_code": 0,
+        "test_log": "cases/slow_center_wide/saved-processing.log",
+        "test_log_sha256": "ea7e16fcd6b5de6be5893ecbf7493f41356ec926ee0c34140c9b0a15640fadf8"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__slow_center_wide",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/delivery_audit.py --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__slow_center_wide --attempt \"$ATTEMPT\"",
+        "negative_command": ".venv-cpu/bin/python work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/delivery_audit.py --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__slow_center_wide --attempt \"$ATTEMPT\" --negative",
+        "negative_expected_error": "original frame map hash differs",
+        "script": "delivery_audit.py",
+        "script_sha256": "3b06bfc1fac518e2f89b5129c141507e2ce95c228e942320cf777d6262cf688a",
+        "test_exit_code": 0,
+        "negative_exit_code": 2,
+        "test_log": "cases/slow_center_wide/delivery-positive.log",
+        "test_log_sha256": "deb216f0f123e36343f6910f76d7cb52c96009b88b5c0ca8a31a7999b525c2b5",
+        "negative_log": "cases/slow_center_wide/delivery-negative.log",
+        "negative_log_sha256": "42695b8dc477518f50298f389065c205d2f8668e04257e84126b633249b002fb"
       }
     },
     {
       "case_id": "testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__slow_right_wide",
       "kind": "delivery",
       "construction": "cases/slow_right_wide/construction.json",
-      "construction_sha256": "35de7e4cdca15ab5dd6ee4a0e832ca97b54f6e62b5db460c24b6d326d1550403",
+      "construction_sha256": "10b7144bd5a9f2e4e64dfc2254a29180d02cdd55b0548f3ff6cbe50632d584f1",
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py",
@@ -62,34 +188,160 @@
       },
       "candidate_risk": {
         "status": "none",
-        "reason": "Initial source-gated construction includes no selected alternate yet; physical clearance and camera risk remain under review before readiness."
+        "reason": "No reviewed original site or prop clearance measurements are supplied for this exact case. A preselected alternate position would invent physical evidence or alter the controlled legal comparison. The primary Native attempt checks source hashes, exact road/prop geometry, actor spawns, camera synchronization, and measured body clearance; a failed capture remains failed pending source-reviewed replanning."
       },
       "candidates": [],
       "compatibility": {
         "receipt": "cases/slow_right_wide/compatibility.json",
-        "sha256": "111d1924fad2fbf37f20412e1b4eab7c6eb6e0ad57849d5a8f2ca9ce37a59452",
+        "sha256": "c2ef2b6c755a654c467e1457342da42daa4e2e22f936a3fff83e2441cb0ad82e",
         "log": "cases/slow_right_wide/positive.log"
       },
       "negative": {
         "log": "cases/slow_right_wide/negative-analysis.log"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__slow_right_wide --output .runtime-work/c323986-6271a/offline-slow_right_wide-v2",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__slow_right_wide --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c323986-6271a/offline-slow_right_wide-v5",
         "exit_code": 0,
-        "construction_sha256": "35de7e4cdca15ab5dd6ee4a0e832ca97b54f6e62b5db460c24b6d326d1550403",
+        "construction_sha256": "10b7144bd5a9f2e4e64dfc2254a29180d02cdd55b0548f3ff6cbe50632d584f1",
         "log": "proof-offline-slow_right_wide.log",
-        "log_sha256": "63ea1bc9dc5b604cbb56b2016420b31068222a2561a6a87bdc11e69abe9e4580"
+        "log_sha256": "5d0be93d18b0e35e2385cef8912037c6cae96a0b7e85e5b16705409a6e6b4c08"
       },
       "physical_preparation": {
         "receipt": "cases/slow_right_wide/physical-preparation.json",
-        "sha256": "46b4c3a057632b7c843c1f55d8b4f7b71912788195d4ec3f1fe5a327235ba617"
+        "sha256": "524f20feb8a5f253cbb8b5f6fde68d8a1407c93f101eb6f504361b5094e83373"
+      },
+      "acquisition": {
+        "original_actor_motion": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_original_motion",
+          "evidence": "Per-tick original actor transforms and velocity in capture/original-motion.json"
+        },
+        "separate_follower_relation": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_follower_relation",
+          "evidence": "Independent actor IDs, transforms, and following interval in capture/separate-follower-relation.json"
+        },
+        "two_way_lane_count": {
+          "entrypoint": "reviewed_scene.py",
+          "method": "plan",
+          "evidence": "SHA-gated original site map lane count and opposing directions"
+        },
+        "paved_right_edge": {
+          "entrypoint": "reviewed_scene.py",
+          "method": "plan",
+          "evidence": "SHA-gated original site paved edge geometry"
+        },
+        "highway_right_edge": {
+          "entrypoint": "reviewed_scene.py",
+          "method": "plan",
+          "evidence": "SHA-gated original site highway boundary geometry"
+        },
+        "subject_body_footprint": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_original_motion",
+          "evidence": "Per-tick subject bounding box and world transform"
+        },
+        "roadside_obstruction_geometry": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.spawn_obstruction",
+          "evidence": "Spawned prop bounding box and transform readback"
+        },
+        "four_view_frame_map": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_camera_frames",
+          "evidence": "Four original camera PNG sequences indexed by sensor and simulation frame"
+        },
+        "nrs_484b_630_applicability_context": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved lane, pavement, and highway context; legal applicability remains unresolved"
+        },
+        "following_progress": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Original separate follower motion and gap progression"
+        },
+        "right_side_clearance": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved body/obstruction/roadside polygons and clearance measurement"
+        },
+        "body_right_position": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved body bounding box against paved and highway right edge"
+        },
+        "subject_speed_mps": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved actor motion velocity over original tick intervals"
+        },
+        "ego_to_paved_right_edge_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured subject body to original site paved edge"
+        },
+        "ego_to_highway_right_edge_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured subject body to original site highway edge"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured original subject speed in m/s"
+        },
+        "paved_right_edge_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Original site paved right edge coordinate in meters"
+        },
+        "ego_path_offset_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured original subject path lateral offset in meters"
+        }
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__slow_right_wide --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__slow_right_wide --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\" # inspect fresh vNNNN/feedback.json",
+        "recorded_only": true,
+        "diagnostic_fixture": true,
+        "test_exit_code": 0,
+        "test_log": "cases/slow_right_wide/saved-processing.log",
+        "test_log_sha256": "5062fd5fcc6cbbadd7c5cad6b107ddfbc8c0e60bab643ca0d954ccafd92710af"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__slow_right_wide",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/delivery_audit.py --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__slow_right_wide --attempt \"$ATTEMPT\"",
+        "negative_command": ".venv-cpu/bin/python work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/delivery_audit.py --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__slow_right_wide --attempt \"$ATTEMPT\" --negative",
+        "negative_expected_error": "original frame map hash differs",
+        "script": "delivery_audit.py",
+        "script_sha256": "3b06bfc1fac518e2f89b5129c141507e2ce95c228e942320cf777d6262cf688a",
+        "test_exit_code": 0,
+        "negative_exit_code": 2,
+        "test_log": "cases/slow_right_wide/delivery-positive.log",
+        "test_log_sha256": "5d91aabc0433fb76a3e2d4b73beb8ad20ff3306b01cc7b5f75d6a5ade3853747",
+        "negative_log": "cases/slow_right_wide/delivery-negative.log",
+        "negative_log_sha256": "42695b8dc477518f50298f389065c205d2f8668e04257e84126b633249b002fb"
       }
     },
     {
       "case_id": "testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__slow_center_narrow",
       "kind": "delivery",
       "construction": "cases/slow_center_narrow/construction.json",
-      "construction_sha256": "789b8334436b71b4964cfcc25f6537f1271fa9d1b1c6264e63cbc792530de3f1",
+      "construction_sha256": "23e24252538e4356a0709ada633c7ac589589992528157830b361ae2277aaf29",
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py",
@@ -103,34 +355,160 @@
       },
       "candidate_risk": {
         "status": "none",
-        "reason": "Initial source-gated construction includes no selected alternate yet; physical clearance and camera risk remain under review before readiness."
+        "reason": "No reviewed original site or prop clearance measurements are supplied for this exact case. A preselected alternate position would invent physical evidence or alter the controlled legal comparison. The primary Native attempt checks source hashes, exact road/prop geometry, actor spawns, camera synchronization, and measured body clearance; a failed capture remains failed pending source-reviewed replanning."
       },
       "candidates": [],
       "compatibility": {
         "receipt": "cases/slow_center_narrow/compatibility.json",
-        "sha256": "819581ce3a303d2400152dcdaf99eb193681ea2f7087e4472a6d1a685e38c491",
+        "sha256": "efb1496e119f3c7855a75f1c204dbfd5b627869026b2342567ff8f022eaaeb7c",
         "log": "cases/slow_center_narrow/positive.log"
       },
       "negative": {
         "log": "cases/slow_center_narrow/negative-analysis.log"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__slow_center_narrow --output .runtime-work/c323986-6271a/offline-slow_center_narrow-v2",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__slow_center_narrow --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c323986-6271a/offline-slow_center_narrow-v5",
         "exit_code": 0,
-        "construction_sha256": "789b8334436b71b4964cfcc25f6537f1271fa9d1b1c6264e63cbc792530de3f1",
+        "construction_sha256": "23e24252538e4356a0709ada633c7ac589589992528157830b361ae2277aaf29",
         "log": "proof-offline-slow_center_narrow.log",
-        "log_sha256": "65523abcf15905ca1ddc05f8fed86a77e3b1ca61366a6799c1666552586a2d8f"
+        "log_sha256": "0c82cee2add2e5b94246cc988b85a9caf6f6f1cd2ffa5109cd1c7bdf1993a966"
       },
       "physical_preparation": {
         "receipt": "cases/slow_center_narrow/physical-preparation.json",
-        "sha256": "d02007b1ac3773191f7e2a62613a268339edeae766d417ab7a6e82dcaf7e22a1"
+        "sha256": "41501dc74673ff21f36f40767e68b7f72fe0392688ea552d9f3791d78e80bda7"
+      },
+      "acquisition": {
+        "original_actor_motion": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_original_motion",
+          "evidence": "Per-tick original actor transforms and velocity in capture/original-motion.json"
+        },
+        "separate_follower_relation": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_follower_relation",
+          "evidence": "Independent actor IDs, transforms, and following interval in capture/separate-follower-relation.json"
+        },
+        "two_way_lane_count": {
+          "entrypoint": "reviewed_scene.py",
+          "method": "plan",
+          "evidence": "SHA-gated original site map lane count and opposing directions"
+        },
+        "paved_right_edge": {
+          "entrypoint": "reviewed_scene.py",
+          "method": "plan",
+          "evidence": "SHA-gated original site paved edge geometry"
+        },
+        "highway_right_edge": {
+          "entrypoint": "reviewed_scene.py",
+          "method": "plan",
+          "evidence": "SHA-gated original site highway boundary geometry"
+        },
+        "subject_body_footprint": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_original_motion",
+          "evidence": "Per-tick subject bounding box and world transform"
+        },
+        "roadside_obstruction_geometry": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.spawn_obstruction",
+          "evidence": "Spawned prop bounding box and transform readback"
+        },
+        "four_view_frame_map": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_camera_frames",
+          "evidence": "Four original camera PNG sequences indexed by sensor and simulation frame"
+        },
+        "nrs_484b_630_applicability_context": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved lane, pavement, and highway context; legal applicability remains unresolved"
+        },
+        "following_progress": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Original separate follower motion and gap progression"
+        },
+        "right_side_clearance": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved body/obstruction/roadside polygons and clearance measurement"
+        },
+        "body_right_position": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved body bounding box against paved and highway right edge"
+        },
+        "subject_speed_mps": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved actor motion velocity over original tick intervals"
+        },
+        "ego_to_paved_right_edge_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured subject body to original site paved edge"
+        },
+        "ego_to_highway_right_edge_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured subject body to original site highway edge"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured original subject speed in m/s"
+        },
+        "paved_right_edge_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Original site paved right edge coordinate in meters"
+        },
+        "ego_path_offset_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured original subject path lateral offset in meters"
+        }
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__slow_center_narrow --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__slow_center_narrow --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\" # inspect fresh vNNNN/feedback.json",
+        "recorded_only": true,
+        "diagnostic_fixture": true,
+        "test_exit_code": 0,
+        "test_log": "cases/slow_center_narrow/saved-processing.log",
+        "test_log_sha256": "3bb136f97f7914913dc5b8637f892fa0f52d3c44da8a50ef2669fed0b22ad52d"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__slow_center_narrow",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/delivery_audit.py --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__slow_center_narrow --attempt \"$ATTEMPT\"",
+        "negative_command": ".venv-cpu/bin/python work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/delivery_audit.py --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__slow_center_narrow --attempt \"$ATTEMPT\" --negative",
+        "negative_expected_error": "original frame map hash differs",
+        "script": "delivery_audit.py",
+        "script_sha256": "3b06bfc1fac518e2f89b5129c141507e2ce95c228e942320cf777d6262cf688a",
+        "test_exit_code": 0,
+        "negative_exit_code": 2,
+        "test_log": "cases/slow_center_narrow/delivery-positive.log",
+        "test_log_sha256": "1241ed0b90fc46d6b97e77a298e92c415bcb9a3d3b704f88293f31ee400330b1",
+        "negative_log": "cases/slow_center_narrow/delivery-negative.log",
+        "negative_log_sha256": "42695b8dc477518f50298f389065c205d2f8668e04257e84126b633249b002fb"
       }
     },
     {
       "case_id": "testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__slow_center_no_follower",
       "kind": "delivery",
       "construction": "cases/slow_center_no_follower/construction.json",
-      "construction_sha256": "eb3ae6fa7faba06888120f662fee6a25792614b3fc999ceca61cb57c7205b3e0",
+      "construction_sha256": "a7e033a9813932437dce033124ad492d9f5f55d72deba7b1b06ddb2a0c4bcfdf",
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py",
@@ -144,34 +522,160 @@
       },
       "candidate_risk": {
         "status": "none",
-        "reason": "Initial source-gated construction includes no selected alternate yet; physical clearance and camera risk remain under review before readiness."
+        "reason": "No reviewed original site or prop clearance measurements are supplied for this exact case. A preselected alternate position would invent physical evidence or alter the controlled legal comparison. The primary Native attempt checks source hashes, exact road/prop geometry, actor spawns, camera synchronization, and measured body clearance; a failed capture remains failed pending source-reviewed replanning."
       },
       "candidates": [],
       "compatibility": {
         "receipt": "cases/slow_center_no_follower/compatibility.json",
-        "sha256": "d0a31d09790144ae93f5c7697fd051a74e7d060c47fcbb14584b2ec2fbe75b4f",
+        "sha256": "911393d87278592a515fc8a5bd0f368358f806681e0b7a9cfc2ee5e45035e51f",
         "log": "cases/slow_center_no_follower/positive.log"
       },
       "negative": {
         "log": "cases/slow_center_no_follower/negative-analysis.log"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__slow_center_no_follower --output .runtime-work/c323986-6271a/offline-slow_center_no_follower-v2",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__slow_center_no_follower --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c323986-6271a/offline-slow_center_no_follower-v5",
         "exit_code": 0,
-        "construction_sha256": "eb3ae6fa7faba06888120f662fee6a25792614b3fc999ceca61cb57c7205b3e0",
+        "construction_sha256": "a7e033a9813932437dce033124ad492d9f5f55d72deba7b1b06ddb2a0c4bcfdf",
         "log": "proof-offline-slow_center_no_follower.log",
-        "log_sha256": "65523abcf15905ca1ddc05f8fed86a77e3b1ca61366a6799c1666552586a2d8f"
+        "log_sha256": "42adff1083647bc8747994486f55d5a3f1cc7ef20421e5aa04c706b2c92cedf0"
       },
       "physical_preparation": {
         "receipt": "cases/slow_center_no_follower/physical-preparation.json",
-        "sha256": "5cf217dd17944ec4702f85b191428cbe49712b97202bc001eee71e4c490efe83"
+        "sha256": "a8a31f62c56b3ecf55e8288bc6004a94b7f63bd373c83ea226bc3bb1bcfd9408"
+      },
+      "acquisition": {
+        "original_actor_motion": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_original_motion",
+          "evidence": "Per-tick original actor transforms and velocity in capture/original-motion.json"
+        },
+        "separate_follower_relation": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_follower_relation",
+          "evidence": "Independent actor IDs, transforms, and following interval in capture/separate-follower-relation.json"
+        },
+        "two_way_lane_count": {
+          "entrypoint": "reviewed_scene.py",
+          "method": "plan",
+          "evidence": "SHA-gated original site map lane count and opposing directions"
+        },
+        "paved_right_edge": {
+          "entrypoint": "reviewed_scene.py",
+          "method": "plan",
+          "evidence": "SHA-gated original site paved edge geometry"
+        },
+        "highway_right_edge": {
+          "entrypoint": "reviewed_scene.py",
+          "method": "plan",
+          "evidence": "SHA-gated original site highway boundary geometry"
+        },
+        "subject_body_footprint": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_original_motion",
+          "evidence": "Per-tick subject bounding box and world transform"
+        },
+        "roadside_obstruction_geometry": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.spawn_obstruction",
+          "evidence": "Spawned prop bounding box and transform readback"
+        },
+        "four_view_frame_map": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_camera_frames",
+          "evidence": "Four original camera PNG sequences indexed by sensor and simulation frame"
+        },
+        "nrs_484b_630_applicability_context": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved lane, pavement, and highway context; legal applicability remains unresolved"
+        },
+        "following_progress": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Original separate follower motion and gap progression"
+        },
+        "right_side_clearance": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved body/obstruction/roadside polygons and clearance measurement"
+        },
+        "body_right_position": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved body bounding box against paved and highway right edge"
+        },
+        "subject_speed_mps": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved actor motion velocity over original tick intervals"
+        },
+        "ego_to_paved_right_edge_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured subject body to original site paved edge"
+        },
+        "ego_to_highway_right_edge_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured subject body to original site highway edge"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured original subject speed in m/s"
+        },
+        "paved_right_edge_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Original site paved right edge coordinate in meters"
+        },
+        "ego_path_offset_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured original subject path lateral offset in meters"
+        }
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__slow_center_no_follower --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__slow_center_no_follower --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\" # inspect fresh vNNNN/feedback.json",
+        "recorded_only": true,
+        "diagnostic_fixture": true,
+        "test_exit_code": 0,
+        "test_log": "cases/slow_center_no_follower/saved-processing.log",
+        "test_log_sha256": "812338d5237f9ebcb4ed09f89d5e78413da9d8737813e8c80074b57daa5c80b3"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__slow_center_no_follower",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/delivery_audit.py --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__slow_center_no_follower --attempt \"$ATTEMPT\"",
+        "negative_command": ".venv-cpu/bin/python work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/delivery_audit.py --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__slow_center_no_follower --attempt \"$ATTEMPT\" --negative",
+        "negative_expected_error": "original frame map hash differs",
+        "script": "delivery_audit.py",
+        "script_sha256": "3b06bfc1fac518e2f89b5129c141507e2ce95c228e942320cf777d6262cf688a",
+        "test_exit_code": 0,
+        "negative_exit_code": 2,
+        "test_log": "cases/slow_center_no_follower/delivery-positive.log",
+        "test_log_sha256": "e6ff98ab24283f5d7c1d28820ec3fa83e58019e7804a356a8371cb35ef12d6fd",
+        "negative_log": "cases/slow_center_no_follower/delivery-negative.log",
+        "negative_log_sha256": "42695b8dc477518f50298f389065c205d2f8668e04257e84126b633249b002fb"
       }
     },
     {
       "case_id": "testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__slow_center_obstruction_near",
       "kind": "delivery",
       "construction": "cases/slow_center_obstruction_near/construction.json",
-      "construction_sha256": "19f5f016784a6e518413da5d3af078e75741194c0c0474c6806b910210dc0da5",
+      "construction_sha256": "974e83054b07a2c4a29490ee9083378a215f41e2ce34c4962eace85441d46dac",
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py",
@@ -185,34 +689,160 @@
       },
       "candidate_risk": {
         "status": "none",
-        "reason": "Initial source-gated construction includes no selected alternate yet; physical clearance and camera risk remain under review before readiness."
+        "reason": "No reviewed original site or prop clearance measurements are supplied for this exact case. A preselected alternate position would invent physical evidence or alter the controlled legal comparison. The primary Native attempt checks source hashes, exact road/prop geometry, actor spawns, camera synchronization, and measured body clearance; a failed capture remains failed pending source-reviewed replanning."
       },
       "candidates": [],
       "compatibility": {
         "receipt": "cases/slow_center_obstruction_near/compatibility.json",
-        "sha256": "767691090b47e63bb11d5d3d70f3b39179b261daf0f9fdd2d0233c06156fcc1f",
+        "sha256": "0014ea97915a4659b9f3c5838f9e679d6414589649443d0402a68c93fae7cd81",
         "log": "cases/slow_center_obstruction_near/positive.log"
       },
       "negative": {
         "log": "cases/slow_center_obstruction_near/negative-analysis.log"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__slow_center_obstruction_near --output .runtime-work/c323986-6271a/offline-slow_center_obstruction_near-v2",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__slow_center_obstruction_near --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c323986-6271a/offline-slow_center_obstruction_near-v5",
         "exit_code": 0,
-        "construction_sha256": "19f5f016784a6e518413da5d3af078e75741194c0c0474c6806b910210dc0da5",
+        "construction_sha256": "974e83054b07a2c4a29490ee9083378a215f41e2ce34c4962eace85441d46dac",
         "log": "proof-offline-slow_center_obstruction_near.log",
-        "log_sha256": "d1b5813a484c1c049b1de35c69d18bbd0c04047ffc0add6ab1c94722618e8c9a"
+        "log_sha256": "3cc7e233c03f1609f0dcb44989a47711c7b94be9966c631e064df67f4026cb1f"
       },
       "physical_preparation": {
         "receipt": "cases/slow_center_obstruction_near/physical-preparation.json",
-        "sha256": "ff01210b51c4ae9b06c30fbd12d59d88d268f4a08443cbc6c22204b2b8c07c6a"
+        "sha256": "6767f7d5280a3f47903375c6068f81ab4013ef16c6490b6819bc8e9778576e68"
+      },
+      "acquisition": {
+        "original_actor_motion": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_original_motion",
+          "evidence": "Per-tick original actor transforms and velocity in capture/original-motion.json"
+        },
+        "separate_follower_relation": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_follower_relation",
+          "evidence": "Independent actor IDs, transforms, and following interval in capture/separate-follower-relation.json"
+        },
+        "two_way_lane_count": {
+          "entrypoint": "reviewed_scene.py",
+          "method": "plan",
+          "evidence": "SHA-gated original site map lane count and opposing directions"
+        },
+        "paved_right_edge": {
+          "entrypoint": "reviewed_scene.py",
+          "method": "plan",
+          "evidence": "SHA-gated original site paved edge geometry"
+        },
+        "highway_right_edge": {
+          "entrypoint": "reviewed_scene.py",
+          "method": "plan",
+          "evidence": "SHA-gated original site highway boundary geometry"
+        },
+        "subject_body_footprint": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_original_motion",
+          "evidence": "Per-tick subject bounding box and world transform"
+        },
+        "roadside_obstruction_geometry": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.spawn_obstruction",
+          "evidence": "Spawned prop bounding box and transform readback"
+        },
+        "four_view_frame_map": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_camera_frames",
+          "evidence": "Four original camera PNG sequences indexed by sensor and simulation frame"
+        },
+        "nrs_484b_630_applicability_context": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved lane, pavement, and highway context; legal applicability remains unresolved"
+        },
+        "following_progress": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Original separate follower motion and gap progression"
+        },
+        "right_side_clearance": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved body/obstruction/roadside polygons and clearance measurement"
+        },
+        "body_right_position": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved body bounding box against paved and highway right edge"
+        },
+        "subject_speed_mps": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved actor motion velocity over original tick intervals"
+        },
+        "ego_to_paved_right_edge_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured subject body to original site paved edge"
+        },
+        "ego_to_highway_right_edge_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured subject body to original site highway edge"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured original subject speed in m/s"
+        },
+        "paved_right_edge_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Original site paved right edge coordinate in meters"
+        },
+        "ego_path_offset_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured original subject path lateral offset in meters"
+        }
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__slow_center_obstruction_near --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__slow_center_obstruction_near --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\" # inspect fresh vNNNN/feedback.json",
+        "recorded_only": true,
+        "diagnostic_fixture": true,
+        "test_exit_code": 0,
+        "test_log": "cases/slow_center_obstruction_near/saved-processing.log",
+        "test_log_sha256": "c3853a1def79ccdc556ac2d65f9de1fc8345624248f49628c2bc6af2303aec9c"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__slow_center_obstruction_near",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/delivery_audit.py --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__slow_center_obstruction_near --attempt \"$ATTEMPT\"",
+        "negative_command": ".venv-cpu/bin/python work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/delivery_audit.py --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__slow_center_obstruction_near --attempt \"$ATTEMPT\" --negative",
+        "negative_expected_error": "original frame map hash differs",
+        "script": "delivery_audit.py",
+        "script_sha256": "3b06bfc1fac518e2f89b5129c141507e2ce95c228e942320cf777d6262cf688a",
+        "test_exit_code": 0,
+        "negative_exit_code": 2,
+        "test_log": "cases/slow_center_obstruction_near/delivery-positive.log",
+        "test_log_sha256": "eae91802db3dee85801fa8a6080405ebfd177cdd51398292c494b43d618e4bdd",
+        "negative_log": "cases/slow_center_obstruction_near/delivery-negative.log",
+        "negative_log_sha256": "42695b8dc477518f50298f389065c205d2f8668e04257e84126b633249b002fb"
       }
     },
     {
       "case_id": "testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__impediment-0000",
       "kind": "delivery",
       "construction": "cases/impediment-0000/construction.json",
-      "construction_sha256": "49d23158d061daca99eb05c76cb4046b0fb54b4ec2ef83866528bb78c08fc755",
+      "construction_sha256": "313c65fe89a5471f2c059ccb1c5bb81fcca705f7c45f060ea93cac94add917df",
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py",
@@ -226,34 +856,160 @@
       },
       "candidate_risk": {
         "status": "none",
-        "reason": "Initial source-gated construction includes no selected alternate yet; physical clearance and camera risk remain under review before readiness."
+        "reason": "No reviewed original site or prop clearance measurements are supplied for this exact case. A preselected alternate position would invent physical evidence or alter the controlled legal comparison. The primary Native attempt checks source hashes, exact road/prop geometry, actor spawns, camera synchronization, and measured body clearance; a failed capture remains failed pending source-reviewed replanning."
       },
       "candidates": [],
       "compatibility": {
         "receipt": "cases/impediment-0000/compatibility.json",
-        "sha256": "06285fdbbe91a630b7eafa70ef99aad6a7d028ac2356b865eb4dd694b6c4e20a",
+        "sha256": "3619974ccb530d755ca1d4ce25e094ebbcb995c68181ba1c33fd6b5717f1470f",
         "log": "cases/impediment-0000/positive.log"
       },
       "negative": {
         "log": "cases/impediment-0000/negative-analysis.log"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__impediment-0000 --output .runtime-work/c323986-6271a/offline-impediment-0000-v2",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__impediment-0000 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c323986-6271a/offline-impediment-0000-v5",
         "exit_code": 0,
-        "construction_sha256": "49d23158d061daca99eb05c76cb4046b0fb54b4ec2ef83866528bb78c08fc755",
+        "construction_sha256": "313c65fe89a5471f2c059ccb1c5bb81fcca705f7c45f060ea93cac94add917df",
         "log": "proof-offline-impediment-0000.log",
-        "log_sha256": "8d248d5695b8f95b9cf0a05f36a807322b5fd003c9496e370aa6c79fcb277dff"
+        "log_sha256": "34dbe17f872262846f665627b2726c601c9efac8da5d829910cb5001f1d032e3"
       },
       "physical_preparation": {
         "receipt": "cases/impediment-0000/physical-preparation.json",
-        "sha256": "dcaaf6d7612b89a9d187f10f51d1305a42ee0e9f2fbfa4d4a22c10c7cfd0f0c4"
+        "sha256": "cd99c4e53c33e330075a980a9ea4b4f718ced2d11d99ebc5ead273741cffd7d6"
+      },
+      "acquisition": {
+        "original_actor_motion": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_original_motion",
+          "evidence": "Per-tick original actor transforms and velocity in capture/original-motion.json"
+        },
+        "separate_follower_relation": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_follower_relation",
+          "evidence": "Independent actor IDs, transforms, and following interval in capture/separate-follower-relation.json"
+        },
+        "two_way_lane_count": {
+          "entrypoint": "reviewed_scene.py",
+          "method": "plan",
+          "evidence": "SHA-gated original site map lane count and opposing directions"
+        },
+        "paved_right_edge": {
+          "entrypoint": "reviewed_scene.py",
+          "method": "plan",
+          "evidence": "SHA-gated original site paved edge geometry"
+        },
+        "highway_right_edge": {
+          "entrypoint": "reviewed_scene.py",
+          "method": "plan",
+          "evidence": "SHA-gated original site highway boundary geometry"
+        },
+        "subject_body_footprint": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_original_motion",
+          "evidence": "Per-tick subject bounding box and world transform"
+        },
+        "roadside_obstruction_geometry": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.spawn_obstruction",
+          "evidence": "Spawned prop bounding box and transform readback"
+        },
+        "four_view_frame_map": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_camera_frames",
+          "evidence": "Four original camera PNG sequences indexed by sensor and simulation frame"
+        },
+        "nrs_484b_630_applicability_context": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved lane, pavement, and highway context; legal applicability remains unresolved"
+        },
+        "following_progress": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Original separate follower motion and gap progression"
+        },
+        "right_side_clearance": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved body/obstruction/roadside polygons and clearance measurement"
+        },
+        "body_right_position": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved body bounding box against paved and highway right edge"
+        },
+        "subject_speed_mps": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved actor motion velocity over original tick intervals"
+        },
+        "ego_to_paved_right_edge_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured subject body to original site paved edge"
+        },
+        "ego_to_highway_right_edge_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured subject body to original site highway edge"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured original subject speed in m/s"
+        },
+        "paved_right_edge_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Original site paved right edge coordinate in meters"
+        },
+        "ego_path_offset_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured original subject path lateral offset in meters"
+        }
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__impediment-0000 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__impediment-0000 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\" # inspect fresh vNNNN/feedback.json",
+        "recorded_only": true,
+        "diagnostic_fixture": true,
+        "test_exit_code": 0,
+        "test_log": "cases/impediment-0000/saved-processing.log",
+        "test_log_sha256": "57affc03b0a54671b80c0307419935ef0eb45cf23d18fac414bc4211c83b90d2"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__impediment-0000",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/delivery_audit.py --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__impediment-0000 --attempt \"$ATTEMPT\"",
+        "negative_command": ".venv-cpu/bin/python work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/delivery_audit.py --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__impediment-0000 --attempt \"$ATTEMPT\" --negative",
+        "negative_expected_error": "original frame map hash differs",
+        "script": "delivery_audit.py",
+        "script_sha256": "3b06bfc1fac518e2f89b5129c141507e2ce95c228e942320cf777d6262cf688a",
+        "test_exit_code": 0,
+        "negative_exit_code": 2,
+        "test_log": "cases/impediment-0000/delivery-positive.log",
+        "test_log_sha256": "c6f6d3110410c1329772989d2d943f1781cefa6632669db6b27a0cb1b67b8f81",
+        "negative_log": "cases/impediment-0000/delivery-negative.log",
+        "negative_log_sha256": "42695b8dc477518f50298f389065c205d2f8668e04257e84126b633249b002fb"
       }
     },
     {
       "case_id": "testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__impediment-0001",
       "kind": "delivery",
       "construction": "cases/impediment-0001/construction.json",
-      "construction_sha256": "b89589e3ea847fe7e226950782c76ff201275fc8d95c7f452c3d0841dee8d19b",
+      "construction_sha256": "5327a2aa5585433c687fed614583fd3e22ac77f7c3a0f6a833947499b36cd404",
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py",
@@ -267,34 +1023,160 @@
       },
       "candidate_risk": {
         "status": "none",
-        "reason": "Initial source-gated construction includes no selected alternate yet; physical clearance and camera risk remain under review before readiness."
+        "reason": "No reviewed original site or prop clearance measurements are supplied for this exact case. A preselected alternate position would invent physical evidence or alter the controlled legal comparison. The primary Native attempt checks source hashes, exact road/prop geometry, actor spawns, camera synchronization, and measured body clearance; a failed capture remains failed pending source-reviewed replanning."
       },
       "candidates": [],
       "compatibility": {
         "receipt": "cases/impediment-0001/compatibility.json",
-        "sha256": "bab147df44b6f3de690a4e3a560508d9c9e8ec20df6d976d98ff5c07c50c654c",
+        "sha256": "0dbc76e45a5ae1edf8568aaceb7cbd5b96a59d17158197866552ee6e4e9d7db8",
         "log": "cases/impediment-0001/positive.log"
       },
       "negative": {
         "log": "cases/impediment-0001/negative-analysis.log"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__impediment-0001 --output .runtime-work/c323986-6271a/offline-impediment-0001-v2",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__impediment-0001 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c323986-6271a/offline-impediment-0001-v5",
         "exit_code": 0,
-        "construction_sha256": "b89589e3ea847fe7e226950782c76ff201275fc8d95c7f452c3d0841dee8d19b",
+        "construction_sha256": "5327a2aa5585433c687fed614583fd3e22ac77f7c3a0f6a833947499b36cd404",
         "log": "proof-offline-impediment-0001.log",
-        "log_sha256": "567a813346b3512f5cc9004d941dbe735ea04f1dcef20f808de82457c14df15a"
+        "log_sha256": "d36776132d8f5d8a9c2532947344b82b0209f726ea2d4fdbe7778181d9bbfab5"
       },
       "physical_preparation": {
         "receipt": "cases/impediment-0001/physical-preparation.json",
-        "sha256": "4191ead494b4f91449d29d3cef0ad5df1bac1ce25673d730e12ae91eedac982c"
+        "sha256": "df88342b1e7d6fe77f5bebc91e8389c5aafeb15a85dfaa8d7f29f106fab77475"
+      },
+      "acquisition": {
+        "original_actor_motion": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_original_motion",
+          "evidence": "Per-tick original actor transforms and velocity in capture/original-motion.json"
+        },
+        "separate_follower_relation": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_follower_relation",
+          "evidence": "Independent actor IDs, transforms, and following interval in capture/separate-follower-relation.json"
+        },
+        "two_way_lane_count": {
+          "entrypoint": "reviewed_scene.py",
+          "method": "plan",
+          "evidence": "SHA-gated original site map lane count and opposing directions"
+        },
+        "paved_right_edge": {
+          "entrypoint": "reviewed_scene.py",
+          "method": "plan",
+          "evidence": "SHA-gated original site paved edge geometry"
+        },
+        "highway_right_edge": {
+          "entrypoint": "reviewed_scene.py",
+          "method": "plan",
+          "evidence": "SHA-gated original site highway boundary geometry"
+        },
+        "subject_body_footprint": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_original_motion",
+          "evidence": "Per-tick subject bounding box and world transform"
+        },
+        "roadside_obstruction_geometry": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.spawn_obstruction",
+          "evidence": "Spawned prop bounding box and transform readback"
+        },
+        "four_view_frame_map": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_camera_frames",
+          "evidence": "Four original camera PNG sequences indexed by sensor and simulation frame"
+        },
+        "nrs_484b_630_applicability_context": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved lane, pavement, and highway context; legal applicability remains unresolved"
+        },
+        "following_progress": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Original separate follower motion and gap progression"
+        },
+        "right_side_clearance": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved body/obstruction/roadside polygons and clearance measurement"
+        },
+        "body_right_position": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved body bounding box against paved and highway right edge"
+        },
+        "subject_speed_mps": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved actor motion velocity over original tick intervals"
+        },
+        "ego_to_paved_right_edge_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured subject body to original site paved edge"
+        },
+        "ego_to_highway_right_edge_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured subject body to original site highway edge"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured original subject speed in m/s"
+        },
+        "paved_right_edge_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Original site paved right edge coordinate in meters"
+        },
+        "ego_path_offset_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured original subject path lateral offset in meters"
+        }
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__impediment-0001 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__impediment-0001 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\" # inspect fresh vNNNN/feedback.json",
+        "recorded_only": true,
+        "diagnostic_fixture": true,
+        "test_exit_code": 0,
+        "test_log": "cases/impediment-0001/saved-processing.log",
+        "test_log_sha256": "e603218d80cc0b2bd04f918d94bad21b9ee4c70baf4d96d027b90e544238ec85"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__impediment-0001",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/delivery_audit.py --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__impediment-0001 --attempt \"$ATTEMPT\"",
+        "negative_command": ".venv-cpu/bin/python work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/delivery_audit.py --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__impediment-0001 --attempt \"$ATTEMPT\" --negative",
+        "negative_expected_error": "original frame map hash differs",
+        "script": "delivery_audit.py",
+        "script_sha256": "3b06bfc1fac518e2f89b5129c141507e2ce95c228e942320cf777d6262cf688a",
+        "test_exit_code": 0,
+        "negative_exit_code": 2,
+        "test_log": "cases/impediment-0001/delivery-positive.log",
+        "test_log_sha256": "ace33375757a65969fedab074edea498677c2f366d9b282c9d5d1c360bf91dcd",
+        "negative_log": "cases/impediment-0001/delivery-negative.log",
+        "negative_log_sha256": "42695b8dc477518f50298f389065c205d2f8668e04257e84126b633249b002fb"
       }
     },
     {
       "case_id": "testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__impediment-0002",
       "kind": "delivery",
       "construction": "cases/impediment-0002/construction.json",
-      "construction_sha256": "0c7b0205a3424d81b2d11edb66d3b64b711b4a32dea6121d1f835b1955bf8ee6",
+      "construction_sha256": "89765883839360146ef9ca625530314fddb7aa9da0c7d5ae6b9b03619c3fd8f9",
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py",
@@ -308,34 +1190,160 @@
       },
       "candidate_risk": {
         "status": "none",
-        "reason": "Initial source-gated construction includes no selected alternate yet; physical clearance and camera risk remain under review before readiness."
+        "reason": "No reviewed original site or prop clearance measurements are supplied for this exact case. A preselected alternate position would invent physical evidence or alter the controlled legal comparison. The primary Native attempt checks source hashes, exact road/prop geometry, actor spawns, camera synchronization, and measured body clearance; a failed capture remains failed pending source-reviewed replanning."
       },
       "candidates": [],
       "compatibility": {
         "receipt": "cases/impediment-0002/compatibility.json",
-        "sha256": "1632c08d294cb55e1ea728e90608ba6b9bbfe4ca4e018b67394000147965d9c0",
+        "sha256": "f8e009e41d91a4077d284b81fc223896947e3c958bf59a5f861696abb5e976b6",
         "log": "cases/impediment-0002/positive.log"
       },
       "negative": {
         "log": "cases/impediment-0002/negative-analysis.log"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__impediment-0002 --output .runtime-work/c323986-6271a/offline-impediment-0002-v2",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__impediment-0002 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c323986-6271a/offline-impediment-0002-v5",
         "exit_code": 0,
-        "construction_sha256": "0c7b0205a3424d81b2d11edb66d3b64b711b4a32dea6121d1f835b1955bf8ee6",
+        "construction_sha256": "89765883839360146ef9ca625530314fddb7aa9da0c7d5ae6b9b03619c3fd8f9",
         "log": "proof-offline-impediment-0002.log",
-        "log_sha256": "7f9f899505e35311b50cc221cb4aa6009b225dad62918d3addfca6cf760cd54c"
+        "log_sha256": "63ea1bc9dc5b604cbb56b2016420b31068222a2561a6a87bdc11e69abe9e4580"
       },
       "physical_preparation": {
         "receipt": "cases/impediment-0002/physical-preparation.json",
-        "sha256": "870555153cc87300c3a454684fae245419bf55ca21c8e70e09a112869ae7be1b"
+        "sha256": "2bb8b3686a4fed52c4aee51815aad22d48c8d8f2b59746c9fdf39ac81098b768"
+      },
+      "acquisition": {
+        "original_actor_motion": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_original_motion",
+          "evidence": "Per-tick original actor transforms and velocity in capture/original-motion.json"
+        },
+        "separate_follower_relation": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_follower_relation",
+          "evidence": "Independent actor IDs, transforms, and following interval in capture/separate-follower-relation.json"
+        },
+        "two_way_lane_count": {
+          "entrypoint": "reviewed_scene.py",
+          "method": "plan",
+          "evidence": "SHA-gated original site map lane count and opposing directions"
+        },
+        "paved_right_edge": {
+          "entrypoint": "reviewed_scene.py",
+          "method": "plan",
+          "evidence": "SHA-gated original site paved edge geometry"
+        },
+        "highway_right_edge": {
+          "entrypoint": "reviewed_scene.py",
+          "method": "plan",
+          "evidence": "SHA-gated original site highway boundary geometry"
+        },
+        "subject_body_footprint": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_original_motion",
+          "evidence": "Per-tick subject bounding box and world transform"
+        },
+        "roadside_obstruction_geometry": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.spawn_obstruction",
+          "evidence": "Spawned prop bounding box and transform readback"
+        },
+        "four_view_frame_map": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_camera_frames",
+          "evidence": "Four original camera PNG sequences indexed by sensor and simulation frame"
+        },
+        "nrs_484b_630_applicability_context": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved lane, pavement, and highway context; legal applicability remains unresolved"
+        },
+        "following_progress": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Original separate follower motion and gap progression"
+        },
+        "right_side_clearance": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved body/obstruction/roadside polygons and clearance measurement"
+        },
+        "body_right_position": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved body bounding box against paved and highway right edge"
+        },
+        "subject_speed_mps": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved actor motion velocity over original tick intervals"
+        },
+        "ego_to_paved_right_edge_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured subject body to original site paved edge"
+        },
+        "ego_to_highway_right_edge_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured subject body to original site highway edge"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured original subject speed in m/s"
+        },
+        "paved_right_edge_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Original site paved right edge coordinate in meters"
+        },
+        "ego_path_offset_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured original subject path lateral offset in meters"
+        }
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__impediment-0002 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__impediment-0002 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\" # inspect fresh vNNNN/feedback.json",
+        "recorded_only": true,
+        "diagnostic_fixture": true,
+        "test_exit_code": 0,
+        "test_log": "cases/impediment-0002/saved-processing.log",
+        "test_log_sha256": "bf3b07d360b470087773f4910c062ae4d7fb747e98621f1fe0868c7fbb69a81e"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__impediment-0002",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/delivery_audit.py --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__impediment-0002 --attempt \"$ATTEMPT\"",
+        "negative_command": ".venv-cpu/bin/python work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/delivery_audit.py --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__impediment-0002 --attempt \"$ATTEMPT\" --negative",
+        "negative_expected_error": "original frame map hash differs",
+        "script": "delivery_audit.py",
+        "script_sha256": "3b06bfc1fac518e2f89b5129c141507e2ce95c228e942320cf777d6262cf688a",
+        "test_exit_code": 0,
+        "negative_exit_code": 2,
+        "test_log": "cases/impediment-0002/delivery-positive.log",
+        "test_log_sha256": "88a57df78670838a3c0e5653c6543be0e650e0ef92c36f5a06b539a660c438f4",
+        "negative_log": "cases/impediment-0002/delivery-negative.log",
+        "negative_log_sha256": "42695b8dc477518f50298f389065c205d2f8668e04257e84126b633249b002fb"
       }
     },
     {
       "case_id": "testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__paved_width-0000",
       "kind": "delivery",
       "construction": "cases/paved_width-0000/construction.json",
-      "construction_sha256": "e08422ecf49f023f907cfdee3fa79fc1731de707ea642382f188b075dd42f515",
+      "construction_sha256": "26161391839edd66eeca58e8793920fe2788153be5ffd5dc125d9ec81fb14d3c",
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py",
@@ -349,34 +1357,160 @@
       },
       "candidate_risk": {
         "status": "none",
-        "reason": "Initial source-gated construction includes no selected alternate yet; physical clearance and camera risk remain under review before readiness."
+        "reason": "No reviewed original site or prop clearance measurements are supplied for this exact case. A preselected alternate position would invent physical evidence or alter the controlled legal comparison. The primary Native attempt checks source hashes, exact road/prop geometry, actor spawns, camera synchronization, and measured body clearance; a failed capture remains failed pending source-reviewed replanning."
       },
       "candidates": [],
       "compatibility": {
         "receipt": "cases/paved_width-0000/compatibility.json",
-        "sha256": "58a3fe6ce7589589ceecaacce554ca854f564dcdcacb460bed021437e979d736",
+        "sha256": "b21988226e3b865a2077769a7ae420fa3ccbcf062a5aab633953c5d410c6cc8d",
         "log": "cases/paved_width-0000/positive.log"
       },
       "negative": {
         "log": "cases/paved_width-0000/negative-analysis.log"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__paved_width-0000 --output .runtime-work/c323986-6271a/offline-paved_width-0000-v2",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__paved_width-0000 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c323986-6271a/offline-paved_width-0000-v5",
         "exit_code": 0,
-        "construction_sha256": "e08422ecf49f023f907cfdee3fa79fc1731de707ea642382f188b075dd42f515",
+        "construction_sha256": "26161391839edd66eeca58e8793920fe2788153be5ffd5dc125d9ec81fb14d3c",
         "log": "proof-offline-paved_width-0000.log",
-        "log_sha256": "823c2399087380b11784036c932b2cd6bca1c18fc3282bca84216a66815bd041"
+        "log_sha256": "8d248d5695b8f95b9cf0a05f36a807322b5fd003c9496e370aa6c79fcb277dff"
       },
       "physical_preparation": {
         "receipt": "cases/paved_width-0000/physical-preparation.json",
-        "sha256": "a038f674c9ed8929b33b6f7f28abe5851dcdd8fbe0f7681c3e5579dc01249bea"
+        "sha256": "f37486d0bc2e9d7fba0c4d9eacf9fea7a7b7078af1d352e75b9db3103c5e4881"
+      },
+      "acquisition": {
+        "original_actor_motion": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_original_motion",
+          "evidence": "Per-tick original actor transforms and velocity in capture/original-motion.json"
+        },
+        "separate_follower_relation": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_follower_relation",
+          "evidence": "Independent actor IDs, transforms, and following interval in capture/separate-follower-relation.json"
+        },
+        "two_way_lane_count": {
+          "entrypoint": "reviewed_scene.py",
+          "method": "plan",
+          "evidence": "SHA-gated original site map lane count and opposing directions"
+        },
+        "paved_right_edge": {
+          "entrypoint": "reviewed_scene.py",
+          "method": "plan",
+          "evidence": "SHA-gated original site paved edge geometry"
+        },
+        "highway_right_edge": {
+          "entrypoint": "reviewed_scene.py",
+          "method": "plan",
+          "evidence": "SHA-gated original site highway boundary geometry"
+        },
+        "subject_body_footprint": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_original_motion",
+          "evidence": "Per-tick subject bounding box and world transform"
+        },
+        "roadside_obstruction_geometry": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.spawn_obstruction",
+          "evidence": "Spawned prop bounding box and transform readback"
+        },
+        "four_view_frame_map": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_camera_frames",
+          "evidence": "Four original camera PNG sequences indexed by sensor and simulation frame"
+        },
+        "nrs_484b_630_applicability_context": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved lane, pavement, and highway context; legal applicability remains unresolved"
+        },
+        "following_progress": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Original separate follower motion and gap progression"
+        },
+        "right_side_clearance": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved body/obstruction/roadside polygons and clearance measurement"
+        },
+        "body_right_position": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved body bounding box against paved and highway right edge"
+        },
+        "subject_speed_mps": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved actor motion velocity over original tick intervals"
+        },
+        "ego_to_paved_right_edge_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured subject body to original site paved edge"
+        },
+        "ego_to_highway_right_edge_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured subject body to original site highway edge"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured original subject speed in m/s"
+        },
+        "paved_right_edge_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Original site paved right edge coordinate in meters"
+        },
+        "ego_path_offset_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured original subject path lateral offset in meters"
+        }
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__paved_width-0000 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__paved_width-0000 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\" # inspect fresh vNNNN/feedback.json",
+        "recorded_only": true,
+        "diagnostic_fixture": true,
+        "test_exit_code": 0,
+        "test_log": "cases/paved_width-0000/saved-processing.log",
+        "test_log_sha256": "7b6921344a259433ebe24e96b233283adeca96ca66451a580c945be2d6acb025"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__paved_width-0000",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/delivery_audit.py --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__paved_width-0000 --attempt \"$ATTEMPT\"",
+        "negative_command": ".venv-cpu/bin/python work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/delivery_audit.py --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__paved_width-0000 --attempt \"$ATTEMPT\" --negative",
+        "negative_expected_error": "original frame map hash differs",
+        "script": "delivery_audit.py",
+        "script_sha256": "3b06bfc1fac518e2f89b5129c141507e2ce95c228e942320cf777d6262cf688a",
+        "test_exit_code": 0,
+        "negative_exit_code": 2,
+        "test_log": "cases/paved_width-0000/delivery-positive.log",
+        "test_log_sha256": "97332d94da37beeaebab4a54f2ee689724823b71e53537344cd159d11baedc01",
+        "negative_log": "cases/paved_width-0000/delivery-negative.log",
+        "negative_log_sha256": "42695b8dc477518f50298f389065c205d2f8668e04257e84126b633249b002fb"
       }
     },
     {
       "case_id": "testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__paved_width-0001",
       "kind": "delivery",
       "construction": "cases/paved_width-0001/construction.json",
-      "construction_sha256": "89120cc65a09c2761549a63a125487bd734b92c61ae5ae88be7d21d14b77541b",
+      "construction_sha256": "32344fb5ad4ba0c93ca58cf94035d549fe36c00125f362c4d12c982147fae94f",
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py",
@@ -390,34 +1524,160 @@
       },
       "candidate_risk": {
         "status": "none",
-        "reason": "Initial source-gated construction includes no selected alternate yet; physical clearance and camera risk remain under review before readiness."
+        "reason": "No reviewed original site or prop clearance measurements are supplied for this exact case. A preselected alternate position would invent physical evidence or alter the controlled legal comparison. The primary Native attempt checks source hashes, exact road/prop geometry, actor spawns, camera synchronization, and measured body clearance; a failed capture remains failed pending source-reviewed replanning."
       },
       "candidates": [],
       "compatibility": {
         "receipt": "cases/paved_width-0001/compatibility.json",
-        "sha256": "02b05e27e4c99e117ec9023740cedd944aea94313bd4fcdedb2c5f387fa2e757",
+        "sha256": "a052507b550d024df900ea4f46651327a7bbd8e0a6fd2118d35eeb56e31f09c9",
         "log": "cases/paved_width-0001/positive.log"
       },
       "negative": {
         "log": "cases/paved_width-0001/negative-analysis.log"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__paved_width-0001 --output .runtime-work/c323986-6271a/offline-paved_width-0001-v2",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__paved_width-0001 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c323986-6271a/offline-paved_width-0001-v5",
         "exit_code": 0,
-        "construction_sha256": "89120cc65a09c2761549a63a125487bd734b92c61ae5ae88be7d21d14b77541b",
+        "construction_sha256": "32344fb5ad4ba0c93ca58cf94035d549fe36c00125f362c4d12c982147fae94f",
         "log": "proof-offline-paved_width-0001.log",
-        "log_sha256": "87721509fde1d185ad128ad5e26fce1b732a6e64cd85fb26383ae0fc567c0020"
+        "log_sha256": "e3cde69f07beee4079ce667c61dfd005cf5e991c6a76f9ae5149c2755694e3ef"
       },
       "physical_preparation": {
         "receipt": "cases/paved_width-0001/physical-preparation.json",
-        "sha256": "4f4dfc198083c000e0343b795566a8940d66220a2817e350988b04fefca3eb33"
+        "sha256": "c0cc4b4be3d69298e244c8967d7c95ce60f87e933db8ec8f5012409ac6d68aae"
+      },
+      "acquisition": {
+        "original_actor_motion": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_original_motion",
+          "evidence": "Per-tick original actor transforms and velocity in capture/original-motion.json"
+        },
+        "separate_follower_relation": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_follower_relation",
+          "evidence": "Independent actor IDs, transforms, and following interval in capture/separate-follower-relation.json"
+        },
+        "two_way_lane_count": {
+          "entrypoint": "reviewed_scene.py",
+          "method": "plan",
+          "evidence": "SHA-gated original site map lane count and opposing directions"
+        },
+        "paved_right_edge": {
+          "entrypoint": "reviewed_scene.py",
+          "method": "plan",
+          "evidence": "SHA-gated original site paved edge geometry"
+        },
+        "highway_right_edge": {
+          "entrypoint": "reviewed_scene.py",
+          "method": "plan",
+          "evidence": "SHA-gated original site highway boundary geometry"
+        },
+        "subject_body_footprint": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_original_motion",
+          "evidence": "Per-tick subject bounding box and world transform"
+        },
+        "roadside_obstruction_geometry": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.spawn_obstruction",
+          "evidence": "Spawned prop bounding box and transform readback"
+        },
+        "four_view_frame_map": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_camera_frames",
+          "evidence": "Four original camera PNG sequences indexed by sensor and simulation frame"
+        },
+        "nrs_484b_630_applicability_context": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved lane, pavement, and highway context; legal applicability remains unresolved"
+        },
+        "following_progress": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Original separate follower motion and gap progression"
+        },
+        "right_side_clearance": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved body/obstruction/roadside polygons and clearance measurement"
+        },
+        "body_right_position": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved body bounding box against paved and highway right edge"
+        },
+        "subject_speed_mps": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved actor motion velocity over original tick intervals"
+        },
+        "ego_to_paved_right_edge_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured subject body to original site paved edge"
+        },
+        "ego_to_highway_right_edge_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured subject body to original site highway edge"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured original subject speed in m/s"
+        },
+        "paved_right_edge_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Original site paved right edge coordinate in meters"
+        },
+        "ego_path_offset_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured original subject path lateral offset in meters"
+        }
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__paved_width-0001 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__paved_width-0001 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\" # inspect fresh vNNNN/feedback.json",
+        "recorded_only": true,
+        "diagnostic_fixture": true,
+        "test_exit_code": 0,
+        "test_log": "cases/paved_width-0001/saved-processing.log",
+        "test_log_sha256": "7984bd58e08b9621d522463796130bcd32916a63adaa181357b2353260032d1f"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__paved_width-0001",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/delivery_audit.py --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__paved_width-0001 --attempt \"$ATTEMPT\"",
+        "negative_command": ".venv-cpu/bin/python work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/delivery_audit.py --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__paved_width-0001 --attempt \"$ATTEMPT\" --negative",
+        "negative_expected_error": "original frame map hash differs",
+        "script": "delivery_audit.py",
+        "script_sha256": "3b06bfc1fac518e2f89b5129c141507e2ce95c228e942320cf777d6262cf688a",
+        "test_exit_code": 0,
+        "negative_exit_code": 2,
+        "test_log": "cases/paved_width-0001/delivery-positive.log",
+        "test_log_sha256": "c5b7e64fe09deecddb4d473e1a69e139e5932d9bf1b3ccaef1647107e6c9fd22",
+        "negative_log": "cases/paved_width-0001/delivery-negative.log",
+        "negative_log_sha256": "42695b8dc477518f50298f389065c205d2f8668e04257e84126b633249b002fb"
       }
     },
     {
       "case_id": "testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__paved_width-0002",
       "kind": "delivery",
       "construction": "cases/paved_width-0002/construction.json",
-      "construction_sha256": "25066e1cec35c1627994bd4526f847f67de27aa908d1a4acd94154052881ef64",
+      "construction_sha256": "ba98ac3485b11328e2ecdbd6c243fb86bae7ba148f6b1e3c46edcb2ce7114373",
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py",
@@ -431,34 +1691,160 @@
       },
       "candidate_risk": {
         "status": "none",
-        "reason": "Initial source-gated construction includes no selected alternate yet; physical clearance and camera risk remain under review before readiness."
+        "reason": "No reviewed original site or prop clearance measurements are supplied for this exact case. A preselected alternate position would invent physical evidence or alter the controlled legal comparison. The primary Native attempt checks source hashes, exact road/prop geometry, actor spawns, camera synchronization, and measured body clearance; a failed capture remains failed pending source-reviewed replanning."
       },
       "candidates": [],
       "compatibility": {
         "receipt": "cases/paved_width-0002/compatibility.json",
-        "sha256": "b124898f1424d12550cbb90ef5dd54155a307b5af9a3468463726550e131c50e",
+        "sha256": "984040967d7fe0e8fd8cb228314719d4b216f41c95d96cb55990cf42c7d32dc2",
         "log": "cases/paved_width-0002/positive.log"
       },
       "negative": {
         "log": "cases/paved_width-0002/negative-analysis.log"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__paved_width-0002 --output .runtime-work/c323986-6271a/offline-paved_width-0002-v2",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__paved_width-0002 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c323986-6271a/offline-paved_width-0002-v5",
         "exit_code": 0,
-        "construction_sha256": "25066e1cec35c1627994bd4526f847f67de27aa908d1a4acd94154052881ef64",
+        "construction_sha256": "ba98ac3485b11328e2ecdbd6c243fb86bae7ba148f6b1e3c46edcb2ce7114373",
         "log": "proof-offline-paved_width-0002.log",
-        "log_sha256": "7f9f899505e35311b50cc221cb4aa6009b225dad62918d3addfca6cf760cd54c"
+        "log_sha256": "f496ccdd66059a8fa0bd85c3fe064cffba77b1b4126ad4ebb0f706bb87e8c532"
       },
       "physical_preparation": {
         "receipt": "cases/paved_width-0002/physical-preparation.json",
-        "sha256": "aaed5a2bf71bdbc099abb7e01f2d3e54fdca751bc39582845517412c9978e8bd"
+        "sha256": "7773fae32b2b20cc6a2d8377e63dbc4dcc80b3ae6838474193e638574b6ef01f"
+      },
+      "acquisition": {
+        "original_actor_motion": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_original_motion",
+          "evidence": "Per-tick original actor transforms and velocity in capture/original-motion.json"
+        },
+        "separate_follower_relation": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_follower_relation",
+          "evidence": "Independent actor IDs, transforms, and following interval in capture/separate-follower-relation.json"
+        },
+        "two_way_lane_count": {
+          "entrypoint": "reviewed_scene.py",
+          "method": "plan",
+          "evidence": "SHA-gated original site map lane count and opposing directions"
+        },
+        "paved_right_edge": {
+          "entrypoint": "reviewed_scene.py",
+          "method": "plan",
+          "evidence": "SHA-gated original site paved edge geometry"
+        },
+        "highway_right_edge": {
+          "entrypoint": "reviewed_scene.py",
+          "method": "plan",
+          "evidence": "SHA-gated original site highway boundary geometry"
+        },
+        "subject_body_footprint": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_original_motion",
+          "evidence": "Per-tick subject bounding box and world transform"
+        },
+        "roadside_obstruction_geometry": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.spawn_obstruction",
+          "evidence": "Spawned prop bounding box and transform readback"
+        },
+        "four_view_frame_map": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_camera_frames",
+          "evidence": "Four original camera PNG sequences indexed by sensor and simulation frame"
+        },
+        "nrs_484b_630_applicability_context": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved lane, pavement, and highway context; legal applicability remains unresolved"
+        },
+        "following_progress": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Original separate follower motion and gap progression"
+        },
+        "right_side_clearance": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved body/obstruction/roadside polygons and clearance measurement"
+        },
+        "body_right_position": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved body bounding box against paved and highway right edge"
+        },
+        "subject_speed_mps": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved actor motion velocity over original tick intervals"
+        },
+        "ego_to_paved_right_edge_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured subject body to original site paved edge"
+        },
+        "ego_to_highway_right_edge_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured subject body to original site highway edge"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured original subject speed in m/s"
+        },
+        "paved_right_edge_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Original site paved right edge coordinate in meters"
+        },
+        "ego_path_offset_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured original subject path lateral offset in meters"
+        }
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__paved_width-0002 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__paved_width-0002 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\" # inspect fresh vNNNN/feedback.json",
+        "recorded_only": true,
+        "diagnostic_fixture": true,
+        "test_exit_code": 0,
+        "test_log": "cases/paved_width-0002/saved-processing.log",
+        "test_log_sha256": "8aa57822dcd74e2079f248bfe06ecd4d01dd8c3e5b40c09bbe574752b05f12e4"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__paved_width-0002",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/delivery_audit.py --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__paved_width-0002 --attempt \"$ATTEMPT\"",
+        "negative_command": ".venv-cpu/bin/python work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/delivery_audit.py --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__paved_width-0002 --attempt \"$ATTEMPT\" --negative",
+        "negative_expected_error": "original frame map hash differs",
+        "script": "delivery_audit.py",
+        "script_sha256": "3b06bfc1fac518e2f89b5129c141507e2ce95c228e942320cf777d6262cf688a",
+        "test_exit_code": 0,
+        "negative_exit_code": 2,
+        "test_log": "cases/paved_width-0002/delivery-positive.log",
+        "test_log_sha256": "5ade75bcf7a4f2392ce995d48d9362ea6d26c1027ddc745b0d2ed646c3a1b874",
+        "negative_log": "cases/paved_width-0002/delivery-negative.log",
+        "negative_log_sha256": "42695b8dc477518f50298f389065c205d2f8668e04257e84126b633249b002fb"
       }
     },
     {
       "case_id": "testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__right_position-0000",
       "kind": "delivery",
       "construction": "cases/right_position-0000/construction.json",
-      "construction_sha256": "f3868458a1df0af390ec1e5319e7d89809c5f695548bd2b16d36dc94d307d352",
+      "construction_sha256": "1630a0faeaabe11e14638d84897fe2c42dd951654f2fca3245d4dba6a78bdb16",
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py",
@@ -472,34 +1858,160 @@
       },
       "candidate_risk": {
         "status": "none",
-        "reason": "Initial source-gated construction includes no selected alternate yet; physical clearance and camera risk remain under review before readiness."
+        "reason": "No reviewed original site or prop clearance measurements are supplied for this exact case. A preselected alternate position would invent physical evidence or alter the controlled legal comparison. The primary Native attempt checks source hashes, exact road/prop geometry, actor spawns, camera synchronization, and measured body clearance; a failed capture remains failed pending source-reviewed replanning."
       },
       "candidates": [],
       "compatibility": {
         "receipt": "cases/right_position-0000/compatibility.json",
-        "sha256": "f8402d0de26e4a8fb05b607755207c1b85cc47460032bce6f83304af0a6120eb",
+        "sha256": "593224208fb6a049e7fbf1e3c8f836cd7879a16868871a9391e77c67b678b9f9",
         "log": "cases/right_position-0000/positive.log"
       },
       "negative": {
         "log": "cases/right_position-0000/negative-analysis.log"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__right_position-0000 --output .runtime-work/c323986-6271a/offline-right_position-0000-v2",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__right_position-0000 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c323986-6271a/offline-right_position-0000-v5",
         "exit_code": 0,
-        "construction_sha256": "f3868458a1df0af390ec1e5319e7d89809c5f695548bd2b16d36dc94d307d352",
+        "construction_sha256": "1630a0faeaabe11e14638d84897fe2c42dd951654f2fca3245d4dba6a78bdb16",
         "log": "proof-offline-right_position-0000.log",
-        "log_sha256": "32e6092c1bf9672b1cde1194f20b95b4df861c6634d3239e71c7faa652b2580d"
+        "log_sha256": "e3cde69f07beee4079ce667c61dfd005cf5e991c6a76f9ae5149c2755694e3ef"
       },
       "physical_preparation": {
         "receipt": "cases/right_position-0000/physical-preparation.json",
-        "sha256": "36fa7df5ff10c9ae7de6779d455689f6c6e88e1f29b598a0e2193e319929acf8"
+        "sha256": "cdb4fe2e214a3f04530fd53daf1c0785ada063c8f77f128e5a8eede7942c80cb"
+      },
+      "acquisition": {
+        "original_actor_motion": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_original_motion",
+          "evidence": "Per-tick original actor transforms and velocity in capture/original-motion.json"
+        },
+        "separate_follower_relation": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_follower_relation",
+          "evidence": "Independent actor IDs, transforms, and following interval in capture/separate-follower-relation.json"
+        },
+        "two_way_lane_count": {
+          "entrypoint": "reviewed_scene.py",
+          "method": "plan",
+          "evidence": "SHA-gated original site map lane count and opposing directions"
+        },
+        "paved_right_edge": {
+          "entrypoint": "reviewed_scene.py",
+          "method": "plan",
+          "evidence": "SHA-gated original site paved edge geometry"
+        },
+        "highway_right_edge": {
+          "entrypoint": "reviewed_scene.py",
+          "method": "plan",
+          "evidence": "SHA-gated original site highway boundary geometry"
+        },
+        "subject_body_footprint": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_original_motion",
+          "evidence": "Per-tick subject bounding box and world transform"
+        },
+        "roadside_obstruction_geometry": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.spawn_obstruction",
+          "evidence": "Spawned prop bounding box and transform readback"
+        },
+        "four_view_frame_map": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_camera_frames",
+          "evidence": "Four original camera PNG sequences indexed by sensor and simulation frame"
+        },
+        "nrs_484b_630_applicability_context": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved lane, pavement, and highway context; legal applicability remains unresolved"
+        },
+        "following_progress": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Original separate follower motion and gap progression"
+        },
+        "right_side_clearance": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved body/obstruction/roadside polygons and clearance measurement"
+        },
+        "body_right_position": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved body bounding box against paved and highway right edge"
+        },
+        "subject_speed_mps": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved actor motion velocity over original tick intervals"
+        },
+        "ego_to_paved_right_edge_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured subject body to original site paved edge"
+        },
+        "ego_to_highway_right_edge_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured subject body to original site highway edge"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured original subject speed in m/s"
+        },
+        "paved_right_edge_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Original site paved right edge coordinate in meters"
+        },
+        "ego_path_offset_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured original subject path lateral offset in meters"
+        }
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__right_position-0000 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__right_position-0000 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\" # inspect fresh vNNNN/feedback.json",
+        "recorded_only": true,
+        "diagnostic_fixture": true,
+        "test_exit_code": 0,
+        "test_log": "cases/right_position-0000/saved-processing.log",
+        "test_log_sha256": "ed2f2198ef8e7b28512bda2bd7b6b0961d7355966b6517000ffe30f484173682"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__right_position-0000",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/delivery_audit.py --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__right_position-0000 --attempt \"$ATTEMPT\"",
+        "negative_command": ".venv-cpu/bin/python work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/delivery_audit.py --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__right_position-0000 --attempt \"$ATTEMPT\" --negative",
+        "negative_expected_error": "original frame map hash differs",
+        "script": "delivery_audit.py",
+        "script_sha256": "3b06bfc1fac518e2f89b5129c141507e2ce95c228e942320cf777d6262cf688a",
+        "test_exit_code": 0,
+        "negative_exit_code": 2,
+        "test_log": "cases/right_position-0000/delivery-positive.log",
+        "test_log_sha256": "4a1c7d76a8ac54cf9fefddbd3072b27c57cb24d1935312e821465a9ce749fe49",
+        "negative_log": "cases/right_position-0000/delivery-negative.log",
+        "negative_log_sha256": "42695b8dc477518f50298f389065c205d2f8668e04257e84126b633249b002fb"
       }
     },
     {
       "case_id": "testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__right_position-0001",
       "kind": "delivery",
       "construction": "cases/right_position-0001/construction.json",
-      "construction_sha256": "147a7194e4e9bc76bb3aee6216d0461ef40bec7bf462b6997e135e9314b84cf8",
+      "construction_sha256": "729dd8a7446512b0e7af1c74da88261b4c6a35244bb3b9eb648eb3e8e0cc9b63",
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py",
@@ -513,34 +2025,160 @@
       },
       "candidate_risk": {
         "status": "none",
-        "reason": "Initial source-gated construction includes no selected alternate yet; physical clearance and camera risk remain under review before readiness."
+        "reason": "No reviewed original site or prop clearance measurements are supplied for this exact case. A preselected alternate position would invent physical evidence or alter the controlled legal comparison. The primary Native attempt checks source hashes, exact road/prop geometry, actor spawns, camera synchronization, and measured body clearance; a failed capture remains failed pending source-reviewed replanning."
       },
       "candidates": [],
       "compatibility": {
         "receipt": "cases/right_position-0001/compatibility.json",
-        "sha256": "73f057d693a0fce4492c5eb30af40c8019839c5a038bdc06c3818872697f4fcf",
+        "sha256": "b046bee9be174ed047051014a02374819039641743b1a622d6b492dc3518cd0c",
         "log": "cases/right_position-0001/positive.log"
       },
       "negative": {
         "log": "cases/right_position-0001/negative-analysis.log"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__right_position-0001 --output .runtime-work/c323986-6271a/offline-right_position-0001-v2",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__right_position-0001 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c323986-6271a/offline-right_position-0001-v5",
         "exit_code": 0,
-        "construction_sha256": "147a7194e4e9bc76bb3aee6216d0461ef40bec7bf462b6997e135e9314b84cf8",
+        "construction_sha256": "729dd8a7446512b0e7af1c74da88261b4c6a35244bb3b9eb648eb3e8e0cc9b63",
         "log": "proof-offline-right_position-0001.log",
-        "log_sha256": "7f9f899505e35311b50cc221cb4aa6009b225dad62918d3addfca6cf760cd54c"
+        "log_sha256": "8d248d5695b8f95b9cf0a05f36a807322b5fd003c9496e370aa6c79fcb277dff"
       },
       "physical_preparation": {
         "receipt": "cases/right_position-0001/physical-preparation.json",
-        "sha256": "5e49f36cba1233f4020b932fd084dcc3c55b9744b9b1566aae8d11452f7aa221"
+        "sha256": "5398425c3fe988344929e77c3c0ab0f719b8a214ceff93ae744275c92deec3ba"
+      },
+      "acquisition": {
+        "original_actor_motion": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_original_motion",
+          "evidence": "Per-tick original actor transforms and velocity in capture/original-motion.json"
+        },
+        "separate_follower_relation": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_follower_relation",
+          "evidence": "Independent actor IDs, transforms, and following interval in capture/separate-follower-relation.json"
+        },
+        "two_way_lane_count": {
+          "entrypoint": "reviewed_scene.py",
+          "method": "plan",
+          "evidence": "SHA-gated original site map lane count and opposing directions"
+        },
+        "paved_right_edge": {
+          "entrypoint": "reviewed_scene.py",
+          "method": "plan",
+          "evidence": "SHA-gated original site paved edge geometry"
+        },
+        "highway_right_edge": {
+          "entrypoint": "reviewed_scene.py",
+          "method": "plan",
+          "evidence": "SHA-gated original site highway boundary geometry"
+        },
+        "subject_body_footprint": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_original_motion",
+          "evidence": "Per-tick subject bounding box and world transform"
+        },
+        "roadside_obstruction_geometry": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.spawn_obstruction",
+          "evidence": "Spawned prop bounding box and transform readback"
+        },
+        "four_view_frame_map": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_camera_frames",
+          "evidence": "Four original camera PNG sequences indexed by sensor and simulation frame"
+        },
+        "nrs_484b_630_applicability_context": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved lane, pavement, and highway context; legal applicability remains unresolved"
+        },
+        "following_progress": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Original separate follower motion and gap progression"
+        },
+        "right_side_clearance": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved body/obstruction/roadside polygons and clearance measurement"
+        },
+        "body_right_position": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved body bounding box against paved and highway right edge"
+        },
+        "subject_speed_mps": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved actor motion velocity over original tick intervals"
+        },
+        "ego_to_paved_right_edge_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured subject body to original site paved edge"
+        },
+        "ego_to_highway_right_edge_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured subject body to original site highway edge"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured original subject speed in m/s"
+        },
+        "paved_right_edge_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Original site paved right edge coordinate in meters"
+        },
+        "ego_path_offset_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured original subject path lateral offset in meters"
+        }
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__right_position-0001 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__right_position-0001 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\" # inspect fresh vNNNN/feedback.json",
+        "recorded_only": true,
+        "diagnostic_fixture": true,
+        "test_exit_code": 0,
+        "test_log": "cases/right_position-0001/saved-processing.log",
+        "test_log_sha256": "6d1cd8d22a3e9b3491e11c7d9a87a46bee3dd3882b806606233aec4bf357ae34"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__right_position-0001",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/delivery_audit.py --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__right_position-0001 --attempt \"$ATTEMPT\"",
+        "negative_command": ".venv-cpu/bin/python work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/delivery_audit.py --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__right_position-0001 --attempt \"$ATTEMPT\" --negative",
+        "negative_expected_error": "original frame map hash differs",
+        "script": "delivery_audit.py",
+        "script_sha256": "3b06bfc1fac518e2f89b5129c141507e2ce95c228e942320cf777d6262cf688a",
+        "test_exit_code": 0,
+        "negative_exit_code": 2,
+        "test_log": "cases/right_position-0001/delivery-positive.log",
+        "test_log_sha256": "5637af88f44bda11c53f2b9262c75c191302f243af575d36d394b84be78776c0",
+        "negative_log": "cases/right_position-0001/delivery-negative.log",
+        "negative_log_sha256": "42695b8dc477518f50298f389065c205d2f8668e04257e84126b633249b002fb"
       }
     },
     {
       "case_id": "testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__right_position-0002",
       "kind": "delivery",
       "construction": "cases/right_position-0002/construction.json",
-      "construction_sha256": "84bc27a2251ffc2b4551ff1b896819868386aef7d7084a529944b4c06703a7a7",
+      "construction_sha256": "a675e6846cf44a2f06eab6f40538ef43a7fdb67819147d77f86a705cc53e51ff",
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py",
@@ -554,27 +2192,153 @@
       },
       "candidate_risk": {
         "status": "none",
-        "reason": "Initial source-gated construction includes no selected alternate yet; physical clearance and camera risk remain under review before readiness."
+        "reason": "No reviewed original site or prop clearance measurements are supplied for this exact case. A preselected alternate position would invent physical evidence or alter the controlled legal comparison. The primary Native attempt checks source hashes, exact road/prop geometry, actor spawns, camera synchronization, and measured body clearance; a failed capture remains failed pending source-reviewed replanning."
       },
       "candidates": [],
       "compatibility": {
         "receipt": "cases/right_position-0002/compatibility.json",
-        "sha256": "e31638c41dae056ad44ce9b8ae911f489747c4c79323827835c69c492ad7e662",
+        "sha256": "ca5a996e4b729c37799f09811b71d05d73dce8a7f0fcf47ea85ef8fa8764d117",
         "log": "cases/right_position-0002/positive.log"
       },
       "negative": {
         "log": "cases/right_position-0002/negative-analysis.log"
       },
       "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__right_position-0002 --output .runtime-work/c323986-6271a/offline-right_position-0002-v2",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__right_position-0002 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c323986-6271a/offline-right_position-0002-v5",
         "exit_code": 0,
-        "construction_sha256": "84bc27a2251ffc2b4551ff1b896819868386aef7d7084a529944b4c06703a7a7",
+        "construction_sha256": "a675e6846cf44a2f06eab6f40538ef43a7fdb67819147d77f86a705cc53e51ff",
         "log": "proof-offline-right_position-0002.log",
-        "log_sha256": "3f290ca25ae54f3847f686e81fc6f531afe183676bdd88d4f386071ce1cdc423"
+        "log_sha256": "7f9f899505e35311b50cc221cb4aa6009b225dad62918d3addfca6cf760cd54c"
       },
       "physical_preparation": {
         "receipt": "cases/right_position-0002/physical-preparation.json",
-        "sha256": "1f2acc096b5c94007fa80ab8104fdcb186af78c86913c53b8d0d9d657ad46be3"
+        "sha256": "809156c6bc19529cfd97ed5ec833a335b678488b8c7ea75d9be9fc35fbfb6bb8"
+      },
+      "acquisition": {
+        "original_actor_motion": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_original_motion",
+          "evidence": "Per-tick original actor transforms and velocity in capture/original-motion.json"
+        },
+        "separate_follower_relation": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_follower_relation",
+          "evidence": "Independent actor IDs, transforms, and following interval in capture/separate-follower-relation.json"
+        },
+        "two_way_lane_count": {
+          "entrypoint": "reviewed_scene.py",
+          "method": "plan",
+          "evidence": "SHA-gated original site map lane count and opposing directions"
+        },
+        "paved_right_edge": {
+          "entrypoint": "reviewed_scene.py",
+          "method": "plan",
+          "evidence": "SHA-gated original site paved edge geometry"
+        },
+        "highway_right_edge": {
+          "entrypoint": "reviewed_scene.py",
+          "method": "plan",
+          "evidence": "SHA-gated original site highway boundary geometry"
+        },
+        "subject_body_footprint": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_original_motion",
+          "evidence": "Per-tick subject bounding box and world transform"
+        },
+        "roadside_obstruction_geometry": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.spawn_obstruction",
+          "evidence": "Spawned prop bounding box and transform readback"
+        },
+        "four_view_frame_map": {
+          "entrypoint": "native_adapter.py",
+          "method": "NativeAdapter.capture_camera_frames",
+          "evidence": "Four original camera PNG sequences indexed by sensor and simulation frame"
+        },
+        "nrs_484b_630_applicability_context": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved lane, pavement, and highway context; legal applicability remains unresolved"
+        },
+        "following_progress": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Original separate follower motion and gap progression"
+        },
+        "right_side_clearance": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved body/obstruction/roadside polygons and clearance measurement"
+        },
+        "body_right_position": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved body bounding box against paved and highway right edge"
+        },
+        "subject_speed_mps": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Saved actor motion velocity over original tick intervals"
+        },
+        "ego_to_paved_right_edge_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured subject body to original site paved edge"
+        },
+        "ego_to_highway_right_edge_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured subject body to original site highway edge"
+        },
+        "ego_speed_mps": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured original subject speed in m/s"
+        },
+        "paved_right_edge_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Original site paved right edge coordinate in meters"
+        },
+        "ego_path_offset_m": {
+          "entrypoint": "right_side_measurement.py",
+          "method": "measure_packet",
+          "evidence": "Measured original subject path lateral offset in meters"
+        }
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__right_position-0002 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\"",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/execution-manifest.json --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__right_position-0002 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library \"$LIBRARY\" --validator \"$VALIDATOR\" --owner-release-receipt \"$OWNER_RELEASE_RECEIPT\" # inspect fresh vNNNN/feedback.json",
+        "recorded_only": true,
+        "diagnostic_fixture": true,
+        "test_exit_code": 0,
+        "test_log": "cases/right_position-0002/saved-processing.log",
+        "test_log_sha256": "77f035e819f5762186785b4b8f731c252630a0773dce7efe53202a4d5d88f9f8"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__right_position-0002",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/delivery_audit.py --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__right_position-0002 --attempt \"$ATTEMPT\"",
+        "negative_command": ".venv-cpu/bin/python work/testing__C323986__NRS-484B-627-1a__motor_vehicle_driver/delivery_audit.py --case testing__C323986__NRS-484B-627-1a__motor_vehicle_driver__right_position-0002 --attempt \"$ATTEMPT\" --negative",
+        "negative_expected_error": "original frame map hash differs",
+        "script": "delivery_audit.py",
+        "script_sha256": "3b06bfc1fac518e2f89b5129c141507e2ce95c228e942320cf777d6262cf688a",
+        "test_exit_code": 0,
+        "negative_exit_code": 2,
+        "test_log": "cases/right_position-0002/delivery-positive.log",
+        "test_log_sha256": "ec47abce1286ac887f35baf9c95f3fad0f792b309a86f90c1d3e1dfccad8766d",
+        "negative_log": "cases/right_position-0002/delivery-negative.log",
+        "negative_log_sha256": "42695b8dc477518f50298f389065c205d2f8668e04257e84126b633249b002fb"
       }
     }
   ],

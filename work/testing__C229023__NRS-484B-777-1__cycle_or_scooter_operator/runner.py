@@ -80,6 +80,11 @@ def run(adapter, scene, case, config, output, packet_sha256):
          'live passing routes differ from reviewed original scene')
     built = construct(adapter, scene, case)
     try:
+        settle_ticks = config.get('pre_capture_settle_ticks', 0)
+        need(type(settle_ticks) is int and 0 <= settle_ticks <= 20,
+             'pre-capture stabilization outside source-preserving range')
+        for _ in range(settle_ticks):
+            adapter.tick()
         adapter.begin_four_camera_capture(VIEWS, config['cameras'], built['owned'], output)
         frames = []
         for _ in range(900):

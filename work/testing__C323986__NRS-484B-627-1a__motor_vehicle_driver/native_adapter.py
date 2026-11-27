@@ -27,6 +27,8 @@ class NativeAdapter:
         self.motion_rows = []
         self.relation_rows = []
         self.obstruction_readback = None
+        self.restoration_verified = False
+        self.pipeline_capture = None
 
     def open_map(self, path: str, expected_sha: str):
         data = Path(path).read_bytes()
@@ -98,6 +100,7 @@ class NativeAdapter:
         blueprint = self.world.get_blueprint_library().find("sensor.camera.rgb")
         blueprint.set_attribute("image_size_x", str(profile["width"]))
         blueprint.set_attribute("image_size_y", str(profile["height"]))
+        blueprint.set_attribute("fov", str(profile["fov_deg"]))
         pose = profile["pose"]
         transform = self.carla.Transform(
             self.carla.Location(x=pose["x"], y=pose["y"], z=pose["z"]),
@@ -113,7 +116,13 @@ class NativeAdapter:
                          obstruction, scene: dict):
         if hz != 20:
             raise ValueError("selected capture requires 20 Hz")
+        if self.pipeline_capture is None:
+            from pipeline_capture import PipelineCapture
+            self.pipeline_capture = PipelineCapture(
+                self.client, actors["ego"], self.output_dir, self.case_id,
+                required_observations=())
         native_frame = self.world.tick()
+        self.pipeline_capture.capture(native_frame, frame / 20)
         images = {}
         for name in cameras:
             image = self.sensors[name].get(timeout=20.0)
@@ -126,10 +135,16 @@ class NativeAdapter:
         states = {}
         reference = self.map.get_waypoint_xodr(int(scene["road_id"]),
                      int(scene["travel_lane_id"]), scene["actors"][0]["station_m"])
-        if reference is None:
-            raise ValueError("original travel reference lane vanished")
+        opposite = self.map.get_waypoint_xodr(int(scene["road_id"]),
+                     int(scene["opposite_lane_id"]), scene["actors"][0]["station_m"])
+        if reference is None or opposite is None:
+            raise ValueError("original two-way reference lanes vanished")
         origin = reference.transform.location
         direction = reference.transform.get_forward_vector()
+        other_direction = opposite.transform.get_forward_vector()
+        opposed = direction.x * other_direction.x + direction.y * other_direction.y < -0.9
+        if not opposed:
+            raise ValueError("Native travel and opposing lanes do not face opposite directions")
         right = reference.transform.get_right_vector()
         def projection(point, axis):
             return ((point.x - origin.x) * axis.x +
@@ -146,6 +161,7 @@ class NativeAdapter:
             forward = [projection(point, direction) for point in vertices]
             states[role] = {"actor_id": actor.id, "road_id": waypoint.road_id,
                             "lane_id": str(waypoint.lane_id), "station_m": waypoint.s,
+                            "world_position_m": [location.x, location.y, location.z],
                             "speed_mps": math.sqrt(velocity.x ** 2 + velocity.y ** 2 + velocity.z ** 2),
                             "body_left_edge_m": min(lateral), "body_right_edge_m": max(lateral),
                             "body_front_m": max(forward), "body_rear_m": min(forward)}
@@ -165,7 +181,7 @@ class NativeAdapter:
             "ego_actor_id": ego["actor_id"], "follower_actor_id": follower["actor_id"],
             "ego_lane_id": ego["lane_id"], "follower_lane_id": follower["lane_id"],
             "opposite_lane_id": scene["opposite_lane_id"],
-            "one_lane_each_direction_readback": (scene["travel_lane_id"] != scene["opposite_lane_id"]),
+            "one_lane_each_direction_readback": opposed,
             "paved_right_edge_m": scene["paved_right_edge_m"],
             "highway_right_edge_m": scene["highway_right_edge_m"],
             "obstruction_left_edge_m": min(obstacle_lateral),
@@ -178,6 +194,8 @@ class NativeAdapter:
             "follower_speed_mps": follower["speed_mps"],
             "follower_along_route_body_gap_m": max(0.0, ego["body_rear_m"] - follower["body_front_m"]),
             "ego_station_m": ego["station_m"], "follower_station_m": follower["station_m"]})
+        self.motion_rows[-1]["ego_world_position_m"] = ego["world_position_m"]
+        self.motion_rows[-1]["follower_world_position_m"] = follower["world_position_m"]
         row = {"frame": frame, "native_frame": native_frame,
                "time_s": frame / 20,
                "actor_ids": {role: actor.id for role, actor in actors.items()},
@@ -188,28 +206,49 @@ class NativeAdapter:
             stream.write(json.dumps(row, sort_keys=True) + "\n")
 
     def close(self):
-        if self.frame_rows:
-            self.output_dir.mkdir(parents=True, exist_ok=True)
-            def save(name, data):
-                (self.output_dir / name).write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
-            save("original-frame-map.json", {"source_kind": "original_native_frame_map",
-                "case_id": self.case_id, "frames": self.frame_rows})
-            frame_map_sha = hashlib.sha256((self.output_dir / "original-frame-map.json").read_bytes()).hexdigest()
-            save("original-motion.json", {"assignment_id": self.assignment_id,
-                "case_id": self.case_id, "original_trace_id": self.trace_id,
-                "source_kind": "original_native",
-                "original_frame_map_sha256": frame_map_sha,
-                "obstruction_readback": self.obstruction_readback,
-                "frames": self.motion_rows})
-            save("original-relation.json", {"case_id": self.case_id,
-                "source_kind": "original_native_relation",
-                "relation_basis_source": "original Native road/lane/station actor readback",
-                "samples": self.relation_rows})
-        for actor in reversed(self.owned):
-            try:
-                actor.stop() if hasattr(actor, "stop") else None
-            except Exception:
-                pass
-            actor.destroy()
-        if self.world is not None and self.old_settings is not None:
-            self.world.apply_settings(self.old_settings)
+        error = None
+        try:
+            if self.pipeline_capture is not None:
+                self.pipeline_capture.close(confirmed=len(self.frame_rows) == 900)
+            if self.frame_rows:
+                self.output_dir.mkdir(parents=True, exist_ok=True)
+                def save(name, data):
+                    (self.output_dir / name).write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+                save("original-frame-map.json", {"source_kind": "original_native_frame_map",
+                    "case_id": self.case_id, "frames": self.frame_rows})
+                frame_map_sha = hashlib.sha256((self.output_dir / "original-frame-map.json").read_bytes()).hexdigest()
+                save("original-motion.json", {"assignment_id": self.assignment_id,
+                    "case_id": self.case_id, "original_trace_id": self.trace_id,
+                    "source_kind": "original_native",
+                    "original_frame_map_sha256": frame_map_sha,
+                    "obstruction_readback": self.obstruction_readback,
+                    "frames": self.motion_rows})
+                save("original-relation.json", {"case_id": self.case_id,
+                    "source_kind": "original_native_relation",
+                    "relation_basis_source": "original Native road/lane/station actor readback",
+                    "samples": self.relation_rows})
+        except Exception as failure:
+            error = failure
+        finally:
+            for actor in reversed(self.owned):
+                try:
+                    if hasattr(actor, "stop"):
+                        actor.stop()
+                    actor.destroy()
+                except Exception as failure:
+                    if error is None:
+                        error = failure
+            if self.world is not None and self.old_settings is not None:
+                try:
+                    self.world.apply_settings(self.old_settings)
+                    restored = self.world.get_settings()
+                    self.restoration_verified = (
+                        restored.synchronous_mode == self.old_settings.synchronous_mode and
+                        restored.fixed_delta_seconds == self.old_settings.fixed_delta_seconds)
+                    if not self.restoration_verified:
+                        raise ValueError("Native world settings restoration differs")
+                except Exception as failure:
+                    if error is None:
+                        error = failure
+        if error is not None:
+            raise error

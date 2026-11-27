@@ -1,24 +1,11 @@
-# testing__C160013__NRS-484B-127-3__motor_vehicle_driver
+# NRS 484B.127(3) caravan and motorcade spacing handoff
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: partial pending the exact assignment gate. The CPU package is constructed; GPU capture has not been claimed.
 
-Exact law: NRS 484B.127(3) — Motor vehicles being driven upon any highway outside of a business district in a caravan or motorcade, whether or not towing other vehicles, shall be operated to allow sufficient space between each such vehicle or combination of vehicles so as to enable any other vehicle or combination of vehicles to enter and occupy such space without danger.
-Assigned branch(es): Caravan or motorcade spacing.
-Cell: C160013 (outside_business_district, follow, other_vehicle); actor: motor_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 2. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 12. Bounds are training coverage targets, not legal cutoffs.
+The 10 exact cases cover caravan versus motorcade, three requested body clear spacing levels for each, group towing in each, and an independent vehicle versus combination entrant in each. Nine comparison pairs or triples isolate these variables. The engineering gap targets are 18, 60, and 103 m; they are not statutory thresholds. The two frozen accepted recordings were reviewed at metadata level only and do not prove this subsection.
 
-## Next CPU actions
+The owned Native construction source requires a reviewed external highway and business district determination, independently documented group relationships, Native vehicle assets, four camera poses, and original all-participant frame capture. The saved-only analysis measures original 600-frame body gaps, entry history, towing, collisions and context without claiming a legal verdict.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C160013__NRS-484B-127-3__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+All 20 primary and fallback offline construction and compatibility checks passed. Each fallback changes the group route anchor and controller gain while retaining the legal comparison variable. Physical checker tests passed complete, incomplete and missing-evidence outcomes and ordered owner-release lifecycle for all 10 cases. All 10 recorded-only process-saved replays passed and are bound to the execution manifest. Semantic delivery stages passed the CPU validator. Independent delivery audits passed positive original-source and missing-source negative fixtures for all 10 cases. Nine comparison audits passed positive and negative fixtures. The owned GPU queue proposal covers all 10 cases and nine comparisons. The exact assignment gate is pending.
 
-## Proven checks and dependency boundary
-
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
-
-Judgment probe planning: `judgment-probe-plan.json` records source-hashed below/inside/above targets for 12 exact law/actor ranges. These are unmeasured construction targets. 0 ranges have a domain endpoint that makes an outside probe impossible; review each endpoint_limit and preserve the explicit limitation.
-
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. Frozen `review-context/review.json` and README were read; their case descriptions are authored settings, not measured coverage.
+Scratch and synthetic fixtures under `.runtime-work/c160013-1273/` prove software paths only. Original Native movement, four-view pixels, physical realization, highway/district review, group membership and without-danger judgment remain for local capture and independent review after CPU readiness.

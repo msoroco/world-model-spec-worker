@@ -51,7 +51,7 @@ class ReviewedSceneTest(unittest.TestCase):
         xodr = '<OpenDRIVE><road id="1"><lanes><laneSection><left><lane id="1" type="driving"/></left><right><lane id="-1" type="driving"/></right></laneSection></lanes></road></OpenDRIVE>'
         (self.root / "map.xodr").write_text(xodr)
         map_ref = self.ref("map.xodr")
-        camera = {name: {"width": width, "height": height,
+        camera = {name: {"width": width, "height": height, "fov_deg": 90,
                  "pose": {"x": 0, "y": 0, "z": 2, "pitch": 0, "yaw": 0, "roll": 0}}
                   for name, width, height in [("overview", 1920, 1080), ("approach", 1280, 720),
                                               ("reference_corner", 1280, 720), ("driver_reference", 1280, 720)]}

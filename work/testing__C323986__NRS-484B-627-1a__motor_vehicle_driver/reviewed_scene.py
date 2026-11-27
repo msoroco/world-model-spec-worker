@@ -114,10 +114,14 @@ def plan(authority_root: Path, site_ref: dict, case_id: str) -> dict:
     cameras = site.get("camera_profiles", {})
     if set(cameras) != set(CAMERAS):
         raise ValueError("four reviewed camera profiles required")
-    for profile in cameras.values():
+    expected_sizes = {"overview": (1920, 1080), "approach": (1280, 720),
+                      "reference_corner": (1280, 720),
+                      "driver_reference": (1280, 720)}
+    for name, profile in cameras.items():
         pose = profile.get("pose") if isinstance(profile, dict) else None
         if (not isinstance(pose, dict) or
-                any(not _finite(profile.get(k)) or profile[k] <= 0 for k in ("width", "height")) or
+                (profile.get("width"), profile.get("height")) != expected_sizes[name] or
+                not _finite(profile.get("fov_deg")) or not 1 < profile["fov_deg"] < 179 or
                 any(not _finite(pose.get(k)) for k in ("x", "y", "z", "pitch", "yaw", "roll"))):
             raise ValueError("reviewed camera profile missing")
     # A path requested at a right-side offset is only a target. Native motion,

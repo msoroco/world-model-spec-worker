@@ -108,6 +108,22 @@ def build():
                                'reason': 'Original cycle spawn, pass phases, right-side feature or camera framing may miss the physical target.'},
             'candidates': [],
         })
+        fallback_config = {**config, 'candidate_id': 'fallback1',
+                           'pre_capture_settle_ticks': 10}
+        fallback_text = json.dumps(fallback_config, indent=2, ensure_ascii=False) + '\n'
+        fallback_files = [{**item, 'content': fallback_text, 'source': None}
+                          if item['path'] == 'config.json' else item for item in files]
+        fallback = {**construction, 'files': fallback_files}
+        fallback_path = HERE / 'fallbacks' / suffix / 'construction.json'
+        write(fallback_path, fallback)
+        entries[-1]['candidates'] = [{
+            'id': 'fallback1', 'construction': str(fallback_path.relative_to(HERE)),
+            'construction_sha256': sha(fallback_path),
+            'trigger': {'source': 'original 20 Hz rightside readback',
+                        'metric': 'stable first captured frame and camera synchronization',
+                        'failure_condition': 'first recorded frame lacks a settled cycle pose or one of four synchronized cameras'},
+            'changed_knobs': ['pre_capture_settle_ticks: 0 to 10 before original recording'],
+        }]
     manifest = {'format': 'worker-execution-manifest', 'assignment_id': AID,
                 'status': 'selected_proofs_pending',
                 'runtime_manifest_sha256': sha(ROOT / 'runtime/SOURCE-MANIFEST.json'),

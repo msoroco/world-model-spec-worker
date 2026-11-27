@@ -1,12 +1,25 @@
 {
   "assignment_id": "testing__C160013__NRS-484B-127-3__motor_vehicle_driver",
   "input_sha256": "4984faff86d1fbf00eca5da1ba9af4035c79108f9dc54e332429d85840ae0f0b",
-  "status": "partial",
-  "readiness_kind": "source_inventory",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
-  "tests": [],
+  "tests": [
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C160013__NRS-484B-127-3__motor_vehicle_driver/tests -p test*.py -v",
+      "exit_code": 0,
+      "log": "cpu-tests.log",
+      "sha256": "ccfe90db5e5525b9a56247e25bc18a8bda500a7832f509eb6d9da20870871abe"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "preflight.log",
+      "sha256": "c7b2d2e4222b641a93cf3e885dcd18d0144375a7a4fc1ac96443ef6aec816f34"
+    }
+  ],
   "remaining_gpu_checks": [
     "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
   ],
-  "reason": "Source and accepted-metadata inventory complete; exact branch decomposition, evidence sufficiency, executable constructions/controllers, case-specific finalizers, semantic proposals, source-bound compatibility proofs, and independent delivery/comparison audits remain CPU work."
+  "first_gpu_delivery_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c160013-local-capture\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C160013__NRS-484B-127-3__motor_vehicle_driver --case testing__C160013__NRS-484B-127-3__motor_vehicle_driver__caravan_none_near --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
 }

@@ -89,15 +89,18 @@ def build():
                                               for phrase, note, _ in judgments]},
                 'parameter_refs': parameters}
     template_ref = write('template.json', template)
+    channel_units = {'cycle_speed': 'm/s', 'right_access_width': 'm',
+                     'right_edge_distance': 'm', 'surface_clearance': 'm',
+                     'lane_width': 'm'}
     judgment_refs = []
     for index, (phrase, note, channel) in enumerate(judgments):
         judgment_refs.append(write(f'judgment-{index}.json', {
             'template_id': TEMPLATE, 'phrase': phrase, 'note': note,
             'status': 'draft', 'observable_requirements': {
-                'observables': [{'name': channel, 'unit': 'source observation',
+                'observables': [{'name': channel, 'unit': channel_units[channel],
                                  'description': note}],
                 'context_inputs': [], 'sweep_dimensions': [], 'landmarks': [],
-                'recording_needs': [{'name': channel, 'unit': 'original source',
+                'recording_needs': [{'name': channel, 'unit': channel_units[channel],
                                      'description': note}],
                 'limitations': ['The law supplies no numeric threshold for this judgment; original physical and legal review remain open.']}}))
     binding_ref = write('bindings.json', {

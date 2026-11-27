@@ -2,6 +2,12 @@
 
 Archived checkpoints: [2026-11-22 through 2026-11-25](RETURN-REPORT-archive-2026-11-22-to-2026-11-25.md).
 
+## 2026-11-27 04:41 UTC: continuing three partial packages
+
+- Read-only ready/queue identity check: 183 ready result IDs exactly equal 183 shared queue assignment IDs; queue contains 1,222 exact cases and 847 comparisons. No full-batch strict run was attempted while 59 assignments remain partial and retained prior completions are present.
+- C323986/627-1a has 14 exact constructions passing current-runtime offline checks, seven comparison plans and validated source-bound semantic/physical judgment sweeps; saved-only, compatibility, physical and independent audits continue. C160013/127-3 has ten exact cases, ten physically changed fallbacks and 20 passing offline checks; six of 20 positive/negative compatibility receipts have passed so far, and physical/lifecycle fixtures pass across ten cases. C229023/777-1 has eight exact Native bundles and saved-only/delivery/comparison audit implementations; its first diagnostic compatibility failure was repaired and is being rerun. All three remain truthful partials until exact scoped strict passes.
+- A targeted active-directory scan found four Python cache files; their owners removed them and enabled `PYTHONDONTWRITEBYTECODE=1`. A follow-up count found zero remaining caches in the affected directories. No Git command was run.
+
 ## 2026-11-27 04:26 UTC: C147344/270-7a ready and queued
 
 - Newly ready and published: `testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator`. Four exact scooter cases and three controlled comparisons passed primary and justified fallback offline, positive/negative compatibility, saved-only, physical/lifecycle, delivery and comparison CPU proofs. Its six-stage semantic chain validated. Strict attempts exposed missing root static checks and four mandatory recording channels; the owner repaired both without changing frozen inputs. Owner and lead scoped strict gates passed, including lead post-publication `static_checks_passed: true` (`.runtime-work/c147344-2707a-lead-nov26/strict-after-queue.log`, SHA256 `7aea6a364fbd9cf2dc59322938eb1f19c7ed6afdeef3b1eb462617f79752e7d1`). Original Native motion, camera pixels and legal review remain local checks.
