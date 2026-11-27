@@ -10,7 +10,7 @@ def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
-def load(review_dir, road_sha256):
+def load(review_dir, road_sha256, *, diagnostic_fixture=False):
     root = Path(review_dir).resolve()
     records = {}
     for role in ROLES:
@@ -21,8 +21,8 @@ def load(review_dir, road_sha256):
         row = json.loads(path.read_text())
         if (row.get('role') != role or row.get('road_sha256') != road_sha256
                 or row.get('source_sha256') != sha(source)
-                or row.get('review_status') != 'independently_reviewed'
-                or row.get('provenance_kind') != 'original_native'
+                or row.get('review_status') != ('schema_only' if diagnostic_fixture else 'independently_reviewed')
+                or row.get('provenance_kind') != ('synthetic_fixture' if diagnostic_fixture else 'original_native')
                 or not row.get('reviewer_id')):
             raise ValueError('Original reviewed rail source differs: ' + role)
         records[role] = row

@@ -9,7 +9,7 @@ from pathlib import Path
 
 FRAMES = 600
 RATE_HZ = 20
-CAMERAS = {"overview", "ego_front", "rail_side", "opposite_side"}
+CAMERAS = {"overview", "approach", "reference_corner", "driver_reference"}
 COMPLETE_CLEARANCE_M = 4.572  # Statutory 15 feet.
 
 

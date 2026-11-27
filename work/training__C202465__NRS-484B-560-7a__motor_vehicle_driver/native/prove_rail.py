@@ -71,7 +71,7 @@ if __name__ == "__main__":
     negative.append(reject("invalid_rail_order", bad, trace(14, None), "Invalid rail"))
     negative.append(reject("short_capture", context(2), trace(14, None)[:-1], "Incomplete 30-second"))
     bad_rows = trace(14, None)
-    bad_rows[250]["source_cameras"].pop("rail_side")
+    bad_rows[250]["source_cameras"].pop("reference_corner")
     negative.append(reject("missing_camera", context(2), bad_rows, "Four source camera"))
     bad_rows = trace(14, None)
     bad_rows[250]["native_frame"] = bad_rows[249]["native_frame"]

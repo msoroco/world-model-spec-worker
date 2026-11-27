@@ -38,22 +38,47 @@ def _footprint(row):
 
 def load_original(root, case_id):
     root = Path(root)
+    required = ('original-rail-survey.json', 'original-native-rows.jsonl',
+                'video_frames.jsonl', 'original-source-seal.json',
+                'capture-seal.json', 'capture/manifest.json', 'trace.jsonl')
+    required += tuple(name + '.mkv' for name in CAMERAS)
+    for name in required:
+        if not (root / name).is_file():
+            raise ValueError('Missing required source: ' + name)
     survey_file = root / 'original-rail-survey.json'
     rows_file = root / 'original-native-rows.jsonl'
     map_file = root / 'video_frames.jsonl'
     seal_file = root / 'original-source-seal.json'
     seal = read(seal_file)
-    if seal.get('format') != 'original-rail-native-source-seal' or seal.get('case_id') != case_id:
+    capture_seal = read(root / 'capture-seal.json')
+    capture_manifest = read(root / 'capture/manifest.json')
+    diagnostic = capture_seal.get('diagnostic_fixture') is True
+    if (capture_seal.get('format') != 'worker-sealed-capture' or
+            capture_seal.get('frames') != 600 or
+            capture_seal.get('restoration', {}).get('restored') is not True or
+            type(capture_seal.get('diagnostic_fixture')) is not bool or
+            capture_manifest.get('case_id') != case_id or
+            capture_manifest.get('frames') != 600 or
+            capture_manifest.get('extraction_confirmed') is not True or
+            capture_manifest.get('sources', {}).get('trace.jsonl') != sha(root / 'trace.jsonl')):
+        raise ValueError('Canonical original Native acquisition closure missing')
+    expected_seal = 'diagnostic-rail-source-shape-seal' if diagnostic else 'original-rail-native-source-seal'
+    if seal.get('format') != expected_seal or seal.get('case_id') != case_id:
         raise ValueError('Wrong original rail source seal')
     expected = {'original-rail-survey.json', 'original-native-rows.jsonl', 'video_frames.jsonl'}
     expected |= {name + '.mkv' for name in CAMERAS}
     if set(seal.get('sha256', {})) != expected:
         raise ValueError('Incomplete original rail source seal')
     for name in expected:
-        if sha(root / name) != seal['sha256'][name]:
+        value = sha(root / name)
+        if value != seal['sha256'][name] or value != capture_seal.get('sources', {}).get(name):
             raise ValueError('Original rail source changed: ' + name)
+    if (capture_seal.get('sources', {}).get('trace.jsonl') != sha(root / 'trace.jsonl') or
+            capture_seal.get('sources', {}).get('capture/manifest.json') != sha(root / 'capture/manifest.json')):
+        raise ValueError('Original trace or capture manifest changed')
     survey = read(survey_file)
-    if (survey.get('source_kind') != 'original_native_rail_survey' or
+    survey_kind = 'diagnostic_rail_geometry' if diagnostic else 'original_native_rail_survey'
+    if (survey.get('source_kind') != survey_kind or
             survey.get('case_id') != case_id or
             survey.get('review_status') != 'original_geometry_pending_independent_review' or
             len(survey.get('rails', [])) < 2):
@@ -70,7 +95,7 @@ def load_original(root, case_id):
     frames = []
     for index, (row, frame_map) in enumerate(zip(rows, maps)):
         frame = row.get('native_frame')
-        if (row.get('source_kind') != 'original_native' or
+        if (row.get('source_kind') != ('diagnostic_native_shape' if diagnostic else 'original_native') or
                 row.get('case_id') != case_id or
                 row.get('video_frame') != index or
                 frame_map.get('native_frame') != frame or
@@ -96,5 +121,7 @@ def load_original(root, case_id):
     return {'format': 'rail-footprint-native-source-v1', 'rails': rails, 'frames': frames,
             'original_source_seal_sha256': sha(seal_file),
             'original_rail_survey_sha256': sha(survey_file),
+            'diagnostic_fixture': diagnostic,
+            'original_native_observed': not diagnostic,
             'original_pixels_reviewed': False,
             'legal_verdict_claimed': False}

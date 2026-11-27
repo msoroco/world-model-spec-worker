@@ -28,11 +28,11 @@ def main():
             source = folder / (role + '.source.txt')
             source.write_text('diagnostic source shape only\n')
             row = {'role': role, 'road_sha256': road_hash,
-                   'source_sha256': sha(source), 'review_status': 'independently_reviewed',
-                   'provenance_kind': 'original_native', 'reviewer_id': 'synthetic_test_only',
+                   'source_sha256': sha(source), 'review_status': 'schema_only',
+                   'provenance_kind': 'synthetic_fixture', 'reviewer_id': 'synthetic_test_only',
                    **values[role]}
             (folder / (role + '.json')).write_text(json.dumps(row, indent=2) + '\n')
-        if len(load(folder, road_hash)) != 3:
+        if len(load(folder, road_hash, diagnostic_fixture=True)) != 3:
             raise AssertionError('Review source schema failed')
         rejected = []
         for mutation in ('missing_source', 'stale_road', 'unreviewed',
@@ -60,7 +60,7 @@ def main():
             if mutation != 'missing_source':
                 path.write_text(json.dumps(row, indent=2) + '\n')
             try:
-                load(folder, road_hash)
+                load(folder, road_hash, diagnostic_fixture=True)
             except ValueError:
                 rejected.append(mutation)
             else:

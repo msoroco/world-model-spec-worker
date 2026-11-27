@@ -29,3 +29,13 @@ The exact unselected condition-A offline bundle is `native/rail-offline-construc
 ## 2026-11-27 original rail source join adapter
 
 `native/rail_source_contract.py` now defines a prospective sealed input set with both original physical rail polylines, 600 Native actor rows, an exact 20 Hz frame map and four camera file hashes. It derives the four vehicle-footprint corners from sourced pose, yaw and bounding-box extent before invoking the nearest-rail meter. The adapter rejects missing or altered survey, actor, frame-map and camera source bytes. `native/prove_rail_source.py` passed one synthetic 600-frame source-shaped positive and four changed-source negatives; log `native/rail-source-shape-proof.log` SHA-256 `b63ce3bc9f4d17bc0d41fe16e396ef37507fb8482afe7ee512ea1dc753750f29`. These tests do not decode video, acquire a physical rail, establish authority or prove legal applicability. The Native acquisition runner and selected public/saved/semantic/audit chain are still pending.
+
+## 2026-11-27 selected Native/offline checkpoint
+
+Two exact condition A/B constructions and their slower approach fallbacks passed scoped runtime offline checks; all four remained CPU-only (`simulation_started=false`). `native/selected-offline-proof.json` binds four normalized logs to their exact construction hashes. The source contract now marks synthetic fixture rows and seal as diagnostic rather than original Native. Original rail acquisition, public compatibility, saved processing, semantic proposals and independent audits remain pending; status remains partial.
+
+## 2026-11-27 measured parking contract and full branch scope
+
+`measurement-condition_a.json` and `measurement-condition_b.json` bind the current source-joined finalizer to the statute and nearest-rail requirements; a synthetic positive and missing rail-survey negative pass. The finalizer reports a five-second hold separately from the geometric gap and keeps physical-cause confirmation false pending original review. Current inline constructions include an explicit 5 m engineering approach criterion, rather than the runtime default 75 m travel-progress target, and all four were rebuilt and rerun offline.
+
+`native/branch-expansion-plan.json` identifies fourteen exact cases in seven comparison pairs: park, stop, stand, traffic-conflict necessity, other-law compliance, police direction and official-device direction. Only the park pair has offline constructions. The other twelve need distinct Native sources, constructions and all public/saved/audit proofs. They cannot be claimed by the parked trace. Status remains partial.

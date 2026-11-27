@@ -16,10 +16,12 @@
     "text": "It is unlawful for the driver of any vehicle: When crossing at grade any track or tracks of a railroad, to fail to completely cross the track or tracks without stopping due to insufficient: (1) Space for the vehicle on the opposite side of the railroad crossing; or (2) Undercarriage clearance of the vehicle. As used in this section, “completely cross” means to travel across a railroad track or tracks in such a manner that the trailing end of the vehicle is 15 feet or more past the nearest rail of the railroad track or tracks.",
     "sha256": "05c9b0823793d39cc18cda9ff91c2bb887599d2304a29c0773bd297a73685fd0"
   },
-  "summary_status": "recovered_requires_source_review",
+  "summary_status": "selected_cpu_original_source_pending",
   "summary_source_sha256": "766028e343fd061d4c3dd5178abad9e01250c5ebe2a874b966f773e43ca91a8c",
   "witness_branches": [
-    "Opposite-side space insufficiency."
+    "Opposite-side space insufficiency.",
+    "Undercarriage-clearance alternative.",
+    "Completely-cross trailing-end 15-foot definition."
   ],
   "requirement_dispositions": [
     {
@@ -28,26 +30,44 @@
       "branch": "Opposite-side space insufficiency.",
       "status": "selected_required",
       "case_ids": [
-        "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__probe_1",
-        "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__probe_2"
+        "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__space_clear",
+        "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__space_short",
+        "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__grade_clear",
+        "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__grade_deficit",
+        "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__trailing_exact",
+        "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__trailing_just_short"
       ],
-      "evidence_or_gap": "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
+      "evidence_or_gap": "Exact primary/fallback inline Native construction and offline CPU proof are selected. Independent original at-grade rail, vehicle, queue, grade and stop-cause evidence, public compatibility, saved processing and physical/lifecycle audit remain pending. No physical or legal outcome claimed."
     },
     {
       "requirement": "NRS-484B-560-7a",
       "source": "NRS 484B.560(7)(a); with 484B.560(8)",
       "branch": "undercarriage-clearance alternative",
-      "status": "alternative_pending",
-      "case_ids": [],
-      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
+      "status": "selected_required",
+      "case_ids": [
+        "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__space_clear",
+        "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__space_short",
+        "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__grade_clear",
+        "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__grade_deficit",
+        "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__trailing_exact",
+        "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__trailing_just_short"
+      ],
+      "evidence_or_gap": "Exact primary/fallback inline Native construction and offline CPU proof are selected. Independent original at-grade rail, vehicle, queue, grade and stop-cause evidence, public compatibility, saved processing and physical/lifecycle audit remain pending. No physical or legal outcome claimed."
     },
     {
       "requirement": "NRS-484B-560-7a",
       "source": "NRS 484B.560(7)(a); with 484B.560(8)",
       "branch": "completely-cross trailing-end definition",
-      "status": "alternative_pending",
-      "case_ids": [],
-      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
+      "status": "selected_required",
+      "case_ids": [
+        "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__space_clear",
+        "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__space_short",
+        "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__grade_clear",
+        "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__grade_deficit",
+        "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__trailing_exact",
+        "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__trailing_just_short"
+      ],
+      "evidence_or_gap": "Exact primary/fallback inline Native construction and offline CPU proof are selected. Independent original at-grade rail, vehicle, queue, grade and stop-cause evidence, public compatibility, saved processing and physical/lifecycle audit remain pending. No physical or legal outcome claimed."
     }
   ],
   "neutral_baseline": {
@@ -56,26 +76,72 @@
   },
   "cases": [
     {
-      "case_id": "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__probe_1",
+      "case_id": "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__space_clear",
       "target_law_id": "NRS-484B-560-7a",
-      "kind": "planned_only",
-      "target_type": "below",
-      "physical_target": "vehicle crosses without stopping and trailing end reaches 15 ft beyond nearest rail",
-      "comparison_variable": "opposite_side_clearance_feet",
-      "source_branch": "Opposite-side space insufficiency.",
+      "kind": "selected_cpu_source_dependency",
+      "target_type": "controlled_attempt",
+      "physical_target": "original vehicle reaches trailing-end 15-foot clearance with opposite-side space",
+      "comparison_variable": "opposite_space",
       "requested_not_measured": true,
       "selection_targets": [
         "full-train"
       ]
     },
     {
-      "case_id": "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__probe_2",
+      "case_id": "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__space_short",
       "target_law_id": "NRS-484B-560-7a",
-      "kind": "planned_only",
+      "kind": "selected_cpu_source_dependency",
       "target_type": "controlled_attempt",
-      "physical_target": "insufficient opposite-side space causes stop before full 15-ft clearance",
-      "comparison_variable": "opposite_side_clearance_feet",
-      "source_branch": "Opposite-side space insufficiency.",
+      "physical_target": "original queue constrains opposite-side space before trailing-end 15-foot clearance",
+      "comparison_variable": "opposite_space",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ]
+    },
+    {
+      "case_id": "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__grade_clear",
+      "target_law_id": "NRS-484B-560-7a",
+      "kind": "selected_cpu_source_dependency",
+      "target_type": "controlled_attempt",
+      "physical_target": "original road/vehicle grade permits crossing without preclear stop",
+      "comparison_variable": "undercarriage_clearance",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ]
+    },
+    {
+      "case_id": "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__grade_deficit",
+      "target_law_id": "NRS-484B-560-7a",
+      "kind": "selected_cpu_source_dependency",
+      "target_type": "controlled_attempt",
+      "physical_target": "original road/vehicle grade yields reviewed undercarriage contact before full crossing",
+      "comparison_variable": "undercarriage_clearance",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ]
+    },
+    {
+      "case_id": "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__trailing_exact",
+      "target_law_id": "NRS-484B-560-7a",
+      "kind": "selected_cpu_source_dependency",
+      "target_type": "boundary_probe",
+      "physical_target": "trailing end reaches at least 15 feet past reviewed reference rail",
+      "comparison_variable": "trailing_end_15_feet",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ]
+    },
+    {
+      "case_id": "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__trailing_just_short",
+      "target_law_id": "NRS-484B-560-7a",
+      "kind": "selected_cpu_source_dependency",
+      "target_type": "boundary_probe",
+      "physical_target": "trailing end remains short of 15 feet past reviewed reference rail",
+      "comparison_variable": "trailing_end_15_feet",
       "requested_not_measured": true,
       "selection_targets": [
         "full-train"
@@ -84,17 +150,51 @@
   ],
   "comparisons": [
     {
-      "comparison_id": "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__comparison",
+      "comparison_id": "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__opposite_space",
       "case_ids": [
-        "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__probe_1",
-        "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__probe_2"
+        "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__space_clear",
+        "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__space_short"
       ],
       "deliberate_differences": [
-        "opposite_side_clearance_feet"
+        "opposite_space"
       ],
       "fixed_conditions": [
-        "frozen cell, actor and physical road context",
-        "other participants, controller policy and camera policy except law-relevant target"
+        "frozen cell and actor",
+        "original at-grade rail source",
+        "20 Hz and four-camera policy",
+        "same controller family and 30-second duration"
+      ]
+    },
+    {
+      "comparison_id": "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__undercarriage_clearance",
+      "case_ids": [
+        "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__grade_clear",
+        "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__grade_deficit"
+      ],
+      "deliberate_differences": [
+        "undercarriage_clearance"
+      ],
+      "fixed_conditions": [
+        "frozen cell and actor",
+        "original at-grade rail source",
+        "20 Hz and four-camera policy",
+        "same controller family and 30-second duration"
+      ]
+    },
+    {
+      "comparison_id": "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__trailing_end_15_feet",
+      "case_ids": [
+        "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__trailing_exact",
+        "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__trailing_just_short"
+      ],
+      "deliberate_differences": [
+        "trailing_end_15_feet"
+      ],
+      "fixed_conditions": [
+        "frozen cell and actor",
+        "original at-grade rail source",
+        "20 Hz and four-camera policy",
+        "same controller family and 30-second duration"
       ]
     }
   ],
@@ -145,7 +245,62 @@
       "status": "measurement_mapping_pending"
     }
   ],
-  "candidate_plans": [],
+  "candidate_plans": [
+    {
+      "case_id": "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__space_clear",
+      "primary": "native/space_clear/construction.json",
+      "fallback1": "fallbacks/space_clear/fallback1/construction.json",
+      "risk": {
+        "status": "physical",
+        "reason": "Native vehicle trajectory, clearance or stop cause may miss requested target."
+      }
+    },
+    {
+      "case_id": "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__space_short",
+      "primary": "native/space_short/construction.json",
+      "fallback1": "fallbacks/space_short/fallback1/construction.json",
+      "risk": {
+        "status": "physical",
+        "reason": "Native vehicle trajectory, clearance or stop cause may miss requested target."
+      }
+    },
+    {
+      "case_id": "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__grade_clear",
+      "primary": "native/grade_clear/construction.json",
+      "fallback1": "fallbacks/grade_clear/fallback1/construction.json",
+      "risk": {
+        "status": "physical",
+        "reason": "Native vehicle trajectory, clearance or stop cause may miss requested target."
+      }
+    },
+    {
+      "case_id": "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__grade_deficit",
+      "primary": "native/grade_deficit/construction.json",
+      "fallback1": "fallbacks/grade_deficit/fallback1/construction.json",
+      "risk": {
+        "status": "physical",
+        "reason": "Native vehicle trajectory, clearance or stop cause may miss requested target."
+      }
+    },
+    {
+      "case_id": "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__trailing_exact",
+      "primary": "native/trailing_exact/construction.json",
+      "fallback1": "fallbacks/trailing_exact/fallback1/construction.json",
+      "risk": {
+        "status": "physical",
+        "reason": "Native vehicle trajectory, clearance or stop cause may miss requested target."
+      }
+    },
+    {
+      "case_id": "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__trailing_just_short",
+      "primary": "native/trailing_just_short/construction.json",
+      "fallback1": "fallbacks/trailing_just_short/fallback1/construction.json",
+      "risk": {
+        "status": "physical",
+        "reason": "Native vehicle trajectory, clearance or stop cause may miss requested target."
+      }
+    }
+  ],
   "existing_evidence": [],
   "sources": [
     {
@@ -159,7 +314,9 @@
     "Cameras can inspect the decisive physical distinction"
   ],
   "blockers": [
-    "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
+    "Original Native at-grade rail, reviewed opposite-side queue and grade/undercarriage sources have not been acquired.",
+    "Independent stop-cause and trailing-end physical acceptance remain unverified.",
+    "Public compatibility, recorded-only saved processing, and delivery/comparison audits remain pending."
   ],
   "selected_branch": null,
   "observations": [

@@ -1,0 +1,60 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__space_short",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "NRS-484B-560-7a",
+      "source": "NRS 484B.560(7)(a); with 484B.560(8)",
+      "output_key": "opposite_space",
+      "method": "measure_opposite_space",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "road.xodr",
+        "rail-review/opposite-space.json",
+        "rail-review/opposite-space.source.txt",
+        "rail-actors.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "NRS-484B-560-7a",
+      "source": "NRS 484B.560(7)(a); with 484B.560(8)",
+      "output_key": "undercarriage",
+      "method": "measure_undercarriage",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "road.xodr",
+        "rail-review/undercarriage-grade.json",
+        "rail-review/undercarriage-grade.source.txt",
+        "vehicle-extent.json",
+        "rail-actors.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "NRS-484B-560-7a",
+      "source": "NRS 484B.560(7)(a); with 484B.560(8)",
+      "output_key": "complete_crossing",
+      "method": "measure_complete_crossing",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "rail-review/rail-geometry.json",
+        "rail-review/rail-geometry.source.txt",
+        "vehicle-extent.json",
+        "rail-actors.jsonl",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "rail-review/rail-geometry.json"
+    ],
+    "error_contains": "Missing required source: rail-review/rail-geometry.json"
+  }
+}
