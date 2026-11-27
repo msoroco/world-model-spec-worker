@@ -1,22 +1,42 @@
 # testing__C233658__NRS-484B-297-2__pedestrian
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: **partial**. Four exact source-gated construction bundles pass the runtime offline check. The strict delivery-ready gate fails because the package is partial; no physical or canonical acceptance is claimed.
 
-Exact law: NRS 484B.297(2) — Except as otherwise provided in subsection 6 [NRS-484B-297-6], pedestrians walking along highways where sidewalks are not provided shall walk on the left side of those highways facing the approaching traffic.
-Assigned branch(es): Straight walking along a highway without sidewalks.
-Cell: C233658 (road_without_sidewalk, straight, other_vehicle); actor: pedestrian.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+## Source and scope
 
-## Next CPU actions
+NRS 484B.297(2) directs a pedestrian walking along a highway without a sidewalk to walk on the left side facing approaching traffic, except as subsection 6 provides. The supplied subsection 6 text in `inputs/coverage/branch-sources.json` concerns a traveler detouring from an obstructed sidewalk. C233658 fixes `road_without_sidewalk`, straight walking, another vehicle, and a pedestrian. A subsection 6 detour cannot be presumed from this cell. No accepted recording exists in this assignment's frozen `evidence.json`. No exact law/actor judgment range exists in the supplied range file. No legal numeric side or facing threshold is invented.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C233658__NRS-484B-297-2__pedestrian --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+The original site packet must substantiate public highway status, public vehicular access, the highway boundaries, absence of a qualifying sidewalk throughout the walking segment, and subsection 6 nonapplicability. `site_source.py` checks source hashes and review fields before any live action. Its fixture test proves rejection of missing and stale sources, not the actual site facts.
 
-## Proven checks and dependency boundary
+## Exact coverage plan
 
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
+| Exact case suffix | Approach | Pedestrian side and heading |
+| --- | --- | --- |
+| `east_approach_left_side` | eastbound vehicle | left highway side, facing the vehicle |
+| `east_approach_right_side` | eastbound vehicle | right highway side, facing the vehicle |
+| `west_approach_left_side` | westbound vehicle | left highway side, facing the vehicle |
+| `west_approach_right_side` | westbound vehicle | right highway side, facing the vehicle |
 
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+All full IDs are the assignment ID followed by `__` and the suffix. The plan has `east_approach_side`, `west_approach_side`, and `approach_direction` comparisons. The first two vary lateral walking side while retaining approach direction, heading, camera plan and duration. The third verifies mirrored approach directions while retaining the left-side/facing relation. Physical readback must verify intended routes and sides; the authored coordinates are only construction requests.
+
+`case-plan.json` lists the one selected requirement disposition, original observations, gap ID, witness review and camera plan. `road_geometry.py` supplies mirrored routes. `build_bundles.py` creates each inline construction, config, measurement contract and case spec under `cases/`. `runner.py --check` validates the exact bundle without CARLA. `walking_measure.py` measures source-shaped original pedestrian side, facing, approach and progress; `analysis.py` contains a saved finalizer with source-hash and frame/time joins, but its positive and negative runtime compatibility remain untested. The runner's live path currently stops after source validation; actual Native capture remains unimplemented. There are no fallbacks yet; walker/controller and camera risks need measurable candidate tuning, proof and independent review before ready status.
+
+## Proven checks
+
+Run with `PYTHONDONTWRITEBYTECODE=1` and `SCENARIO_PIPELINE_OUTPUT_ROOT` set under `.runtime-work/` before any direct runtime import:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C233658__NRS-484B-297-2__pedestrian/tests -v
+PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C233658__NRS-484B-297-2__pedestrian/build_bundles.py
+PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT="$PWD/.runtime-work/pedestrian-output" .venv-cpu/bin/python runtime.py offline --manifest work/testing__C233658__NRS-484B-297-2__pedestrian/execution-manifest.draft.json --case testing__C233658__NRS-484B-297-2__pedestrian__east_approach_left_side --output .runtime-work/pedestrian-offline-new
+PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT="$PWD/.runtime-work/pedestrian-output" .venv-cpu/bin/python worker_check.py --assignment testing__C233658__NRS-484B-297-2__pedestrian --complete --require-delivery-ready
+```
+
+The first test passed four tests, and runtime offline passed all four exact cases. Their small logs and SHA256 values are in `result.json`. `strict.log` retains the current readiness failure. The generator does not establish CARLA motion.
+
+## Remaining CPU work
+
+1. Implement source-gated CARLA pedestrian and vehicle spawning, 20 Hz original transform capture, synchronized four-camera capture, FrameMap, ownership cleanup/world restoration, and actual completion checks. Remove the explicit unfinished Native error in `runner.py` only when this code is tested.
+2. Complete and test the saved finalizer and measurement contracts against case-specific diagnostic recipes; obtain positive and missing-source negative runtime compatibility proofs for every case and each justified fallback.
+3. Author canonical semantic stage proposals and semantic index. Add saved-only processing proofs, independent delivery and comparison audits with negative rejection, physical/lifecycle fixture tests, complete execution manifest and a concrete queue proposal.
+4. Independently review the exact law and branch alternatives, then rerun the strict assignment gate. Actual physical outcome remains for the local GPU operator after CPU readiness.

@@ -8,6 +8,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+from math import hypot, isfinite
 import subprocess
 from pathlib import Path
 
@@ -31,6 +32,24 @@ def sha(path: Path) -> str:
 
 def lines(path: Path) -> list[dict]:
     return [json.loads(line) for line in path.read_text().splitlines() if line]
+
+
+def point(value) -> tuple[float, float]:
+    if (not isinstance(value, list) or len(value) != 2 or
+            any(type(x) not in (int, float) or not isfinite(x) for x in value)):
+        raise ValueError("original pedestrian coordinate missing")
+    return float(value[0]), float(value[1])
+
+
+def in_polygon(value, polygon) -> bool:
+    x, y = point(value)
+    inside = False
+    for i, item in enumerate(polygon):
+        x1, y1 = point(item)
+        x2, y2 = point(polygon[(i + 1) % len(polygon)])
+        if (y1 > y) != (y2 > y) and x < x1 + (y - y1) * (x2 - x1) / (y2 - y1):
+            inside = not inside
+    return inside
 
 
 def audit(attempt: Path, case_id: str, diagnostic: bool = False) -> dict:
@@ -70,6 +89,15 @@ def audit(attempt: Path, case_id: str, diagnostic: bool = False) -> dict:
     expected_form = ("wait" if case_id.endswith("_wait") else
         "upraised_hand" if case_id.endswith("_hand") else "dont_walk")
     expected_direction = "reverse" if case_id.endswith("_reverse") else "forward"
+    target = site.get("crossing_routes", {}).get(expected_direction, {}).get("waypoints_xy", [])
+    if len(target) < 3:
+        raise ValueError("original crossing route missing")
+    target = point(target[-1])
+    polygon = site.get("highway_polygon_xy")
+    if not isinstance(polygon, list) or len(polygon) < 3:
+        raise ValueError("original highway polygon missing")
+    prior_value = None
+    entered = False
     for i, (frame, mapped, native) in enumerate(zip(frames, mapping, trace)):
         number = frame.get("original_frame")
         if (type(number) is not int or
@@ -92,6 +120,9 @@ def audit(attempt: Path, case_id: str, diagnostic: bool = False) -> dict:
         if frame["countdown_present"]:
             if type(value) is not int or value < 0:
                 raise ValueError("legible original countdown value missing")
+            if prior_value is not None and not prior_value - 1 <= value <= prior_value:
+                raise ValueError("original countdown sequence invalid")
+            prior_value = value
         elif not (zero is not None and not frame["flashing"] and value is None):
             raise ValueError("countdown disappeared before displayed zero")
         if frame["flashing"] and not (frame["illuminated"] and
@@ -105,11 +136,20 @@ def audit(attempt: Path, case_id: str, diagnostic: bool = False) -> dict:
             raise ValueError("original pedestrian identity changed")
         if value == 0 and zero is None:
             zero = number
-        if frame.get("in_highway") is True and entry is None:
+        position = point(frame.get("pedestrian_xy"))
+        inside = in_polygon(frame["pedestrian_xy"], polygon)
+        if frame.get("in_highway") is not inside:
+            raise ValueError("recorded highway membership differs from original pose")
+        entered = entered or inside
+        derived_complete = entered and not inside and hypot(
+            position[0] - target[0], position[1] - target[1]) <= .5
+        if frame.get("crossing_complete") is not derived_complete:
+            raise ValueError("recorded crossing completion differs from original pose")
+        if inside and entry is None:
             if not (frame["illuminated"] and frame["flashing"] and value is not None and value > 0):
                 raise ValueError("entry did not occur during illuminated flashing countdown")
             entry = number
-        if frame.get("crossing_complete") is True and completion is None:
+        if derived_complete and completion is None:
             completion = number
         if not isinstance(frame.get("exception_context"), dict):
             raise ValueError("original statutory exception context missing")

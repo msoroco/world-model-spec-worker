@@ -51,6 +51,11 @@ def _load(case: dict, attempt: Path, result_path: Path, diagnostic: bool,
             result.get("case_id") != case_id or
             measured.get("case_id") != case_id):
         raise ValueError("comparison case identity differs: " + case_id)
+    if (config.get("requested_lane_action") != case["ego_lane_action_request"] or
+            config.get("requested_precedence") != case["ego_precedence_request"] or
+            config.get("requested_exception") != case["exception_request"] or
+            config.get("requested_participant_kind") != case["road_user_kind"]):
+        raise ValueError("comparison requested variable differs from exact case")
     if (measured.get("frame_count") != 900 or
             measured.get("source_sha256") != {
                 "site": sha(attempt / "site-source.json"),

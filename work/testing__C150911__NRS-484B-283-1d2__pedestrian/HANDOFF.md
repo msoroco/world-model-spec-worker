@@ -1,22 +1,27 @@
-# testing__C150911__NRS-484B-283-1d2__pedestrian
+# NRS 484B.283(1)(d)(2), C150911, pedestrian
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+This package plans six exact full-test recordings and five controlled comparisons for a pedestrian crossing a one-way public highway while an official facing Don't Walk, Wait or upraised-hand indication is illuminated, flashing and accompanied by a legible countdown. Original frame readback is required for the displayed zero and complete crossing. Requested controller times are engineering targets, not measured legal outcomes. The cited NRS 484B.287, .290 and .350 exceptions remain unresolved for independent review.
 
-Exact law: NRS 484B.283(1)(d)(2) — Except as otherwise provided in NRS 484B.287 [NRS-484B-287-1c, NRS-484B-287-1d, NRS-484B-287-1e, LVMC-11-30-060-A, LVMC-11-30-060-B], 484B.290 [LVMC-11-30-140-B] and 484B.350 [LVMC-11-46-030]: Whenever signals exhibiting the words “Walk,” “Don’t Walk,” “Wait” or similar symbols are in place, such signals indicate as follows: While the “Don’t Walk” or “Wait” indication or an upraised hand symbol is illuminated, is flashing and is accompanied by a countdown timer, a pedestrian may proceed across the highway in the direction of the signal, but must complete the crossing before the countdown timer gets to zero.
-Assigned branch(es): Crossing during flashing indication with countdown.
-Cell: C150911 (one_way_road, travel, crosswalk); actor: pedestrian.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+## Frozen source and coverage
 
-## Next CPU actions
+- Exact law and cell: `inputs/testing__C150911__NRS-484B-283-1d2__pedestrian/assignment.json`; frozen witness and topic inventory are retained in `case-plan.json`. The frozen accepted-evidence inventory has zero recordings, so there is no demonstrated reuse. This law/actor has no supplied judgment range entries.
+- `before_zero_dont_walk`, `at_zero_dont_walk`, `after_zero_dont_walk` compare complete highway crossing strictly before, at and after the first originally displayed zero. `word_wait` and `hand_symbol` compare the expressly listed signal alternatives. `crossing_direction` compares opposite crossing directions with the correct facing signal. Exact IDs are prefixed by `testing__C150911__NRS-484B-283-1d2__pedestrian__` in `case-plan.json`.
+- Every selected requirement has a `selected_required` disposition and exact case IDs. `case-plan.json` maps one-way public highway context, signal form, illumination, flashing, countdown value, pedestrian entry and completion, and unresolved exceptions to original sources. No engineering tolerance defines legal crossing completion.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C150911__NRS-484B-283-1d2__pedestrian --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+## Construction and source gate
 
-## Proven checks and dependency boundary
+- `countdown_crossing.py` validates separately hashed original one-way highway, crossing routes in both directions, official facing signal, sidewalk and exception context. It constructs pedestrian spawn, signal schedule and route controller targets. It measures original 20 Hz frames, numeric countdown, first displayed zero and full highway completion; it rejects missing readback, wrong direction, interrupted countdown and crossing outside the flashing phase.
+- `reviewed_site.py` requires a separately reviewed original source packet and source-hashed OpenDRIVE, highway, crossing, sidewalk, pedestrian signal, route, exceptions and four camera poses before Native mutation. `runner.py` selects the exact case; `native_entry.py` captures synchronized original source rows, trace, frame map and four views, seals acquisition, closes encoders and restores the CARLA world. Local original sources and an adapter implementing the documented `validate_review/configure/sample/teardown` protocol are needed before physical execution. The source packet is not a CPU fixture.
+- `analysis.py` is saved-only. It requires the sealed original countdown observations and receipt, checks identities, hashes, frame map and trace joins, and writes Native-shaped measured result and source-bound channels. It makes no legal verdict. `delivery_audit.py` independently checks source receipt, original joins, full four-video decode and the selected zero relation. `comparison_audit.py` independently checks fixed configuration and original site hashes against each declared difference.
+- `build_bundles.py` materializes all six exact construction bundles, with a physical-risk assessment for each. No fallback is selected because the reviewed signal, route and camera source is fixed; changing it requires an independently reviewed original packet. This does not claim that camera visibility is physically proven.
 
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
+## CPU proof and local queue
 
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+- Run with `SCENARIO_PIPELINE_OUTPUT_ROOT="$PWD/.runtime-work/c150911-1d2/output"` and `PYTHONDONTWRITEBYTECODE=1` before direct runtime imports. The exact offline and positive/negative compatibility receipts live in `cases/<case>/proof-*`, bound by `execution-manifest.json`. `cpu-offline-proofs.json`, `cpu-compatibility-proofs.json`, `cpu-saved-proofs.json`, `cpu-independent-proofs.json` and `cpu-comparison-proofs.json` index the commands and logs.
+- `prove_saved.py` executed `runtime.py process-saved` for each exact synthetic Native-shaped attempt. `prove_physical.py` exercised complete, incomplete and missing source outcomes and Native exit, owner release and saved-processing lifecycle. `prove_runtime_physical.py` exercised the pinned runtime travel-progress checker. These fixtures are software proofs only.
+- Canonical semantic draft stages and hashes are in `proposals/semantic-index.json`. `gpu-queue-proposal.json` has six exact case jobs and five comparison commands for lead integration; the exact assignment strict gate passed. It is a proposal, not a local execution receipt. The lead owns `work/_shared/`.
+- Run `.venv-cpu/bin/python -m unittest discover -s work/testing__C150911__NRS-484B-283-1d2__pedestrian/tests -v`, then `.venv-cpu/bin/python worker_check.py --assignment testing__C150911__NRS-484B-283-1d2__pedestrian --complete --require-delivery-ready`. All tests use tiny synthetic original-shaped diagnostics. No CARLA connection, physical footage or legal acceptance occurred here.
+
+## Physical follow-up
+
+The local operator must review original one-way highway and countdown signal sources, acquire original Native attempts, check actual pedestrian crossing and legible signal pixels in all four views, retain failed attempts, run the independent delivery and comparison audits, then perform canonical acceptance into `full-test` using the external review archive. The fixed source packet and adapter must not be replaced with the synthetic diagnostic.

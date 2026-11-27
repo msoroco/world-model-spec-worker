@@ -45,7 +45,7 @@
       "source": "work/testing__C150911__NRS-484B-283-1d2__pedestrian/cases/after_zero_dont_walk/controller.json"
     },
     {
-      "content": "import json\nimport unittest\nfrom pathlib import Path\nfrom runner import check\n\nclass SelectedCountdownOffline(unittest.TestCase):\n    def test_source_gate_and_identity(self):\n        root = Path(__file__).resolve().parents[1]\n        result = check(root)\n        self.assertEqual(result[\"case_id\"], json.loads((root / \"config.json\").read_text())[\"selected_case_id\"])\n        self.assertIn(\"reviewed original\", result[\"source_gate\"])\n\nif __name__ == \"__main__\":\n    unittest.main()\n",
+      "content": "import json\nimport sys\nimport unittest\nfrom pathlib import Path\nsys.path.insert(0, str(Path(__file__).resolve().parents[1]))\nfrom runner import check\n\nclass SelectedCountdownOffline(unittest.TestCase):\n    def test_source_gate_and_identity(self):\n        root = Path(__file__).resolve().parents[1]\n        result = check(root)\n        self.assertEqual(result[\"case_id\"], json.loads((root / \"config.json\").read_text())[\"selected_case_id\"])\n        self.assertIn(\"reviewed original\", result[\"source_gate\"])\n\nif __name__ == \"__main__\":\n    unittest.main()\n",
       "path": "tests/test_offline.py"
     }
   ],

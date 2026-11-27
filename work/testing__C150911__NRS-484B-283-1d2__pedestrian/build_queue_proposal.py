@@ -36,14 +36,14 @@ def build() -> dict:
             "accept_command": accept, "candidate_commands": {},
             "owner_release_command": 'CASE_ID=' + cid +
                 ' .venv-cpu/bin/python runtime.py owner-released'
-                ' --attempt "$SAVED_ATTEMPT" --receipt "$OWNER_RELEASE_RECEIPT"'
+                ' --attempt "$SAVED_ATTEMPT" --receipt "$OWNER_RELEASE_DIR/' + cid + '.json"'
                 ' --acknowledge-owner-released',
             "postprocessing_command": '.venv-cpu/bin/python runtime.py process-saved'
                 ' --manifest work/' + ASSIGNMENT + '/execution-manifest.json'
                 ' --case ' + cid + ' --attempt "$SAVED_ATTEMPT"'
                 ' --output "$PROCESSED_ROOT" --library runtime/library'
                 ' --validator "$LEAN_VALIDATOR"'
-                ' --owner-release-receipt "$OWNER_RELEASE_RECEIPT"',
+                ' --owner-release-receipt "$OWNER_RELEASE_DIR/' + cid + '.json"',
             "additional_source_audit_command": 'PYTHONDONTWRITEBYTECODE=1 '
                 'SCENARIO_PIPELINE_OUTPUT_ROOT="$PWD/.runtime-work/c150911-1d2-local-audit"'
                 ' .venv-cpu/bin/python runtime.py work/' + ASSIGNMENT +

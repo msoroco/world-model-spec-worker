@@ -12,8 +12,10 @@ ROOT = HERE.parents[1]
 MODULES = ("runner.py", "native_entry.py", "reviewed_site.py",
     "countdown_crossing.py", "analysis.py")
 OFFLINE_TEST = '''import json
+import sys
 import unittest
 from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from runner import check
 
 class SelectedCountdownOffline(unittest.TestCase):
@@ -115,8 +117,9 @@ def build() -> list[dict]:
             (ROOT / "runtime/SOURCE-MANIFEST.json").read_bytes()).hexdigest(),
         "cases": entries})
     first = plan["cases"][0]["case_id"].split("__")[-1]
-    for name in ("config.json", "construction.json"):
+    for name in ("config.json", "construction.json", "case-spec.json", "controller.json"):
         (HERE / name).write_bytes((HERE / "cases" / first / name).read_bytes())
+    (HERE / "tests/test_offline.py").write_text(OFFLINE_TEST)
     return entries
 
 

@@ -1,12 +1,43 @@
 {
+  "applied_update": 0,
   "assignment_id": "testing__C233658__NRS-484B-297-2__pedestrian",
   "input_sha256": "d7f59a2b374045c338ea7351da009adb2782318141c18e58308e3742ef0b5174",
-  "status": "partial",
-  "readiness_kind": "source_inventory",
-  "applied_update": 0,
-  "tests": [],
+  "readiness_kind": "offline_construction_only",
+  "reason": "Four exact cases, three controlled comparisons, source gate, saved walking measurement and exact offline construction checks are prepared. Native capture/controller, semantic proposals, positive/negative compatibility, saved-only runtime processing, physical/lifecycle proofs and independent audits remain CPU work.",
   "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+    "Once CPU preparation is complete: actual CARLA pedestrian/vehicle motion, map legal status source review, camera pixel visibility, physical completion and original capture quality."
   ],
-  "reason": "Source and accepted-metadata inventory complete; exact branch decomposition, evidence sufficiency, executable constructions/controllers, case-specific finalizers, semantic proposals, source-bound compatibility proofs, and independent delivery/comparison audits remain CPU work."
+  "status": "partial",
+  "tests": [
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C233658__NRS-484B-297-2__pedestrian/tests -v",
+      "exit_code": 0,
+      "log": "cpu-tests.log",
+      "sha256": "b884cdaeb7cdd112b4798ba4a995f21e26eb9720811f369c35a8b1f2751b8c75"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C233658__NRS-484B-297-2__pedestrian/execution-manifest.draft.json --case testing__C233658__NRS-484B-297-2__pedestrian__east_approach_left_side --output .runtime-work/pedestrian-offline-east_approach_left_side-3",
+      "exit_code": 0,
+      "log": "cases/east_approach_left_side/offline-test.log",
+      "sha256": "e89a0b49ef464ad4928eb95fdda2be4bdbfc63c545ad803103c4109008499ada"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C233658__NRS-484B-297-2__pedestrian/execution-manifest.draft.json --case testing__C233658__NRS-484B-297-2__pedestrian__east_approach_right_side --output .runtime-work/pedestrian-offline-east_approach_right_side-3",
+      "exit_code": 0,
+      "log": "cases/east_approach_right_side/offline-test.log",
+      "sha256": "40d9df8a77c0b4b629077c804e1dca621a2597e18916d97dcd6554b9c48570cf"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C233658__NRS-484B-297-2__pedestrian/execution-manifest.draft.json --case testing__C233658__NRS-484B-297-2__pedestrian__west_approach_left_side --output .runtime-work/pedestrian-offline-west_approach_left_side-3",
+      "exit_code": 0,
+      "log": "cases/west_approach_left_side/offline-test.log",
+      "sha256": "c8f6687618976ac6f43f268b211e5283360d693aedf30b77202e0ae7a32c4ec3"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C233658__NRS-484B-297-2__pedestrian/execution-manifest.draft.json --case testing__C233658__NRS-484B-297-2__pedestrian__west_approach_right_side --output .runtime-work/pedestrian-offline-west_approach_right_side-3",
+      "exit_code": 0,
+      "log": "cases/west_approach_right_side/offline-test.log",
+      "sha256": "5611e183245fe095254cd31fe32d52d5dc0ac727f5ad815256acc25072295d14"
+    }
+  ]
 }

@@ -55,6 +55,8 @@ def audit(attempt: Path, review: dict, case_id: str) -> dict:
     root = attempt.resolve()
     if not case_id.startswith(ASSIGNMENT + "__"):
         raise ValueError("exact case required")
+    if not (root / "attempt-source.json").is_file():
+        raise ValueError("original Native cycle-lane attempt required")
     seal = json.loads((root / "attempt-source.json").read_text())
     if (seal.get("format") != "cycle-lane-2703-native-attempt-v1" or
             seal.get("source_kind") != "original_native" or
