@@ -1,7 +1,7 @@
 {
   "assignment_id": "testing__C111329__NRS-484B-300-1__bus_driver",
   "input_sha256": "6f78c252741235181e057dd143eccca84360ff6e77ba7e4dc358db2f842fc091",
-  "status": "partial",
+  "status": "ready",
   "readiness_kind": "delivery_prepared",
   "applied_update": 0,
   "tests": [
@@ -10,11 +10,17 @@
       "exit_code": 0,
       "log": "cpu-tests-final.log",
       "sha256": "31fee74ca91764ff428912a09870cbe01b998b86899b47ff32b2bbbf7fdc0d92"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c111329-bus-post-capture/runtime-output TMPDIR=$PWD/.runtime-work .venv-cpu/bin/python work/testing__C111329__NRS-484B-300-1__bus_driver/prove_post_capture.py",
+      "exit_code": 0,
+      "log": "cpu-nov27-post-saved-all.log",
+      "sha256": "8dbea7d12c4168c5786a3d6ce1df40d8ca33612b64fcd7f633ca7e7b60cfad50"
     }
   ],
   "remaining_gpu_checks": [
     "Original reviewed official-device/site, police-direction and NRS 484B.307 source packets; Native CARLA motion, four-view visibility, physical completion and independent local legal review"
   ],
-  "reason": "Full-branch gate found four selected cases without post_capture command, feedback command, or bound saved-only fixture test; repair in progress.",
+  "reason": "CPU delivery preparation complete, including four exact saved-processing and failure-feedback commands. Original physical and legal acceptance remain local source-gated checks.",
   "first_gpu_delivery_command": "python3.11 -m scenario_pipeline.worker_exchange --project \"$PROJECT\" --root \"$LOCAL_ROOT\" execute-delivery --repo \"$WORKER_REPO\" --batch full-test-delivery --db \"$DB\" --assignment testing__C111329__NRS-484B-300-1__bus_driver --run \"$RUN\" --case testing__C111329__NRS-484B-300-1__bus_driver__red_hold --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
 }

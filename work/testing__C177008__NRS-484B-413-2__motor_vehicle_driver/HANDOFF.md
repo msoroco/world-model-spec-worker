@@ -13,11 +13,17 @@ The queue proposal is `gpu-queue-proposal.json`. First GPU dispatch is `result.j
 | File | SHA256 |
 | --- | --- |
 | `case-plan.json` | `6a5e3f2ecf36e8d874aa8e810afbe4da491e1609f150f73cc9ea483d2147f288` |
-| `execution-manifest.json` | `ed7c6bb8382ec3e45a8876cdb021fb66ca07315928e26cec1b8ad34a3e84bd6c` |
+| `execution-manifest.json` | `4f710a64a93ca1a16ae6a5be4ad940cbd22dfb10f2812bd3d8d706126702c93b` |
 | `gpu-queue-proposal.json` | `11325aa65ad9a1ee4d80d344b3e38fdef29ab9df6780554e131e3b5623283ece` |
-| `result.json` | `a2dbbca92bdff22400822031aa309b3c8d81a6021d756445d592629a1a9df95e` |
+| `result.json` | `24d9a11c56af0b0a69baae92d94a5bcd1ac2a429f08543bd6ed203fd05205a2a` |
 | `unittest.log` | `962778bafc98f8572ee748384c246d8d6444dbcb2bcd903204719688d9524945` |
 | `strict-ready.log` | `f8c181254d86e6c1ce23cb72cb518b6dcbd394fe00c463d27bf232e0f63fdb54` |
 | `delivery-audit-receipts.json` | `38eca86d06ce9c4db6499128dcc245a7067d5dc7aec4ae97d9ecdfce17d5dbd6` |
 | `comparison-audit-receipts.json` | `30d6f2ddb99b1501294807f3da776b8cdf9d865fd7685625475d362e764867d8` |
 | `saved-processing-receipts.json` | `6c4e5a9fb5b83d11f5963fad9bf98029fc4b6fa3558c47b4e1b19db23d0f0a5d` |
+
+## Exact saved-processing repair, 2026-11-27
+
+The five exact manifest cases now carry executable recorded-only `process-saved` commands and matching failure-feedback commands. `prove_post_capture.py` exercised each command on its source-shaped compatibility attempt using a diagnostic owner-release receipt. All five processed successfully with preserved originals, passing final-video checks; all five missing-validator runs failed with actionable `feedback.json` and no Native replay. These software receipts do not assert original physical or legal acceptance.
+
+The bound `cpu-nov27-post-saved-all.log` SHA256 is `d639f04144df7b85709a56466ca5f5146b223993fceb963a028f838cf529f9b0`. The exact scoped `worker_check.py --assignment testing__C177008__NRS-484B-413-2__motor_vehicle_driver --complete --require-delivery-ready` exited 0; `strict-post-capture.log` reports `static_checks_passed: true`. Current manifest SHA256 is `4f710a64a93ca1a16ae6a5be4ad940cbd22dfb10f2812bd3d8d706126702c93b`.

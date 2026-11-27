@@ -44,3 +44,9 @@ Resume by providing reviewed original source packets with byte hashes, then bind
 | `cpu-semantic.log` | `b713c6b5ddc79c02d846cac4d4d991862937d8de7f96c8a50f1e27a3e7cec4cf` |
 | `cpu-static-check.log` | `6f2bebff75b45f3e09e157fd3e86a3385ba639e52d52d0e141c19e48c8e0ee91` |
 | `cpu-source-audit.log` | `52f45b65e2f42850f832c9511938f0088c59b07e5f776b76a416f960ca991176` |
+
+## Full-branch saved-processing repair (2026-11-27)
+
+The six exact selected cases bind `post_capture.command` and `post_capture.feedback_command` to `runtime.py process-saved` with `recorded_only: true`. The GPU operator supplies `ATTEMPT`, `PROCESSED`, `LEAN_VALIDATOR` and `OWNER_RELEASE_RECEIPT` after the original Native run exits and resource ownership is released. Processing writes separate versioned results and actionable feedback without requesting Native replay.
+
+`.venv-cpu/bin/python work/testing__C255863__NRS-484B-363-3__motor_vehicle_driver/prove_saved_processing.py` passed on six source-shaped synthetic diagnostic fixtures after final manifest binding. It checked successful saved processing and a separate missing `context.json` source case for each exact case. The positive processing receipts report recorded-only operation, original preservation and no physical acceptance claim; negative feedback identifies the missing original source and requests no native replay. The proof log is `cpu-saved-processing-20261127.log` (SHA256 `a32a6512a51681633fe3beae46d9dc349b6c328c7a64a1fb25ba49beedbcdb60`). The focused suite passed 17 tests. Synthetic fixtures do not establish original school-source authenticity, physical U-turn completion, or legal judgments. The exact scoped strict gate passed after the repair with `static_checks_passed: true`; readiness was restored. The stable hash table above predates this repair; current hashes are in the manifest and result receipts.

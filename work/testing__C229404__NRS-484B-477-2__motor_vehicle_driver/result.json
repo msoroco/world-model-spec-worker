@@ -1,28 +1,35 @@
 {
-  "assignment_id": "testing__C229404__NRS-484B-477-2__motor_vehicle_driver",
-  "input_sha256": "1511cfcf7c15fd69a12f0eb306eb57227be5a0c8d094a83ca67a495188600094",
-  "status": "ready",
-  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
-  "tests": [
-    {
-      "name": "preflight",
-      "command": ".venv-cpu/bin/python runtime.py preflight",
-      "exit_code": 0,
-      "log": "cpu-preflight.log",
-      "sha256": "a6e8b59585179e38f3dad3f3120625f0378f03bffc63fb0efff222ec37ad31c5"
-    },
-    {
-      "name": "focused_tests",
-      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C229404__NRS-484B-477-2__motor_vehicle_driver/tests -v",
-      "exit_code": 0,
-      "log": "cpu-access-tests.log",
-      "sha256": "16c7840eaca23868d32f829e2fc193a63669b8cc217dbe91ed557d4c9ed98813"
-    }
-  ],
+  "assignment_id": "testing__C229404__NRS-484B-477-2__motor_vehicle_driver",
+  "first_gpu_delivery_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --run \"$RUN\" --assignment testing__C229404__NRS-484B-477-2__motor_vehicle_driver --case testing__C229404__NRS-484B-477-2__motor_vehicle_driver__driveway_clear --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+  "input_sha256": "1511cfcf7c15fd69a12f0eb306eb57227be5a0c8d094a83ca67a495188600094",
+  "readiness_kind": "delivery_prepared",
+  "reason": "",
   "remaining_gpu_checks": [
     "Actual CARLA parking motion, four-camera visibility and original source review after CPU delivery preparation"
   ],
-  "reason": "Independent lead review found production_delivery_audit.py only counts FFV1 frames and decodes four sampled PNGs per camera; it does not fully decode all 900 original video frames. Worker-owned repair and focused failure proof are required, followed by refreshed bindings and exact scoped strict gate. Existing offline, compatibility, semantic and fixture proofs remain retained.",
-  "first_gpu_delivery_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --run \"$RUN\" --assignment testing__C229404__NRS-484B-477-2__motor_vehicle_driver --case testing__C229404__NRS-484B-477-2__motor_vehicle_driver__driveway_clear --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
+  "status": "ready",
+  "tests": [
+    {
+      "command": ".venv-cpu/bin/python runtime.py preflight",
+      "exit_code": 0,
+      "log": "cpu-preflight.log",
+      "name": "preflight",
+      "sha256": "a6e8b59585179e38f3dad3f3120625f0378f03bffc63fb0efff222ec37ad31c5"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C229404__NRS-484B-477-2__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-access-tests.log",
+      "name": "focused_tests",
+      "sha256": "aadea75c6b6718128df7837a7f4b30316e5154e9a92225f7e534d6e444b12d61"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C229404__NRS-484B-477-2__motor_vehicle_driver/prove_saved_processing.py",
+      "exit_code": 0,
+      "log": "cpu-saved-processing-20261127.log",
+      "name": "saved_only_processing",
+      "sha256": "127e90ee2965526bf40481db753f97c40fd71170ca4f1165c0cdf624b2100674"
+    }
+  ]
 }
