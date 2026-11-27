@@ -89,7 +89,7 @@ def build(attempt: Path, *, expected_frames: int = 900,
             site.get("requested_beam") != case.get("requested_beam") or
             site.get("requested_contour") != case.get("requested_contour") or
             site.get("requested_load") != case.get("requested_load") or
-            site.get("requested_start_separation_ft") != case.get("requested_start_separation_ft")):
+            site.get("requested_start_body_gap_ft") != case.get("requested_start_body_gap_ft")):
         raise ValueError("saved original site does not bind exact case")
     receipt = json.loads(_path(root, "native-source-receipt.json").read_text())
     if (receipt.get("format") != "beam-road-native-source-v1" or
@@ -101,8 +101,9 @@ def build(attempt: Path, *, expected_frames: int = 900,
     sources = {name: _hash(root, name) for name in source_names}
     if receipt.get("source_hashes") != sources:
         raise ValueError("saved original geometry/beam source hashes differ")
+    pixel_media_extension = ".mkv" if "approach.mkv" in receipt.get("pixel_source_hashes", {}) else ".zip"
     pixel_names = ("roi-frames.jsonl", "camera-frame-map.jsonl",
-                   "approach.zip", "driver_reference.zip")
+                   "approach" + pixel_media_extension, "driver_reference" + pixel_media_extension)
     pixel_sources = {name: _hash(root, name) for name in pixel_names}
     if receipt.get("pixel_source_hashes") != pixel_sources:
         raise ValueError("saved original pixel source hashes differ")
@@ -125,13 +126,13 @@ def build(attempt: Path, *, expected_frames: int = 900,
         root, ("site-packet.json", "actor-state.jsonl", "camera-frame-map.jsonl"))
     values["beam_requirement_1"] = _measurement(
         measure_revelation(motion, pixels), "measure_revelation",
-        root, ("actor-state.jsonl", "roi-frames.jsonl", "approach.zip", "camera-frame-map.jsonl"))
+        root, ("actor-state.jsonl", "roi-frames.jsonl", "approach" + pixel_media_extension, "camera-frame-map.jsonl"))
     values["beam_requirement_2"] = _measurement(
         measure_oncoming_distance(motion), "measure_oncoming_distance",
         root, ("actor-state.jsonl", "camera-frame-map.jsonl", "site-packet.json"))
     values["beam_requirement_3"] = _measurement(
         measure_glare(motion, pixels), "measure_glare",
-        root, ("roi-frames.jsonl", "driver_reference.zip", "camera-frame-map.jsonl",
+        root, ("roi-frames.jsonl", "driver_reference" + pixel_media_extension, "camera-frame-map.jsonl",
                "actor-state.jsonl"))
     values["beam_requirement_4"] = _measurement(
         measure_lowermost(case), "measure_lowermost",
@@ -153,9 +154,17 @@ def main():
     output = Path(args.output)
     if output.exists():
         raise ValueError("saved analysis output already exists")
-    report = build(Path(args.attempt))
+    receipt = json.loads(_path(Path(args.attempt), "native-source-receipt.json").read_text())
+    diagnostic = receipt.get("diagnostic_fixture") is True
+    report = build(Path(args.attempt), expected_frames=receipt.get("frame_count", 900),
+                   diagnostic=diagnostic)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(report, indent=2) + "\n")
+    from beam_publication import publish
+    from scenario_pipeline.worker_exchange.native_output import physical_result, write_result
+    result = publish(Path(args.attempt), expected_frames=receipt.get("frame_count", 900),
+                     diagnostic=diagnostic)
+    write_result(Path(args.attempt), physical_result(Path(args.attempt), result))
 
 
 if __name__ == "__main__":

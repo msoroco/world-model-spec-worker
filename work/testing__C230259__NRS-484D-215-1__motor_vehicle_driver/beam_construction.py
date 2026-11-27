@@ -78,7 +78,7 @@ def validate_site(packet_path: Path, case: dict, *, diagnostic: bool = False) ->
         raise ValueError("requested beam differs from exact case")
     if site.get("requested_contour") != case["requested_contour"] or site.get("requested_load") != case["requested_load"]:
         raise ValueError("contour/load comparison variable differs")
-    if site.get("requested_start_separation_ft") != case["requested_start_separation_ft"]:
+    if site.get("requested_start_body_gap_ft") != case["requested_start_body_gap_ft"]:
         raise ValueError("500-foot construction variable differs")
     routes = site.get("routes")
     if not isinstance(routes, dict) or set(routes) != {"ego", "oncoming"}:
@@ -103,6 +103,11 @@ def validate_site(packet_path: Path, case: dict, *, diagnostic: bool = False) ->
     for value in site["blueprints"].values():
         if not isinstance(value, str) or not value.startswith("vehicle."):
             raise ValueError("motor vehicle blueprint required")
+    body_radii = site.get("reviewed_body_radii_m")
+    if (not isinstance(body_radii, dict) or set(body_radii) != {"ego", "oncoming"} or
+            any(type(value) not in (int, float) or not math.isfinite(value) or value <= 0
+                for value in body_radii.values())):
+        raise ValueError("source-reviewed original vehicle body radii required")
     eye_offsets = site.get("driver_eye_offsets_m")
     if not isinstance(eye_offsets, dict) or set(eye_offsets) != {"ego", "oncoming"}:
         raise ValueError("source-reviewed driver-eye offsets required")
@@ -127,16 +132,21 @@ def validate_site(packet_path: Path, case: dict, *, diagnostic: bool = False) ->
                            len(site.get("projection_review_sha256", "")) != 64):
         raise ValueError("source-reviewed camera calibration and projection required")
     if case["branch"] == "oncoming":
-        feet = case["requested_start_separation_ft"]
+        feet = case["requested_start_body_gap_ft"]
         if type(feet) not in (int, float) or feet <= 0:
             raise ValueError("oncoming start separation required")
-        observed = math.dist(ego[0], oncoming[0]) / FEET_TO_METERS
+        observed = (math.dist(ego[0], oncoming[0]) -
+                    body_radii["ego"] - body_radii["oncoming"]) / FEET_TO_METERS
         if abs(observed - feet) > 10:
-            raise ValueError("reviewed initial oncoming separation differs from construction target")
+            raise ValueError("reviewed initial oncoming body separation differs from construction target")
     elif case["branch"] == "general":
         # Isolate the general illumination comparison from the special
         # within-500-foot oncoming condition for the entire reviewed route.
-        if min(math.dist(ego[0], oncoming[0]), math.dist(ego[-1], oncoming[-1])) <= 500 * FEET_TO_METERS + 10:
+        start_gap_ft = (math.dist(ego[0], oncoming[0]) -
+                        body_radii["ego"] - body_radii["oncoming"]) / FEET_TO_METERS
+        if abs(start_gap_ft - case["requested_start_body_gap_ft"]) > 10:
+            raise ValueError("general beam original start body gap differs")
+        if min(math.dist(ego[0], oncoming[0]), math.dist(ego[-1], oncoming[-1])) - sum(body_radii.values()) <= 500 * FEET_TO_METERS + 10:
             raise ValueError("general beam case enters oncoming 500-foot condition")
     else:
         raise ValueError("unknown exact beam branch")

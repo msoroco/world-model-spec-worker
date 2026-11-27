@@ -149,6 +149,9 @@ def capture(client, packet_path: Path, output: Path, case: dict, *, ticks: int =
                 raise ValueError("Native person/vehicle target spawn failed: " + role)
             actors["target_vehicle" if role == "vehicle" else "person"] = actor
             owned.append(actor)
+        for role in ("ego", "oncoming"):
+            if abs(_radius(actors[role]) - site["reviewed_body_radii_m"][role]) > .25:
+                raise ValueError("Native vehicle body differs from source-reviewed radius: " + role)
         requested = _requested_lights(carla, case["requested_beam"])
         actors["ego"].set_light_state(requested)
         cameras = {}

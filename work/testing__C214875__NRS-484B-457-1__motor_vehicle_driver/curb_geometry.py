@@ -46,7 +46,7 @@ def load_site(packet, case_id):
     for name in SOURCES:
         item = sources[name]
         relative = item.get("path")
-        if not isinstance(relative, str) or Path(relative).is_absolute() or ".." in Path(relative).parts:
+        if relative != name + ".source":
             raise ValueError("unsafe original curb source path")
         source = packet.parent / relative
         if source.is_symlink() or not source.is_file() or sha(source) != item.get("sha256"):
@@ -105,7 +105,9 @@ def measure_original(attempt, case_id, *, diagnostic=False):
     seal = json.loads(seal_path.read_text())
     mapping = json.loads(mapping_path.read_text())
     rows = [json.loads(line) for line in motion.read_text().splitlines() if line]
-    count = 9 if diagnostic else 900
+    count = seal.get("frame_count")
+    if count not in ((9, 900) if diagnostic else (900,)):
+        raise ValueError("original curb diagnostic frame count differs")
     if (seal.get("case_id") != case_id or seal.get("frame_count") != count or
             seal.get("motion_sha256") != sha(motion) or seal.get("site_sha256") != sha(original / "site.json") or
             mapping.get("case_id") != case_id or len(mapping.get("frames", [])) != count or len(rows) != count):
@@ -137,11 +139,22 @@ def measure_original(attempt, case_id, *, diagnostic=False):
                                                      site["right_curb_xy_m"]))
     if not stopped:
         raise ValueError("original stopped or parked interval absent")
+    plan_path = original / "plan.json"
+    if plan_path.is_symlink() or not plan_path.is_file():
+        raise ValueError("Missing required source: original-attempt/plan.json")
+    plan = json.loads(plan_path.read_text())
+    if plan.get("case_id") != case_id or plan.get("activity_request") not in ("park", "stop"):
+        raise ValueError("original parking activity plan identity differs")
+    if plan["activity_request"] == "park" and not parked:
+        raise ValueError("original parking-brake interval absent")
+    if plan["activity_request"] == "stop" and not stopped_only:
+        raise ValueError("original stopped-without-parking-brake interval absent")
     return {"case_id": case_id, "stopped_frames": stopped,
             "parking_brake_frames": parked, "stopped_without_parking_brake_frames": stopped_only,
             "max_right_wheel_distance_inches": max(m["max_right_wheel_distance_inches"] for m in measurements),
             "max_wheel_curb_alignment_deg": max(m["wheel_curb_alignment_deg"] for m in measurements),
             "source_hashes": {"original-attempt/site.json": sha(original / "site.json"),
+                              "original-attempt/plan.json": sha(plan_path),
                               "original-attempt/wheel-motion.jsonl": sha(motion),
                               "original-attempt/wheel-seal.json": sha(seal_path),
                               "original-attempt/frame-map.json": sha(mapping_path)},

@@ -30,7 +30,7 @@ def fixture(root):
     site.update({"case_id": CASE["case_id"], "requested_beam": CASE["requested_beam"],
                  "requested_contour": CASE["requested_contour"],
                  "requested_load": CASE["requested_load"],
-                 "requested_start_separation_ft": CASE["requested_start_separation_ft"]})
+                 "requested_start_body_gap_ft": CASE["requested_start_body_gap_ft"]})
     site_path.write_text(json.dumps(site) + "\n")
     config = {"assignment_id": ROOT.name, "law_id": "NRS-484D-215-1",
               "selected_case_id": CASE["case_id"], "case_plan": CASE}

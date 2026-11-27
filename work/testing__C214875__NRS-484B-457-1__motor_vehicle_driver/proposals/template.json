@@ -1,0 +1,70 @@
+{
+  "actor": "motor_vehicle_driver",
+  "law_id": "NRS-484B-457-1",
+  "parameter_refs": [
+    {
+      "kind": "world_setup",
+      "name": "right_wheel_distance_inches",
+      "range_or_domain": "17, 18 or 19 inch target from reviewed right curb"
+    },
+    {
+      "kind": "world_setup",
+      "name": "parallel_angle_target_deg",
+      "range_or_domain": "0 or 8 degree construction target; no legal cutoff"
+    },
+    {
+      "kind": "controller",
+      "name": "activity",
+      "range_or_domain": "original park or stop"
+    }
+  ],
+  "quote": "Except as otherwise provided in this section [(2) and (3) appended below], every vehicle stopped or parked upon a highway where there are adjacent curbs must be stopped or parked with the right-hand wheels of the vehicle parallel to and within 18 inches of the right-hand curb. Local authorities may by ordinance permit parking of vehicles with the left-hand wheels adjacent to and within 18 inches of the left-hand curb of a one-way highway. Local authorities may by ordinance permit angle parking on any highway, except that angle parking must not be permitted on any highway constructed and maintained by the Department of Transportation under the authority granted by chapter 408 of NRS unless the Department has determined that the highway is of sufficient width to permit angle parking without interfering with the free movement of traffic.",
+  "structure": {
+    "activation": {
+      "condition": "An ordinary vehicle is stopped or parked on a source-qualified highway with adjacent curbs.",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "description": "Review location-specific left-curb ordinance applicability; not selected here.",
+        "source_clause": "Local authorities may by ordinance permit parking of vehicles with the left-hand wheels adjacent to and within 18 inches of the left-hand curb of a one-way highway."
+      },
+      {
+        "description": "Review angle-parking ordinance and Department highway determination; not selected here.",
+        "source_clause": "Local authorities may by ordinance permit angle parking on any highway"
+      }
+    ],
+    "judgment_calls_needed": [
+      {
+        "note": "Review public highway and adjacent right curb from original site sources.",
+        "phrase": "upon a highway where there are adjacent curbs"
+      },
+      {
+        "note": "Original wheel-axis/curb angle is measured; the statute supplies no numerical parallel tolerance.",
+        "phrase": "parallel"
+      },
+      {
+        "note": "Review location-specific left-curb and angle-parking ordinances and DOT status.",
+        "phrase": "Except as otherwise provided in this section"
+      }
+    ],
+    "law_id": "NRS-484B-457-1",
+    "obligation": {
+      "description": "Keep right-hand wheels parallel to and within 18 inches of the right-hand curb under the selected default branch.",
+      "numeric_conditions": [
+        {
+          "operator": "<=",
+          "unit": "in",
+          "value": 18,
+          "variable": "right_wheel_curb_distance"
+        }
+      ],
+      "type": "must"
+    },
+    "timing": {
+      "description": "Original 20 Hz stopped or parked interval within a 45-second episode.",
+      "numeric_conditions": []
+    }
+  },
+  "template_id": "NRS-484B-457-1@motor_vehicle_driver"
+}

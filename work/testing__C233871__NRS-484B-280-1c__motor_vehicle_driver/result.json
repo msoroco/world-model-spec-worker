@@ -1,12 +1,26 @@
 {
   "assignment_id": "testing__C233871__NRS-484B-280-1c__motor_vehicle_driver",
   "input_sha256": "04757220cd76fe9969d69c4d6e627bcbec36a0e92911f6c0e8a97197858e24ee",
-  "status": "partial",
-  "readiness_kind": "source_inventory",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
-  "tests": [],
-  "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+  "tests": [
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c233871-runtime\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C233871__NRS-484B-280-1c__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-tests.log",
+      "sha256": "0869ae1d29f33c828e3ae4ec8c3527141e5a1b80852fb073b1c02a36d5389094"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c233871-semantic\" PYTHONPATH=\"$PWD/runtime/scenario_pipeline:$PWD/runtime/python\" .venv-cpu/bin/python work/testing__C233871__NRS-484B-280-1c__motor_vehicle_driver/semantic_check.py",
+      "exit_code": 0,
+      "log": "semantic-stage-check.log",
+      "sha256": "c4a35f7f3b3f6402525f800336ac095c82a189c39c0f0da512ed54bb3d88fe79"
+    }
   ],
-  "reason": "Source and accepted-metadata inventory complete; exact branch decomposition, evidence sufficiency, executable constructions/controllers, case-specific finalizers, semantic proposals, source-bound compatibility proofs, and independent delivery/comparison audits remain CPU work."
+  "remaining_gpu_checks": [
+    "Verify original Native road/no-sidewalk state, distinct on-road pedestrian, vehicle and pedestrian motion, scripted-driver input trace, all four actual camera pixels, complete duration and independent physical/canonical acceptance. Human cognition and statutory proper caution remain open legal judgments."
+  ],
+  "reason": null,
+  "first_gpu_delivery_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c233871-local\" PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C233871__NRS-484B-280-1c__motor_vehicle_driver --case testing__C233871__NRS-484B-280-1c__motor_vehicle_driver__prompt_brake --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
 }

@@ -12,7 +12,8 @@ PLAN = json.loads(PLAN_PATH.read_text())
 ASSIGNMENT = PLAN["assignment_id"]
 SOURCES = ("beam_measure.py", "beam_construction.py", "beam_camera.py",
            "beam_native.py", "beam_pixels.py", "beam_projection.py",
-           "analysis.py", "beam_publication.py", "runner.py", "case-plan.json")
+           "analysis.py", "beam_publication.py", "delivery_audit.py",
+           "comparison_audit.py", "runner.py", "case-plan.json")
 CHANNELS = (
     ("original_actor_state", "Original Native participant bodies, motion, driver-eye geometry and lamp readback"),
     ("original_four_view_frame_map", "Four RGB sensor frames joined to each original Native tick"),

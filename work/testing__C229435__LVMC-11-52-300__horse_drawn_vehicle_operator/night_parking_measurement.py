@@ -91,7 +91,7 @@ def measure(source_dir, contract):
         mapped = mapping[index]
         if (mapped.get("carla_frame") != number or mapped.get("video_frame") != index or
                 type(mapped.get("time_s")) not in (int, float) or
-                not math.isclose(mapped["time_s"], index / FPS, abs_tol=.001)):
+                not math.isclose(mapped["time_s"] - mapping[0]["time_s"], index / FPS, abs_tol=.001)):
             raise ValueError("original video/frame/time join mismatch")
         if prior_number is not None:
             if number != prior_number + 1 or not math.isclose((instant - prior_time).total_seconds(), 1 / FPS, abs_tol=.001):

@@ -8,6 +8,7 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import datetime as dt
 from pathlib import Path
 
 FPS = 20
@@ -91,6 +92,15 @@ def validate_site(packet_path, source_root):
             raise ValueError("missing Native actor blueprint: " + label)
     if native["carriage_blueprint"] == native["other_vehicle_blueprint"] and not native.get("carriage_physical_customization_source"):
         raise ValueError("carriage needs physical differentiation and provenance")
+    try:
+        dt.date.fromisoformat(packet["civil_date"])
+    except (KeyError, TypeError, ValueError) as error:
+        raise ValueError("reviewed civil date required") from error
+    _point(geometry.get("responsible_person_xy_m"), "responsible person placement")
+    classification = packet.get("classification")
+    if not isinstance(classification, dict) or not all(type(classification.get(key)) is bool for key in
+            ("transport_capable", "self_propelled", "vehicle_exclusions_checked")):
+        raise ValueError("reviewed vehicle physical classification required")
     return packet
 
 

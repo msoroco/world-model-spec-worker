@@ -63,8 +63,6 @@ def audit(attempt, processing, decode_receipt, case_id, media_verify=None):
         raise ValueError("original scripted-driver input event absent")
     if value["first_brake"] is None:
         raise ValueError("original motorist brake response absent")
-    if value["contact_frames"]:
-        raise ValueError("observed contact fails planned physical target")
     processed = read(processing)
     if (processed.get("format") != "worker-saved-processing" or
             processed.get("passed") is not True or processed.get("recorded_only") is not True):

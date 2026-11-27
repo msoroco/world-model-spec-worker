@@ -7,6 +7,7 @@ import json
 import tempfile
 import unittest
 import zipfile
+import subprocess
 from pathlib import Path
 
 from PIL import Image
@@ -75,6 +76,21 @@ class BeamPixelTests(unittest.TestCase):
         path.write_text("".join(json.dumps(row) + "\n" for row in rows))
         hashes = {**self.hashes, path.name: hashlib.sha256(path.read_bytes()).hexdigest()}
         with self.assertRaisesRegex(ValueError, "oncoming-eye ROIs"):
+            measure(self.root, hashes, expected_frames=9, diagnostic=True)
+
+    def test_diagnostic_movie_pixels_and_hashes(self):
+        for view, color in (("approach", "red"), ("driver_reference", "blue")):
+            subprocess.run(["ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-f", "lavfi",
+                            "-i", "color=c=" + color + ":s=1280x720:r=20", "-frames:v", "9",
+                            "-c:v", "ffv1", str(self.root / (view + ".mkv"))], check=True)
+        hashes = {name: hashlib.sha256((self.root / name).read_bytes()).hexdigest()
+                  for name in ("roi-frames.jsonl", "camera-frame-map.jsonl", "approach.mkv", "driver_reference.mkv")}
+        value = measure(self.root, hashes, expected_frames=9, diagnostic=True)
+        self.assertEqual(value["frame_count"], 9)
+        self.assertGreater(value["rows"][0]["person_mean_luma_8bit"], 40)
+        self.assertGreater(value["rows"][0]["oncoming_eye_mean_luma_8bit"], 15)
+        (self.root / "approach.mkv").write_bytes(b"changed")
+        with self.assertRaisesRegex(ValueError, "missing or changed"):
             measure(self.root, hashes, expected_frames=9, diagnostic=True)
 
 

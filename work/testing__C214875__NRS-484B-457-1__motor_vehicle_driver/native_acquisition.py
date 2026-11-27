@@ -28,18 +28,26 @@ def _scratch():
     return root
 
 
-def capture(operator, site_packet, case_id, destination, *, fallback=False, diagnostic=False):
+def capture(operator, site_packet, case_id, destination, *, fallback=False, diagnostic=False,
+            diagnostic_full_duration=False,
+            after_tick=None):
     """Capture immutable original readback; targets never become observations."""
     destination = Path(destination)
-    if destination.exists():
+    if destination.exists() and (destination / "original-attempt").exists():
         raise ValueError("refusing to replace original attempt")
+    if ".runtime-work" not in destination.resolve().parts:
+        raise ValueError("original attempt must be under .runtime-work")
+    if after_tick is not None and not callable(after_tick):
+        raise ValueError("same-tick capture callback invalid")
     site = load_site(site_packet, case_id)
     plan = build_plan(site_packet, case_id, fallback=fallback)
     map_source = Path(site_packet).parent / site["sources"]["native_opendrive_map"]["path"]
     original_map = operator.get_opendrive_bytes()
     if not isinstance(original_map, bytes) or hashlib.sha256(original_map).hexdigest() != site["sources"]["native_opendrive_map"]["sha256"]:
         raise ValueError("Native OpenDRIVE differs from reviewed original map")
-    frame_count = 9 if diagnostic else 900
+    if diagnostic_full_duration and not diagnostic:
+        raise ValueError("full-duration diagnostic requires diagnostic provenance")
+    frame_count = 900 if diagnostic_full_duration or not diagnostic else 9
     root = Path(tempfile.mkdtemp(prefix="c214875-native-", dir=_scratch()))
     original = root / "original-attempt"
     original.mkdir()
@@ -72,6 +80,8 @@ def capture(operator, site_packet, case_id, destination, *, fallback=False, diag
             if frames and (native_frame != frames[-1]["native_frame"] + 1 or
                            abs(native_time - frames[-1]["native_time_s"] - .05) > .001):
                 raise ValueError("original Native frame gap or cadence drift")
+            if after_tick is not None:
+                after_tick(native_frame, native_time)
             wheels = operator.read_right_wheels(native_frame)
             if (not isinstance(wheels, dict) or wheels.get("frame") != native_frame or
                     wheels.get("time_s") != native_time or wheels.get("source_kind") != "original_native" or
@@ -110,11 +120,17 @@ def capture(operator, site_packet, case_id, destination, *, fallback=False, diag
     finally:
         for archive in archives.values():
             archive.close()
-        if started:
-            try:
-                operator.brake()
-            finally:
-                operator.cleanup()
+        try:
+            graph = getattr(operator, "pipeline_capture", None)
+            if graph is not None:
+                graph.close(confirmed=len(rows) == frame_count)
+        finally:
+            if started:
+                try:
+                    operator.brake()
+                finally:
+                    operator.cleanup()
+                    operator.capture_cleanup_complete = True
     try:
         motion = original / "wheel-motion.jsonl"
         motion.write_text("\n".join(json.dumps(row, sort_keys=True, separators=(",", ":")) for row in rows) + "\n")
@@ -136,7 +152,11 @@ def capture(operator, site_packet, case_id, destination, *, fallback=False, diag
             "camera_sha256": {name: hashlib.sha256((original / (name + ".zip")).read_bytes()).hexdigest()
                               for name in CAMERAS}})
         destination.parent.mkdir(parents=True, exist_ok=True)
-        os.replace(root, destination)
+        if destination.exists():
+            os.replace(original, destination / "original-attempt")
+            shutil.rmtree(root)
+        else:
+            os.replace(root, destination)
         return measured
     except BaseException:
         shutil.rmtree(root, ignore_errors=True)

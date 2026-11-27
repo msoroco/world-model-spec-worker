@@ -5,18 +5,24 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import shutil
 import tempfile
 import unittest
 
 from curb_geometry import ASSIGNMENT, SOURCES
 from native_acquisition import CAMERAS, capture
 from audit_original_attempt import audit
+from audit_comparisons import PAIRS, compare
+from analysis import build as build_analysis
 
 
 class FakeOperator:
-    def __init__(self, map_bytes, *, drop_camera=False):
+    def __init__(self, map_bytes, *, drop_camera=False, distance_inches=18, angle_deg=0, parked=True):
         self.map_bytes = map_bytes
         self.drop_camera = drop_camera
+        self.distance_inches = distance_inches
+        self.angle_deg = angle_deg
+        self.parked = parked
         self.index = -1
         self.started = self.braked = self.cleaned = False
 
@@ -36,11 +42,15 @@ class FakeOperator:
 
     def read_right_wheels(self, frame):
         assert frame == 100 + self.index
+        import math
+        radians = math.radians(self.angle_deg)
+        front_y = self.distance_inches * .0254
+        rear_y = front_y - 2.7 * math.sin(radians)
         return {"frame": frame, "time_s": 10 + self.index / 20,
                 "source_kind": "original_native", "ego_vehicle_id": "ego-original-17",
-                "speed_mps": 0, "parking_brake_applied": True,
-                "right_front_wheel_xy_m": [3, .4572],
-                "right_rear_wheel_xy_m": [0, .4572]}
+                "speed_mps": 0, "parking_brake_applied": self.parked,
+                "right_front_wheel_xy_m": [2.7 * math.cos(radians), front_y],
+                "right_rear_wheel_xy_m": [0, rear_y]}
 
     def read_cameras(self, frame):
         result = {name: {"frame": frame, "time_s": 10 + self.index / 20,
@@ -96,6 +106,20 @@ class NativeAcquisitionTests(unittest.TestCase):
         self.assertFalse(json.loads((target / "original-attempt" / "inventory.json").read_text())["physical_completion"])
         audited = audit(target, self.case)
         self.assertEqual(audited["structural_status"], "passed")
+        (target / "config.json").write_text(json.dumps({"selected_case_id": self.case}) + "\n")
+        analyzed = build_analysis(target)
+        self.assertEqual(analyzed["measurements"]["curb_requirement_1"]["value"]["statutory_distance_inches"], 18)
+        self.assertFalse(analyzed["legal_verdict_claimed"])
+        with self.assertRaisesRegex(ValueError, "diagnostic fixture cannot attest"):
+            audit(target, self.case, require_native_attestation=True)
+
+    def test_full_duration_synthetic_readback_is_still_diagnostic(self):
+        target = self.root / "full-duration-attempt"
+        measured = capture(FakeOperator(self.map_bytes), self.site, self.case,
+                           target, diagnostic=True, diagnostic_full_duration=True)
+        self.assertEqual(len(measured["stopped_frames"]), 900)
+        self.assertEqual(len(measured["parking_brake_frames"]), 900)
+        self.assertEqual(audit(target, self.case)["frame_count"], 900)
         with self.assertRaisesRegex(ValueError, "diagnostic fixture cannot attest"):
             audit(target, self.case, require_native_attestation=True)
 
@@ -115,8 +139,57 @@ class NativeAcquisitionTests(unittest.TestCase):
         self.assertTrue(operator.braked and operator.cleaned)
         self.assertFalse(target.exists())
 
+    def test_capture_seal_failure_still_releases_native_owner(self):
+        class FailedGraph:
+            def close(self, *, confirmed):
+                raise ValueError("synthetic capture sealing failure")
+
+        operator = FakeOperator(self.map_bytes)
+        operator.pipeline_capture = FailedGraph()
+        with self.assertRaisesRegex(ValueError, "capture sealing failure"):
+            capture(operator, self.site, self.case, self.root / "attempt", diagnostic=True)
+        self.assertTrue(operator.braked and operator.cleaned)
+
     def test_stale_original_map_rejected_before_start(self):
         operator = FakeOperator(b"different map")
         with self.assertRaisesRegex(ValueError, "OpenDRIVE differs"):
             capture(operator, self.site, self.case, self.root / "attempt", diagnostic=True)
         self.assertFalse(operator.started)
+
+    def test_all_controlled_comparisons_and_changed_fixed_source(self):
+        made = {}
+        variants = {name for pair in PAIRS.values() for name in pair}
+        for variant in variants:
+            case = ASSIGNMENT + "__" + variant
+            site_root = self.root / variant
+            site_root.mkdir()
+            for name in SOURCES:
+                shutil.copy2(self.root / (name + ".source"), site_root / (name + ".source"))
+            site_data = json.loads(self.site.read_text())
+            site_data["case_id"] = case
+            site = site_root / "site.json"
+            site.write_text(json.dumps(site_data, sort_keys=True) + "\n")
+            distance = 19 if "19in" in variant else 17 if "17in" in variant else 18
+            operator = FakeOperator(self.map_bytes, distance_inches=distance,
+                                    angle_deg=8 if "skew" in variant else 0,
+                                    parked=variant.startswith("park"))
+            attempt = self.root / ("attempt-" + variant)
+            capture(operator, site, case, attempt, diagnostic=True)
+            made[variant] = attempt
+        for comparison_id, pair in PAIRS.items():
+            result = compare(comparison_id, made[pair[0]], made[pair[1]])
+            self.assertTrue(result["fixed_source_and_capture_checked"])
+            self.assertFalse(result["physical_acceptance"])
+        fallback = self.root / "attempt-boundary-fallback"
+        capture(FakeOperator(self.map_bytes, distance_inches=18),
+                self.root / "park_18in_parallel" / "site.json",
+                ASSIGNMENT + "__park_18in_parallel", fallback,
+                fallback=True, diagnostic=True)
+        with self.assertRaisesRegex(ValueError, "fixed original capture context differs"):
+            compare("inside_vs_boundary", made["park_17in_parallel"], fallback)
+        changed = made["park_19in_parallel"] / "original-attempt" / "site.json"
+        site_data = json.loads(changed.read_text())
+        site_data["reviewed_assertions"]["residence_district"] = False
+        changed.write_text(json.dumps(site_data) + "\n")
+        with self.assertRaisesRegex(ValueError, "source hash differs: site"):
+            compare("boundary_vs_outside", made["park_18in_parallel"], made["park_19in_parallel"])

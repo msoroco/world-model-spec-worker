@@ -82,13 +82,21 @@ def publish(attempt: Path, *, expected_frames: int = 900,
             for row in analyze_motion_rows(root, receipt, expected_frames, config["case_plan"])],
                  times, "m"),
     ]
+    context_path = root / "reviewed_highway_time_lamp_and_contour.json"
+    if context_path.exists():
+        raise ValueError("selected reviewed site context already exists")
+    context_path.write_text(json.dumps({"reviewed_site": json.loads(
+        _source(root, "site-packet.json").read_text())}, sort_keys=True) + "\n")
+    evidence.append({"name": "reviewed_highway_time_lamp_and_contour",
+                     "unit": "structured record", "reference": context_path.name,
+                     "sha256": _hash(context_path)})
     values = report["measurements"]
     measured = {"frame_count": expected_frames,
                 "within_500ft_frame_count": values["beam_requirement_2"]["value"]["within_500ft_frame_count"],
                 "original_lamp_readback_count": len(values["beam_requirement_3"]["value"]["lamp_readback_bits_by_frame"])}
     target = {"target": "requested_beam_and_oncoming_geometry",
               "requested": {"beam": config["case_plan"]["requested_beam"],
-                            "start_separation_ft": config["case_plan"]["requested_start_separation_ft"]},
+                            "start_separation_ft": config["case_plan"]["requested_start_body_gap_ft"]},
               "measured": measured,
               "method": "original 20 Hz actor geometry, lamp readback and camera pixels",
               "tolerance": "complete original 900-frame interval; no legal glare or safe-distance tolerance",

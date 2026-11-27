@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-INPUTS = ["night-parking-sources.json", "context.json", "classification.json", "activity.json", "trace.jsonl", "video_frames.jsonl"]
+INPUTS = ["night-parking-sources.json", "context.json", "classification.json", "activity.json", "night-parking-trace.jsonl", "video_frames.jsonl"]
 
 
 def main():

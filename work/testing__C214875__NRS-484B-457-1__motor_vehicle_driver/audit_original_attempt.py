@@ -1,6 +1,7 @@
 """Independent source and frame audit for saved right-curb Native attempts."""
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 from pathlib import Path
@@ -22,7 +23,9 @@ def audit(attempt, case_id, *, require_native_attestation=False):
     root = Path(attempt) / "original-attempt"
     inventory = _read(root / "inventory.json")
     diagnostic = inventory.get("diagnostic_fixture") is True
-    count = 9 if diagnostic else 900
+    count = inventory.get("frame_count")
+    if count not in ((9, 900) if diagnostic else (900,)):
+        raise ValueError("original right-curb diagnostic frame count differs")
     if require_native_attestation and diagnostic:
         raise ValueError("diagnostic fixture cannot attest physical Native capture")
     if (inventory.get("case_id") != case_id or inventory.get("source_kind") != "original_native" or
@@ -77,3 +80,22 @@ def audit(attempt, case_id, *, require_native_attestation=False):
             "frame_count": count, "camera_count": len(CAMERAS),
             "diagnostic_fixture": diagnostic, "physical_completion": False,
             "legal_judgment": "unresolved", "measurement": measurement}
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--attempt", type=Path, required=True)
+    parser.add_argument("--case-id", required=True)
+    parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--require-native-attestation", action="store_true")
+    args = parser.parse_args()
+    if args.output.exists():
+        raise ValueError("refusing to replace independent original audit")
+    result = audit(args.attempt, args.case_id,
+                   require_native_attestation=args.require_native_attestation)
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    args.output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
+
+
+if __name__ == "__main__":
+    main()

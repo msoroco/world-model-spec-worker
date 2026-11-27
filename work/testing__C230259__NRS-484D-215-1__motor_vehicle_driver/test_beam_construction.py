@@ -46,8 +46,8 @@ class Adapter:
 def site_for(root: Path, case: dict):
     source = root / "original-map.xodr"
     source.write_text("reviewed OpenDRIVE source\n")
-    feet = case["requested_start_separation_ft"] or 1400
-    separation = feet * .3048
+    feet = case["requested_start_body_gap_ft"] or 1400
+    separation = feet * .3048 + 4
     return {"format": "beam-road-site-v1", "case_id": case["case_id"],
             "cell_id": "C230259", "actor": "motor_vehicle_driver",
             "diagnostic_fixture": True, "source_refs": [{"path": str(source), "sha256": hashlib.sha256(source.read_bytes()).hexdigest()}],
@@ -55,13 +55,14 @@ def site_for(root: Path, case: dict):
             "requested_beam": case["requested_beam"],
             "requested_contour": case["requested_contour"],
             "requested_load": case["requested_load"],
-            "requested_start_separation_ft": case["requested_start_separation_ft"],
+            "requested_start_body_gap_ft": case["requested_start_body_gap_ft"],
             "routes": {"ego": [[0, 0, 0], [100, 0, 0]],
                        "oncoming": [[separation, 0, 0], [separation - 100, 0, 0]]},
             "highway_or_shoulder_polygon_xy_m": [[-10, -5], [250, -5], [250, 5], [-10, 5]],
             "targets": {"person": {"blueprint_id": "walker.pedestrian.0001", "transform_m": [45, 1, 0]},
                         "vehicle": {"blueprint_id": "vehicle.audi.a2", "transform_m": [75, 1, 0]}},
             "blueprints": {"ego": "vehicle.audi.a2", "oncoming": "vehicle.tesla.model3"},
+            "reviewed_body_radii_m": {"ego": 2.0, "oncoming": 2.0},
             "driver_eye_offsets_m": {"ego": [0.2, 0.0, 1.4], "oncoming": [0.2, 0.0, 1.4]},
             "speed_requests_mps": {"ego": 2.0, "oncoming": 2.0},
             "cameras": {view: {"blueprint_id": "sensor.camera.rgb", "transform_m": [0, 0, 2], "fov_deg": 20 if view == "driver_reference" else 90}

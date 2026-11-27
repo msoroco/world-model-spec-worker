@@ -8,9 +8,9 @@ ROOT = Path(__file__).resolve().parent
 PLAN = json.loads((ROOT / "case-plan.json").read_text())
 SPEC = {
     0: ("measure_qualifying", ["site-packet.json", "actor-state.jsonl", "camera-frame-map.jsonl"]),
-    1: ("measure_revelation", ["actor-state.jsonl", "roi-frames.jsonl", "approach.zip", "camera-frame-map.jsonl"]),
+    1: ("measure_revelation", ["actor-state.jsonl", "roi-frames.jsonl", "approach.mkv", "camera-frame-map.jsonl"]),
     2: ("measure_oncoming_distance", ["actor-state.jsonl", "camera-frame-map.jsonl", "site-packet.json"]),
-    3: ("measure_glare", ["roi-frames.jsonl", "driver_reference.zip", "camera-frame-map.jsonl", "actor-state.jsonl"]),
+    3: ("measure_glare", ["roi-frames.jsonl", "driver_reference.mkv", "camera-frame-map.jsonl", "actor-state.jsonl"]),
     4: ("measure_lowermost", ["site-packet.json", "actor-state.jsonl", "roi-frames.jsonl"]),
 }
 

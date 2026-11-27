@@ -30,6 +30,7 @@ class SiteTests(unittest.TestCase):
                     "municipal_polygon_xy_m": [[-5, -5], [35, -5], [35, 15], [-5, 15]],
                     "carriage_park_xy_m": [5, 5],
                     "other_vehicle_xy_m": [20, 5],
+                    "responsible_person_xy_m": [3, 5],
                     "carriage_body_dimensions_m": [4, 2],
                     "other_vehicle_body_dimensions_m": [4, 2],
                 },
@@ -37,6 +38,8 @@ class SiteTests(unittest.TestCase):
                     "carriage_transport_capable", "carriage_motive_power", "vehicle_exclusions",
                     "responsible_person", "street_public_access", "municipal_jurisdiction")},
                 "native_actors": {"carriage_blueprint": "custom-carriage", "other_vehicle_blueprint": "car", "responsible_person_blueprint": "walker"},
+                "civil_date": "2026-11-27",
+                "classification": {"transport_capable": True, "self_propelled": False, "vehicle_exclusions_checked": True},
             }
             packet_path = root / "site.json"
             packet_path.write_text(json.dumps(packet) + "\n")

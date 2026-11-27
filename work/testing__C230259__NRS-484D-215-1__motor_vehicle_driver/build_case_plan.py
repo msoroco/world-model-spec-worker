@@ -26,13 +26,13 @@ def build() -> dict:
     if frozen["assignment_id"] != ASSIGNMENT or frozen["law"]["id"] != "NRS-484D-215-1":
         raise ValueError("frozen identity differs")
     gap = "no-accepted-original-recording"
-    # A distance case requests a starting separation. Measured Native body gap
+    # A distance case requests a starting body separation. Measured Native body gap
     # and eye-to-eye separation decide which original frames are in the 500 ft
     # window. The low beam name is an API request, not the statutory definition.
     variants = [
-        ("general_high", "general", "high", None, "level", "standard"),
-        ("general_low", "general", "low", None, "level", "standard"),
-        ("general_dark", "general", "off", None, "level", "standard"),
+        ("general_high", "general", "high", 1400, "level", "standard"),
+        ("general_low", "general", "low", 1400, "level", "standard"),
+        ("general_dark", "general", "off", 1400, "level", "standard"),
         ("oncoming_499_high", "oncoming", "high", 499, "level", "standard"),
         ("oncoming_499_low", "oncoming", "low", 499, "level", "standard"),
         ("oncoming_500_low", "oncoming", "low", 500, "level", "standard"),
@@ -45,7 +45,7 @@ def build() -> dict:
             "case_id": ASSIGNMENT + "__" + suffix,
             "kind": "delivery", "target_law_id": frozen["law_id"],
             "gap_ids": [gap], "branch": branch,
-            "requested_beam": beam, "requested_start_separation_ft": feet,
+            "requested_beam": beam, "requested_start_body_gap_ft": feet,
             "requested_contour": contour, "requested_load": load,
             "physical_status": "unverified",
             "physical_risk": "Actual beam distribution, eye glare, person and vehicle visibility and Native motion require original pixels and photometric review.",
@@ -57,8 +57,8 @@ def build() -> dict:
         ("general_beam_distribution", "general_high", "general_low", ["requested high versus low distribution"]),
         ("general_no_distribution", "general_low", "general_dark", ["requested low versus off distribution"]),
         ("near_oncoming_glare", "oncoming_499_high", "oncoming_499_low", ["requested high versus low distribution"]),
-        ("five_hundred_feet_lower", "oncoming_499_low", "oncoming_500_low", ["requested start separation 499 versus 500 feet"]),
-        ("five_hundred_feet_upper", "oncoming_500_low", "oncoming_501_low", ["requested start separation 500 versus 501 feet"]),
+        ("five_hundred_feet_lower", "oncoming_499_low", "oncoming_500_low", ["requested start body gap 499 versus 500 feet"]),
+        ("five_hundred_feet_upper", "oncoming_500_low", "oncoming_501_low", ["requested start body gap 500 versus 501 feet"]),
         ("lowermost_contour_load", "oncoming_499_low", "oncoming_499_low_crest_loaded", ["source-reviewed level versus crest contour", "standard versus loaded vehicle configuration"]),
     ]
     current["cases"] = cases

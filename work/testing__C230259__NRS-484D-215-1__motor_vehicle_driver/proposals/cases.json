@@ -1,0 +1,1023 @@
+{
+  "cell_id": "C230259",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "cases": [
+    {
+      "case_id": "testing__C230259__NRS-484D-215-1__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Common source-reviewed road, time, actor and camera setup before beam and distance variables change.",
+      "variable_assignments": {
+        "requested_beam": {
+          "kind": "controller",
+          "value": "low"
+        },
+        "requested_start_body_gap_ft": {
+          "kind": "world_setup",
+          "value": 1400
+        },
+        "requested_contour": {
+          "kind": "world_setup",
+          "value": "level"
+        },
+        "requested_load": {
+          "kind": "world_setup",
+          "value": "standard"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Original Native participant bodies, motion, driver-eye geometry and lamp readback",
+            "name": "original_actor_state",
+            "reference_frame": "original Native world frame and synchronized camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames during 45-second road travel",
+            "uncertainty": "20 Hz sampling, source-reviewed map/calibration and image projection precision",
+            "unit": "structured record"
+          },
+          {
+            "method": "Four RGB sensor frames joined to each original Native tick",
+            "name": "original_four_view_frame_map",
+            "reference_frame": "original Native world frame and synchronized camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames during 45-second road travel",
+            "uncertainty": "20 Hz sampling, source-reviewed map/calibration and image projection precision",
+            "unit": "structured record"
+          },
+          {
+            "method": "Original projected person, vehicle and oncoming-eye ROI pixel frames",
+            "name": "original_beam_pixels",
+            "reference_frame": "original Native world frame and synchronized camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames during 45-second road travel",
+            "uncertainty": "20 Hz sampling, source-reviewed map/calibration and image projection precision",
+            "unit": "structured record"
+          },
+          {
+            "method": "Original frame-by-frame body and driver-eye separation",
+            "name": "original_oncoming_distance",
+            "reference_frame": "original Native world frame and synchronized camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames during 45-second road travel",
+            "uncertainty": "20 Hz sampling, source-reviewed map/calibration and image projection precision",
+            "unit": "structured record"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed reviewed site and original Native map/clock packet",
+            "name": "reviewed_highway_time_lamp_and_contour",
+            "unit": "structured record"
+          }
+        ],
+        "limitations": [
+          "CARLA lamp bits are requests and readbacks, not calibrated beam distribution.",
+          "Original RGB luma is not a legal safe-distance or glare threshold.",
+          "NRS 484D.210(2) lowermost specification requires independent source review."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "safe distance",
+        "glaring rays are not projected into the eyes",
+        "lowermost distribution of light"
+      ]
+    },
+    {
+      "case_id": "testing__C230259__NRS-484D-215-1__motor_vehicle_driver__general_high",
+      "target_law_id": "NRS-484D-215-1",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Source-bound exact beam, oncoming distance, contour and loading probe; actual physical outcome unverified.",
+      "variable_assignments": {
+        "requested_beam": {
+          "kind": "controller",
+          "value": "high"
+        },
+        "requested_start_body_gap_ft": {
+          "kind": "world_setup",
+          "value": 1400
+        },
+        "requested_contour": {
+          "kind": "world_setup",
+          "value": "level"
+        },
+        "requested_load": {
+          "kind": "world_setup",
+          "value": "standard"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Original Native participant bodies, motion, driver-eye geometry and lamp readback",
+            "name": "original_actor_state",
+            "reference_frame": "original Native world frame and synchronized camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames during 45-second road travel",
+            "uncertainty": "20 Hz sampling, source-reviewed map/calibration and image projection precision",
+            "unit": "structured record"
+          },
+          {
+            "method": "Four RGB sensor frames joined to each original Native tick",
+            "name": "original_four_view_frame_map",
+            "reference_frame": "original Native world frame and synchronized camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames during 45-second road travel",
+            "uncertainty": "20 Hz sampling, source-reviewed map/calibration and image projection precision",
+            "unit": "structured record"
+          },
+          {
+            "method": "Original projected person, vehicle and oncoming-eye ROI pixel frames",
+            "name": "original_beam_pixels",
+            "reference_frame": "original Native world frame and synchronized camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames during 45-second road travel",
+            "uncertainty": "20 Hz sampling, source-reviewed map/calibration and image projection precision",
+            "unit": "structured record"
+          },
+          {
+            "method": "Original frame-by-frame body and driver-eye separation",
+            "name": "original_oncoming_distance",
+            "reference_frame": "original Native world frame and synchronized camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames during 45-second road travel",
+            "uncertainty": "20 Hz sampling, source-reviewed map/calibration and image projection precision",
+            "unit": "structured record"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed reviewed site and original Native map/clock packet",
+            "name": "reviewed_highway_time_lamp_and_contour",
+            "unit": "structured record"
+          }
+        ],
+        "limitations": [
+          "CARLA lamp bits are requests and readbacks, not calibrated beam distribution.",
+          "Original RGB luma is not a legal safe-distance or glare threshold.",
+          "NRS 484D.210(2) lowermost specification requires independent source review."
+        ]
+      },
+      "diagnostic_construction": {
+        "path": "cases/general_high/construction.json",
+        "sha256": "64dafc7e120bd92fc7651f8fde78e4e03a3d70e031e4098543ccdf0a321b387f"
+      },
+      "unresolved_judgment_calls": [
+        "safe distance",
+        "glaring rays are not projected into the eyes",
+        "lowermost distribution of light"
+      ],
+      "paired_probe_id": "testing__C230259__NRS-484D-215-1__motor_vehicle_driver__general_high",
+      "deliberate_differences": [
+        "requested_beam"
+      ],
+      "probe": {
+        "primary_variable": "requested_beam",
+        "comparison_or_standard": "Original source comparison; no legal beam or glare outcome implied",
+        "target_value_or_branch": "general_high"
+      }
+    },
+    {
+      "case_id": "testing__C230259__NRS-484D-215-1__motor_vehicle_driver__general_low",
+      "target_law_id": "NRS-484D-215-1",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Source-bound exact beam, oncoming distance, contour and loading probe; actual physical outcome unverified.",
+      "variable_assignments": {
+        "requested_beam": {
+          "kind": "controller",
+          "value": "low"
+        },
+        "requested_start_body_gap_ft": {
+          "kind": "world_setup",
+          "value": 1400
+        },
+        "requested_contour": {
+          "kind": "world_setup",
+          "value": "level"
+        },
+        "requested_load": {
+          "kind": "world_setup",
+          "value": "standard"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Original Native participant bodies, motion, driver-eye geometry and lamp readback",
+            "name": "original_actor_state",
+            "reference_frame": "original Native world frame and synchronized camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames during 45-second road travel",
+            "uncertainty": "20 Hz sampling, source-reviewed map/calibration and image projection precision",
+            "unit": "structured record"
+          },
+          {
+            "method": "Four RGB sensor frames joined to each original Native tick",
+            "name": "original_four_view_frame_map",
+            "reference_frame": "original Native world frame and synchronized camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames during 45-second road travel",
+            "uncertainty": "20 Hz sampling, source-reviewed map/calibration and image projection precision",
+            "unit": "structured record"
+          },
+          {
+            "method": "Original projected person, vehicle and oncoming-eye ROI pixel frames",
+            "name": "original_beam_pixels",
+            "reference_frame": "original Native world frame and synchronized camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames during 45-second road travel",
+            "uncertainty": "20 Hz sampling, source-reviewed map/calibration and image projection precision",
+            "unit": "structured record"
+          },
+          {
+            "method": "Original frame-by-frame body and driver-eye separation",
+            "name": "original_oncoming_distance",
+            "reference_frame": "original Native world frame and synchronized camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames during 45-second road travel",
+            "uncertainty": "20 Hz sampling, source-reviewed map/calibration and image projection precision",
+            "unit": "structured record"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed reviewed site and original Native map/clock packet",
+            "name": "reviewed_highway_time_lamp_and_contour",
+            "unit": "structured record"
+          }
+        ],
+        "limitations": [
+          "CARLA lamp bits are requests and readbacks, not calibrated beam distribution.",
+          "Original RGB luma is not a legal safe-distance or glare threshold.",
+          "NRS 484D.210(2) lowermost specification requires independent source review."
+        ]
+      },
+      "diagnostic_construction": {
+        "path": "cases/general_low/construction.json",
+        "sha256": "9126ab0ee6019d521bb3538fd20a5e85cfc6b6ea028245ea1106cfb132f9c830"
+      },
+      "unresolved_judgment_calls": [
+        "safe distance",
+        "glaring rays are not projected into the eyes",
+        "lowermost distribution of light"
+      ],
+      "paired_probe_id": "testing__C230259__NRS-484D-215-1__motor_vehicle_driver__general_low",
+      "deliberate_differences": [
+        "requested_beam"
+      ],
+      "probe": {
+        "primary_variable": "requested_beam",
+        "comparison_or_standard": "Original source comparison; no legal beam or glare outcome implied",
+        "target_value_or_branch": "general_low"
+      }
+    },
+    {
+      "case_id": "testing__C230259__NRS-484D-215-1__motor_vehicle_driver__general_dark",
+      "target_law_id": "NRS-484D-215-1",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Source-bound exact beam, oncoming distance, contour and loading probe; actual physical outcome unverified.",
+      "variable_assignments": {
+        "requested_beam": {
+          "kind": "controller",
+          "value": "off"
+        },
+        "requested_start_body_gap_ft": {
+          "kind": "world_setup",
+          "value": 1400
+        },
+        "requested_contour": {
+          "kind": "world_setup",
+          "value": "level"
+        },
+        "requested_load": {
+          "kind": "world_setup",
+          "value": "standard"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Original Native participant bodies, motion, driver-eye geometry and lamp readback",
+            "name": "original_actor_state",
+            "reference_frame": "original Native world frame and synchronized camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames during 45-second road travel",
+            "uncertainty": "20 Hz sampling, source-reviewed map/calibration and image projection precision",
+            "unit": "structured record"
+          },
+          {
+            "method": "Four RGB sensor frames joined to each original Native tick",
+            "name": "original_four_view_frame_map",
+            "reference_frame": "original Native world frame and synchronized camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames during 45-second road travel",
+            "uncertainty": "20 Hz sampling, source-reviewed map/calibration and image projection precision",
+            "unit": "structured record"
+          },
+          {
+            "method": "Original projected person, vehicle and oncoming-eye ROI pixel frames",
+            "name": "original_beam_pixels",
+            "reference_frame": "original Native world frame and synchronized camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames during 45-second road travel",
+            "uncertainty": "20 Hz sampling, source-reviewed map/calibration and image projection precision",
+            "unit": "structured record"
+          },
+          {
+            "method": "Original frame-by-frame body and driver-eye separation",
+            "name": "original_oncoming_distance",
+            "reference_frame": "original Native world frame and synchronized camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames during 45-second road travel",
+            "uncertainty": "20 Hz sampling, source-reviewed map/calibration and image projection precision",
+            "unit": "structured record"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed reviewed site and original Native map/clock packet",
+            "name": "reviewed_highway_time_lamp_and_contour",
+            "unit": "structured record"
+          }
+        ],
+        "limitations": [
+          "CARLA lamp bits are requests and readbacks, not calibrated beam distribution.",
+          "Original RGB luma is not a legal safe-distance or glare threshold.",
+          "NRS 484D.210(2) lowermost specification requires independent source review."
+        ]
+      },
+      "diagnostic_construction": {
+        "path": "cases/general_dark/construction.json",
+        "sha256": "434882f773f7f54493a31beaeada7b24f7404cfd557e9a4ed08178f360a53ca2"
+      },
+      "unresolved_judgment_calls": [
+        "safe distance",
+        "glaring rays are not projected into the eyes",
+        "lowermost distribution of light"
+      ],
+      "paired_probe_id": "testing__C230259__NRS-484D-215-1__motor_vehicle_driver__general_dark",
+      "deliberate_differences": [
+        "requested_beam"
+      ],
+      "probe": {
+        "primary_variable": "requested_beam",
+        "comparison_or_standard": "Original source comparison; no legal beam or glare outcome implied",
+        "target_value_or_branch": "general_dark"
+      }
+    },
+    {
+      "case_id": "testing__C230259__NRS-484D-215-1__motor_vehicle_driver__oncoming_499_high",
+      "target_law_id": "NRS-484D-215-1",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Source-bound exact beam, oncoming distance, contour and loading probe; actual physical outcome unverified.",
+      "variable_assignments": {
+        "requested_beam": {
+          "kind": "controller",
+          "value": "high"
+        },
+        "requested_start_body_gap_ft": {
+          "kind": "world_setup",
+          "value": 499
+        },
+        "requested_contour": {
+          "kind": "world_setup",
+          "value": "level"
+        },
+        "requested_load": {
+          "kind": "world_setup",
+          "value": "standard"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Original Native participant bodies, motion, driver-eye geometry and lamp readback",
+            "name": "original_actor_state",
+            "reference_frame": "original Native world frame and synchronized camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames during 45-second road travel",
+            "uncertainty": "20 Hz sampling, source-reviewed map/calibration and image projection precision",
+            "unit": "structured record"
+          },
+          {
+            "method": "Four RGB sensor frames joined to each original Native tick",
+            "name": "original_four_view_frame_map",
+            "reference_frame": "original Native world frame and synchronized camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames during 45-second road travel",
+            "uncertainty": "20 Hz sampling, source-reviewed map/calibration and image projection precision",
+            "unit": "structured record"
+          },
+          {
+            "method": "Original projected person, vehicle and oncoming-eye ROI pixel frames",
+            "name": "original_beam_pixels",
+            "reference_frame": "original Native world frame and synchronized camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames during 45-second road travel",
+            "uncertainty": "20 Hz sampling, source-reviewed map/calibration and image projection precision",
+            "unit": "structured record"
+          },
+          {
+            "method": "Original frame-by-frame body and driver-eye separation",
+            "name": "original_oncoming_distance",
+            "reference_frame": "original Native world frame and synchronized camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames during 45-second road travel",
+            "uncertainty": "20 Hz sampling, source-reviewed map/calibration and image projection precision",
+            "unit": "structured record"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed reviewed site and original Native map/clock packet",
+            "name": "reviewed_highway_time_lamp_and_contour",
+            "unit": "structured record"
+          }
+        ],
+        "limitations": [
+          "CARLA lamp bits are requests and readbacks, not calibrated beam distribution.",
+          "Original RGB luma is not a legal safe-distance or glare threshold.",
+          "NRS 484D.210(2) lowermost specification requires independent source review."
+        ]
+      },
+      "diagnostic_construction": {
+        "path": "cases/oncoming_499_high/construction.json",
+        "sha256": "75630080b8214e905a3a02b3c0c8e8170776d3cd19d9cb49b2cc4e4e2ab5e42e"
+      },
+      "unresolved_judgment_calls": [
+        "safe distance",
+        "glaring rays are not projected into the eyes",
+        "lowermost distribution of light"
+      ],
+      "paired_probe_id": "testing__C230259__NRS-484D-215-1__motor_vehicle_driver__oncoming_499_high",
+      "deliberate_differences": [
+        "requested_beam"
+      ],
+      "probe": {
+        "primary_variable": "requested_beam",
+        "comparison_or_standard": "Original source comparison; no legal beam or glare outcome implied",
+        "target_value_or_branch": "oncoming_499_high"
+      }
+    },
+    {
+      "case_id": "testing__C230259__NRS-484D-215-1__motor_vehicle_driver__oncoming_499_low",
+      "target_law_id": "NRS-484D-215-1",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Source-bound exact beam, oncoming distance, contour and loading probe; actual physical outcome unverified.",
+      "variable_assignments": {
+        "requested_beam": {
+          "kind": "controller",
+          "value": "low"
+        },
+        "requested_start_body_gap_ft": {
+          "kind": "world_setup",
+          "value": 499
+        },
+        "requested_contour": {
+          "kind": "world_setup",
+          "value": "level"
+        },
+        "requested_load": {
+          "kind": "world_setup",
+          "value": "standard"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Original Native participant bodies, motion, driver-eye geometry and lamp readback",
+            "name": "original_actor_state",
+            "reference_frame": "original Native world frame and synchronized camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames during 45-second road travel",
+            "uncertainty": "20 Hz sampling, source-reviewed map/calibration and image projection precision",
+            "unit": "structured record"
+          },
+          {
+            "method": "Four RGB sensor frames joined to each original Native tick",
+            "name": "original_four_view_frame_map",
+            "reference_frame": "original Native world frame and synchronized camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames during 45-second road travel",
+            "uncertainty": "20 Hz sampling, source-reviewed map/calibration and image projection precision",
+            "unit": "structured record"
+          },
+          {
+            "method": "Original projected person, vehicle and oncoming-eye ROI pixel frames",
+            "name": "original_beam_pixels",
+            "reference_frame": "original Native world frame and synchronized camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames during 45-second road travel",
+            "uncertainty": "20 Hz sampling, source-reviewed map/calibration and image projection precision",
+            "unit": "structured record"
+          },
+          {
+            "method": "Original frame-by-frame body and driver-eye separation",
+            "name": "original_oncoming_distance",
+            "reference_frame": "original Native world frame and synchronized camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames during 45-second road travel",
+            "uncertainty": "20 Hz sampling, source-reviewed map/calibration and image projection precision",
+            "unit": "structured record"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed reviewed site and original Native map/clock packet",
+            "name": "reviewed_highway_time_lamp_and_contour",
+            "unit": "structured record"
+          }
+        ],
+        "limitations": [
+          "CARLA lamp bits are requests and readbacks, not calibrated beam distribution.",
+          "Original RGB luma is not a legal safe-distance or glare threshold.",
+          "NRS 484D.210(2) lowermost specification requires independent source review."
+        ]
+      },
+      "diagnostic_construction": {
+        "path": "cases/oncoming_499_low/construction.json",
+        "sha256": "8e7d475977d2e635de60c084680ec116f3238154f5d8af3914681dff9e40df1f"
+      },
+      "unresolved_judgment_calls": [
+        "safe distance",
+        "glaring rays are not projected into the eyes",
+        "lowermost distribution of light"
+      ],
+      "paired_probe_id": "testing__C230259__NRS-484D-215-1__motor_vehicle_driver__500ft_body_gap",
+      "deliberate_differences": [
+        "requested_start_body_gap_ft"
+      ],
+      "probe": {
+        "primary_variable": "requested_start_body_gap_ft",
+        "comparison_or_standard": "Original source comparison; no legal beam or glare outcome implied",
+        "target_value_or_branch": "oncoming_499_low",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": "<=",
+        "unit": "m",
+        "test_value": 152.0952
+      },
+      "epsilon_used": 0.3048
+    },
+    {
+      "case_id": "testing__C230259__NRS-484D-215-1__motor_vehicle_driver__oncoming_500_low",
+      "target_law_id": "NRS-484D-215-1",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Source-bound exact beam, oncoming distance, contour and loading probe; actual physical outcome unverified.",
+      "variable_assignments": {
+        "requested_beam": {
+          "kind": "controller",
+          "value": "low"
+        },
+        "requested_start_body_gap_ft": {
+          "kind": "world_setup",
+          "value": 500
+        },
+        "requested_contour": {
+          "kind": "world_setup",
+          "value": "level"
+        },
+        "requested_load": {
+          "kind": "world_setup",
+          "value": "standard"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Original Native participant bodies, motion, driver-eye geometry and lamp readback",
+            "name": "original_actor_state",
+            "reference_frame": "original Native world frame and synchronized camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames during 45-second road travel",
+            "uncertainty": "20 Hz sampling, source-reviewed map/calibration and image projection precision",
+            "unit": "structured record"
+          },
+          {
+            "method": "Four RGB sensor frames joined to each original Native tick",
+            "name": "original_four_view_frame_map",
+            "reference_frame": "original Native world frame and synchronized camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames during 45-second road travel",
+            "uncertainty": "20 Hz sampling, source-reviewed map/calibration and image projection precision",
+            "unit": "structured record"
+          },
+          {
+            "method": "Original projected person, vehicle and oncoming-eye ROI pixel frames",
+            "name": "original_beam_pixels",
+            "reference_frame": "original Native world frame and synchronized camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames during 45-second road travel",
+            "uncertainty": "20 Hz sampling, source-reviewed map/calibration and image projection precision",
+            "unit": "structured record"
+          },
+          {
+            "method": "Original frame-by-frame body and driver-eye separation",
+            "name": "original_oncoming_distance",
+            "reference_frame": "original Native world frame and synchronized camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames during 45-second road travel",
+            "uncertainty": "20 Hz sampling, source-reviewed map/calibration and image projection precision",
+            "unit": "structured record"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed reviewed site and original Native map/clock packet",
+            "name": "reviewed_highway_time_lamp_and_contour",
+            "unit": "structured record"
+          }
+        ],
+        "limitations": [
+          "CARLA lamp bits are requests and readbacks, not calibrated beam distribution.",
+          "Original RGB luma is not a legal safe-distance or glare threshold.",
+          "NRS 484D.210(2) lowermost specification requires independent source review."
+        ]
+      },
+      "diagnostic_construction": {
+        "path": "cases/oncoming_500_low/construction.json",
+        "sha256": "6abcde248a8be20ecca7ac30a05f44adf87040a89904a081f4254411663b5bf2"
+      },
+      "unresolved_judgment_calls": [
+        "safe distance",
+        "glaring rays are not projected into the eyes",
+        "lowermost distribution of light"
+      ],
+      "paired_probe_id": "testing__C230259__NRS-484D-215-1__motor_vehicle_driver__500ft_body_gap",
+      "deliberate_differences": [
+        "requested_start_body_gap_ft"
+      ],
+      "probe": {
+        "primary_variable": "requested_start_body_gap_ft",
+        "comparison_or_standard": "Original source comparison; no legal beam or glare outcome implied",
+        "target_value_or_branch": "oncoming_500_low",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": "<=",
+        "unit": "m",
+        "test_value": 152.4
+      },
+      "epsilon_used": 0.3048
+    },
+    {
+      "case_id": "testing__C230259__NRS-484D-215-1__motor_vehicle_driver__oncoming_501_low",
+      "target_law_id": "NRS-484D-215-1",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Source-bound exact beam, oncoming distance, contour and loading probe; actual physical outcome unverified.",
+      "variable_assignments": {
+        "requested_beam": {
+          "kind": "controller",
+          "value": "low"
+        },
+        "requested_start_body_gap_ft": {
+          "kind": "world_setup",
+          "value": 501
+        },
+        "requested_contour": {
+          "kind": "world_setup",
+          "value": "level"
+        },
+        "requested_load": {
+          "kind": "world_setup",
+          "value": "standard"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Original Native participant bodies, motion, driver-eye geometry and lamp readback",
+            "name": "original_actor_state",
+            "reference_frame": "original Native world frame and synchronized camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames during 45-second road travel",
+            "uncertainty": "20 Hz sampling, source-reviewed map/calibration and image projection precision",
+            "unit": "structured record"
+          },
+          {
+            "method": "Four RGB sensor frames joined to each original Native tick",
+            "name": "original_four_view_frame_map",
+            "reference_frame": "original Native world frame and synchronized camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames during 45-second road travel",
+            "uncertainty": "20 Hz sampling, source-reviewed map/calibration and image projection precision",
+            "unit": "structured record"
+          },
+          {
+            "method": "Original projected person, vehicle and oncoming-eye ROI pixel frames",
+            "name": "original_beam_pixels",
+            "reference_frame": "original Native world frame and synchronized camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames during 45-second road travel",
+            "uncertainty": "20 Hz sampling, source-reviewed map/calibration and image projection precision",
+            "unit": "structured record"
+          },
+          {
+            "method": "Original frame-by-frame body and driver-eye separation",
+            "name": "original_oncoming_distance",
+            "reference_frame": "original Native world frame and synchronized camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames during 45-second road travel",
+            "uncertainty": "20 Hz sampling, source-reviewed map/calibration and image projection precision",
+            "unit": "structured record"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed reviewed site and original Native map/clock packet",
+            "name": "reviewed_highway_time_lamp_and_contour",
+            "unit": "structured record"
+          }
+        ],
+        "limitations": [
+          "CARLA lamp bits are requests and readbacks, not calibrated beam distribution.",
+          "Original RGB luma is not a legal safe-distance or glare threshold.",
+          "NRS 484D.210(2) lowermost specification requires independent source review."
+        ]
+      },
+      "diagnostic_construction": {
+        "path": "cases/oncoming_501_low/construction.json",
+        "sha256": "ebaaf859aca06149a77b496fd5e70bd85245f6f259b91ecad6d7eb7e1a62644a"
+      },
+      "unresolved_judgment_calls": [
+        "safe distance",
+        "glaring rays are not projected into the eyes",
+        "lowermost distribution of light"
+      ],
+      "paired_probe_id": "testing__C230259__NRS-484D-215-1__motor_vehicle_driver__500ft_body_gap",
+      "deliberate_differences": [
+        "requested_start_body_gap_ft"
+      ],
+      "probe": {
+        "primary_variable": "requested_start_body_gap_ft",
+        "comparison_or_standard": "Original source comparison; no legal beam or glare outcome implied",
+        "target_value_or_branch": "oncoming_501_low",
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "operator": "<=",
+        "unit": "m",
+        "test_value": 152.7048
+      },
+      "epsilon_used": 0.3048
+    },
+    {
+      "case_id": "testing__C230259__NRS-484D-215-1__motor_vehicle_driver__oncoming_499_low_crest_loaded",
+      "target_law_id": "NRS-484D-215-1",
+      "target_type": "boundary_probe",
+      "status": "draft",
+      "rationale": "Source-bound exact beam, oncoming distance, contour and loading probe; actual physical outcome unverified.",
+      "variable_assignments": {
+        "requested_beam": {
+          "kind": "controller",
+          "value": "low"
+        },
+        "requested_start_body_gap_ft": {
+          "kind": "world_setup",
+          "value": 499
+        },
+        "requested_contour": {
+          "kind": "world_setup",
+          "value": "crest"
+        },
+        "requested_load": {
+          "kind": "world_setup",
+          "value": "loaded"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "Original Native participant bodies, motion, driver-eye geometry and lamp readback",
+            "name": "original_actor_state",
+            "reference_frame": "original Native world frame and synchronized camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames during 45-second road travel",
+            "uncertainty": "20 Hz sampling, source-reviewed map/calibration and image projection precision",
+            "unit": "structured record"
+          },
+          {
+            "method": "Four RGB sensor frames joined to each original Native tick",
+            "name": "original_four_view_frame_map",
+            "reference_frame": "original Native world frame and synchronized camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames during 45-second road travel",
+            "uncertainty": "20 Hz sampling, source-reviewed map/calibration and image projection precision",
+            "unit": "structured record"
+          },
+          {
+            "method": "Original projected person, vehicle and oncoming-eye ROI pixel frames",
+            "name": "original_beam_pixels",
+            "reference_frame": "original Native world frame and synchronized camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames during 45-second road travel",
+            "uncertainty": "20 Hz sampling, source-reviewed map/calibration and image projection precision",
+            "unit": "structured record"
+          },
+          {
+            "method": "Original frame-by-frame body and driver-eye separation",
+            "name": "original_oncoming_distance",
+            "reference_frame": "original Native world frame and synchronized camera frame",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 original frames during 45-second road travel",
+            "uncertainty": "20 Hz sampling, source-reviewed map/calibration and image projection precision",
+            "unit": "structured record"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed reviewed site and original Native map/clock packet",
+            "name": "reviewed_highway_time_lamp_and_contour",
+            "unit": "structured record"
+          }
+        ],
+        "limitations": [
+          "CARLA lamp bits are requests and readbacks, not calibrated beam distribution.",
+          "Original RGB luma is not a legal safe-distance or glare threshold.",
+          "NRS 484D.210(2) lowermost specification requires independent source review."
+        ]
+      },
+      "diagnostic_construction": {
+        "path": "cases/oncoming_499_low_crest_loaded/construction.json",
+        "sha256": "65a7923919c98532cc382085d64a07ab7421f7428f819a4aade79d0bc6e93ab7"
+      },
+      "unresolved_judgment_calls": [
+        "safe distance",
+        "glaring rays are not projected into the eyes",
+        "lowermost distribution of light"
+      ],
+      "paired_probe_id": "testing__C230259__NRS-484D-215-1__motor_vehicle_driver__oncoming_499_low_crest_loaded",
+      "deliberate_differences": [
+        "requested_contour",
+        "requested_load"
+      ],
+      "probe": {
+        "primary_variable": "requested_contour",
+        "comparison_or_standard": "Original source comparison; no legal beam or glare outcome implied",
+        "target_value_or_branch": "oncoming_499_low_crest_loaded"
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "general_beam_distribution",
+      "case_ids": [
+        "testing__C230259__NRS-484D-215-1__motor_vehicle_driver__general_high",
+        "testing__C230259__NRS-484D-215-1__motor_vehicle_driver__general_low"
+      ],
+      "fixed_conditions": [
+        "C230259 source-reviewed road and opposing routes",
+        "motor vehicle blueprint and driver",
+        "night lighting-time packet",
+        "45 s at 20 Hz and four synchronized cameras",
+        "person and target vehicle placement",
+        "original eye/beam measurement method"
+      ],
+      "deliberate_differences": [
+        "requested high versus low distribution"
+      ]
+    },
+    {
+      "comparison_id": "general_no_distribution",
+      "case_ids": [
+        "testing__C230259__NRS-484D-215-1__motor_vehicle_driver__general_low",
+        "testing__C230259__NRS-484D-215-1__motor_vehicle_driver__general_dark"
+      ],
+      "fixed_conditions": [
+        "C230259 source-reviewed road and opposing routes",
+        "motor vehicle blueprint and driver",
+        "night lighting-time packet",
+        "45 s at 20 Hz and four synchronized cameras",
+        "person and target vehicle placement",
+        "original eye/beam measurement method"
+      ],
+      "deliberate_differences": [
+        "requested low versus off distribution"
+      ]
+    },
+    {
+      "comparison_id": "near_oncoming_glare",
+      "case_ids": [
+        "testing__C230259__NRS-484D-215-1__motor_vehicle_driver__oncoming_499_high",
+        "testing__C230259__NRS-484D-215-1__motor_vehicle_driver__oncoming_499_low"
+      ],
+      "fixed_conditions": [
+        "C230259 source-reviewed road and opposing routes",
+        "motor vehicle blueprint and driver",
+        "night lighting-time packet",
+        "45 s at 20 Hz and four synchronized cameras",
+        "person and target vehicle placement",
+        "original eye/beam measurement method"
+      ],
+      "deliberate_differences": [
+        "requested high versus low distribution"
+      ]
+    },
+    {
+      "comparison_id": "five_hundred_feet_lower",
+      "case_ids": [
+        "testing__C230259__NRS-484D-215-1__motor_vehicle_driver__oncoming_499_low",
+        "testing__C230259__NRS-484D-215-1__motor_vehicle_driver__oncoming_500_low"
+      ],
+      "fixed_conditions": [
+        "C230259 source-reviewed road and opposing routes",
+        "motor vehicle blueprint and driver",
+        "night lighting-time packet",
+        "45 s at 20 Hz and four synchronized cameras",
+        "person and target vehicle placement",
+        "original eye/beam measurement method"
+      ],
+      "deliberate_differences": [
+        "requested start body gap 499 versus 500 feet"
+      ]
+    },
+    {
+      "comparison_id": "five_hundred_feet_upper",
+      "case_ids": [
+        "testing__C230259__NRS-484D-215-1__motor_vehicle_driver__oncoming_500_low",
+        "testing__C230259__NRS-484D-215-1__motor_vehicle_driver__oncoming_501_low"
+      ],
+      "fixed_conditions": [
+        "C230259 source-reviewed road and opposing routes",
+        "motor vehicle blueprint and driver",
+        "night lighting-time packet",
+        "45 s at 20 Hz and four synchronized cameras",
+        "person and target vehicle placement",
+        "original eye/beam measurement method"
+      ],
+      "deliberate_differences": [
+        "requested start body gap 500 versus 501 feet"
+      ]
+    },
+    {
+      "comparison_id": "lowermost_contour_load",
+      "case_ids": [
+        "testing__C230259__NRS-484D-215-1__motor_vehicle_driver__oncoming_499_low",
+        "testing__C230259__NRS-484D-215-1__motor_vehicle_driver__oncoming_499_low_crest_loaded"
+      ],
+      "fixed_conditions": [
+        "C230259 source-reviewed road and opposing routes",
+        "motor vehicle blueprint and driver",
+        "night lighting-time packet",
+        "45 s at 20 Hz and four synchronized cameras",
+        "person and target vehicle placement",
+        "original eye/beam measurement method"
+      ],
+      "deliberate_differences": [
+        "source-reviewed level versus crest contour",
+        "standard versus loaded vehicle configuration"
+      ]
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "testing__C230259__NRS-484D-215-1__motor_vehicle_driver__judgment_1",
+      "target_law_id": "NRS-484D-215-1",
+      "judgment_refs": [
+        {
+          "phrase": "safe distance",
+          "note": "No numeric safe-distance cutoff is supplied; measure person/vehicle visibility and original beam pixels."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Physical numeric range and source-reviewed beam calibration are not yet constructed; exact selected cases retain judgment uncertainty.",
+      "missing_inputs": [
+        "source-reviewed physical sweep axes and finite grid"
+      ]
+    },
+    {
+      "sweep_id": "testing__C230259__NRS-484D-215-1__motor_vehicle_driver__judgment_2",
+      "target_law_id": "NRS-484D-215-1",
+      "judgment_refs": [
+        {
+          "phrase": "glaring rays are not projected into the eyes",
+          "note": "Original oncoming driver-eye projection and calibrated beam review remain required."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Physical numeric range and source-reviewed beam calibration are not yet constructed; exact selected cases retain judgment uncertainty.",
+      "missing_inputs": [
+        "source-reviewed physical sweep axes and finite grid"
+      ]
+    },
+    {
+      "sweep_id": "testing__C230259__NRS-484D-215-1__motor_vehicle_driver__judgment_3",
+      "target_law_id": "NRS-484D-215-1",
+      "judgment_refs": [
+        {
+          "phrase": "lowermost distribution of light",
+          "note": "CARLA low-beam bits do not certify the NRS 484D.210(2) equipment specification."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Physical numeric range and source-reviewed beam calibration are not yet constructed; exact selected cases retain judgment uncertainty.",
+      "missing_inputs": [
+        "source-reviewed physical sweep axes and finite grid"
+      ]
+    }
+  ],
+  "sweeps_expanded": true
+}

@@ -1,0 +1,66 @@
+{
+  "case_id": "testing__C214875__NRS-484B-457-1__motor_vehicle_driver__park_17in_skew",
+  "format": "worker-measurement-contract",
+  "negative": {
+    "error_contains": "Missing required source: original-attempt/wheel-motion.jsonl",
+    "remove": [
+      "original-attempt/wheel-motion.jsonl"
+    ]
+  },
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "inputs": [
+        "original-attempt/site.json",
+        "original-attempt/plan.json",
+        "original-attempt/wheel-motion.jsonl",
+        "original-attempt/wheel-seal.json",
+        "original-attempt/frame-map.json"
+      ],
+      "kind": "measured",
+      "method": "measure_curb_activity",
+      "output_key": "curb_requirement_0",
+      "requirement": "vehicle stopped or parked upon a highway with adjacent curbs",
+      "source": {
+        "path": "inputs/testing__C214875__NRS-484B-457-1__motor_vehicle_driver/assignment.json",
+        "sha256": "b8657ab95f4364ca6a806e806f564aab3cd756c097a1fd11d6bbb9ea5b482e08"
+      },
+      "value_type": "object"
+    },
+    {
+      "disposition_index": 1,
+      "inputs": [
+        "original-attempt/site.json",
+        "original-attempt/curb_survey.source",
+        "original-attempt/wheel-motion.jsonl",
+        "original-attempt/wheel-seal.json"
+      ],
+      "kind": "measured",
+      "method": "measure_curb_geometry",
+      "output_key": "curb_requirement_1",
+      "requirement": "right-hand wheels parallel to and within 18 inches of right-hand curb",
+      "source": {
+        "path": "inputs/testing__C214875__NRS-484B-457-1__motor_vehicle_driver/assignment.json",
+        "sha256": "b8657ab95f4364ca6a806e806f564aab3cd756c097a1fd11d6bbb9ea5b482e08"
+      },
+      "value_type": "object"
+    },
+    {
+      "disposition_index": 2,
+      "inputs": [
+        "original-attempt/site.json",
+        "original-attempt/local_ordinance.source",
+        "original-attempt/dot_status.source"
+      ],
+      "kind": "sourced_context",
+      "method": "source_section_exceptions",
+      "output_key": "curb_requirement_2",
+      "requirement": "left-curb and angle-parking section exceptions independently sourced before interpretation",
+      "source": {
+        "path": "inputs/testing__C214875__NRS-484B-457-1__motor_vehicle_driver/assignment.json",
+        "sha256": "b8657ab95f4364ca6a806e806f564aab3cd756c097a1fd11d6bbb9ea5b482e08"
+      },
+      "value_type": "object"
+    }
+  ]
+}

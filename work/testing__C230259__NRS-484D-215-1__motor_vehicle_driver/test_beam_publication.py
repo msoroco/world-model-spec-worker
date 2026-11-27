@@ -39,7 +39,8 @@ class PublicationTests(unittest.TestCase):
     def test_saved_channels_and_result(self):
         result = publish(self.root, expected_frames=9, diagnostic=True)
         self.assertEqual(result["case_id"], CASE["case_id"])
-        self.assertEqual({x["name"] for x in result["recording_evidence"]}, set(CHANNELS))
+        self.assertEqual({x["name"] for x in result["recording_evidence"]},
+                         set(CHANNELS) | {"reviewed_highway_time_lamp_and_contour"})
         self.assertEqual(result["measured_values"]["frame_count"], 9)
         self.assertFalse(result["physical_acceptance_claimed"])
         for name in CHANNELS:
