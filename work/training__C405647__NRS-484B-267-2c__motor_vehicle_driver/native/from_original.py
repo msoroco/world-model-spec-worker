@@ -10,6 +10,8 @@ import math
 from pathlib import Path
 
 from measure_readiness import ASSIGNMENT, CAMERAS, FRAMES, lines
+from audit_capture import audit as audit_capture
+from scene import CASES, request
 
 
 FLAGS = ("emergency_flashing_visible", "emergency_motion_visible",
@@ -75,9 +77,15 @@ def process(directory):
         raise ValueError("Original attempt must be under .runtime-work")
     frame_path, actor_path = directory / "video_frames.jsonl", directory / "observed-actors.jsonl"
     review_path = directory / "emergency_review.json"
-    for path in (frame_path, actor_path, review_path):
+    request_path = directory / "native-request.json"
+    for path in (frame_path, actor_path, review_path, request_path):
         if not path.is_file():
             raise ValueError("Missing original source: " + path.name)
+    captured_request = json.loads(request_path.read_text())
+    condition = captured_request.get("requested_setting")
+    if condition not in CASES or captured_request != request(condition):
+        raise ValueError("Original attempt request differs from exact construction")
+    capture_audit = audit_capture(directory, condition)
     review = json.loads(review_path.read_text())
     if review.get("assignment_id") != ASSIGNMENT or review.get("review_kind") != "original_source_review":
         raise ValueError("Independent original-source review required")
@@ -87,6 +95,8 @@ def process(directory):
         for row in trace:
             stream.write(json.dumps(row, allow_nan=False) + "\n")
     return {"trace": str(destination), "rows": len(trace),
+            "case_id": captured_request["case_id"],
+            "capture_audit_sources": capture_audit["source_sha256"],
             "source_kind": "original_native_motion", "legal_verdict": None}
 
 

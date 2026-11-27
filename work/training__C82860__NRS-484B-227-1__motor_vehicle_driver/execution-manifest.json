@@ -1,0 +1,257 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C82860__NRS-484B-227-1__motor_vehicle_driver",
+  "status": "selected_cpu_partial",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "physical_acceptance_claimed": false,
+  "cases": [
+    {
+      "case_id": "training__C82860__NRS-484B-227-1__motor_vehicle_driver__authorized_opening",
+      "kind": "delivery",
+      "construction": "native/bundles/authorized_opening/construction.json",
+      "construction_sha256": "8e709ee9946283f81b88af103068a2803eaf01cf1de7576e217860bb35a31249",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "method": "original Native transform and body vertices",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native divided roadways 828601 and 828602",
+            "uncertainty": "Original body, median, roadway and authority review pending"
+          },
+          {
+            "name": "median_crossing_location",
+            "unit": "structured",
+            "method": "saved body polygon against original median and roadway readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native divided roadways 828601 and 828602",
+            "uncertainty": "Original body, median, roadway and authority review pending"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "An authored median gap does not prove public authority.",
+          "Original motion and four-camera pixels require source review."
+        ]
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original median-road actor spawn may intersect authored road surface"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/bundles/authorized_opening/fallback1.json",
+          "construction_sha256": "babccf1a1aba35d1e56767ca62295f597b8f090869ea6ed076a20e1008cb6d2b",
+          "trigger": {
+            "source": "Native try_spawn_actor",
+            "metric": "actor spawn result",
+            "failure_condition": "spawn returns None"
+          },
+          "changed_knobs": [
+            "spawn height from 1.5m to 1.8m"
+          ],
+          "compatibility": {
+            "receipt": "native/proofs/public-authorized_opening-fallback1.json",
+            "sha256": "be0b9097cdc554f43985b5ebb6c0a90a357588eb64931888f38544da4dfb9971",
+            "log": "native/proofs/public-authorized_opening-fallback1-analysis.log",
+            "negative_log": "native/proofs/public-authorized_opening-fallback1-negative.log"
+          },
+          "negative": {
+            "log": "native/proofs/public-authorized_opening-fallback1-negative.log"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C82860__NRS-484B-227-1__motor_vehicle_driver/execution-manifest.json --case training__C82860__NRS-484B-227-1__motor_vehicle_driver__authorized_opening --candidate fallback1 --output .runtime-work/c82860-lead/selected-offline-authorized_opening-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "babccf1a1aba35d1e56767ca62295f597b8f090869ea6ed076a20e1008cb6d2b",
+            "log": "native/proofs/construction-authorized_opening-fallback1.log",
+            "log_sha256": "541766e8a1e72d4688264d403fea850d24cb79a9449c11c30c85a06cb6cfbf27"
+          }
+        }
+      ],
+      "measurement_contract": "native/authorized_opening-measurement-contract.json",
+      "fixture_recipe": "work/training__C82860__NRS-484B-227-1__motor_vehicle_driver/diagnostic/authorized_opening/fixture-recipe.json",
+      "compatibility": {
+        "receipt": "native/proofs/public-authorized_opening-primary.json",
+        "sha256": "8f95ccde99beb468c932cdbb2672aaa0469998742dd83f342367762a312a4de9",
+        "log": "native/proofs/public-authorized_opening-primary-analysis.log",
+        "negative_log": "native/proofs/public-authorized_opening-primary-negative.log"
+      },
+      "negative": {
+        "log": "native/proofs/public-authorized_opening-primary-negative.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C82860__NRS-484B-227-1__motor_vehicle_driver/execution-manifest.json --case training__C82860__NRS-484B-227-1__motor_vehicle_driver__authorized_opening --output .runtime-work/c82860-lead/selected-offline-authorized_opening",
+        "exit_code": 0,
+        "construction_sha256": "8e709ee9946283f81b88af103068a2803eaf01cf1de7576e217860bb35a31249",
+        "log": "native/proofs/construction-authorized_opening-primary.log",
+        "log_sha256": "c81db8adcd52e9a71f2392683635e5fd0a553379b953f28671817da789f80926"
+      },
+      "physical_preparation": {
+        "receipt": "native/proofs/physical-authorized_opening.json",
+        "sha256": "0a33826e7a5c74dd86a8d950244c675f11cc2c590c5ef30fa2f12f98311edf9e"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C82860__NRS-484B-227-1__motor_vehicle_driver__authorized_opening",
+        "sets": [
+          "demo-train",
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "native/delivery_audit.py",
+        "script_sha256": "3eb4eec8e10cf5cef9d3c0cbca1657c06459a64c883b2d77451e9369c92e023e",
+        "command": ".venv-cpu/bin/python work/training__C82860__NRS-484B-227-1__motor_vehicle_driver/native/prove_delivery.py --case training__C82860__NRS-484B-227-1__motor_vehicle_driver__authorized_opening",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/delivery-authorized_opening-positive.log",
+        "test_log_sha256": "e7d7afbc66864a78fca4a21f27a319fb666d78e47ddc44f26cd8dd5dae19d6c3",
+        "negative_command": ".venv-cpu/bin/python work/training__C82860__NRS-484B-227-1__motor_vehicle_driver/native/prove_delivery.py --case training__C82860__NRS-484B-227-1__motor_vehicle_driver__authorized_opening --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Saved provenance differs from audit mode",
+        "negative_log": "native/proofs/delivery-authorized_opening-negative.log",
+        "negative_log_sha256": "3a0ca005b29365e4c13667c9b4ac295829be922533e1df0f715be8e34ed0cf39"
+      }
+    },
+    {
+      "case_id": "training__C82860__NRS-484B-227-1__motor_vehicle_driver__barrier_crossing",
+      "kind": "delivery",
+      "construction": "native/bundles/barrier_crossing/construction.json",
+      "construction_sha256": "9b560f1300d84168e79ebea51588a037a3fa0d1c687fd5d95b708f0720412064",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "method": "original Native transform and body vertices",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native divided roadways 828601 and 828602",
+            "uncertainty": "Original body, median, roadway and authority review pending"
+          },
+          {
+            "name": "median_crossing_location",
+            "unit": "structured",
+            "method": "saved body polygon against original median and roadway readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames",
+            "reference_frame": "Native divided roadways 828601 and 828602",
+            "uncertainty": "Original body, median, roadway and authority review pending"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "An authored median gap does not prove public authority.",
+          "Original motion and four-camera pixels require source review."
+        ]
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original median-road actor spawn may intersect authored road surface"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/bundles/barrier_crossing/fallback1.json",
+          "construction_sha256": "7be3a157475384aaed5818df3ea48f0c0d9b21c76cafe59ce35510f5d8168e07",
+          "trigger": {
+            "source": "Native try_spawn_actor",
+            "metric": "actor spawn result",
+            "failure_condition": "spawn returns None"
+          },
+          "changed_knobs": [
+            "spawn height from 1.5m to 1.8m"
+          ],
+          "compatibility": {
+            "receipt": "native/proofs/public-barrier_crossing-fallback1.json",
+            "sha256": "41d8fa915507bb6bc4689fb87039c78e85eadf4dc189c8178ca8ea4e552dc24e",
+            "log": "native/proofs/public-barrier_crossing-fallback1-analysis.log",
+            "negative_log": "native/proofs/public-barrier_crossing-fallback1-negative.log"
+          },
+          "negative": {
+            "log": "native/proofs/public-barrier_crossing-fallback1-negative.log"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C82860__NRS-484B-227-1__motor_vehicle_driver/execution-manifest.json --case training__C82860__NRS-484B-227-1__motor_vehicle_driver__barrier_crossing --candidate fallback1 --output .runtime-work/c82860-lead/selected-offline-barrier_crossing-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "7be3a157475384aaed5818df3ea48f0c0d9b21c76cafe59ce35510f5d8168e07",
+            "log": "native/proofs/construction-barrier_crossing-fallback1.log",
+            "log_sha256": "ed46ebe347d828a12de446cb737f2a974d27bf4b369fb37ad13b3c34cc6c72e6"
+          }
+        }
+      ],
+      "measurement_contract": "native/barrier_crossing-measurement-contract.json",
+      "fixture_recipe": "work/training__C82860__NRS-484B-227-1__motor_vehicle_driver/diagnostic/barrier_crossing/fixture-recipe.json",
+      "compatibility": {
+        "receipt": "native/proofs/public-barrier_crossing-primary.json",
+        "sha256": "0fcbeaabfc549a8caffaec355fd9f3adfe0a59455a6d0e5dd818575788024198",
+        "log": "native/proofs/public-barrier_crossing-primary-analysis.log",
+        "negative_log": "native/proofs/public-barrier_crossing-primary-negative.log"
+      },
+      "negative": {
+        "log": "native/proofs/public-barrier_crossing-primary-negative.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C82860__NRS-484B-227-1__motor_vehicle_driver/execution-manifest.json --case training__C82860__NRS-484B-227-1__motor_vehicle_driver__barrier_crossing --output .runtime-work/c82860-lead/selected-offline-barrier_crossing",
+        "exit_code": 0,
+        "construction_sha256": "9b560f1300d84168e79ebea51588a037a3fa0d1c687fd5d95b708f0720412064",
+        "log": "native/proofs/construction-barrier_crossing-primary.log",
+        "log_sha256": "e4a6400698130f9ad8268dd40578496a4f8d09b4efd91ccf785317c49da3af4f"
+      },
+      "physical_preparation": {
+        "receipt": "native/proofs/physical-barrier_crossing.json",
+        "sha256": "f3925b26d4d4f94e17917404b9d17acb95820ef40b783958ac1457aaa562bb0f"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C82860__NRS-484B-227-1__motor_vehicle_driver__barrier_crossing",
+        "sets": [
+          "demo-train",
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "native/delivery_audit.py",
+        "script_sha256": "3eb4eec8e10cf5cef9d3c0cbca1657c06459a64c883b2d77451e9369c92e023e",
+        "command": ".venv-cpu/bin/python work/training__C82860__NRS-484B-227-1__motor_vehicle_driver/native/prove_delivery.py --case training__C82860__NRS-484B-227-1__motor_vehicle_driver__barrier_crossing",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/delivery-barrier_crossing-positive.log",
+        "test_log_sha256": "91a1bef5bbaf484fc28a16b789d8638092bdad7f0e7bd4b372e3846b6c59103e",
+        "negative_command": ".venv-cpu/bin/python work/training__C82860__NRS-484B-227-1__motor_vehicle_driver/native/prove_delivery.py --case training__C82860__NRS-484B-227-1__motor_vehicle_driver__barrier_crossing --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Saved provenance differs from audit mode",
+        "negative_log": "native/proofs/delivery-barrier_crossing-negative.log",
+        "negative_log_sha256": "3a0ca005b29365e4c13667c9b4ac295829be922533e1df0f715be8e34ed0cf39"
+      }
+    }
+  ]
+}

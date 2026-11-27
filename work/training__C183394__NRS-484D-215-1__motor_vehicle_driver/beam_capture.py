@@ -104,6 +104,8 @@ def run(bundle, output, host, port):
         capture = PipelineCapture(client, scene["ego"], output, case,
                                   visibility=False, required_observations=[])
         road = scene["map"].to_opendrive()
+        with (output / "road.xodr").open("x") as road_source:
+            road_source.write(road)
         put(output / "road-position-source.json", {
             "road_position": "adjacent_shoulder",
             "map_and_adjacency_source": "original OpenDRIVE lane -2 shoulder and lane -1 adjoining driving readback",

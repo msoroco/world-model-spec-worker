@@ -1,6 +1,7 @@
 """Verify the controlled physical request before any CARLA acquisition."""
 
 import copy
+import hashlib
 import json
 from pathlib import Path
 import shutil
@@ -47,11 +48,14 @@ class SceneTest(unittest.TestCase):
                            "source_kind": "original_native_motion",
                            "ego_brake_request": .8 if index >= 180 else 0,
                            "ego_brake_observed": .8 if index >= 180 else 0,
+                           "lamp_state_observed": index % 10 < 5,
                            "actors": {
                                "ego": {"native_speed_mps": 2,
+                                       "native_center_xy_m": [ego_x + .5, 1.5],
                                        "native_body_xy_m": [[ego_x, 1], [ego_x + 1, 1],
                                                             [ego_x, 2], [ego_x + 1, 2]]},
                                "emergency": {"native_speed_mps": .5,
+                                             "native_center_xy_m": [15.5, 5.5],
                                              "native_body_xy_m": [[15, 5], [16, 5],
                                                                   [15, 6], [16, 6]]}}})
             review.append({"video_frame": index, "source_native_frame": native,
@@ -95,10 +99,37 @@ class SceneTest(unittest.TestCase):
                 "assignment_id": request(CASES[0])["assignment_id"],
                 "review_kind": "original_source_review", "frame_annotations": review,
             }) + "\n")
+            (scratch / "native-request.json").write_text(json.dumps(request(CASES[0])) + "\n")
+            exact = request(CASES[0])
+            (scratch / "scene.xodr").write_text(exact["source_map"] + "\n")
+            map_hash = hashlib.sha256(exact["source_map"].encode()).hexdigest()
+            (scratch / "native-map-readback.json").write_text(json.dumps({
+                "requested_map_sha256": map_hash,
+                "original_opendrive_sha256": map_hash,
+                "initial_road_id": exact["road_id"]}) + "\n")
+            capture_report = {"case_id": exact["case_id"], "frames": 600,
+                              "expected_frames": 600, "error": None,
+                              "accepted": False, "restoration": {"restored": True}}
+            (scratch / "native-capture-report.json").write_text(json.dumps(capture_report) + "\n")
             result = process(scratch)
             self.assertEqual(result["rows"], 600)
+            self.assertEqual(result["case_id"], request(CASES[0])["case_id"])
+            self.assertIn("native-capture-report.json", result["capture_audit_sources"])
             self.assertEqual(len((scratch / "approach_trace.jsonl").read_text().splitlines()), 600)
             (scratch / "approach_trace.jsonl").unlink()
+            failed_report = copy.deepcopy(capture_report)
+            failed_report["restoration"] = {"restored": False}
+            (scratch / "native-capture-report.json").write_text(json.dumps(failed_report) + "\n")
+            with self.assertRaisesRegex(ValueError, "restoration did not pass"):
+                process(scratch)
+            (scratch / "native-capture-report.json").write_text(json.dumps(capture_report) + "\n")
+            (scratch / "native-request.json").write_text(json.dumps(request(CASES[1])) + "\n")
+            wrong = json.loads((scratch / "native-request.json").read_text())
+            wrong["case_id"] = request(CASES[0])["case_id"]
+            (scratch / "native-request.json").write_text(json.dumps(wrong) + "\n")
+            with self.assertRaisesRegex(ValueError, "differs from exact construction"):
+                process(scratch)
+            (scratch / "native-request.json").write_text(json.dumps(request(CASES[0])) + "\n")
             (scratch / "observed-actors.jsonl").unlink()
             with self.assertRaisesRegex(ValueError, "Missing original source"):
                 process(scratch)

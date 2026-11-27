@@ -1,0 +1,65 @@
+"""Build canonical planning cases without changing the two delivery candidates."""
+from copy import deepcopy
+import json
+from pathlib import Path
+import sys
+
+PACKAGE = Path(__file__).resolve().parents[1]
+REPO = next(parent for parent in PACKAGE.parents if (parent / 'batch.json').is_file())
+sys.path.insert(0, str(REPO / 'runtime/scenario_pipeline'))
+from batch_pipeline import stages
+
+
+def read(path):
+    return json.loads(path.read_text())
+
+
+proposal = PACKAGE / 'proposals'
+existing = read(proposal / 'cases.json')
+binding = read(proposal / 'bindings.json')
+template = read(proposal / 'template.json')
+for index, judgment in enumerate(template['structure']['judgment_calls_needed']):
+    judgment['observable_requirements'] = read(proposal / f'judgment_observables_{index}.json')['observable_requirements']
+
+base = deepcopy(existing['cases'][0])
+base['variable_assignments']['oncoming_centre_distance_ft'] = {'kind': 'subject_behavior', 'value': None}
+base['target_law_id'] = None
+base['target_type'] = 'baseline'
+base['case_id'] = f"{PACKAGE.name}__baseline"
+base['rationale'] = 'Shared opposed-vehicle shoulder and beam request reference; no legal conclusion.'
+base['unresolved_judgment_calls'] = [j['phrase'] for j in template['structure']['judgment_calls_needed']]
+base.pop('sweep_measurements', None)
+cases = [base]
+for branch, value in [('below', 499), ('at', 500), ('above', 501)]:
+    case = deepcopy(base)
+    case.update(case_id=f'{PACKAGE.name}__distance_{branch}_500ft', target_law_id=template['law_id'],
+                target_type='boundary_probe', paired_probe_id=f'{PACKAGE.name}__distance_500ft',
+                deliberate_differences=['oncoming_centre_distance_ft'],
+                rationale=f'Physical separation target {value} ft relative to exact 500 ft statutory boundary; measured original distance controls any later interpretation.',
+                probe={'primary_variable': 'oncoming_centre_distance_ft',
+                       'comparison_or_standard': 'exact statutory 500 ft onset',
+                       'target_value_or_branch': branch,
+                       'threshold_ref': 'obligation.numeric_conditions[0]',
+                       'operator': '<=', 'unit': 'ft', 'test_value': value},
+                epsilon_used={'value': 1, 'unit': 'ft', 'rationale': 'Planning grid spacing only; exact at-boundary observation cannot be guaranteed by this controller.'})
+    case['variable_assignments']['beam_request_policy'] = {'kind': 'controller', 'value': 'dim_within_500'}
+    cases.append(case)
+
+specs = []
+for index, judgment in enumerate(template['structure']['judgment_calls_needed']):
+    specs.append({'sweep_id': f'{PACKAGE.name}__judgment_{index}', 'target_law_id': template['law_id'],
+                  'judgment_refs': [{'phrase': judgment['phrase'], 'note': judgment['note']}],
+                  'status': 'incomplete', 'rationale': 'Original physical observations and feasible setpoint grid are not yet independently established.',
+                  'missing_inputs': [
+                      'Verified original CARLA optical or equipment observation for the exact phrase',
+                      'Supported canonical controller or world setup axis with feasible range and spacing',
+                      'Measured source-backed recording and landmark evidence']})
+
+result = {'cell_id': existing['cell_id'], 'actor': existing['actor'], 'status': 'draft',
+          'sweeps_expanded': [], 'sweep_specs': specs, 'cases': cases}
+request = {'cell': read(REPO / 'inputs' / PACKAGE.name / 'assignment.json')['cell'],
+           'actor': existing['actor']}
+stages.validate('cases', result, {'request': request, 'dependencies': [binding], 'templates': [template]})
+destination = proposal / 'canonical_cases.json'
+destination.write_text(json.dumps(result, indent=2, ensure_ascii=False) + '\n')
+print(f'PASS: canonical baseline, linked 499/500/501 ft probes, and three explicit incomplete judgment sweep plans; {destination.relative_to(PACKAGE)}')

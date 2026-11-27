@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
 sys.path.insert(0, str(ROOT / "native"))
 from beam_scene import CAMERAS, MODES, beam_request, road_opendrive  # noqa: E402
+from probe_scene import MODES as PROBE_MODES, request as probe_request  # noqa: E402
 
 
 def sha(path):
@@ -36,7 +37,7 @@ def bbox(x, y):
 
 def build(case):
     aid = "training__C183394__NRS-484D-215-1__motor_vehicle_driver"
-    case_id = aid + "__selected_6fb122bc__" + case
+    case_id = aid + ("__" if case in PROBE_MODES else "__selected_6fb122bc__") + case
     dest = ROOT / "fixture-source" / case
     dest.mkdir(parents=True, exist_ok=True)
     files = {}
@@ -57,12 +58,14 @@ def build(case):
     }.items():
         dump(dest / name, value)
     beam, frames, trace, evidence, native_frames, graphs = [], [], [], [], [], []
+    probe_plan = probe_request(case) if case in PROBE_MODES else None
     for i in range(600):
         t = i / 20
-        ex, ox = -100 + 2.5*t, 100 - 2.5*t
+        ex = -100 + 2.5*t
+        ox = (probe_plan["oncoming"]["start_xyz_m"][0] if probe_plan else 100) - 2.5*t
         ey, oy = -5.0, 1.75
         separation = ((ex-ox)**2 + (ey-oy)**2)**.5
-        state = beam_request(MODES[case], separation)
+        state = beam_request((MODES | PROBE_MODES)[case], separation)
         beam.append({"frame": i, "native_frame": i, "time_s": t,
             "ego_x_m": ex, "ego_y_m": ey, "ego_heading_x": 1, "ego_heading_y": 0,
             "oncoming_x_m": ox, "oncoming_y_m": oy,
@@ -150,4 +153,4 @@ def build(case):
 
 
 if __name__ == "__main__":
-    print(json.dumps([build(case) for case in MODES], indent=2))
+    print(json.dumps([build(case) for case in MODES | PROBE_MODES], indent=2))

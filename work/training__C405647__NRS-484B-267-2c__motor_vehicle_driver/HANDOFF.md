@@ -14,7 +14,7 @@ qualifying emergency/official vehicle moving or visibly preparing to move with r
 
 ## Blockers and resumption
 
-Executable Native construction and four candidate offline/compatibility proofs absent; saved audit and comparison proof absent. Be prepared to stop is qualitative; model braking readiness does not decide legal meaning. Resolve exact statutory branches and external authority from the frozen law and cited sources. Build semantic stages, Native construction, primary plus three truly distinct fallbacks per selected case, mandatory synchronized capture and Core mapping; run exact offline, positive/negative compatibility, saved-only and independent comparison audits. Recheck physical cause and camera evidence in CARLA later. Set `ready` / `delivery_prepared` only after worker CPU proofs pass.
+The exact Native pair, saved-source measurement and independent comparison now have focused CPU proofs. Be prepared to stop is qualitative; measured braking does not decide its legal meaning. Resolve the uncovered preparing-to-move and officer-direction branches, bind selected cases to exact offline/public compatibility, saved processing, semantic stages and independent delivery audits. Recheck physical cause and camera evidence in CARLA later. Set `ready` / `delivery_prepared` only after the scoped strict gate passes.
 
 ## 2026-11-23 saved-source approach construction
 
@@ -47,3 +47,9 @@ The saved meter also reports the number and fraction of approaching frames with 
 The focused conversion test now exercises `from_original.process` end to end on 600 original-shaped Native rows under `.runtime-work/`, confirms the produced trace, and rejects a missing actor source. The rows are synthetic test values; original CARLA capture and independent pixel review remain unperformed. Scene/conversion test log SHA-256 `2d51d47ee743889ca5d48b6d66a17f12e0132f35c5f52a0c9f33388b13bfd48c`.
 
 `case-plan.json.source_observation_mapping` now names the concrete Native, saved and camera channels for all eight source terms. It explicitly leaves original capture, statutory vehicle/lamp qualification, actual visibility and the officer-direction exception unverified. This is a source-to-channel plan, not an accepted evidence mapping.
+
+`native/from_original.py` now requires the captured `native-request.json` to match the exact case construction before converting original rows. The end-to-end CPU test rejects a cross-case/mutated request and a missing actor source; scene/conversion log SHA-256 `fb40b5f5ec508f614fc424f25e769f8cba086aad2de11c22abed144d46e8af1e`.
+
+`native/audit_capture.py` independently checks the sealed exact request and OpenDRIVE, Native map readback, 600 original actor/video frame joins, 20 Hz cadence, capture completion and successful world restoration before saved conversion. `native/prove_capture.py` supplies a synthetic positive and rejects failed restoration, short capture, frame mismatch, missing original body geometry and a wrong exact case. This tests the lifecycle checker only; it does not claim a real Native run or optical acceptance. Exact selected delivery integration remains CPU work.
+
+The original-source converter now requires the independent capture/lifecycle audit before writing its trace. Its focused test rejects a failed world restoration and binds the audit source hashes to the conversion receipt. Revised scene/conversion proof SHA-256 `fb40b5f5ec508f614fc424f25e769f8cba086aad2de11c22abed144d46e8af1e`.

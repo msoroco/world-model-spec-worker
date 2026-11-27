@@ -1,0 +1,33 @@
+{
+  "format": "c183394-incorporated-484d100-plan-v1",
+  "source": "inputs/training__C179824__NRS-484D-100-1__motor_vehicle_driver/assignment.json",
+  "source_sha256": "1368fc8a0b67e1245b010d14845639b808f07c2e4fdf58e3cd9964100587ef9d",
+  "current_case_scope": "adjacent paved shoulder, opposed oncoming vehicle, simulator ClearNight request",
+  "triggers": [
+    {
+      "branch": "civil_sun_interval",
+      "statutory_condition": "one-half hour after sunset to one-half hour before sunrise",
+      "current_evidence": "lighting-trigger-source.json marks civil_time_condition_verified false",
+      "needed_original_evidence": ["Dated local civil clock and timezone for every original tick", "Location-specific sunset and sunrise event source", "Tick-to-clock synchronization and uncertainty at interval boundaries"],
+      "construction_status": "simulator_night_request_only",
+      "acceptance_guard": "Do not infer this trigger from CARLA sun altitude or weather label alone."
+    },
+    {
+      "branch": "1000ft_discernibility",
+      "statutory_condition": "insufficient light or unfavorable atmosphere, with persons and vehicles not clearly discernible at 1000 feet",
+      "current_evidence": null,
+      "needed_original_evidence": ["Controlled poor-light or atmosphere source in original world", "Original 1000-foot target distance and identity", "Decoded original viewpoint evidence of discernibility with exposure and uncertainty"],
+      "construction_status": "not_constructed",
+      "acceptance_guard": "Weather fog or a visibility flag alone does not establish discernibility."
+    },
+    {
+      "branch": "official_device_direction",
+      "statutory_condition": "direction by an official traffic control device",
+      "current_evidence": null,
+      "needed_original_evidence": ["Source-identified official device and applicable direction", "Original device placement, state, visibility and ego encounter", "Frame-linked device state and independent review"],
+      "construction_status": "not_constructed",
+      "acceptance_guard": "An arbitrary sign or authored annotation is not evidence of an official applicable direction."
+    }
+  ],
+  "legal_verdict_claimed": false
+}
