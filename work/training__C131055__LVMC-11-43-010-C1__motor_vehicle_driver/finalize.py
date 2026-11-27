@@ -203,7 +203,7 @@ def measure_lane_use(analysis):
 
 
 def finalize(attempt, output):
-    from worker_exchange.native_output import write_result
+    from worker_exchange.native_output import physical_result, write_result
     attempt, output = Path(attempt).resolve(), Path(output).resolve()
     if output.exists() or (attempt / 'result.json').exists() or (attempt / 'channels').exists():
         raise ValueError('Retain prior saved analysis; choose a fresh attempt')
@@ -256,6 +256,7 @@ def finalize(attempt, output):
                   'time_window': '600 original Native frames', 'statistic': 'all',
                   'reference': 'channels/roundabout_lane_occupancy.jsonl'}},
               'accepted': False, 'legal_verdict_claimed': False}
+    result = physical_result(attempt, result)
     write_result(attempt, result)
     report = {'format': 'c131055-saved-lane-analysis-v1',
               'case_id': analysis['case_id'],
@@ -265,7 +266,10 @@ def finalize(attempt, output):
                                'exit_intent': measure_exit_intent(analysis),
                                'lane_use': measure_lane_use(analysis)},
               'measurement': measurement,
-              'physical_acceptance_claimed': False, 'legal_verdict_claimed': False}
+              'physical_acceptance_claimed': False, 'legal_verdict_claimed': False,
+              'physical_checks': result['physical_checks'],
+              'provenance_kind': result['provenance_kind'],
+              'diagnostic_fixture': result['diagnostic_fixture']}
     output.write_text(json.dumps(report, indent=2, allow_nan=False) + '\n')
     return report
 

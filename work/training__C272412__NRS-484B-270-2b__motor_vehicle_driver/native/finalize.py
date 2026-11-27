@@ -65,8 +65,8 @@ def finalize(attempt, output):
         "original_sources": facts["source_sha256"]}}) + "\n")
     evidence.append({"name": "source_review", "unit": "source context",
                      "reference": "channels/source_review.json"})
-    from worker_exchange.native_output import write_result
-    write_result(attempt, {
+    from worker_exchange.native_output import physical_result, write_result
+    result = {
         "case_id": case, "measured_values": facts,
         "target_checks": [{"target": "sampled body-to-body minimum and return ordering",
                            "requested": True,
@@ -84,7 +84,9 @@ def finalize(attempt, output):
         "video_references": [name + ".mkv" for name in (*sorted(CAMERAS), "raw")],
         "video_frame_map_reference": "video_frames.jsonl",
         "recording_description": recorded, "recording_evidence": evidence,
-        "realized_observables": {}})
+        "realized_observables": {}}
+    result = physical_result(attempt, result)
+    write_result(attempt, result)
     report = {"format": "worker-analysis-report", "case_id": case,
               "measurements": {"scooter_pass": {"method": "measure", "value": facts,
                                                  "sources": facts["source_sha256"]}},

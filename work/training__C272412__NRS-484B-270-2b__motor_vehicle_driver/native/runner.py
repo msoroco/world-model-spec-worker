@@ -57,6 +57,17 @@ def survey_check(survey):
     return survey
 
 
+def load_survey(path, case_suffix):
+    if not path:
+        raise ValueError("SCENARIO_CONTEXT_SURVEY required for original scooter identity")
+    survey = survey_check(json.loads(Path(path).read_text()))
+    if case_suffix == "exception_1_2" and not survey.get("no_passing_zone_source"):
+        raise ValueError("Original no-passing-zone designation source required")
+    if case_suffix.startswith("exception_") and not survey.get("cited_213_217_applicability_source"):
+        raise ValueError("Original NRS 484B.213/.217 applicability source required")
+    return survey
+
+
 def actor_row(actor):
     transform = actor.get_transform()
     velocity = actor.get_velocity()
@@ -87,13 +98,7 @@ def execute(case_suffix, case_id, output, host, port):
     if not case_id or not case_id.endswith("__" + case_suffix):
         raise ValueError("Exact case ID and suffix differ")
     survey_path = os.environ.get("SCENARIO_CONTEXT_SURVEY")
-    if not survey_path:
-        raise ValueError("SCENARIO_CONTEXT_SURVEY required for original scooter identity")
-        survey = survey_check(json.loads(Path(survey_path).read_text()))
-    if case_suffix == "exception_1_2" and not survey.get("no_passing_zone_source"):
-        raise ValueError("Original no-passing-zone designation source required")
-    if case_suffix.startswith("exception_") and not survey.get("cited_213_217_applicability_source"):
-        raise ValueError("Original NRS 484B.213/.217 applicability source required")
+    survey = load_survey(survey_path, case_suffix)
     output = Path(output).resolve()
     if not output.is_dir() or (output / "participant-poses.jsonl").exists():
         raise ValueError("Materialized original attempt must be fresh")

@@ -8,7 +8,7 @@
       "case_id": "training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__left_lane",
       "kind": "delivery",
       "construction": "selected-constructions/left_lane.json",
-      "construction_sha256": "05a6bddc23030290a711eeb6a53585db016c701f0dc4a6d9877b019a9c85d616",
+      "construction_sha256": "4145d3c8d3ea4540a5a4fe1b9474d037933df1e962b2973afb42584aaa0e05c2",
       "candidate_risk": {
         "status": "physical",
         "reason": "Original steering and road projection may miss the selected ring lane or intended exit."
@@ -17,7 +17,7 @@
         {
           "id": "fallback1",
           "construction": "fallbacks/left_lane/fallback1/construction.json",
-          "construction_sha256": "43913a7f3fe4dfd3464b6c0331d1dc7eaa099650743843e428ce5f504324148e",
+          "construction_sha256": "398eac1147d3fcb58e09053f2d94df286b325cac6324ccc1590fb60b0307adf2",
           "trigger": {
             "source": "original Native native-raw-actors.jsonl and roundabout-map-readback.json",
             "metric": "sourced ring-lane occupancy and intended exit continuity",
@@ -27,11 +27,20 @@
             "steer_gain 1.3 to 2.0"
           ],
           "offline": {
-            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -B runtime.py offline --manifest work/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/execution-manifest.json --case training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__left_lane --candidate fallback1 --output .runtime-work/c131055-left_lane-fallback1-offline",
-            "construction_sha256": "d6dce4b33f81ba9ae17b764dc47fffeaad8fd825a402a7beebbe7f8372fcb390",
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/execution-manifest.json --case training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__left_lane --candidate fallback1 --output .runtime-work/c131055-left_lane-fallback1-offline-final2",
+            "construction_sha256": "398eac1147d3fcb58e09053f2d94df286b325cac6324ccc1590fb60b0307adf2",
             "exit_code": 0,
             "log": "proofs/left_lane/fallback1/static.log",
-            "log_sha256": "eb9a9c6e4c9d67dffa7500caa731a9304b4b89373bd9e81afb46590b3c587648"
+            "log_sha256": "4f842c32708f29e06415abc39e70c17f5812a6d3f196178a8a2ffdc982041fb9"
+          },
+          "compatibility": {
+            "receipt": "proofs/left_lane/fallback1/receipt.json",
+            "sha256": "e49ad77bca74f435f20bbc483886e1e642ed1e2904ef46cbd57151c3ee11b22d",
+            "log": "proofs/left_lane/fallback1/analysis.log",
+            "negative_log": "proofs/left_lane/fallback1/negative.log"
+          },
+          "negative": {
+            "log": "proofs/left_lane/fallback1/negative.log"
           }
         }
       ],
@@ -40,20 +49,102 @@
       },
       "measurement_contract": "selected-measurements/left_lane/measurement-contract.json",
       "delivery_readiness": "cpu_prepared_original_source_pending",
+      "fixture_recipe": "work/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/diagnostic-left_lane-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original CARLA subject transform at 20 Hz",
+          "evidence": "trace.jsonl and native-raw-actors.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original CARLA subject velocity at 20 Hz",
+          "evidence": "trace.jsonl and native-raw-actors.jsonl"
+        },
+        "roundabout_lane_occupancy": {
+          "entrypoint": "runner.py",
+          "method": "original CARLA map lane IDs and frame-joined body occupancy",
+          "evidence": "road.xodr, roundabout-map-readback.json, native-raw-actors.jsonl"
+        },
+        "entry_exit_intent": {
+          "entrypoint": "runner.py",
+          "method": "original control intent and actual exit trajectory separated",
+          "evidence": "control-intent.jsonl, native-raw-actors.jsonl, video_frames.jsonl"
+        },
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "method": "original CARLA actor transform and body extent",
+          "evidence": "native-raw-actors.jsonl and trace.jsonl"
+        }
+      },
       "offline": {
-        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -B runtime.py offline --manifest work/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/execution-manifest.json --case training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__left_lane --candidate primary --output .runtime-work/c131055-left-primary-offline",
-        "construction_sha256": "57cc0aa1a6ff044f0f17efaf2d58832c7c93f40950cbf9113e9bff1cb9dc08d6",
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/execution-manifest.json --case training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__left_lane --candidate primary --output .runtime-work/c131055-left_lane-primary-offline-final2",
+        "construction_sha256": "4145d3c8d3ea4540a5a4fe1b9474d037933df1e962b2973afb42584aaa0e05c2",
         "exit_code": 0,
         "log": "proofs/left_lane/primary/static.log",
-        "log_sha256": "cc6937eca39bec717c89ba9a70f21761f06348748139d513bf6ee354c3428d33"
+        "log_sha256": "e1029c5245070ccfc883a3e290939986da5800512d016e2c3907ad7939c981dc"
       },
-      "fixture_recipe": "work/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/diagnostic-left_lane-recipe.json"
+      "compatibility": {
+        "receipt": "proofs/left_lane/primary/receipt.json",
+        "sha256": "1fc7b01fada8c92464dc5c8907dafcc7ac47099b1cdafa0cc9938a2f68a52384",
+        "log": "proofs/left_lane/primary/analysis.log",
+        "negative_log": "proofs/left_lane/primary/negative.log"
+      },
+      "negative": {
+        "log": "proofs/left_lane/primary/negative.log"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/execution-manifest.json --case training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__left_lane --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/execution-manifest.json --case training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__left_lane --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/left_lane-analysis.log",
+        "test_log_sha256": "e44480323bf737320cd210b7a7277422588cf8c5258feb634a38c5d890273818",
+        "processing_receipt": "saved/left_lane-processing.json",
+        "processing_receipt_sha256": "e23c822d3526ea178bf8444f2ed3772f4e7829b5fc0256195c49f68caaa25857"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/left_lane/proof.json",
+        "sha256": "1e710c596a0ddc6919c65ecf30ebd31235a7296ff8d0dcd71c78d0559c5b7cc7"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__left_lane",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "75a0431306c388d93492bc083172c316c14621b22502dc008883405b9f918684",
+        "command": ".venv-cpu/bin/python -B work/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/delivery_audit.py --case training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__left_lane --attempt $ATTEMPT --processing $PROCESSING --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "delivery-audit-left_lane-positive.log",
+        "test_log_sha256": "d4301d7708df7eb8401ff875007b07e285827b1bd93c5d586d6fbbfc1b6f4626",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/delivery_audit.py --case training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__left_lane --attempt $ATTEMPT --processing $PROCESSING --missing-source road.xodr --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: road.xodr",
+        "negative_log": "delivery-audit-left_lane-negative.log",
+        "negative_log_sha256": "3049234de9985938a1edbab2fdb5c614ccdd8ae36c1c919a0e590e8809857234",
+        "diagnostic_scope": "Synthetic CPU source audit only; original Native pixels and physical completion require independent review",
+        "production_command": ".venv-cpu/bin/python -B work/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/delivery_audit.py --case training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__left_lane --attempt $ATTEMPT --processing $PROCESSING"
+      }
     },
     {
       "case_id": "training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__right_lane",
       "kind": "delivery",
       "construction": "selected-constructions/right_lane.json",
-      "construction_sha256": "f9b2a4968d458ddc763ba1dd914d8c80c019623966510a7eaae3f99bae35e5bc",
+      "construction_sha256": "3f72a26556f7c75ed8e594febcdb02e3edc4d53d4c39840c5b2c882ffc8a9e5c",
       "candidate_risk": {
         "status": "physical",
         "reason": "Original steering and road projection may miss the selected ring lane or intended exit."
@@ -62,7 +153,7 @@
         {
           "id": "fallback1",
           "construction": "fallbacks/right_lane/fallback1/construction.json",
-          "construction_sha256": "f88fbd16469af0083633224f01326a6b8a5c5145f30705917b1a495848f9fae8",
+          "construction_sha256": "f33f57959ca693e2f86a4bdfeacb5335519f715ccd1eba61d5a90d2820e8cb63",
           "trigger": {
             "source": "original Native native-raw-actors.jsonl and roundabout-map-readback.json",
             "metric": "sourced ring-lane occupancy and intended exit continuity",
@@ -72,11 +163,20 @@
             "steer_gain 1.3 to 2.0"
           ],
           "offline": {
-            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -B runtime.py offline --manifest work/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/execution-manifest.json --case training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__right_lane --candidate fallback1 --output .runtime-work/c131055-right_lane-fallback1-offline",
-            "construction_sha256": "d902d3badb76d5bacf28bb192b2f42d8852259be0d1ba6fde4d7578ba07304fa",
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/execution-manifest.json --case training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__right_lane --candidate fallback1 --output .runtime-work/c131055-right_lane-fallback1-offline-final2",
+            "construction_sha256": "f33f57959ca693e2f86a4bdfeacb5335519f715ccd1eba61d5a90d2820e8cb63",
             "exit_code": 0,
             "log": "proofs/right_lane/fallback1/static.log",
-            "log_sha256": "cc6937eca39bec717c89ba9a70f21761f06348748139d513bf6ee354c3428d33"
+            "log_sha256": "eb9a9c6e4c9d67dffa7500caa731a9304b4b89373bd9e81afb46590b3c587648"
+          },
+          "compatibility": {
+            "receipt": "proofs/right_lane/fallback1/receipt.json",
+            "sha256": "5e8f5ec4e86a2ee65cffbe1de2fd694151c9229581f78f4fe3e10c5ffe978d3b",
+            "log": "proofs/right_lane/fallback1/analysis.log",
+            "negative_log": "proofs/right_lane/fallback1/negative.log"
+          },
+          "negative": {
+            "log": "proofs/right_lane/fallback1/negative.log"
           }
         }
       ],
@@ -85,19 +185,102 @@
       },
       "measurement_contract": "selected-measurements/right_lane/measurement-contract.json",
       "delivery_readiness": "cpu_prepared_original_source_pending",
+      "fixture_recipe": "work/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/diagnostic-right_lane-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original CARLA subject transform at 20 Hz",
+          "evidence": "trace.jsonl and native-raw-actors.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original CARLA subject velocity at 20 Hz",
+          "evidence": "trace.jsonl and native-raw-actors.jsonl"
+        },
+        "roundabout_lane_occupancy": {
+          "entrypoint": "runner.py",
+          "method": "original CARLA map lane IDs and frame-joined body occupancy",
+          "evidence": "road.xodr, roundabout-map-readback.json, native-raw-actors.jsonl"
+        },
+        "entry_exit_intent": {
+          "entrypoint": "runner.py",
+          "method": "original control intent and actual exit trajectory separated",
+          "evidence": "control-intent.jsonl, native-raw-actors.jsonl, video_frames.jsonl"
+        },
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "method": "original CARLA actor transform and body extent",
+          "evidence": "native-raw-actors.jsonl and trace.jsonl"
+        }
+      },
       "offline": {
-        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -B runtime.py offline --manifest work/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/execution-manifest.json --case training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__right_lane --candidate primary --output .runtime-work/c131055-right_lane-primary-offline",
-        "construction_sha256": "45e486851bdffe734b6c9be479e9304a90adac8279f0692c66cfa8f7d2504c37",
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/execution-manifest.json --case training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__right_lane --candidate primary --output .runtime-work/c131055-right_lane-primary-offline-final2",
+        "construction_sha256": "3f72a26556f7c75ed8e594febcdb02e3edc4d53d4c39840c5b2c882ffc8a9e5c",
         "exit_code": 0,
         "log": "proofs/right_lane/primary/static.log",
-        "log_sha256": "eb9a9c6e4c9d67dffa7500caa731a9304b4b89373bd9e81afb46590b3c587648"
+        "log_sha256": "cc6937eca39bec717c89ba9a70f21761f06348748139d513bf6ee354c3428d33"
+      },
+      "compatibility": {
+        "receipt": "proofs/right_lane/primary/receipt.json",
+        "sha256": "10504cafca8cd99d0d1a99c0637e15ae50734672df85b11b4d5ccc4478a55ac6",
+        "log": "proofs/right_lane/primary/analysis.log",
+        "negative_log": "proofs/right_lane/primary/negative.log"
+      },
+      "negative": {
+        "log": "proofs/right_lane/primary/negative.log"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/execution-manifest.json --case training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__right_lane --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/execution-manifest.json --case training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__right_lane --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/right_lane-analysis.log",
+        "test_log_sha256": "764b00237ad890a6a5d44f5277f9f6572a07ad63fd275031053cd2c0001106f7",
+        "processing_receipt": "saved/right_lane-processing.json",
+        "processing_receipt_sha256": "18e5b2d8a53290a00637bb8008ab6b632d153f9247ade63c6a04abff748edf50"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/right_lane/proof.json",
+        "sha256": "5f6dc39a2ef92c496e8a8484246182b6e6b64f007a45855a40d293ab0711388d"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__right_lane",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "75a0431306c388d93492bc083172c316c14621b22502dc008883405b9f918684",
+        "command": ".venv-cpu/bin/python -B work/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/delivery_audit.py --case training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__right_lane --attempt $ATTEMPT --processing $PROCESSING --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "delivery-audit-right_lane-positive.log",
+        "test_log_sha256": "c7e0a174058621445386d467d6f420c9d15bd5cc2fca4d8640c53677d2b5485e",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/delivery_audit.py --case training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__right_lane --attempt $ATTEMPT --processing $PROCESSING --missing-source road.xodr --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: road.xodr",
+        "negative_log": "delivery-audit-right_lane-negative.log",
+        "negative_log_sha256": "3049234de9985938a1edbab2fdb5c614ccdd8ae36c1c919a0e590e8809857234",
+        "diagnostic_scope": "Synthetic CPU source audit only; original Native pixels and physical completion require independent review",
+        "production_command": ".venv-cpu/bin/python -B work/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/delivery_audit.py --case training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__right_lane --attempt $ATTEMPT --processing $PROCESSING"
       }
     },
     {
       "case_id": "training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__u_turn_left_lane",
       "kind": "delivery",
       "construction": "selected-constructions/u_turn_left_lane.json",
-      "construction_sha256": "145c1ab0940ffb6f8eb027825ca885000b1ca00559bfb5c381d824e8528616c9",
+      "construction_sha256": "59bae221f5594100176810abac9079b894d6385c1c6db0c3e428407504b2fbc0",
       "candidate_risk": {
         "status": "physical",
         "reason": "Original steering and road projection may miss the selected ring lane or intended exit."
@@ -106,7 +289,7 @@
         {
           "id": "fallback1",
           "construction": "fallbacks/u_turn_left_lane/fallback1/construction.json",
-          "construction_sha256": "22cfb6a9227c1d33b335f87132e2ae73fdf9debe9221342e8707ced18188561e",
+          "construction_sha256": "214b2231c78591b9c6e1eca4ae17bfe0b64af3abed06c459229fb578fb7fd10b",
           "trigger": {
             "source": "original Native native-raw-actors.jsonl and roundabout-map-readback.json",
             "metric": "sourced ring-lane occupancy and intended exit continuity",
@@ -116,11 +299,20 @@
             "steer_gain 1.3 to 2.0"
           ],
           "offline": {
-            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -B runtime.py offline --manifest work/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/execution-manifest.json --case training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__u_turn_left_lane --candidate fallback1 --output .runtime-work/c131055-u_turn_left_lane-fallback1-offline",
-            "construction_sha256": "4982d60c2b1e2c22ea835b2ccf61e5bd77fc71ed96c57dfe6645690f203188f0",
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/execution-manifest.json --case training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__u_turn_left_lane --candidate fallback1 --output .runtime-work/c131055-u_turn_left_lane-fallback1-offline-final2",
+            "construction_sha256": "214b2231c78591b9c6e1eca4ae17bfe0b64af3abed06c459229fb578fb7fd10b",
             "exit_code": 0,
             "log": "proofs/u_turn_left_lane/fallback1/static.log",
-            "log_sha256": "cc6937eca39bec717c89ba9a70f21761f06348748139d513bf6ee354c3428d33"
+            "log_sha256": "eb9a9c6e4c9d67dffa7500caa731a9304b4b89373bd9e81afb46590b3c587648"
+          },
+          "compatibility": {
+            "receipt": "proofs/u_turn_left_lane/fallback1/receipt.json",
+            "sha256": "ea962a79d046a17f75ead205367b831c3fb38daac467eae43f6089627e0e3763",
+            "log": "proofs/u_turn_left_lane/fallback1/analysis.log",
+            "negative_log": "proofs/u_turn_left_lane/fallback1/negative.log"
+          },
+          "negative": {
+            "log": "proofs/u_turn_left_lane/fallback1/negative.log"
           }
         }
       ],
@@ -129,19 +321,102 @@
       },
       "measurement_contract": "selected-measurements/u_turn_left_lane/measurement-contract.json",
       "delivery_readiness": "cpu_prepared_original_source_pending",
+      "fixture_recipe": "work/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/diagnostic-u_turn_left_lane-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original CARLA subject transform at 20 Hz",
+          "evidence": "trace.jsonl and native-raw-actors.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original CARLA subject velocity at 20 Hz",
+          "evidence": "trace.jsonl and native-raw-actors.jsonl"
+        },
+        "roundabout_lane_occupancy": {
+          "entrypoint": "runner.py",
+          "method": "original CARLA map lane IDs and frame-joined body occupancy",
+          "evidence": "road.xodr, roundabout-map-readback.json, native-raw-actors.jsonl"
+        },
+        "entry_exit_intent": {
+          "entrypoint": "runner.py",
+          "method": "original control intent and actual exit trajectory separated",
+          "evidence": "control-intent.jsonl, native-raw-actors.jsonl, video_frames.jsonl"
+        },
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "method": "original CARLA actor transform and body extent",
+          "evidence": "native-raw-actors.jsonl and trace.jsonl"
+        }
+      },
       "offline": {
-        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -B runtime.py offline --manifest work/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/execution-manifest.json --case training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__u_turn_left_lane --candidate primary --output .runtime-work/c131055-u_turn_left_lane-primary-offline",
-        "construction_sha256": "a723f34bfe443648e841a3073a7e62ce1183142e5ce680934b371d06fbece692",
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/execution-manifest.json --case training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__u_turn_left_lane --candidate primary --output .runtime-work/c131055-u_turn_left_lane-primary-offline-final2",
+        "construction_sha256": "59bae221f5594100176810abac9079b894d6385c1c6db0c3e428407504b2fbc0",
         "exit_code": 0,
         "log": "proofs/u_turn_left_lane/primary/static.log",
         "log_sha256": "cc6937eca39bec717c89ba9a70f21761f06348748139d513bf6ee354c3428d33"
+      },
+      "compatibility": {
+        "receipt": "proofs/u_turn_left_lane/primary/receipt.json",
+        "sha256": "bca9f237ad07d8630cd924e08424b9f54a54968aaf45eca4519604bde4ce6cef",
+        "log": "proofs/u_turn_left_lane/primary/analysis.log",
+        "negative_log": "proofs/u_turn_left_lane/primary/negative.log"
+      },
+      "negative": {
+        "log": "proofs/u_turn_left_lane/primary/negative.log"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/execution-manifest.json --case training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__u_turn_left_lane --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/execution-manifest.json --case training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__u_turn_left_lane --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/u_turn_left_lane-analysis.log",
+        "test_log_sha256": "2528705f787094397f6f6dc6dd7a5276224ba2d5265d10fd56779f2ff6b0b0ef",
+        "processing_receipt": "saved/u_turn_left_lane-processing.json",
+        "processing_receipt_sha256": "faef7b0a5a2391a7103e089cd7f1ecf58fe93a10326c5005aa842000dbe8f20b"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/u_turn_left_lane/proof.json",
+        "sha256": "b43610e6289a0fb3cfb4c9007183ed342303af9393cf531f253e169f5cad97ad"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__u_turn_left_lane",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "75a0431306c388d93492bc083172c316c14621b22502dc008883405b9f918684",
+        "command": ".venv-cpu/bin/python -B work/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/delivery_audit.py --case training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__u_turn_left_lane --attempt $ATTEMPT --processing $PROCESSING --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "delivery-audit-u_turn_left_lane-positive.log",
+        "test_log_sha256": "41c96f16ed7a3517c53c900f11f01935d0d03d9d72465cc9aad62c3b6b3a7093",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/delivery_audit.py --case training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__u_turn_left_lane --attempt $ATTEMPT --processing $PROCESSING --missing-source road.xodr --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: road.xodr",
+        "negative_log": "delivery-audit-u_turn_left_lane-negative.log",
+        "negative_log_sha256": "3049234de9985938a1edbab2fdb5c614ccdd8ae36c1c919a0e590e8809857234",
+        "diagnostic_scope": "Synthetic CPU source audit only; original Native pixels and physical completion require independent review",
+        "production_command": ".venv-cpu/bin/python -B work/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/delivery_audit.py --case training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__u_turn_left_lane --attempt $ATTEMPT --processing $PROCESSING"
       }
     },
     {
       "case_id": "training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__u_turn_right_lane",
       "kind": "delivery",
       "construction": "selected-constructions/u_turn_right_lane.json",
-      "construction_sha256": "11cae5caee3389982a0340650f781033213fcd75ca0e17f06370d3e6b918b5b7",
+      "construction_sha256": "22c9bcf46f8419b296e96b4d93bb5b2b13cf3db2d03ba7699b9436a829bc6e7a",
       "candidate_risk": {
         "status": "physical",
         "reason": "Original steering and road projection may miss the selected ring lane or intended exit."
@@ -150,7 +425,7 @@
         {
           "id": "fallback1",
           "construction": "fallbacks/u_turn_right_lane/fallback1/construction.json",
-          "construction_sha256": "ab2a07a6615a55b0c86e926ebececb554835ec84ddd2db497ace93781bbb7bda",
+          "construction_sha256": "43d61c8a0fac239c40bb84dd45cd02cea8c8d49d412d07a9031abbb5c234b237",
           "trigger": {
             "source": "original Native native-raw-actors.jsonl and roundabout-map-readback.json",
             "metric": "sourced ring-lane occupancy and intended exit continuity",
@@ -160,11 +435,20 @@
             "steer_gain 1.3 to 2.0"
           ],
           "offline": {
-            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -B runtime.py offline --manifest work/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/execution-manifest.json --case training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__u_turn_right_lane --candidate fallback1 --output .runtime-work/c131055-u_turn_right_lane-fallback1-offline",
-            "construction_sha256": "6d199c9cf55a95c00c6f7030dc032b8bf69fd1984cd56c9c9108c536f3e44b41",
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/execution-manifest.json --case training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__u_turn_right_lane --candidate fallback1 --output .runtime-work/c131055-u_turn_right_lane-fallback1-offline-final2",
+            "construction_sha256": "43d61c8a0fac239c40bb84dd45cd02cea8c8d49d412d07a9031abbb5c234b237",
             "exit_code": 0,
             "log": "proofs/u_turn_right_lane/fallback1/static.log",
-            "log_sha256": "cc6937eca39bec717c89ba9a70f21761f06348748139d513bf6ee354c3428d33"
+            "log_sha256": "eb9a9c6e4c9d67dffa7500caa731a9304b4b89373bd9e81afb46590b3c587648"
+          },
+          "compatibility": {
+            "receipt": "proofs/u_turn_right_lane/fallback1/receipt.json",
+            "sha256": "67604e08af92dae0bee0303f1f29566cfc9c010e407e84b4de57ad2734a6c27e",
+            "log": "proofs/u_turn_right_lane/fallback1/analysis.log",
+            "negative_log": "proofs/u_turn_right_lane/fallback1/negative.log"
+          },
+          "negative": {
+            "log": "proofs/u_turn_right_lane/fallback1/negative.log"
           }
         }
       ],
@@ -173,12 +457,95 @@
       },
       "measurement_contract": "selected-measurements/u_turn_right_lane/measurement-contract.json",
       "delivery_readiness": "cpu_prepared_original_source_pending",
+      "fixture_recipe": "work/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/diagnostic-u_turn_right_lane-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original CARLA subject transform at 20 Hz",
+          "evidence": "trace.jsonl and native-raw-actors.jsonl"
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "same-tick original CARLA subject velocity at 20 Hz",
+          "evidence": "trace.jsonl and native-raw-actors.jsonl"
+        },
+        "roundabout_lane_occupancy": {
+          "entrypoint": "runner.py",
+          "method": "original CARLA map lane IDs and frame-joined body occupancy",
+          "evidence": "road.xodr, roundabout-map-readback.json, native-raw-actors.jsonl"
+        },
+        "entry_exit_intent": {
+          "entrypoint": "runner.py",
+          "method": "original control intent and actual exit trajectory separated",
+          "evidence": "control-intent.jsonl, native-raw-actors.jsonl, video_frames.jsonl"
+        },
+        "ego_pose": {
+          "entrypoint": "runner.py",
+          "method": "original CARLA actor transform and body extent",
+          "evidence": "native-raw-actors.jsonl and trace.jsonl"
+        }
+      },
       "offline": {
-        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -B runtime.py offline --manifest work/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/execution-manifest.json --case training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__u_turn_right_lane --candidate primary --output .runtime-work/c131055-u_turn_right_lane-primary-offline",
-        "construction_sha256": "29913b1a04e2dcc32ac251b95121db83031990627cbffde7e356e6807fd5eb06",
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/execution-manifest.json --case training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__u_turn_right_lane --candidate primary --output .runtime-work/c131055-u_turn_right_lane-primary-offline-final2",
+        "construction_sha256": "22c9bcf46f8419b296e96b4d93bb5b2b13cf3db2d03ba7699b9436a829bc6e7a",
         "exit_code": 0,
         "log": "proofs/u_turn_right_lane/primary/static.log",
         "log_sha256": "cc6937eca39bec717c89ba9a70f21761f06348748139d513bf6ee354c3428d33"
+      },
+      "compatibility": {
+        "receipt": "proofs/u_turn_right_lane/primary/receipt.json",
+        "sha256": "16f0b40caae7eb1e9a1e9cc4f900e564320d26bfae3765a01381dadf231b33f7",
+        "log": "proofs/u_turn_right_lane/primary/analysis.log",
+        "negative_log": "proofs/u_turn_right_lane/primary/negative.log"
+      },
+      "negative": {
+        "log": "proofs/u_turn_right_lane/primary/negative.log"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/execution-manifest.json --case training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__u_turn_right_lane --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/execution-manifest.json --case training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__u_turn_right_lane --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/u_turn_right_lane-analysis.log",
+        "test_log_sha256": "20c1db1a02233ec55e22629ffc0046074ffac1fc3eb2be13fa44fe8a15293a1f",
+        "processing_receipt": "saved/u_turn_right_lane-processing.json",
+        "processing_receipt_sha256": "b69729f920d1ad7caba8b0416ebc446bc6b5a7d13955bf752f54735298d67109"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/u_turn_right_lane/proof.json",
+        "sha256": "0defcf45b31761a974babd3b5513b8be2ac919c299d37eeb8506caaacbe50079"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__u_turn_right_lane",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "75a0431306c388d93492bc083172c316c14621b22502dc008883405b9f918684",
+        "command": ".venv-cpu/bin/python -B work/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/delivery_audit.py --case training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__u_turn_right_lane --attempt $ATTEMPT --processing $PROCESSING --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "delivery-audit-u_turn_right_lane-positive.log",
+        "test_log_sha256": "bc0a2d0a8bb5ec282b13986a80b8140afbac2ab4cde5dbd46e5047a9bd14b380",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/delivery_audit.py --case training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__u_turn_right_lane --attempt $ATTEMPT --processing $PROCESSING --missing-source road.xodr --diagnostic",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: road.xodr",
+        "negative_log": "delivery-audit-u_turn_right_lane-negative.log",
+        "negative_log_sha256": "3049234de9985938a1edbab2fdb5c614ccdd8ae36c1c919a0e590e8809857234",
+        "diagnostic_scope": "Synthetic CPU source audit only; original Native pixels and physical completion require independent review",
+        "production_command": ".venv-cpu/bin/python -B work/training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver/delivery_audit.py --case training__C131055__LVMC-11-43-010-C1__motor_vehicle_driver__u_turn_right_lane --attempt $ATTEMPT --processing $PROCESSING"
       }
     }
   ]

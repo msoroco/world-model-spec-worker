@@ -1,0 +1,60 @@
+{
+  "template_id": "NRS-484B-413-3@motor_vehicle_driver",
+  "law_id": "NRS-484B-413-3",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "A driver shall not stop or suddenly decrease the speed of a vehicle without first giving an appropriate signal to the driver of any vehicle immediately to the rear.",
+  "structure": {
+    "law_id": "NRS-484B-413-3",
+    "activation": {
+      "condition": "Driver stops or suddenly decreases vehicle speed with a vehicle immediately to the rear.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "First give an appropriate signal to the driver of a vehicle immediately to the rear.",
+      "type": "must",
+      "numeric_conditions": []
+    },
+    "exceptions": [],
+    "timing": {
+      "description": "Observe actual signal onset before the stop or speed decrease.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "suddenly decrease the speed",
+        "note": "Suddenness requires measured deceleration and context; no statutory numeric cutoff."
+      },
+      {
+        "phrase": "appropriate signal",
+        "note": "Signal form and visibility require original-source and human review."
+      },
+      {
+        "phrase": "immediately to the rear",
+        "note": "The immediately rear recipient requires original actor/lane/gap review."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "action_kind",
+      "kind": "controller",
+      "range_or_domain": "stop or sudden_decrease"
+    },
+    {
+      "name": "signal_command_frame",
+      "kind": "controller",
+      "range_or_domain": "requested frame in 600-frame clip"
+    },
+    {
+      "name": "observed_signal_frame",
+      "kind": "subject_behavior",
+      "range_or_domain": "first original observed signal or unknown"
+    },
+    {
+      "name": "immediately_rear",
+      "kind": "world_setup",
+      "range_or_domain": "same-lane requested following actor; original relation reviewed"
+    }
+  ]
+}

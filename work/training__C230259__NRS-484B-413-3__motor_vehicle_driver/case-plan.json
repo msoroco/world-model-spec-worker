@@ -31,31 +31,44 @@
         "training__C230259__NRS-484B-413-3__motor_vehicle_driver__probe_1",
         "training__C230259__NRS-484B-413-3__motor_vehicle_driver__probe_2"
       ],
-      "evidence_or_gap": "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
+      "evidence_or_gap": "Four selected constructions cover stop and sudden decrease timing; offline passes only, source-bound public/saved proofs and original/legal review remain."
     },
     {
       "requirement": "NRS-484B-413-3",
       "source": "NRS 484B.413(3)",
       "branch": "stop alternative",
-      "status": "alternative_pending",
-      "case_ids": [],
-      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
+      "status": "selected_required",
+      "case_ids": [
+        "training__C230259__NRS-484B-413-3__motor_vehicle_driver__stop_early",
+        "training__C230259__NRS-484B-413-3__motor_vehicle_driver__stop_late"
+      ],
+      "evidence_or_gap": "Selected Native stop pair and exact current-runtime offline pass. Original stop, signal, rear relation and legal judgment remain unverified."
     },
     {
       "requirement": "NRS-484B-413-3",
       "source": "NRS 484B.413(3)",
       "branch": "appropriate signal modality",
-      "status": "alternative_pending",
-      "case_ids": [],
-      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
+      "status": "selected_required",
+      "case_ids": [
+        "training__C230259__NRS-484B-413-3__motor_vehicle_driver__stop_early",
+        "training__C230259__NRS-484B-413-3__motor_vehicle_driver__stop_late",
+        "training__C230259__NRS-484B-413-3__motor_vehicle_driver__probe_1",
+        "training__C230259__NRS-484B-413-3__motor_vehicle_driver__probe_2"
+      ],
+      "evidence_or_gap": "Selected cases source-map observed brake lamp and hand-signal field. Original modality/appropriateness requires source review; no hand signal is claimed."
     },
     {
       "requirement": "NRS-484B-413-3",
       "source": "NRS 484B.413(3)",
       "branch": "immediately to rear",
-      "status": "alternative_pending",
-      "case_ids": [],
-      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
+      "status": "selected_required",
+      "case_ids": [
+        "training__C230259__NRS-484B-413-3__motor_vehicle_driver__stop_early",
+        "training__C230259__NRS-484B-413-3__motor_vehicle_driver__stop_late",
+        "training__C230259__NRS-484B-413-3__motor_vehicle_driver__probe_1",
+        "training__C230259__NRS-484B-413-3__motor_vehicle_driver__probe_2"
+      ],
+      "evidence_or_gap": "Selected Native runner samples rear actor pose, lane, body and gap each tick. Original relation and legal immediacy remain unverified."
     }
   ],
   "neutral_baseline": {
@@ -66,7 +79,7 @@
     {
       "case_id": "training__C230259__NRS-484B-413-3__motor_vehicle_driver__probe_1",
       "target_law_id": "NRS-484B-413-3",
-      "kind": "planned_only",
+      "kind": "selected_native_cpu_draft",
       "target_type": "below",
       "physical_target": "driver signals immediately trailing driver before sudden slowing",
       "comparison_variable": "signal_before_sudden_deceleration",
@@ -74,12 +87,16 @@
       "requested_not_measured": true,
       "selection_targets": [
         "full-train"
-      ]
+      ],
+      "construction": "native/bundles/probe_1/construction.json",
+      "offline_passed": true,
+      "physical_verified": false,
+      "legal_verdict": null
     },
     {
       "case_id": "training__C230259__NRS-484B-413-3__motor_vehicle_driver__probe_2",
       "target_law_id": "NRS-484B-413-3",
-      "kind": "planned_only",
+      "kind": "selected_native_cpu_draft",
       "target_type": "controlled_attempt",
       "physical_target": "driver suddenly slows without prior signal to same follower",
       "comparison_variable": "signal_before_sudden_deceleration",
@@ -87,7 +104,45 @@
       "requested_not_measured": true,
       "selection_targets": [
         "full-train"
-      ]
+      ],
+      "construction": "native/bundles/probe_2/construction.json",
+      "offline_passed": true,
+      "physical_verified": false,
+      "legal_verdict": null
+    },
+    {
+      "case_id": "training__C230259__NRS-484B-413-3__motor_vehicle_driver__stop_early",
+      "target_law_id": "NRS-484B-413-3",
+      "kind": "selected_native_cpu_draft",
+      "target_type": "controlled_attempt",
+      "physical_target": "stop with immediately rear driver and observed signal before stop",
+      "comparison_variable": "signal_before_stop",
+      "source_branch": "Stop with immediately rear vehicle",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "construction": "native/bundles/stop_early/construction.json",
+      "offline_passed": true,
+      "physical_verified": false,
+      "legal_verdict": null
+    },
+    {
+      "case_id": "training__C230259__NRS-484B-413-3__motor_vehicle_driver__stop_late",
+      "target_law_id": "NRS-484B-413-3",
+      "kind": "selected_native_cpu_draft",
+      "target_type": "controlled_attempt",
+      "physical_target": "stop with immediately rear driver and observed signal after stop",
+      "comparison_variable": "signal_before_stop",
+      "source_branch": "Stop with immediately rear vehicle",
+      "requested_not_measured": true,
+      "selection_targets": [
+        "full-train"
+      ],
+      "construction": "native/bundles/stop_late/construction.json",
+      "offline_passed": true,
+      "physical_verified": false,
+      "legal_verdict": null
     }
   ],
   "comparisons": [
@@ -103,6 +158,20 @@
       "fixed_conditions": [
         "frozen cell, actor and physical road context",
         "other participants, controller policy and camera policy except law-relevant target"
+      ]
+    },
+    {
+      "comparison_id": "training__C230259__NRS-484B-413-3__motor_vehicle_driver__stop_comparison",
+      "case_ids": [
+        "training__C230259__NRS-484B-413-3__motor_vehicle_driver__stop_early",
+        "training__C230259__NRS-484B-413-3__motor_vehicle_driver__stop_late"
+      ],
+      "deliberate_differences": [
+        "signal_before_stop"
+      ],
+      "fixed_conditions": [
+        "same C230259 road/travel/other_vehicle cell and immediately rear recipient",
+        "same 600-frame route, target speed profile and four cameras except signal onset"
       ]
     }
   ],
@@ -171,9 +240,9 @@
     "Cameras can inspect the decisive physical distinction"
   ],
   "blockers": [
-    "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
+    "Exact public compatibility, recorded-only, semantic and independent delivery/comparison CPU proofs remain open. Original physical and legal observations are unverified."
   ],
-  "selected_branch": null,
+  "selected_branch": "Stop or sudden decrease with immediately rear vehicle; observed signal order",
   "observations": [
     {
       "name": "drv.stopped",
@@ -220,7 +289,7 @@
     "Native map can realize the fixed cell and legal mechanism",
     "Actor blueprint and route can realize each requested target",
     "Cameras can inspect the decisive physical distinction",
-    "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
+    "Public and recorded-only selected proof chains remain open"
   ],
   "reviewed_selected_branch": {
     "source": "NRS 484B.413(3)",
@@ -290,5 +359,21 @@
     "unselected_primary_construction": "native/draft-prior-construction.json",
     "offline_log": "native/draft-prior-offline.log",
     "physical_status": "unverified"
+  },
+  "selected_cpu_checkpoint": {
+    "manifest": "selected-draft-manifest.json",
+    "case_ids": [
+      "training__C230259__NRS-484B-413-3__motor_vehicle_driver__stop_early",
+      "training__C230259__NRS-484B-413-3__motor_vehicle_driver__stop_late",
+      "training__C230259__NRS-484B-413-3__motor_vehicle_driver__probe_1",
+      "training__C230259__NRS-484B-413-3__motor_vehicle_driver__probe_2"
+    ],
+    "offline_log_paths": [
+      "native/selected-offline-stop_early.log",
+      "native/selected-offline-stop_late.log",
+      "native/selected-offline-probe_1.log",
+      "native/selected-offline-probe_2.log"
+    ],
+    "original_native_observed": false
   }
 }

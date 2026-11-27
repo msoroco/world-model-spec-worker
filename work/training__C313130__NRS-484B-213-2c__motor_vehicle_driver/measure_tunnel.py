@@ -11,7 +11,7 @@ from pathlib import Path
 FRAMES = 600
 RATE_HZ = 20
 METRES_IN_100_FEET = 30.48
-CAMERAS = {"overview", "ego_front", "portal_side", "opposing_approach"}
+CAMERAS = {"overview", "approach", "reference_corner", "driver_reference"}
 
 
 def finite(value, name):

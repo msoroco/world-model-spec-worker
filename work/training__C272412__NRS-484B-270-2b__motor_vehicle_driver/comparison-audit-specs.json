@@ -1,0 +1,78 @@
+{
+  "format": "c272412-comparison-audit-specs",
+  "comparisons": [
+    {
+      "comparison_id": "training__C272412__NRS-484B-270-2b__motor_vehicle_driver__witness_comparison",
+      "case_ids": [
+        "training__C272412__NRS-484B-270-2b__motor_vehicle_driver__witness_1",
+        "training__C272412__NRS-484B-270-2b__motor_vehicle_driver__witness_2"
+      ],
+      "fixed_conditions": [
+        "same frozen cell and driver actor",
+        "same one-lane-per-direction map and center marking",
+        "same surveyed electric-scooter identity, longitudinal trajectories, recording policy, controller capability and 600-frame observation window"
+      ],
+      "deliberate_differences": [
+        "cycle_pass_clearance"
+      ],
+      "audit_command": ".venv-cpu/bin/python work/training__C272412__NRS-484B-270-2b__motor_vehicle_driver/comparison_audit.py --comparison witness_comparison --attempt $ORIGINAL_ATTEMPT_1 --attempt $ORIGINAL_ATTEMPT_2 --output $COMPARISON_AUDIT_OUTPUT",
+      "original_source_required": true,
+      "diagnostic_fixture_sufficient": false
+    },
+    {
+      "comparison_id": "training__C272412__NRS-484B-270-2b__motor_vehicle_driver__exception_1_comparison",
+      "case_ids": [
+        "training__C272412__NRS-484B-270-2b__motor_vehicle_driver__exception_1_1",
+        "training__C272412__NRS-484B-270-2b__motor_vehicle_driver__exception_1_2"
+      ],
+      "fixed_conditions": [
+        "same frozen cell and driver actor",
+        "same one-lane-per-direction road geometry and surveyed electric-scooter identity",
+        "same requested body gap, longitudinal trajectories, recording policy, controller capability and 600-frame observation window"
+      ],
+      "deliberate_differences": [
+        "original center marking and no-passing-zone applicability source"
+      ],
+      "audit_command": ".venv-cpu/bin/python work/training__C272412__NRS-484B-270-2b__motor_vehicle_driver/comparison_audit.py --comparison exception_1_comparison --attempt $ORIGINAL_ATTEMPT_1 --attempt $ORIGINAL_ATTEMPT_2 --output $COMPARISON_AUDIT_OUTPUT",
+      "original_source_required": true,
+      "diagnostic_fixture_sufficient": false
+    },
+    {
+      "comparison_id": "training__C272412__NRS-484B-270-2b__motor_vehicle_driver__numeric_1_comparison",
+      "case_ids": [
+        "training__C272412__NRS-484B-270-2b__motor_vehicle_driver__numeric_1_0",
+        "training__C272412__NRS-484B-270-2b__motor_vehicle_driver__numeric_1_1",
+        "training__C272412__NRS-484B-270-2b__motor_vehicle_driver__numeric_1_2"
+      ],
+      "fixed_conditions": [
+        "same frozen cell and driver actor",
+        "same one-lane-per-direction map and center marking",
+        "same surveyed electric-scooter identity, longitudinal trajectories, recording policy, controller capability and 600-frame observation window"
+      ],
+      "deliberate_differences": [
+        "minimum_bicycle/scooter_pass_gap"
+      ],
+      "audit_command": ".venv-cpu/bin/python work/training__C272412__NRS-484B-270-2b__motor_vehicle_driver/comparison_audit.py --comparison numeric_1_comparison --attempt $ORIGINAL_ATTEMPT_1 --attempt $ORIGINAL_ATTEMPT_2 --attempt $ORIGINAL_ATTEMPT_3 --output $COMPARISON_AUDIT_OUTPUT",
+      "original_source_required": true,
+      "diagnostic_fixture_sufficient": false
+    },
+    {
+      "comparison_id": "training__C272412__NRS-484B-270-2b__motor_vehicle_driver__return_order_comparison",
+      "case_ids": [
+        "training__C272412__NRS-484B-270-2b__motor_vehicle_driver__ordering_1",
+        "training__C272412__NRS-484B-270-2b__motor_vehicle_driver__ordering_2"
+      ],
+      "fixed_conditions": [
+        "same frozen cell and actor",
+        "same scooter and ego longitudinal trajectories",
+        "same requested initial pass gap, center marking, four-camera policy and duration"
+      ],
+      "deliberate_differences": [
+        "right_return_timing"
+      ],
+      "audit_command": ".venv-cpu/bin/python work/training__C272412__NRS-484B-270-2b__motor_vehicle_driver/comparison_audit.py --comparison return_order_comparison --attempt $ORIGINAL_ATTEMPT_1 --attempt $ORIGINAL_ATTEMPT_2 --output $COMPARISON_AUDIT_OUTPUT",
+      "original_source_required": true,
+      "diagnostic_fixture_sufficient": false
+    }
+  ]
+}

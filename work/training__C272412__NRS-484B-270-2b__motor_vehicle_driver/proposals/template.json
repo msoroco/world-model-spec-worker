@@ -1,0 +1,83 @@
+{
+  "template_id": "NRS-484B-270-2b@motor_vehicle_driver",
+  "law_id": "NRS-484B-270-2b",
+  "actor": "motor_vehicle_driver",
+  "quote": "When overtaking or passing a bicycle, an electric bicycle or an electric scooter proceeding in the same direction, the driver of a motor vehicle shall exercise due care and: If there is only one lane for traffic proceeding in the same direction, pass to the left of the bicycle, electric bicycle or electric scooter at a safe distance, which must be not less than 3 feet between any portion of the vehicle and the bicycle, electric bicycle or electric scooter, and shall not move again to the right side of the highway until the vehicle is safely clear of the overtaken bicycle, electric bicycle or electric scooter. Except as otherwise provided in NRS 484B.213 and 484B.217 [NRS-484B-213-1, NRS-484B-213-2a, NRS-484B-213-2b, NRS-484B-213-2c, NRS-484B-217-2], when passing to the left of a bicycle, electric bicycle or electric scooter at a safe distance of not less than 3 feet between any portion of the vehicle and the bicycle, electric bicycle or electric scooter, this paragraph authorizes the driver, if it is safe, to pass: (1) To the left of the center of the highway. (2) In a no-passing zone.",
+  "status": "draft",
+  "structure": {
+    "activation": {
+      "description": "Motor vehicle overtakes bicycle, electric bicycle, or electric scooter going the same way with one same-direction traffic lane",
+      "source_clause": "When overtaking or passing a bicycle, an electric bicycle or an electric scooter proceeding in the same direction",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "Due care; left pass at safe body-to-body distance of at least 3 feet; no return right until safely clear",
+      "type": "must",
+      "source_clause": "pass to the left of the bicycle, electric bicycle or electric scooter at a safe distance, which must be not less than 3 feet between any portion of the vehicle and the bicycle, electric bicycle or electric scooter",
+      "numeric_conditions": [
+        {
+          "variable": "observed_body_surface_gap_ft",
+          "operator": ">=",
+          "value": 3,
+          "unit": "ft"
+        }
+      ]
+    },
+    "exceptions": [
+      {
+        "description": "Conditional passage left of center or in no-passing zone, subject to cited rules and original safety facts",
+        "source_clause": "Except as otherwise provided in NRS 484B.213 and 484B.217",
+        "trigger": "Original cited-rule applicability, center/no-passing designation, and safe passage",
+        "effect": "May pass left of center or in no-passing zone only if safe and at least 3 feet",
+        "replacement_obligation": "Retain left-side, 3-foot minimum, due-care and safely-clear duties"
+      }
+    ],
+    "timing": {
+      "description": "Minimum body gap throughout the abreast pass; no return right until safely clear"
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "exercise due care",
+        "note": "Driver behavior and original hazards require independent source review"
+      },
+      {
+        "phrase": "safe distance",
+        "note": "At least 3 feet is numeric floor; additional safety remains a judgment"
+      },
+      {
+        "phrase": "safely clear",
+        "note": "Longitudinal ordering is measured; legal clearance remains a judgment"
+      },
+      {
+        "phrase": "if it is safe",
+        "note": "Conditional center/no-passing authorization needs original road and traffic review"
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "requested_body_gap_ft",
+      "kind": "controller",
+      "range_or_domain": [
+        2.9,
+        4.0
+      ]
+    },
+    {
+      "name": "center_marking_mode",
+      "kind": "world_setup",
+      "range_or_domain": [
+        "dashed",
+        "solid"
+      ]
+    },
+    {
+      "name": "requested_right_return_frame",
+      "kind": "controller",
+      "range_or_domain": [
+        190,
+        340
+      ]
+    }
+  ]
+}

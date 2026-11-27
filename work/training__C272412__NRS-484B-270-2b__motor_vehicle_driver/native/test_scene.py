@@ -1,10 +1,14 @@
 """CPU checks of requested construction, without claiming original motion."""
 import math
+import json
+import os
+from pathlib import Path
+import tempfile
 import unittest
 import xml.etree.ElementTree as ET
 
 from scene import FRAMES, HZ, PASS_TARGETS_M, check, open_drive, target
-from runner import CAMERAS, survey_check
+from runner import CAMERAS, load_survey, survey_check
 
 
 class SceneTests(unittest.TestCase):
@@ -57,6 +61,15 @@ class SceneTests(unittest.TestCase):
                          {"scooter_motor_only_max_mph": 21}):
             with self.subTest(mutation=mutation), self.assertRaises(ValueError):
                 survey_check({**source, **mutation})
+        with tempfile.TemporaryDirectory(dir=os.environ["TMPDIR"]) as temporary:
+            path = Path(temporary) / "original-survey.json"
+            path.write_text(json.dumps(source) + "\n")
+            self.assertEqual(load_survey(path, "witness_1")["device_subtype"], "electric_scooter")
+            with self.assertRaisesRegex(ValueError, "applicability source"):
+                load_survey(path, "exception_1_1")
+            path.write_text(json.dumps({**source, "cited_213_217_applicability_source": "reviewed"}) + "\n")
+            with self.assertRaisesRegex(ValueError, "designation source"):
+                load_survey(path, "exception_1_2")
 
 
 if __name__ == "__main__":

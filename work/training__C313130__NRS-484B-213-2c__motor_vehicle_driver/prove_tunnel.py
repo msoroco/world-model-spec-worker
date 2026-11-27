@@ -71,7 +71,7 @@ if __name__ == "__main__":
     negatives.append(reject("missing_direction_survey", source, trace(), "One-way"))
     negatives.append(reject("short_capture", context(), trace()[:-1], "Incomplete 30-second"))
     rows = trace()
-    rows[210]["source_cameras"].pop("portal_side")
+    rows[210]["source_cameras"].pop("reference_corner")
     negatives.append(reject("missing_camera", context(), rows, "Four source camera"))
     rows = trace()
     rows[210]["native_frame"] = rows[209]["native_frame"]
