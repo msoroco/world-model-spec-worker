@@ -24,9 +24,201 @@
   "topic_inventory": {
     "exact-text": "A vehicle must not be driven to the left side of the center of a two-lane, two-directional highway and overtaking and passing another vehicle proceeding in the same direction, unless such left side is clearly visible and is free of oncoming traffic for a sufficient distance ahead to permit such overtaking and passing to be completely made without interfering with the safe operation of any vehicle approaching from the opposite direction or any vehicle overtaken."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__clear_free_complete",
+      "target_law_id": "NRS-484B-213-1",
+      "branch": "Unobstructed left side; no oncoming vehicle in the relevant forward corridor; ego completes a left-of-center pass and returns ahead of the overtaken vehicle.",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "controlled_factor": "visibility, traffic and noninterference reference",
+      "construction": "road with reviewed two-way two-lane highway geometry, actual ego/target/opposing actors, centerline crossing, continuous trajectories; occluded_left also constructs opaque roadside blocker",
+      "measurement": "original-frame ego/target/oncoming body poses, lane identities, centerline and route stations, virtual observer ray brackets, pairwise separations and responses; retain unknown visibility and safety judgments",
+      "legal_judgment": "unresolved"
+    },
+    {
+      "case_id": "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__occluded_left",
+      "target_law_id": "NRS-484B-213-1",
+      "branch": "A constructed opaque roadside object intersects the incoming-lane virtual observer rays through the pass-decision interval; otherwise the same pass and traffic.",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "controlled_factor": "visibility",
+      "construction": "road with reviewed two-way two-lane highway geometry, actual ego/target/opposing actors, centerline crossing, continuous trajectories; occluded_left also constructs opaque roadside blocker",
+      "measurement": "original-frame ego/target/oncoming body poses, lane identities, centerline and route stations, virtual observer ray brackets, pairwise separations and responses; retain unknown visibility and safety judgments",
+      "legal_judgment": "unresolved"
+    },
+    {
+      "case_id": "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__oncoming_distant",
+      "target_law_id": "NRS-484B-213-1",
+      "branch": "A continuously recorded opposite-direction vehicle approaches outside the planned pass envelope; otherwise the same pass.",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "controlled_factor": "oncoming traffic distance",
+      "construction": "road with reviewed two-way two-lane highway geometry, actual ego/target/opposing actors, centerline crossing, continuous trajectories; occluded_left also constructs opaque roadside blocker",
+      "measurement": "original-frame ego/target/oncoming body poses, lane identities, centerline and route stations, virtual observer ray brackets, pairwise separations and responses; retain unknown visibility and safety judgments",
+      "legal_judgment": "unresolved"
+    },
+    {
+      "case_id": "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__oncoming_close",
+      "target_law_id": "NRS-484B-213-1",
+      "branch": "The same opposite-direction vehicle is spawned nearer, with continuous relative motion and possible overlap before the pass completes.",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "controlled_factor": "oncoming traffic distance",
+      "construction": "road with reviewed two-way two-lane highway geometry, actual ego/target/opposing actors, centerline crossing, continuous trajectories; occluded_left also constructs opaque roadside blocker",
+      "measurement": "original-frame ego/target/oncoming body poses, lane identities, centerline and route stations, virtual observer ray brackets, pairwise separations and responses; retain unknown visibility and safety judgments",
+      "legal_judgment": "unresolved"
+    },
+    {
+      "case_id": "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__opposite_response",
+      "target_law_id": "NRS-484B-213-1",
+      "branch": "The opposite-direction vehicle makes a recorded evasive speed or lateral response during an otherwise matched pass.",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "controlled_factor": "interference with approaching vehicle",
+      "construction": "road with reviewed two-way two-lane highway geometry, actual ego/target/opposing actors, centerline crossing, continuous trajectories; occluded_left also constructs opaque roadside blocker",
+      "measurement": "original-frame ego/target/oncoming body poses, lane identities, centerline and route stations, virtual observer ray brackets, pairwise separations and responses; retain unknown visibility and safety judgments",
+      "legal_judgment": "unresolved"
+    },
+    {
+      "case_id": "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__overtaken_response",
+      "target_law_id": "NRS-484B-213-1",
+      "branch": "The overtaken same-direction vehicle makes a recorded evasive speed or lateral response during an otherwise matched pass.",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "controlled_factor": "interference with overtaken vehicle",
+      "construction": "road with reviewed two-way two-lane highway geometry, actual ego/target/opposing actors, centerline crossing, continuous trajectories; occluded_left also constructs opaque roadside blocker",
+      "measurement": "original-frame ego/target/oncoming body poses, lane identities, centerline and route stations, virtual observer ray brackets, pairwise separations and responses; retain unknown visibility and safety judgments",
+      "legal_judgment": "unresolved"
+    },
+    {
+      "case_id": "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__incomplete_pass",
+      "target_law_id": "NRS-484B-213-1",
+      "branch": "The ego enters left of center but does not fully clear and return ahead of the overtaken vehicle in the recorded episode.",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "controlled_factor": "complete passing",
+      "construction": "road with reviewed two-way two-lane highway geometry, actual ego/target/opposing actors, centerline crossing, continuous trajectories; occluded_left also constructs opaque roadside blocker",
+      "measurement": "original-frame ego/target/oncoming body poses, lane identities, centerline and route stations, virtual observer ray brackets, pairwise separations and responses; retain unknown visibility and safety judgments",
+      "legal_judgment": "unresolved"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "visibility_clear_vs_occluded",
+      "case_ids": [
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__clear_free_complete",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__occluded_left"
+      ],
+      "fixed_conditions": "Same reviewed two-lane, two-directional public-highway segment, centerline, vehicle classes, ego pass controller, target route/speed, original-frame measurement definitions, 20 Hz four-camera profile and duration, except for the named factor.",
+      "deliberate_differences": [
+        "opaque occluder placement and measured ray blockage"
+      ]
+    },
+    {
+      "comparison_id": "oncoming_far_vs_near",
+      "case_ids": [
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__oncoming_distant",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__oncoming_close"
+      ],
+      "fixed_conditions": "Same reviewed two-lane, two-directional public-highway segment, centerline, vehicle classes, ego pass controller, target route/speed, original-frame measurement definitions, 20 Hz four-camera profile and duration, except for the named factor.",
+      "deliberate_differences": [
+        "oncoming initial station and measured available forward distance"
+      ]
+    },
+    {
+      "comparison_id": "approaching_response",
+      "case_ids": [
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__oncoming_close",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__opposite_response"
+      ],
+      "fixed_conditions": "Same reviewed two-lane, two-directional public-highway segment, centerline, vehicle classes, ego pass controller, target route/speed, original-frame measurement definitions, 20 Hz four-camera profile and duration, except for the named factor.",
+      "deliberate_differences": [
+        "opposite vehicle response policy and measured evasive response; initial station must be held equal"
+      ]
+    },
+    {
+      "comparison_id": "overtaken_response",
+      "case_ids": [
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__clear_free_complete",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__overtaken_response"
+      ],
+      "fixed_conditions": "Same reviewed two-lane, two-directional public-highway segment, centerline, vehicle classes, ego pass controller, target route/speed, original-frame measurement definitions, 20 Hz four-camera profile and duration, except for the named factor.",
+      "deliberate_differences": [
+        "overtaken vehicle response policy and measured evasive response"
+      ]
+    },
+    {
+      "comparison_id": "passing_completion",
+      "case_ids": [
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__clear_free_complete",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__incomplete_pass"
+      ],
+      "fixed_conditions": "Same reviewed two-lane, two-directional public-highway segment, centerline, vehicle classes, ego pass controller, target route/speed, original-frame measurement definitions, 20 Hz four-camera profile and duration, except for the named factor.",
+      "deliberate_differences": [
+        "ego pass continuation policy and measured completion"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "highway_geometry",
+      "mandatory": true,
+      "source": "synchronized original Native map, participant, ray, trace and camera sources"
+    },
+    {
+      "name": "centerline_and_lane_directions",
+      "mandatory": true,
+      "source": "synchronized original Native map, participant, ray, trace and camera sources"
+    },
+    {
+      "name": "driver_and_vehicle_identity",
+      "mandatory": true,
+      "source": "synchronized original Native map, participant, ray, trace and camera sources"
+    },
+    {
+      "name": "ego_target_oncoming_body_history",
+      "mandatory": true,
+      "source": "synchronized original Native map, participant, ray, trace and camera sources"
+    },
+    {
+      "name": "pass_completion",
+      "mandatory": true,
+      "source": "synchronized original Native map, participant, ray, trace and camera sources"
+    },
+    {
+      "name": "left_side_visibility",
+      "mandatory": true,
+      "source": "synchronized original Native map, participant, ray, trace and camera sources"
+    },
+    {
+      "name": "oncoming_forward_distance",
+      "mandatory": true,
+      "source": "synchronized original Native map, participant, ray, trace and camera sources"
+    },
+    {
+      "name": "opposite_vehicle_response",
+      "mandatory": true,
+      "source": "synchronized original Native map, participant, ray, trace and camera sources"
+    },
+    {
+      "name": "overtaken_vehicle_response",
+      "mandatory": true,
+      "source": "synchronized original Native map, participant, ray, trace and camera sources"
+    },
+    {
+      "name": "original_frame_and_camera_join",
+      "mandatory": true,
+      "source": "synchronized original Native map, participant, ray, trace and camera sources"
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C229126__NRS-484B-213-1__motor_vehicle_driver/assignment.json",
@@ -51,17 +243,28 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "CARLA map selection must establish public-highway status, exactly two opposite-direction lanes and a reliable marked or definition-based centerline.",
+    "An actual opaque blocker must yield the intended virtual-observer visibility difference; its physical realization and pixels require original CARLA review.",
+    "Sufficient distance, clearly visible and interfering with safe operation are unresolved statutory judgments; engineering times, ray lengths and separation distances are recorded as measurements only.",
+    "Controlled response policies must be verified from original participant traces; scripted intent is not measured interference.",
+    "Exact executable constructions, finalizers, canonical proposals, source-bound compatibility, saved-only and independent audits remain CPU work."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
+    "method": "Read the frozen accepted-evidence inventory and exact law/witness; inventory lists zero recordings, so no source-backed reuse or physical equivalence can be established. Compared statutory visibility, oncoming availability, completion and each affected vehicle class independently.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "no-accepted-recording",
+        "requirement": "Original-source left-of-center pass on a two-lane two-directional highway, with visibility, oncoming traffic, complete passing and both vehicle-response histories",
+        "source": "inputs/testing__C229126__NRS-484B-213-1__motor_vehicle_driver/evidence.json",
+        "source_sha256": "64dda6f3f109f3097b12a0e749198cdd7d399f5a918510541791e2c218a06c91",
+        "why_existing_insufficient": "Frozen accepted-evidence inventory contains zero recordings."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "partial_exact_branch_plan; executable package and source-bound proofs pending",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
@@ -82,5 +285,128 @@
       ],
       "reason": "The unspecified road geometry permits a compatible two-lane two-directional configuration for the fixed left-passing goal."
     }
-  ]
+  ],
+  "requirement_dispositions": [
+    {
+      "requirement": "vehicle and driver attribution",
+      "source": "NRS 484B.213(1), exact exported text in inputs/testing__C229126__NRS-484B-213-1__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__clear_free_complete",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__occluded_left",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__oncoming_distant",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__oncoming_close",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__opposite_response",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__overtaken_response",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__incomplete_pass"
+      ],
+      "evidence_or_gap": "No accepted recording; proposed exact cases require original Native trajectory and visual evidence. No numeric legal threshold is assigned."
+    },
+    {
+      "requirement": "two-lane two-directional highway and centerline",
+      "source": "NRS 484B.213(1), exact exported text in inputs/testing__C229126__NRS-484B-213-1__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__clear_free_complete",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__occluded_left",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__oncoming_distant",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__oncoming_close",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__opposite_response",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__overtaken_response",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__incomplete_pass"
+      ],
+      "evidence_or_gap": "No accepted recording; proposed exact cases require original Native trajectory and visual evidence. No numeric legal threshold is assigned."
+    },
+    {
+      "requirement": "ego left-of-center while overtaking and passing a same-direction vehicle",
+      "source": "NRS 484B.213(1), exact exported text in inputs/testing__C229126__NRS-484B-213-1__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__clear_free_complete",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__occluded_left",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__oncoming_distant",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__oncoming_close",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__opposite_response",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__overtaken_response",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__incomplete_pass"
+      ],
+      "evidence_or_gap": "No accepted recording; proposed exact cases require original Native trajectory and visual evidence. No numeric legal threshold is assigned."
+    },
+    {
+      "requirement": "left side clearly visible",
+      "source": "NRS 484B.213(1), exact exported text in inputs/testing__C229126__NRS-484B-213-1__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__clear_free_complete",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__occluded_left",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__oncoming_distant",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__oncoming_close",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__opposite_response",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__overtaken_response",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__incomplete_pass"
+      ],
+      "evidence_or_gap": "No accepted recording; proposed exact cases require original Native trajectory and visual evidence. No numeric legal threshold is assigned."
+    },
+    {
+      "requirement": "left side free of oncoming traffic for a sufficient distance ahead",
+      "source": "NRS 484B.213(1), exact exported text in inputs/testing__C229126__NRS-484B-213-1__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__clear_free_complete",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__occluded_left",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__oncoming_distant",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__oncoming_close",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__opposite_response",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__overtaken_response",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__incomplete_pass"
+      ],
+      "evidence_or_gap": "No accepted recording; proposed exact cases require original Native trajectory and visual evidence. No numeric legal threshold is assigned."
+    },
+    {
+      "requirement": "passing completely made",
+      "source": "NRS 484B.213(1), exact exported text in inputs/testing__C229126__NRS-484B-213-1__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__clear_free_complete",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__occluded_left",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__oncoming_distant",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__oncoming_close",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__opposite_response",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__overtaken_response",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__incomplete_pass"
+      ],
+      "evidence_or_gap": "No accepted recording; proposed exact cases require original Native trajectory and visual evidence. No numeric legal threshold is assigned."
+    },
+    {
+      "requirement": "no interference with safe operation of an opposite-direction approaching vehicle",
+      "source": "NRS 484B.213(1), exact exported text in inputs/testing__C229126__NRS-484B-213-1__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__clear_free_complete",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__occluded_left",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__oncoming_distant",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__oncoming_close",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__opposite_response",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__overtaken_response",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__incomplete_pass"
+      ],
+      "evidence_or_gap": "No accepted recording; proposed exact cases require original Native trajectory and visual evidence. No numeric legal threshold is assigned."
+    },
+    {
+      "requirement": "no interference with safe operation of the overtaken vehicle",
+      "source": "NRS 484B.213(1), exact exported text in inputs/testing__C229126__NRS-484B-213-1__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__clear_free_complete",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__occluded_left",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__oncoming_distant",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__oncoming_close",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__opposite_response",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__overtaken_response",
+        "testing__C229126__NRS-484B-213-1__motor_vehicle_driver__incomplete_pass"
+      ],
+      "evidence_or_gap": "No accepted recording; proposed exact cases require original Native trajectory and visual evidence. No numeric legal threshold is assigned."
+    }
+  ],
+  "source_observation_mapping": {}
 }

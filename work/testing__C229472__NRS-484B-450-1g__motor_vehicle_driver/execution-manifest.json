@@ -6,14 +6,52 @@
       "case_id": "testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_park",
       "kind": "delivery",
       "construction": "construction.json",
-      "construction_sha256": "c817180acc4a2f7ba44e75f6d36e5f90035b8fee81afd648293dcc0112a4fc29",
+      "construction_sha256": "ff5cff4b0edf5e10288da1ca73411ab1910bbdabdbfffc202b97a1e1a0e9f1e1",
       "candidate_risk": {
         "status": "physical",
         "reason": "Map lane orientation, roadside signal visibility, exact body destination, signal indication and camera coverage need original local review."
       },
-      "candidates": [],
-      "offline": {},
-      "compatibility": {},
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/approach_below_30ft_park/fallback1-construction.json",
+          "construction_sha256": "ab99987da45d7edc88f892fa7ebeb6f29b8583ac99a527d5464ed59c993d1fd2",
+          "trigger": {
+            "source": "original Native trace.jsonl and signal-history.jsonl",
+            "metric": "terminal body-front approach gap and stable halt",
+            "failure_condition": "primary overshoots or undershoots source-bound engineering destination or lacks stable terminal halt"
+          },
+          "changed_knobs": [
+            "engineering_throttle: 0.22 to 0.17",
+            "engineering_braking_factor: 5.0 to 4.0"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_park --candidate fallback1 --output .runtime-work/c229472-owner/offline-fallback1-v4-approach_below_30ft_park",
+            "exit_code": 0,
+            "construction_sha256": "ab99987da45d7edc88f892fa7ebeb6f29b8583ac99a527d5464ed59c993d1fd2",
+            "log": "proof-offline-fallback1-v4-approach_below_30ft_park.log",
+            "log_sha256": "b9feb0793464510b7406ce9d05c0ef1827ee381b005e85cc819fb07b43d5cdeb"
+          },
+          "compatibility": {
+            "receipt": "proofs/fallback1-v4-approach_below_30ft_park/receipt.json",
+            "sha256": "3de661b9dc97fadccc3cc90c5162519eee523df4b1094dc74e97e5477af7b0c3",
+            "log": "proofs/fallback1-v4-approach_below_30ft_park/analysis.log",
+            "negative_log": "proofs/fallback1-v4-approach_below_30ft_park/negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_park --output .runtime-work/c229472-owner/offline-v4-approach_below_30ft_park",
+        "exit_code": 0,
+        "construction_sha256": "ff5cff4b0edf5e10288da1ca73411ab1910bbdabdbfffc202b97a1e1a0e9f1e1",
+        "log": "proof-offline-v4-approach_below_30ft_park.log",
+        "log_sha256": "473277fa544490787fbe41e9623e5daa73f27cc63d75f3cb086aaf3b9ccd790f"
+      },
+      "compatibility": {
+        "receipt": "proofs/primary-v4-approach_below_30ft_park/receipt.json",
+        "sha256": "5c63dd65a01bf5003a6b571a080dca29cc4c0dc591f661bc832316a4f7c19d08",
+        "log": "proofs/primary-v4-approach_below_30ft_park/analysis.log"
+      },
       "fixture_recipe": "work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/diagnostic-approach_below_30ft_park-recipe.json",
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
@@ -71,20 +109,102 @@
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "negative": {
+        "log": "proofs/primary-v4-approach_below_30ft_park/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-approach_below_30ft_park-receipt.json",
+        "sha256": "5abd97801e6efc07567e75dcc50796d07ae9fc7df683d33aba8b913c003e0686"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_park --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_park --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "proof-saved-approach_below_30ft_park.log",
+        "test_log_sha256": "3df92c653d01d68180cf10312fa6b845e956c8ad7600941df64864ae91d0d86e",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original signal and pixel review pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_park",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "scope": "CPU diagnostic source audit only; original production delivery not accepted",
+        "diagnostic_fixture": true,
+        "physical_acceptance_claimed": false,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/delivery_probe.py --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_park --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229472-owner/compat-v3-approach_below_30ft_park --saved-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229472-owner/saved-v3-approach_below_30ft_park --mode positive",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-positive-approach_below_30ft_park.log",
+        "test_log_sha256": "26cea71684d22539d473e69011786cf3890194466a1155c0b5948acccddb10a6",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/delivery_probe.py --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_park --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229472-owner/compat-v3-approach_below_30ft_park --saved-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229472-owner/saved-v3-approach_below_30ft_park --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: signal-site.json",
+        "negative_log": "proof-delivery-missing_source-approach_below_30ft_park.log",
+        "negative_log_sha256": "b47c1a5a51f88983f8c828d6d23dcb72400c503f0ee7259358780f2d715c8d70",
+        "script": "delivery_probe.py",
+        "script_sha256": "9c81980fe8e22c021aaad554bd67f970d16b4807d388039db2e2b78fd4ed07fb"
       }
     },
     {
       "case_id": "testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_at_30ft_park",
       "kind": "delivery",
       "construction": "cases/approach_at_30ft_park/construction.json",
-      "construction_sha256": "0133868a0efb8941477a68cb0fa4d032bd0f536189516eda400387f56c214652",
+      "construction_sha256": "3d5ffc39077dce6d6eee14e1a707d9b2c7a93a048c3c793375eb47506c3e938a",
       "candidate_risk": {
         "status": "physical",
         "reason": "Map lane orientation, roadside signal visibility, exact body destination, signal indication and camera coverage need original local review."
       },
-      "candidates": [],
-      "offline": {},
-      "compatibility": {},
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/approach_at_30ft_park/fallback1-construction.json",
+          "construction_sha256": "7ec4841c2422d19b1fddf8e5186fd39835b6b3cb45bb4f8681e99645d53f1fe3",
+          "trigger": {
+            "source": "original Native trace.jsonl and signal-history.jsonl",
+            "metric": "terminal body-front approach gap and stable halt",
+            "failure_condition": "primary overshoots or undershoots source-bound engineering destination or lacks stable terminal halt"
+          },
+          "changed_knobs": [
+            "engineering_throttle: 0.22 to 0.17",
+            "engineering_braking_factor: 5.0 to 4.0"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_at_30ft_park --candidate fallback1 --output .runtime-work/c229472-owner/offline-fallback1-v4-approach_at_30ft_park",
+            "exit_code": 0,
+            "construction_sha256": "7ec4841c2422d19b1fddf8e5186fd39835b6b3cb45bb4f8681e99645d53f1fe3",
+            "log": "proof-offline-fallback1-v4-approach_at_30ft_park.log",
+            "log_sha256": "c75f4d97b6d51cd2750e3a0a197628b25d8de266158ea1493b81c3a564a4c54f"
+          },
+          "compatibility": {
+            "receipt": "proofs/fallback1-v4-approach_at_30ft_park/receipt.json",
+            "sha256": "663b8b1ce8adc1eb80dd570a0de4e2962c90f6311d2802b64ccf635307b43efd",
+            "log": "proofs/fallback1-v4-approach_at_30ft_park/analysis.log",
+            "negative_log": "proofs/fallback1-v4-approach_at_30ft_park/negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_at_30ft_park --output .runtime-work/c229472-owner/offline-v4-approach_at_30ft_park",
+        "exit_code": 0,
+        "construction_sha256": "3d5ffc39077dce6d6eee14e1a707d9b2c7a93a048c3c793375eb47506c3e938a",
+        "log": "proof-offline-v4-approach_at_30ft_park.log",
+        "log_sha256": "c75f4d97b6d51cd2750e3a0a197628b25d8de266158ea1493b81c3a564a4c54f"
+      },
+      "compatibility": {
+        "receipt": "proofs/primary-v4-approach_at_30ft_park/receipt.json",
+        "sha256": "6c7548709f3488eff51fe3b01595a1febf5199864339297c7d3f826755622b4d",
+        "log": "proofs/primary-v4-approach_at_30ft_park/analysis.log"
+      },
       "fixture_recipe": "work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/diagnostic-approach_at_30ft_park-recipe.json",
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
@@ -142,20 +262,102 @@
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "negative": {
+        "log": "proofs/primary-v4-approach_at_30ft_park/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-approach_at_30ft_park-receipt.json",
+        "sha256": "332edf2d2eab515f62b44765baad1a5c0748ab8f05b555c7f0fe9f7254a9cd59"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_at_30ft_park --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_at_30ft_park --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "proof-saved-approach_at_30ft_park.log",
+        "test_log_sha256": "0688608dea951e9d335d8a5c1eef86bce4f24dfcc726d260cf41ea895468c2af",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original signal and pixel review pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_at_30ft_park",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "scope": "CPU diagnostic source audit only; original production delivery not accepted",
+        "diagnostic_fixture": true,
+        "physical_acceptance_claimed": false,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/delivery_probe.py --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_at_30ft_park --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229472-owner/compat-v3-approach_at_30ft_park --saved-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229472-owner/saved-v3-approach_at_30ft_park --mode positive",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-positive-approach_at_30ft_park.log",
+        "test_log_sha256": "31900bed2ea228ce86a1ac1665d614a97c028f6a6467ac42940abc8fdd074316",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/delivery_probe.py --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_at_30ft_park --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229472-owner/compat-v3-approach_at_30ft_park --saved-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229472-owner/saved-v3-approach_at_30ft_park --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: signal-site.json",
+        "negative_log": "proof-delivery-missing_source-approach_at_30ft_park.log",
+        "negative_log_sha256": "b47c1a5a51f88983f8c828d6d23dcb72400c503f0ee7259358780f2d715c8d70",
+        "script": "delivery_probe.py",
+        "script_sha256": "9c81980fe8e22c021aaad554bd67f970d16b4807d388039db2e2b78fd4ed07fb"
       }
     },
     {
       "case_id": "testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_above_30ft_park",
       "kind": "delivery",
       "construction": "cases/approach_above_30ft_park/construction.json",
-      "construction_sha256": "b2040c1780b6f085c21a9182905716682182e7bd1c2b9a35dbccc3261668d6c8",
+      "construction_sha256": "c136ea04ef627aeb4b602995e9b52831e1643ce005c74abc748c2bd5165fadc6",
       "candidate_risk": {
         "status": "physical",
         "reason": "Map lane orientation, roadside signal visibility, exact body destination, signal indication and camera coverage need original local review."
       },
-      "candidates": [],
-      "offline": {},
-      "compatibility": {},
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/approach_above_30ft_park/fallback1-construction.json",
+          "construction_sha256": "00cc8e62c12f2ff97e676187488372005b4deee438d7b80313529b715da6ddbb",
+          "trigger": {
+            "source": "original Native trace.jsonl and signal-history.jsonl",
+            "metric": "terminal body-front approach gap and stable halt",
+            "failure_condition": "primary overshoots or undershoots source-bound engineering destination or lacks stable terminal halt"
+          },
+          "changed_knobs": [
+            "engineering_throttle: 0.22 to 0.17",
+            "engineering_braking_factor: 5.0 to 4.0"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_above_30ft_park --candidate fallback1 --output .runtime-work/c229472-owner/offline-fallback1-v4-approach_above_30ft_park",
+            "exit_code": 0,
+            "construction_sha256": "00cc8e62c12f2ff97e676187488372005b4deee438d7b80313529b715da6ddbb",
+            "log": "proof-offline-fallback1-v4-approach_above_30ft_park.log",
+            "log_sha256": "da6868e2ea5c23b2b033397b4dd07380bc428fe13d88fce274958ae4a2afa70d"
+          },
+          "compatibility": {
+            "receipt": "proofs/fallback1-v4-approach_above_30ft_park/receipt.json",
+            "sha256": "12eb3d656c93d63318702184973607cffdf93394244410e66639885785f70494",
+            "log": "proofs/fallback1-v4-approach_above_30ft_park/analysis.log",
+            "negative_log": "proofs/fallback1-v4-approach_above_30ft_park/negative.log"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_above_30ft_park --output .runtime-work/c229472-owner/offline-v4-approach_above_30ft_park",
+        "exit_code": 0,
+        "construction_sha256": "c136ea04ef627aeb4b602995e9b52831e1643ce005c74abc748c2bd5165fadc6",
+        "log": "proof-offline-v4-approach_above_30ft_park.log",
+        "log_sha256": "da6868e2ea5c23b2b033397b4dd07380bc428fe13d88fce274958ae4a2afa70d"
+      },
+      "compatibility": {
+        "receipt": "proofs/primary-v4-approach_above_30ft_park/receipt.json",
+        "sha256": "b3cbb1655a8fd9a51091330ac1a5063b30a124bc9ab114ca921029d0c74e7933",
+        "log": "proofs/primary-v4-approach_above_30ft_park/analysis.log"
+      },
       "fixture_recipe": "work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/diagnostic-approach_above_30ft_park-recipe.json",
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
@@ -213,20 +415,74 @@
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "negative": {
+        "log": "proofs/primary-v4-approach_above_30ft_park/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-approach_above_30ft_park-receipt.json",
+        "sha256": "bb3ad334e4fcd5d158d38437efa8ef9bf9c1634e6d89381ed12834007789e6a1"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_above_30ft_park --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_above_30ft_park --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "proof-saved-approach_above_30ft_park.log",
+        "test_log_sha256": "337acbc96e1271a58c7170c9117b7437876e4026b385af781b3c4dc7e3cf561f",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original signal and pixel review pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_above_30ft_park",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "scope": "CPU diagnostic source audit only; original production delivery not accepted",
+        "diagnostic_fixture": true,
+        "physical_acceptance_claimed": false,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/delivery_probe.py --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_above_30ft_park --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229472-owner/compat-v3-approach_above_30ft_park --saved-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229472-owner/saved-v3-approach_above_30ft_park --mode positive",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-positive-approach_above_30ft_park.log",
+        "test_log_sha256": "5498c770d065d3396d298b7019e9d368dc58dcc9f46e5b318e4b49d1a9a6ce6d",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/delivery_probe.py --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_above_30ft_park --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229472-owner/compat-v3-approach_above_30ft_park --saved-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229472-owner/saved-v3-approach_above_30ft_park --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: signal-site.json",
+        "negative_log": "proof-delivery-missing_source-approach_above_30ft_park.log",
+        "negative_log_sha256": "b47c1a5a51f88983f8c828d6d23dcb72400c503f0ee7259358780f2d715c8d70",
+        "script": "delivery_probe.py",
+        "script_sha256": "9c81980fe8e22c021aaad554bd67f970d16b4807d388039db2e2b78fd4ed07fb"
       }
     },
     {
       "case_id": "testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__past_signal_park",
       "kind": "delivery",
       "construction": "cases/past_signal_park/construction.json",
-      "construction_sha256": "9cd2297a91df548b07b77884c8fdf2b1f576fac2994f2f47eb665faa0aef4d11",
+      "construction_sha256": "886d53ea7f1d61de97bec862360a508ffef9acf5f452a0b5886c860cebaf1670",
       "candidate_risk": {
         "status": "none",
         "reason": "Map lane orientation, roadside signal visibility, exact body destination, signal indication and camera coverage need original local review."
       },
       "candidates": [],
-      "offline": {},
-      "compatibility": {},
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__past_signal_park --output .runtime-work/c229472-owner/offline-v4-past_signal_park",
+        "exit_code": 0,
+        "construction_sha256": "886d53ea7f1d61de97bec862360a508ffef9acf5f452a0b5886c860cebaf1670",
+        "log": "proof-offline-v4-past_signal_park.log",
+        "log_sha256": "b9b8ec0f412efbf0eb156818bbce1c616baa77e0af95496e271f1c1d50f4ec17"
+      },
+      "compatibility": {
+        "receipt": "proofs/primary-v4-past_signal_park/receipt.json",
+        "sha256": "5fe8cece09250f7d2549d4de964311e04b63e7e40e46f19ec5498c9f95e29998",
+        "log": "proofs/primary-v4-past_signal_park/analysis.log"
+      },
       "fixture_recipe": "work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/diagnostic-past_signal_park-recipe.json",
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
@@ -284,20 +540,74 @@
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "negative": {
+        "log": "proofs/primary-v4-past_signal_park/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-past_signal_park-receipt.json",
+        "sha256": "c426e5df418725d97961a70b4559b581a3ba0d4fd9906816066cab92a28aab66"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__past_signal_park --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__past_signal_park --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "proof-saved-past_signal_park.log",
+        "test_log_sha256": "bb2d169dc8334b6d1f6d6318ad979992de32a45ec115c8c3ccc68fc902a88cd5",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original signal and pixel review pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__past_signal_park",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "scope": "CPU diagnostic source audit only; original production delivery not accepted",
+        "diagnostic_fixture": true,
+        "physical_acceptance_claimed": false,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/delivery_probe.py --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__past_signal_park --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229472-owner/compat-v3-past_signal_park --saved-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229472-owner/saved-v3-past_signal_park --mode positive",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-positive-past_signal_park.log",
+        "test_log_sha256": "cb4f057a8179e00e9442b3e2a2ac88479516e2203f81c7dc94f04daa763be5c9",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/delivery_probe.py --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__past_signal_park --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229472-owner/compat-v3-past_signal_park --saved-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229472-owner/saved-v3-past_signal_park --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: signal-site.json",
+        "negative_log": "proof-delivery-missing_source-past_signal_park.log",
+        "negative_log_sha256": "b47c1a5a51f88983f8c828d6d23dcb72400c503f0ee7259358780f2d715c8d70",
+        "script": "delivery_probe.py",
+        "script_sha256": "9c81980fe8e22c021aaad554bd67f970d16b4807d388039db2e2b78fd4ed07fb"
       }
     },
     {
       "case_id": "testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_unofficial_light_park",
       "kind": "delivery",
       "construction": "cases/approach_unofficial_light_park/construction.json",
-      "construction_sha256": "a26c544809679650c3eb9c09a233bb96f6a9ea051612d7a87d655e7ed9fc87d1",
+      "construction_sha256": "370809aee0a9b69244bc1dc40a7ca4ede6951cdb7044399a26272ca46994f11b",
       "candidate_risk": {
         "status": "none",
         "reason": "Map lane orientation, roadside signal visibility, exact body destination, signal indication and camera coverage need original local review."
       },
       "candidates": [],
-      "offline": {},
-      "compatibility": {},
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_unofficial_light_park --output .runtime-work/c229472-owner/offline-v4-approach_unofficial_light_park",
+        "exit_code": 0,
+        "construction_sha256": "370809aee0a9b69244bc1dc40a7ca4ede6951cdb7044399a26272ca46994f11b",
+        "log": "proof-offline-v4-approach_unofficial_light_park.log",
+        "log_sha256": "4fd83996215a1ea96979e8ff95b12cfe6c71b5614c2769c58acee3a293393a0f"
+      },
+      "compatibility": {
+        "receipt": "proofs/primary-v4-approach_unofficial_light_park/receipt.json",
+        "sha256": "79ddf727f5ae2ddd6caf2472a911141e6b354d26a99f41a557a57305e902e11b",
+        "log": "proofs/primary-v4-approach_unofficial_light_park/analysis.log"
+      },
       "fixture_recipe": "work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/diagnostic-approach_unofficial_light_park-recipe.json",
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
@@ -355,20 +665,74 @@
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "negative": {
+        "log": "proofs/primary-v4-approach_unofficial_light_park/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-approach_unofficial_light_park-receipt.json",
+        "sha256": "b5dc965be252778e40d21a1e8cf0cd12301feed4814e81d753ee8402eccd2a71"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_unofficial_light_park --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_unofficial_light_park --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "proof-saved-approach_unofficial_light_park.log",
+        "test_log_sha256": "9e07ba7e590b80f84be881f8c2f6b21f04267828501181fd761380fee846b190",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original signal and pixel review pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_unofficial_light_park",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "scope": "CPU diagnostic source audit only; original production delivery not accepted",
+        "diagnostic_fixture": true,
+        "physical_acceptance_claimed": false,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/delivery_probe.py --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_unofficial_light_park --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229472-owner/compat-v3-approach_unofficial_light_park --saved-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229472-owner/saved-v3-approach_unofficial_light_park --mode positive",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-positive-approach_unofficial_light_park.log",
+        "test_log_sha256": "bbf7a55dcac6b424031a43f7870c2ca2719059308ce811643a500425cfa45bd0",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/delivery_probe.py --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_unofficial_light_park --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229472-owner/compat-v3-approach_unofficial_light_park --saved-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229472-owner/saved-v3-approach_unofficial_light_park --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: signal-site.json",
+        "negative_log": "proof-delivery-missing_source-approach_unofficial_light_park.log",
+        "negative_log_sha256": "b47c1a5a51f88983f8c828d6d23dcb72400c503f0ee7259358780f2d715c8d70",
+        "script": "delivery_probe.py",
+        "script_sha256": "9c81980fe8e22c021aaad554bd67f970d16b4807d388039db2e2b78fd4ed07fb"
       }
     },
     {
       "case_id": "testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_stop",
       "kind": "delivery",
       "construction": "cases/approach_below_30ft_stop/construction.json",
-      "construction_sha256": "662793f43782e7eee761f3675fcbdb9aa4f02e78a86d2ad41514c7c1f795dbba",
+      "construction_sha256": "b78361a3303ebadbdb57b96007315ebbb3cb7e013904ab2cc25f9328c147b9a1",
       "candidate_risk": {
         "status": "none",
         "reason": "Map lane orientation, roadside signal visibility, exact body destination, signal indication and camera coverage need original local review."
       },
       "candidates": [],
-      "offline": {},
-      "compatibility": {},
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_stop --output .runtime-work/c229472-owner/offline-v4-approach_below_30ft_stop",
+        "exit_code": 0,
+        "construction_sha256": "b78361a3303ebadbdb57b96007315ebbb3cb7e013904ab2cc25f9328c147b9a1",
+        "log": "proof-offline-v4-approach_below_30ft_stop.log",
+        "log_sha256": "1678efbc59bcab764008ea66e34151628df584a5a77c773db4cf9da48cb1c953"
+      },
+      "compatibility": {
+        "receipt": "proofs/primary-v4-approach_below_30ft_stop/receipt.json",
+        "sha256": "4ccd7756abf9b2460e3a3e4e1451f9e6930ea9434b1867a0dbf58be1d5be8514",
+        "log": "proofs/primary-v4-approach_below_30ft_stop/analysis.log"
+      },
       "fixture_recipe": "work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/diagnostic-approach_below_30ft_stop-recipe.json",
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
@@ -426,20 +790,74 @@
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "negative": {
+        "log": "proofs/primary-v4-approach_below_30ft_stop/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-approach_below_30ft_stop-receipt.json",
+        "sha256": "737e1d8692fd21094d804aaefdbe9e75700fdd710c5be613d9ba1ad6b7d4de2d"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_stop --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_stop --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "proof-saved-approach_below_30ft_stop.log",
+        "test_log_sha256": "2106165696bbbd459f86517e9b554840bed92a520488f55af42bd6db1f57b501",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original signal and pixel review pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_stop",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "scope": "CPU diagnostic source audit only; original production delivery not accepted",
+        "diagnostic_fixture": true,
+        "physical_acceptance_claimed": false,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/delivery_probe.py --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_stop --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229472-owner/compat-v3-approach_below_30ft_stop --saved-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229472-owner/saved-v3-approach_below_30ft_stop --mode positive",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-positive-approach_below_30ft_stop.log",
+        "test_log_sha256": "422d67cb0cb0ddf3d6a35f0c5089dccc536ca05be86da5795aff48d47bc13ace",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/delivery_probe.py --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_stop --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229472-owner/compat-v3-approach_below_30ft_stop --saved-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229472-owner/saved-v3-approach_below_30ft_stop --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: signal-site.json",
+        "negative_log": "proof-delivery-missing_source-approach_below_30ft_stop.log",
+        "negative_log_sha256": "b47c1a5a51f88983f8c828d6d23dcb72400c503f0ee7259358780f2d715c8d70",
+        "script": "delivery_probe.py",
+        "script_sha256": "9c81980fe8e22c021aaad554bd67f970d16b4807d388039db2e2b78fd4ed07fb"
       }
     },
     {
       "case_id": "testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_stand",
       "kind": "delivery",
       "construction": "cases/approach_below_30ft_stand/construction.json",
-      "construction_sha256": "1e7c12d1e608796da7cb8dfa020bdcfcba3f62f12636de3f45c1c471ec6a1452",
+      "construction_sha256": "052b90d6d1224e0b22c73fce1ee557022bd4a262a413fb6ca24b7a8d75c9e159",
       "candidate_risk": {
         "status": "none",
         "reason": "Map lane orientation, roadside signal visibility, exact body destination, signal indication and camera coverage need original local review."
       },
       "candidates": [],
-      "offline": {},
-      "compatibility": {},
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_stand --output .runtime-work/c229472-owner/offline-v4-approach_below_30ft_stand",
+        "exit_code": 0,
+        "construction_sha256": "052b90d6d1224e0b22c73fce1ee557022bd4a262a413fb6ca24b7a8d75c9e159",
+        "log": "proof-offline-v4-approach_below_30ft_stand.log",
+        "log_sha256": "c727c667e72945c4010ba48293e332fbe07069df334841aaaa359ad614f8c6db"
+      },
+      "compatibility": {
+        "receipt": "proofs/primary-v4-approach_below_30ft_stand/receipt.json",
+        "sha256": "8eed7a224d88ef38c05a1c60a44e5a0ff45c1847ede5ea0477a8fa8fa5ac1d49",
+        "log": "proofs/primary-v4-approach_below_30ft_stand/analysis.log"
+      },
       "fixture_recipe": "work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/diagnostic-approach_below_30ft_stand-recipe.json",
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
@@ -497,20 +915,74 @@
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "negative": {
+        "log": "proofs/primary-v4-approach_below_30ft_stand/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-approach_below_30ft_stand-receipt.json",
+        "sha256": "711c796c8f0f7cd24b7b03f6bdc1ac113240cf58188dd6dd70d547a20e4511ab"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_stand --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_stand --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "proof-saved-approach_below_30ft_stand.log",
+        "test_log_sha256": "48e4ed40069d91c0ceec8c72fbd31a1f794170fb9150aaa2ac5ccded3eaed27b",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original signal and pixel review pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_stand",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "scope": "CPU diagnostic source audit only; original production delivery not accepted",
+        "diagnostic_fixture": true,
+        "physical_acceptance_claimed": false,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/delivery_probe.py --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_stand --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229472-owner/compat-v3-approach_below_30ft_stand --saved-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229472-owner/saved-v3-approach_below_30ft_stand --mode positive",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-positive-approach_below_30ft_stand.log",
+        "test_log_sha256": "b3399df8054832a0bcb4db1caf787e9d593c1d2b4023f58527e11929fc1641b5",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/delivery_probe.py --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_stand --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229472-owner/compat-v3-approach_below_30ft_stand --saved-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229472-owner/saved-v3-approach_below_30ft_stand --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: signal-site.json",
+        "negative_log": "proof-delivery-missing_source-approach_below_30ft_stand.log",
+        "negative_log_sha256": "b47c1a5a51f88983f8c828d6d23dcb72400c503f0ee7259358780f2d715c8d70",
+        "script": "delivery_probe.py",
+        "script_sha256": "9c81980fe8e22c021aaad554bd67f970d16b4807d388039db2e2b78fd4ed07fb"
       }
     },
     {
       "case_id": "testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_conflict_stop",
       "kind": "delivery",
       "construction": "cases/approach_below_30ft_conflict_stop/construction.json",
-      "construction_sha256": "ac2c351a442b7931a2edfa104498203b874d9819ccac6b78e081cca45ce14d99",
+      "construction_sha256": "38882368ed88930249a164114d665a64857d2eea22d36acb6448da3d92b97d6a",
       "candidate_risk": {
         "status": "none",
         "reason": "Map lane orientation, roadside signal visibility, exact body destination, signal indication and camera coverage need original local review."
       },
       "candidates": [],
-      "offline": {},
-      "compatibility": {},
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_conflict_stop --output .runtime-work/c229472-owner/offline-v4-approach_below_30ft_conflict_stop",
+        "exit_code": 0,
+        "construction_sha256": "38882368ed88930249a164114d665a64857d2eea22d36acb6448da3d92b97d6a",
+        "log": "proof-offline-v4-approach_below_30ft_conflict_stop.log",
+        "log_sha256": "2a39cba923c729bdc798a6c369be159253d4592428cf29fe5eeb9cb9041c4968"
+      },
+      "compatibility": {
+        "receipt": "proofs/primary-v4-approach_below_30ft_conflict_stop/receipt.json",
+        "sha256": "6296c855a673724833a911f5199e95e803dd6138d752945b1d0c201b2cbfbfd8",
+        "log": "proofs/primary-v4-approach_below_30ft_conflict_stop/analysis.log"
+      },
       "fixture_recipe": "work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/diagnostic-approach_below_30ft_conflict_stop-recipe.json",
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
@@ -568,20 +1040,74 @@
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "negative": {
+        "log": "proofs/primary-v4-approach_below_30ft_conflict_stop/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-approach_below_30ft_conflict_stop-receipt.json",
+        "sha256": "e306e5963c9c8e0589079abfa396f5f4fde417fe1aefeda2fe0608cf3bae43d8"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_conflict_stop --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_conflict_stop --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "proof-saved-approach_below_30ft_conflict_stop.log",
+        "test_log_sha256": "c53655a5eea591e65aa114b506d1cac150a099dc198e5c0fe6f78de584f9a425",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original signal and pixel review pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_conflict_stop",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "scope": "CPU diagnostic source audit only; original production delivery not accepted",
+        "diagnostic_fixture": true,
+        "physical_acceptance_claimed": false,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/delivery_probe.py --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_conflict_stop --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229472-owner/compat-v3-approach_below_30ft_conflict_stop --saved-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229472-owner/saved-v3-approach_below_30ft_conflict_stop --mode positive",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-positive-approach_below_30ft_conflict_stop.log",
+        "test_log_sha256": "bfeff19e31a8fd891fdeec99625636417bd7c6c472ac3828de8964df8126deab",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/delivery_probe.py --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_conflict_stop --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229472-owner/compat-v3-approach_below_30ft_conflict_stop --saved-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229472-owner/saved-v3-approach_below_30ft_conflict_stop --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: signal-site.json",
+        "negative_log": "proof-delivery-missing_source-approach_below_30ft_conflict_stop.log",
+        "negative_log_sha256": "b47c1a5a51f88983f8c828d6d23dcb72400c503f0ee7259358780f2d715c8d70",
+        "script": "delivery_probe.py",
+        "script_sha256": "9c81980fe8e22c021aaad554bd67f970d16b4807d388039db2e2b78fd4ed07fb"
       }
     },
     {
       "case_id": "testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_law_park",
       "kind": "delivery",
       "construction": "cases/approach_below_30ft_law_park/construction.json",
-      "construction_sha256": "2061c126c5cd2619f35e0303e924273b2992daf3ec07fc49cda36f55c84c9d93",
+      "construction_sha256": "fe9ecce7c0df3abae613700e2ed8d86cfd8162321af433388de2495868520272",
       "candidate_risk": {
         "status": "none",
         "reason": "Map lane orientation, roadside signal visibility, exact body destination, signal indication and camera coverage need original local review."
       },
       "candidates": [],
-      "offline": {},
-      "compatibility": {},
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_law_park --output .runtime-work/c229472-owner/offline-v4-approach_below_30ft_law_park",
+        "exit_code": 0,
+        "construction_sha256": "fe9ecce7c0df3abae613700e2ed8d86cfd8162321af433388de2495868520272",
+        "log": "proof-offline-v4-approach_below_30ft_law_park.log",
+        "log_sha256": "513fd45a846d9fecd6fcdb45300b5b8514e985ab20769ae03864831270c345d1"
+      },
+      "compatibility": {
+        "receipt": "proofs/primary-v4-approach_below_30ft_law_park/receipt.json",
+        "sha256": "7b2a47fa2493bbe06bbc2d3c339a7566f8887ae62aecb47154ed4f9843425617",
+        "log": "proofs/primary-v4-approach_below_30ft_law_park/analysis.log"
+      },
       "fixture_recipe": "work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/diagnostic-approach_below_30ft_law_park-recipe.json",
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
@@ -639,20 +1165,74 @@
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "negative": {
+        "log": "proofs/primary-v4-approach_below_30ft_law_park/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-approach_below_30ft_law_park-receipt.json",
+        "sha256": "f66b5b7c1204ef227f5192bede331ac3dcc4f5feda4cb03bdef8ff44821c67c3"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_law_park --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_law_park --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "proof-saved-approach_below_30ft_law_park.log",
+        "test_log_sha256": "025008e2c8b582fd83bf430787b2e66cead017575421c16ec9b2a9ded2610299",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original signal and pixel review pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_law_park",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "scope": "CPU diagnostic source audit only; original production delivery not accepted",
+        "diagnostic_fixture": true,
+        "physical_acceptance_claimed": false,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/delivery_probe.py --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_law_park --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229472-owner/compat-v3-approach_below_30ft_law_park --saved-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229472-owner/saved-v3-approach_below_30ft_law_park --mode positive",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-positive-approach_below_30ft_law_park.log",
+        "test_log_sha256": "29cb9b3f94124984c9c4503a1738b41be05a2ba5797133c712c7e1e87a557b99",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/delivery_probe.py --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_law_park --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229472-owner/compat-v3-approach_below_30ft_law_park --saved-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229472-owner/saved-v3-approach_below_30ft_law_park --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: signal-site.json",
+        "negative_log": "proof-delivery-missing_source-approach_below_30ft_law_park.log",
+        "negative_log_sha256": "b47c1a5a51f88983f8c828d6d23dcb72400c503f0ee7259358780f2d715c8d70",
+        "script": "delivery_probe.py",
+        "script_sha256": "9c81980fe8e22c021aaad554bd67f970d16b4807d388039db2e2b78fd4ed07fb"
       }
     },
     {
       "case_id": "testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_officer_park",
       "kind": "delivery",
       "construction": "cases/approach_below_30ft_officer_park/construction.json",
-      "construction_sha256": "f86395cf755627d7180ddefc5fb3423a386d8f98dfce73aa674f7470fffdb951",
+      "construction_sha256": "f78e6307436e16aa9ce86ae9a1d482f51b4aad26ce0713944201f0bfe6a738ba",
       "candidate_risk": {
         "status": "none",
         "reason": "Map lane orientation, roadside signal visibility, exact body destination, signal indication and camera coverage need original local review."
       },
       "candidates": [],
-      "offline": {},
-      "compatibility": {},
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_officer_park --output .runtime-work/c229472-owner/offline-v4-approach_below_30ft_officer_park",
+        "exit_code": 0,
+        "construction_sha256": "f78e6307436e16aa9ce86ae9a1d482f51b4aad26ce0713944201f0bfe6a738ba",
+        "log": "proof-offline-v4-approach_below_30ft_officer_park.log",
+        "log_sha256": "dbaca6ebb44cd4af696fbaa5f6c2b4fbcab05da508a7e1bd3651bebc47c9b899"
+      },
+      "compatibility": {
+        "receipt": "proofs/primary-v4-approach_below_30ft_officer_park/receipt.json",
+        "sha256": "c952a64632d3327f5dd09ffe138268507e8c9b5151e13f15b0c22589b7259b37",
+        "log": "proofs/primary-v4-approach_below_30ft_officer_park/analysis.log"
+      },
       "fixture_recipe": "work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/diagnostic-approach_below_30ft_officer_park-recipe.json",
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
@@ -710,20 +1290,74 @@
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "negative": {
+        "log": "proofs/primary-v4-approach_below_30ft_officer_park/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-approach_below_30ft_officer_park-receipt.json",
+        "sha256": "9f79417bfa22fba4204de5d58326bda62e4950c027663cf0acc2b0f2f9473ee2"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_officer_park --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_officer_park --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "proof-saved-approach_below_30ft_officer_park.log",
+        "test_log_sha256": "a35f1744d9302daba2e3158ac334fe81261b85122c7d0827a93df4d367848d6a",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original signal and pixel review pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_officer_park",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "scope": "CPU diagnostic source audit only; original production delivery not accepted",
+        "diagnostic_fixture": true,
+        "physical_acceptance_claimed": false,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/delivery_probe.py --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_officer_park --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229472-owner/compat-v3-approach_below_30ft_officer_park --saved-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229472-owner/saved-v3-approach_below_30ft_officer_park --mode positive",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-positive-approach_below_30ft_officer_park.log",
+        "test_log_sha256": "8978acbc95f9c6918f7c9828f7d2162340146bd228c9c055e151cd31a360b068",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/delivery_probe.py --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_officer_park --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229472-owner/compat-v3-approach_below_30ft_officer_park --saved-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229472-owner/saved-v3-approach_below_30ft_officer_park --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: signal-site.json",
+        "negative_log": "proof-delivery-missing_source-approach_below_30ft_officer_park.log",
+        "negative_log_sha256": "b47c1a5a51f88983f8c828d6d23dcb72400c503f0ee7259358780f2d715c8d70",
+        "script": "delivery_probe.py",
+        "script_sha256": "9c81980fe8e22c021aaad554bd67f970d16b4807d388039db2e2b78fd4ed07fb"
       }
     },
     {
       "case_id": "testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_device_park",
       "kind": "delivery",
       "construction": "cases/approach_below_30ft_device_park/construction.json",
-      "construction_sha256": "0a7ad357704d25f553003df37c92186e888ffdf94d69c81fecb7ffe3a5a7edfb",
+      "construction_sha256": "57e842b4dde1c2a2e72c5c18f0239bfdb3f14d2bc78d85c59063a3d3e26fb17d",
       "candidate_risk": {
         "status": "none",
         "reason": "Map lane orientation, roadside signal visibility, exact body destination, signal indication and camera coverage need original local review."
       },
       "candidates": [],
-      "offline": {},
-      "compatibility": {},
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_device_park --output .runtime-work/c229472-owner/offline-v4-approach_below_30ft_device_park",
+        "exit_code": 0,
+        "construction_sha256": "57e842b4dde1c2a2e72c5c18f0239bfdb3f14d2bc78d85c59063a3d3e26fb17d",
+        "log": "proof-offline-v4-approach_below_30ft_device_park.log",
+        "log_sha256": "b2efe465fbe984ec8213686cd66f705bb7db39e1ec6f577ea0579bf917800c7e"
+      },
+      "compatibility": {
+        "receipt": "proofs/primary-v4-approach_below_30ft_device_park/receipt.json",
+        "sha256": "09097aea160b0d5766b06327cb1cba7e9aeccb70080cffd18f51019c9cb227cb",
+        "log": "proofs/primary-v4-approach_below_30ft_device_park/analysis.log"
+      },
       "fixture_recipe": "work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/diagnostic-approach_below_30ft_device_park-recipe.json",
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
@@ -781,6 +1415,50 @@
         "python_env_var": "CARLA_PYTHON",
         "host_env_var": "CARLA_HOST",
         "port_env_var": "CARLA_PORT"
+      },
+      "negative": {
+        "log": "proofs/primary-v4-approach_below_30ft_device_park/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-approach_below_30ft_device_park-receipt.json",
+        "sha256": "0490ba40b2b449274128a9c984f817a247d177598f9da69d8de4331e83e93c87"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_device_park --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/execution-manifest.json --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_device_park --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "proof-saved-approach_below_30ft_device_park.log",
+        "test_log_sha256": "31c6e721775fc29fd6a55192b9e7bfbeca15ec13b46fd8e9a3f8d49856d99f8a",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only replay; original signal and pixel review pending"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_device_park",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "scope": "CPU diagnostic source audit only; original production delivery not accepted",
+        "diagnostic_fixture": true,
+        "physical_acceptance_claimed": false,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/delivery_probe.py --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_device_park --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229472-owner/compat-v3-approach_below_30ft_device_park --saved-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229472-owner/saved-v3-approach_below_30ft_device_park --mode positive",
+        "test_exit_code": 0,
+        "test_log": "proof-delivery-positive-approach_below_30ft_device_park.log",
+        "test_log_sha256": "665312f27922dc64d4f196853619b8680bd9f1ad0f443c9d20d7cbd91b24a6b2",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/delivery_probe.py --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_device_park --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229472-owner/compat-v3-approach_below_30ft_device_park --saved-root /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c229472-owner/saved-v3-approach_below_30ft_device_park --mode missing_source",
+        "negative_exit_code": 2,
+        "negative_expected_error": "sealed original missing or changed: signal-site.json",
+        "negative_log": "proof-delivery-missing_source-approach_below_30ft_device_park.log",
+        "negative_log_sha256": "b47c1a5a51f88983f8c828d6d23dcb72400c503f0ee7259358780f2d715c8d70",
+        "script": "delivery_probe.py",
+        "script_sha256": "9c81980fe8e22c021aaad554bd67f970d16b4807d388039db2e2b78fd4ed07fb"
       }
     }
   ],

@@ -11,6 +11,8 @@ from pathlib import Path
 FOLDER = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(FOLDER))
 from cycle_lane_2703 import prepare, measure_original_frames, intersects
+from cycle_lane_native import control
+from runner import check_config, reviewed_packet
 
 
 class CycleLane2703Tests(unittest.TestCase):
@@ -96,6 +98,33 @@ class CycleLane2703Tests(unittest.TestCase):
         rows[3]["time_s"] += 0.1
         with self.assertRaisesRegex(ValueError, "frame join"):
             measure_original_frames(rows,facility,conflict,1,2)
+
+    def test_controller_and_exact_config(self):
+        cfg = json.loads((FOLDER / "config.json").read_text())
+        self.assertTrue(check_config(cfg))
+        request = control((-3,0),0,0,[[-3,0],[1,0],[4,0]])
+        self.assertGreater(request["throttle"],0)
+        self.assertEqual(1.0,control((-3,0),0,0,[[-3,0],[1,0]],hold=True)["brake"])
+        self.assertTrue(control((-3,0),0,0,[[-3,0],[1,0]],park=True)["hand_brake"])
+        cfg["duration_s"] = 10
+        with self.assertRaisesRegex(ValueError,"config differs"):
+            check_config(cfg)
+
+    def test_independent_packet_hashes(self):
+        case = self.plan["cases"][0]
+        packet = self.packets(case)
+        values = {name:{"path":path.name,"sha256":digest} for name,(path,digest) in
+                  zip(("site","participant","context"),
+                      ((packet[0],packet[1]),(packet[2],packet[3]),(packet[4],packet[5])))}
+        path=self.root/"reviewed-packet.json"
+        path.write_text(json.dumps({"format":"cycle-lane-2703-reviewed-packet-v1",
+                                    "sources":values})+"\n")
+        paths,hashes=reviewed_packet(path)
+        self.assertEqual(set(values),set(paths))
+        self.assertEqual(values["site"]["sha256"],hashes["site"])
+        packet[0].write_text("{}\n")
+        with self.assertRaisesRegex(ValueError,"changed"):
+            reviewed_packet(path)
 
 
 if __name__ == "__main__":

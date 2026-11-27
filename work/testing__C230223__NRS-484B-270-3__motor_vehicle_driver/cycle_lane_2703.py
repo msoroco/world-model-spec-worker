@@ -147,7 +147,7 @@ def prepare(case_id, site_path, site_sha256, participant_path,
             "source_sha256": {"site": site_sha256, "participant": participant_sha256,
                               "context": context_sha256},
             "capture_profile": {"hz": 20, "duration_s": 45, "views": list(VIEWS)},
-            "legal_verdict": None, "physical_acceptance_claimed": False}
+            "physical_acceptance_claimed": False}
 
 
 def measure_original_frames(rows, facility, conflict, ego_id, participant_id):
@@ -190,4 +190,4 @@ def measure_original_frames(rows, facility, conflict, ego_id, participant_id):
             "observed_precedence": ("ego_first" if first_ego < first_other else
                                     "participant_first" if first_other < first_ego else
                                     "same_frame_unresolved"),
-            "legal_verdict": None, "physical_acceptance_claimed": False}
+            "physical_acceptance_claimed": False}

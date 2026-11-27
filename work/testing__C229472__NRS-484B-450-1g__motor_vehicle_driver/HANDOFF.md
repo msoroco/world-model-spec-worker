@@ -1,22 +1,13 @@
-# testing__C229472__NRS-484B-450-1g__motor_vehicle_driver
+# C229472 NRS 484B.450(1)(g) exact delivery handoff
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: CPU delivery prepared. The scoped strict gate passed on 2026-11-26. Original Native recording, actual pixel review, physical outcome and local acceptance remain pending.
 
-Exact law: NRS 484B.450(1)(g) — A person shall not stop, stand or park a vehicle, except when necessary to avoid conflict with other traffic or in compliance with law or the directions of a police officer or official traffic-control device, in any of the following places: Within 30 feet upon the approach to any official traffic-control signal located at the side of a highway.
-Assigned branch(es): Parking upon the approach to a roadside official signal..
-Cell: C229472 (road, park, traffic_light); actor: motor_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+The selected branch is stopping, standing or parking within 30 feet on approach to an official roadside traffic signal on a highway, with conflict, law, officer and official device exception probes. The package selects 11 exact recording cases and 10 controlled comparisons. It includes upstream 9.0 m, exact 9.144 m and outside 9.3 m front-body approach probes, downstream and unofficial-signal negatives, three halt activities and four exception contexts. No accepted original recording was available for exact-law reuse. The original signal site, route, traffic, authority and camera placement are source gated by reviewed packet hashes. Distance is retained as front and rear vehicle body gaps, with the legal measurement datum unresolved for local review.
 
-## Next CPU actions
+`execution-manifest.json` binds all 11 primary construction hashes, source-noted diagnostic recipes, offline proofs, full compatibility and negative rejection receipts, physical/lifecycle tests, saved-only processing tests, and independent delivery audit positive and missing-source negative proofs. Three numeric cases include a risk-based engineering throttle/braking fallback with separate offline and compatibility proofs. `case-plan.json` defines exact comparisons; `comparison_audit.py` requires two accepted original delivery audit records, the same fixed highway/traffic/camera/duration sources, 900-frame measurement, and only the declared change. Its ten CPU fixture positive and fixed-source mutation negative proofs are in `proof-comparison-*.log`. CPU fixtures explicitly claim no physical acceptance. `queue-proposal.json` supplies all exact case and comparison dispatch intents for lead integration.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C229472__NRS-484B-450-1g__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+The semantic chain in `proposals/semantic-index.json` validates. Its conflict-necessity judgment sweep is explicitly incomplete because no accepted feasible alternative range or frozen judgment bounds were supplied. This does not substitute a legal conclusion. The primary controller uses a live CARLA source readback at local execution; the saved finalizer and independent audit require the original frame and source hashes, 900 joined signal/body samples, four decoded camera views and actual pixel review. Local operators must supply the reviewed packet and assess legal ambiguity, physical motion and actual visibility.
 
-## Proven checks and dependency boundary
+CPU check: `PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c229472-owner/runtime-output PYTHONPATH=$PWD/runtime:$PWD/runtime/scenario_pipeline .venv-cpu/bin/python worker_check.py --assignment testing__C229472__NRS-484B-450-1g__motor_vehicle_driver --complete --require-delivery-ready`.
 
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
-
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+Original local execution order is prepare exact delivery, execute selected Native job after source review, verify restoration and owner release, process saved-only output, inspect actual pixels and original measurements, run independent delivery and comparison audits, and seek local acceptance into full-test. `result.json` is CPU-ready only; it does not assert a valid original capture or legal verdict.

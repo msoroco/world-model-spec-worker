@@ -1,12 +1,19 @@
 {
   "assignment_id": "testing__C229472__NRS-484B-450-1g__motor_vehicle_driver",
   "input_sha256": "ba8fc4c40571ab97d0850b527f40a0e30458f5728ebcb200eb1d87d96efec6bd",
-  "status": "partial",
-  "readiness_kind": "source_inventory",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
-  "tests": [],
-  "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+  "tests": [
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c229472-owner/runtime-output PYTHONPATH=$PWD/runtime:$PWD/runtime/scenario_pipeline .venv-cpu/bin/python -m unittest discover -s work/testing__C229472__NRS-484B-450-1g__motor_vehicle_driver/tests -v",
+      "exit_code": 0,
+      "log": "cpu-unit-tests.log",
+      "sha256": "ed06ebbbfe242b2c1cf67f8282295d01134dd12fbb15c0b415f00aaa30020ef2"
+    }
   ],
-  "reason": "Source and accepted-metadata inventory complete; exact branch decomposition, evidence sufficiency, executable constructions/controllers, case-specific finalizers, semantic proposals, source-bound compatibility proofs, and independent delivery/comparison audits remain CPU work."
+  "remaining_gpu_checks": [
+    "Original CARLA roadside signal and highway packet selection, 900-frame vehicle-body approach and signal-indication history, four-view pixel review, and independent local acceptance"
+  ],
+  "first_gpu_delivery_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --run \"$RUN\" --assignment testing__C229472__NRS-484B-450-1g__motor_vehicle_driver --case testing__C229472__NRS-484B-450-1g__motor_vehicle_driver__approach_below_30ft_park --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
 }
