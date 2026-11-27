@@ -12,7 +12,7 @@ import json
 from pathlib import Path
 
 from rail_join import joined_row
-from rail_sight import FRAME_COUNT, FRAME_RATE, FIFTEEN_MPH_MPS, measure_trace
+from rail_sight import FRAME_COUNT, FRAME_RATE, FIFTEEN_MPH_MPS, measure_trace, speed_request
 from source_review import load as load_review
 
 CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
@@ -168,11 +168,11 @@ def finalize(attempt_dir, output_path):
         "case_id": config["case_id"],
         "measured_values": measurement,
         "target_checks": [{"target": "traversal_speed_mps",
-                           "requested": 6.0 if config["speed_mode"] == "slower_traversal" else 7.5,
+                           "requested": speed_request(config["speed_mode"]),
                            "measured": measurement["maximum_traversal_speed_mps"],
                            "method": "original body velocity over crossing-line overlap",
                            "tolerance": .5, "matched": abs(measurement["maximum_traversal_speed_mps"] -
-                                                          (6.0 if config["speed_mode"] == "slower_traversal" else 7.5)) <= .5,
+                                                          speed_request(config["speed_mode"])) <= .5,
                            "physical_cause_confirmed": False,
                            "cause_evidence": list(source_hashes)}],
         "setup_confirmed": False,

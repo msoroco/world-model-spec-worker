@@ -11,7 +11,7 @@ manifest = json.loads(manifest_path.read_text())
 for entry in manifest['cases']:
     suffix = entry['case_id'].rsplit('__', 1)[-1]
     for candidate in ('primary', 'fallback1'):
-        source = ROOT / '.runtime-work' / f'c31675-offline-{suffix}-{candidate}-final3' / 'offline.log'
+        source = ROOT / '.runtime-work' / f'c31675-offline-{suffix}-{candidate}-final8' / 'offline.log'
         if not source.is_file():
             raise ValueError('Missing exact current-runtime offline log: ' + str(source))
         content = source.read_text().rstrip() + '\n'
@@ -23,7 +23,7 @@ for entry in manifest['cases']:
         proof = {'command': '.venv-cpu/bin/python runtime.py offline --manifest '
             + str(manifest_path.relative_to(ROOT)) + ' --case ' + entry['case_id']
             + ' --candidate ' + candidate + ' --output .runtime-work/c31675-offline-'
-            + suffix + '-' + candidate + '-final3',
+            + suffix + '-' + candidate + '-final8',
             'exit_code': 0, 'log': str(target.relative_to(ASSIGNMENT)),
             'log_sha256': hashlib.sha256(target.read_bytes()).hexdigest(),
             'construction_sha256': entry['construction_sha256'] if candidate == 'primary'

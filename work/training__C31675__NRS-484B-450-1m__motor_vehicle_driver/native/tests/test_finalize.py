@@ -28,7 +28,15 @@ class SavedBridgeMeasurement(unittest.TestCase):
                   'duration_s': 30, 'required_atoms': [], 'source_packets': [],
                   'requested_halt_cause': 'voluntary_destination',
                   'cameras': ['overview', 'approach', 'reference_corner', 'driver_reference'],
-                  'recording_description': {'channels': []}}
+                  'recording_description': {'channels': [
+                      {'name': name, 'unit': 'structured'} for name in (
+                          'bridge_relation', 'speed_mps', 'stationary_candidate',
+                          'halt_purpose_context', 'traffic_conflict_context',
+                          'law_compliance_context', 'police_direction_context',
+                          'device_direction_context', 'source_camera_frame_join')],
+                      'context_inputs': [{'name': name, 'unit': 'structured'} for name in (
+                          'Native bridge survey', 'original actor traces',
+                          'traffic and authority review')]}}
         (attempt / 'config.json').write_text(json.dumps(config) + '\n')
         (attempt / 'bridge-map.json').write_text(json.dumps({
             'source_kind': 'native_bridge_lane_survey', 'structure_type': 'bridge',

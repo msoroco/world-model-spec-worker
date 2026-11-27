@@ -1,0 +1,67 @@
+{
+  "actor": "motor_vehicle_driver",
+  "law_id": "NRS-484B-450-1m",
+  "parameter_refs": [
+    {
+      "kind": "subject_behavior",
+      "name": "stationary_footprint_on_bridge",
+      "range_or_domain": "source-measured full, partial or absent bridge footprint overlap at rest"
+    },
+    {
+      "kind": "controller",
+      "name": "requested_station_bridge",
+      "range_or_domain": "requested ground control or bridge destination"
+    },
+    {
+      "kind": "world_setup",
+      "name": "exception_context",
+      "range_or_domain": "original traffic, other-law, police and device sources"
+    }
+  ],
+  "quote": "A person shall not stop, stand or park a vehicle, except when necessary to avoid conflict with other traffic or in compliance with law or the directions of a police officer or official traffic-control device, in any of the following places: Upon any bridge or other elevated structure or within a highway tunnel.",
+  "status": "draft",
+  "structure": {
+    "activation": {
+      "description": "Observe exact source-grounded bridge, elevated structure or tunnel occupancy.",
+      "source_clause": "Upon any bridge or other elevated structure or within a highway tunnel."
+    },
+    "exceptions": [
+      {
+        "description": "Review traffic-conflict necessity from original traffic sources.",
+        "source_clause": "except when necessary to avoid conflict with other traffic"
+      },
+      {
+        "description": "Review applicable law separately.",
+        "source_clause": "in compliance with law"
+      },
+      {
+        "description": "Review police or official device direction separately.",
+        "source_clause": "the directions of a police officer or official traffic-control device"
+      }
+    ],
+    "judgment_calls_needed": [
+      {
+        "note": "Original velocity and footprint are measured; responsible activity and purpose remain source-review questions.",
+        "phrase": "stop, stand or park"
+      },
+      {
+        "note": "Native elevation and footprint survey must be tied to actual bridge support or tunnel structure.",
+        "phrase": "Upon any bridge or other elevated structure or within a highway tunnel"
+      },
+      {
+        "note": "Traffic necessity and law, police or device direction require original source review.",
+        "phrase": "except when necessary to avoid conflict with other traffic"
+      }
+    ],
+    "obligation": {
+      "description": "Observe the vehicle stop, stand or park activity at the selected place without legal label.",
+      "numeric_conditions": [],
+      "source_clause": "A person shall not stop, stand or park a vehicle",
+      "type": "must_not"
+    },
+    "timing": {
+      "description": "Review every original frame during the observed stop; no invented duration cutoff."
+    }
+  },
+  "template_id": "NRS-484B-450-1m@motor_vehicle_driver"
+}

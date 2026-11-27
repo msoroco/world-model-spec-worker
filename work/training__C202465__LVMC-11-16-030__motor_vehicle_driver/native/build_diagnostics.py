@@ -11,6 +11,7 @@ from pathlib import Path
 import subprocess
 
 from rail_scene import sight_row
+from rail_sight import speed_request
 
 ROOT = Path(__file__).resolve().parents[3]
 WORK = Path(__file__).resolve().parents[1]
@@ -92,7 +93,7 @@ def build_case(template, case, overview_sha):
     old_trace = [json.loads(line) for line in files['trace.jsonl'].splitlines()]
     old_evidence = [json.loads(line) for line in files['capture/evidence.jsonl'].splitlines()]
     frame_map = [json.loads(line) for line in files['video_frames.jsonl'].splitlines()]
-    speed = 6.0 if design['speed_mode']=='slower_traversal' else 7.5
+    speed = speed_request(design['speed_mode'])
     barrier = blocker_for(design['sight_mode'])
     bodies,rays,exceptions,trace,evidence = [],[],[],[],[]
     for i in range(600):

@@ -2,6 +2,14 @@
 
 Status: partial. A source-shaped rail-sight and speed proof is present; this is not a deployable delivery package.
 
+## 2026-11-27 saved CPU and compatibility continuation
+
+The saved-only finalizer now writes a source-hashed authored crossing context object, binds the four original source-review records, joins all 600 Native body/ray/exception/camera frames, and emits original-source-derived channels and measurement reports. `native/prove_finalize.py` passed its 600-frame positive and missing-rail-ray negative checks. The diagnostic generator now aligns participant body vertices and ego telemetry, which repaired the semantic adapter participant geometry rejection. The first exact `condition_a` primary public compatibility run passed Native validation, selected measurement verification, negative source removal, semantic adapter conversion, Lean decoder, render, four source cameras and final decode. `native/run_public_all.py` is extending that public proof to all 18 selected primary/fallback constructions; until every receipt is present, no delivery readiness is claimed.
+
+All 18 exact current-runtime offline checks passed again after the finalizer revision. `native/physical_fixture.py` derives complete, incomplete and missing-evidence CPU statuses from the 600-frame synthetic body/ray/frame join for each of the nine cases; all nine local status triads matched `met`, `not_met`, `unverified`. These tests are diagnostic software fixtures and do not establish an original railway crossing or physical/legal acceptance. `native/build_physical_proofs.py` is prepared to bind exact per-case fixtures after the public runner finishes writing the shared assignment manifest.
+
+Remaining selected work is canonical semantic stage proposals, exact saved-processing fixture and feedback receipts, independent original-source delivery and comparison audits, camera profile declaration, candidate and acceptance bindings, and the exact strict assignment gate. Keep `result.json` partial until that gate passes.
+
 ## 2026-11-27 construction and branch continuation
 
 The case plan now names nine same-cell cases and eight controlled comparisons. The original condition A/B pair holds left-direction rail occlusion, the crossing approach, two rail vehicles, exception absence and geometry fixed while varying only requested traversal speed below/above 15 mph. Additional pairs isolate left-rail sight, right-rail sight, crossing-region sight, on-duty flagman, installed visible inactive signal, installed visible indicating signal, and an installed but not visibly proven signal. The statute has no judgment threshold for "clear and unobstructed"; these are physical source contrasts, not legal cutoff claims. Each case remains planned/unselected until the full package is built and checked.

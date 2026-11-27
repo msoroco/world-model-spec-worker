@@ -42,7 +42,7 @@ def check(config):
         raise ValueError("600 original frames at 20 Hz required")
     if config.get("candidate_id") not in ("primary", "fallback1"):
         raise ValueError("declared original railway engineering candidate required")
-    if config.get("speed_mode") not in ("slower_traversal", "faster_traversal"):
+    if config.get("speed_mode") not in ("slower_traversal", "at_limit_traversal", "faster_traversal"):
         raise ValueError("exact traversal speed mode required")
     if tuple(c.get("name") for c in config.get("cameras", [])) != CAMERAS:
         raise ValueError("four original crossing cameras required")

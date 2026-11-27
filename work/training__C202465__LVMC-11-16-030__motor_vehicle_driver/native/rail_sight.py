@@ -13,7 +13,8 @@ FRAME_RATE = 20
 HUNDRED_FEET_M = 30.48
 FOUR_HUNDRED_FEET_M = 121.92
 FIFTEEN_MPH_MPS = 6.7056
-TARGET_SPEED_MPS = {"slower_traversal": 6.0, "faster_traversal": 7.5}
+TARGET_SPEED_MPS = {"slower_traversal": 6.0, "at_limit_traversal": FIFTEEN_MPH_MPS,
+                    "faster_traversal": 7.5}
 
 
 def speed_request(mode: str) -> float:

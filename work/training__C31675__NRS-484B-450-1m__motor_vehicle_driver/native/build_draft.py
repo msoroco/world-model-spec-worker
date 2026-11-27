@@ -69,6 +69,9 @@ def build():
                 'candidate_id': candidate, 'initial_spawn_x_m': start_x,
                 'law_id': 'NRS-484B-450-1m', 'cell_id': 'C31675',
                 'actor': 'motor_vehicle_driver', 'rate_hz': 20, 'duration_s': 30,
+                'physical_completion': {'criterion': 'travel_progress',
+                                        'minimum_progress_m': 20,
+                                        'completion_goal_method': 'Observed route progress before an independently reviewed stationary interval; engineering fixture only'},
                 'required_atoms': [], 'source_packets': [],
                 'cameras': [{'name': name, 'width': width, 'height': height,
                              'fov_deg': 85, 'pose_strategy': 'fixed surveyed bridge view'}

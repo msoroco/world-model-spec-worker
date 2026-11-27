@@ -78,18 +78,54 @@ def finalize(attempt_dir, output_path):
     full_at_rest = any(row['bridge_relation'] == 'full' for row in stationary)
     no_bridge_at_rest = all(row['bridge_relation'] == 'none' for row in stationary)
     matched = full_at_rest if wanted else no_bridge_at_rest
-    evidence = {'source_hashes': {'config.json': config_hash,
+    source_hashes = {'config.json': config_hash,
         'bridge-trace.jsonl': trace_hash, 'bridge-map.json': map_hash,
-        'video_frames.jsonl': mapping_hash, 'road.xodr': road_hash},
+        'video_frames.jsonl': mapping_hash, 'road.xodr': road_hash}
+    diagnostic = {'source_hashes': source_hashes,
         'stationary_candidate_frames': [row['frame'] for row in stationary],
         'bridge_relation_at_rest': [row['bridge_relation'] for row in stationary],
         'traffic_conflict_necessity': 'unverified',
         'law_compliance': 'unverified', 'police_direction': 'unverified',
         'official_device_direction': 'unverified',
         'actual_pixels_verified': False, 'legal_result': None}
+    values = {
+        'bridge_relation': [row['bridge_relation'] for row in rows],
+        'speed_mps': [entry['speed_mps'] for entry in trace],
+        'stationary_candidate': [row['stationary_candidate'] for row in rows],
+        'halt_purpose_context': [entry.get('requested_halt_cause') for entry in trace],
+        'traffic_conflict_context': ['unverified'] * len(rows),
+        'law_compliance_context': ['unverified'] * len(rows),
+        'police_direction_context': ['unverified'] * len(rows),
+        'device_direction_context': ['unverified'] * len(rows),
+        'source_camera_frame_join': [frame['camera_native_frames'] for frame in mapping]}
+    recording_evidence = []
+    for channel in config['recording_description']['channels']:
+        name = channel['name']
+        reference = 'recorded-' + name + '.jsonl'
+        stream = [{'time_s': entry['time_s'], 'value': value}
+                  for entry, value in zip(trace, values[name])]
+        (attempt / reference).write_text(''.join(json.dumps(row) + '\n' for row in stream))
+        recording_evidence.append({'name': name, 'unit': channel['unit'],
+                                   'reference': reference})
+    contexts = {
+        'Native bridge survey': geometry,
+        'original actor traces': {'trace_sha256': trace_hash,
+                                  'first_native_frame': trace[0]['native_frame'],
+                                  'last_native_frame': trace[-1]['native_frame']},
+        'traffic and authority review': {
+            'traffic_conflict_necessity': 'unverified',
+            'law_compliance': 'unverified',
+            'police_direction': 'unverified',
+            'official_device_direction': 'unverified'}}
+    for context in config['recording_description']['context_inputs']:
+        name = context['name']
+        reference = 'recorded-' + name.replace(' ', '-') + '.json'
+        (attempt / reference).write_text(json.dumps({name: contexts[name]}) + '\n')
+        recording_evidence.append({'name': name, 'unit': context['unit'],
+                                   'reference': reference})
     result = {'case_id': config['case_id'],
-        'measured_values': {'bridge_relation_at_rest': evidence['bridge_relation_at_rest'],
-        'stationary_candidate_frames': evidence['stationary_candidate_frames']},
+        'measured_values': {'bridge_relation_at_rest': diagnostic['bridge_relation_at_rest'],
+        'stationary_candidate_frames': diagnostic['stationary_candidate_frames']},
         'target_checks': [{'target': 'stationary footprint on bridge',
             'requested': wanted, 'measured': full_at_rest,
             'method': 'original Native footprint/deck overlap and observed velocity',
@@ -104,7 +140,7 @@ def finalize(attempt_dir, output_path):
         'video_references': [c + '.mkv' for c in CAMERAS],
         'video_frame_map_reference': 'video_frames.jsonl',
         'recording_description': config['recording_description'],
-        'recording_evidence': evidence, 'realized_observables': {},
+        'recording_evidence': recording_evidence, 'realized_observables': {},
         'accepted': False}
     from worker_exchange.native_output import write_result
     write_result(attempt, result)
@@ -123,7 +159,7 @@ def finalize(attempt_dir, output_path):
             'sources': {'bridge-map.json': map_hash,
                         'bridge-trace.jsonl': trace_hash}}}
     report = {'format': 'c31675-bridge-saved-measurement-v1',
-              'case_id': config['case_id'], 'source_hashes': evidence['source_hashes'],
+              'case_id': config['case_id'], 'source_hashes': source_hashes,
               'measurements': measurements,
               'stationary_candidate_frames': len(stationary),
               'bridge_full_at_rest': full_at_rest,
