@@ -31,7 +31,7 @@ class CrosswalkSceneTest(unittest.TestCase):
         site = {
             "case_id": case_id, "cell_id": "C230221", "layout": "road", "control": "crosswalk",
             "crosswalk_kind": kind, "map_source": {"path": "map.xodr", "sha256": sha(map_path)},
-            "intersecting_road_ids": ["main", "crossing"],
+            "intersecting_road_ids": ["main", "crossing"], "crossing_road_id": "crossing",
             "intersection_review_source": "original Native map road-junction readback",
             "curb_review_source": "original Native map curb-edge readback",
             "crossing_polygon_xy_m": [[-1, -4], [1, -4], [1, 4], [-1, 4]],

@@ -60,6 +60,13 @@ def load_site(path, expected_case):
     ids = site.get("intersecting_road_ids")
     if not isinstance(ids, list) or len(ids) < 2 or not set(ids) <= roads:
         raise ValueError("intersecting source roads absent")
+    crossing_road_id = site.get("crossing_road_id")
+    if crossing_road_id not in ids:
+        raise ValueError("crossing road identity absent")
+    crossing_road = next((road for road in root.findall(".//road")
+                          if road.get("id") == crossing_road_id), None)
+    if crossing_road is None:
+        raise ValueError("crossing road absent from original map")
     if not site.get("intersection_review_source") or not site.get("curb_review_source"):
         raise ValueError("intersection or curb source review absent")
     crossing = polygon(site.get("crossing_polygon_xy_m"))
@@ -70,7 +77,7 @@ def load_site(path, expected_case):
             not _inside(route[0], curbs[0]) or not _inside(route[-1], curbs[1]) or
             not any(_inside(p, crossing) for p in route[1:-1])):
         raise ValueError("source crossing route or curb continuity absent")
-    objects = {o.get("id"): o for o in root.findall(".//object")}
+    objects = {o.get("id"): o for o in crossing_road.findall(".//object")}
     marking_id = site.get("marking_object_id")
     if kind == "marked":
         if not marking_id or marking_id not in objects or objects[marking_id].get("type") != "crosswalk":
@@ -100,7 +107,7 @@ def author_from_native(map_bytes, readback, output, expected_case):
         raise ValueError("original source output must be fresh")
     map_path.write_bytes(map_bytes)
     fields = ("case_id", "cell_id", "layout", "control", "crosswalk_kind",
-              "intersecting_road_ids", "intersection_review_source", "curb_review_source",
+              "intersecting_road_ids", "crossing_road_id", "intersection_review_source", "curb_review_source",
               "crossing_polygon_xy_m", "near_curb_polygon_xy_m", "far_curb_polygon_xy_m",
               "pedestrian_route_xy_m", "ego_route_xy_m", "marking_object_id")
     site = {name: readback.get(name) for name in fields}

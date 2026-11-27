@@ -26,7 +26,7 @@ def write_case(kind):
     site = {'case_id': ROOT.name + '__' + kind + '_crosswalk', 'cell_id': 'C230221',
             'layout': 'road', 'control': 'crosswalk', 'crosswalk_kind': kind,
             'map_source': {'path': 'map.xodr', 'sha256': digest(files['map.xodr'])},
-            'intersecting_road_ids': ['main','crossing'],
+            'intersecting_road_ids': ['main','crossing'], 'crossing_road_id': 'crossing',
             'intersection_review_source': 'diagnostic Native-shaped junction road IDs',
             'curb_review_source': 'diagnostic Native-shaped opposing sidewalk lane geometry',
             'crossing_polygon_xy_m': [[-1,-4],[1,-4],[1,4],[-1,4]],

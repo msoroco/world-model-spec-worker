@@ -21,8 +21,8 @@ def main():
     manifest = json.loads(MANIFEST.read_text())
     for entry in manifest["cases"]:
         suffix = entry["case_id"].rsplit("__", 1)[-1]
-        source = REPO / ".runtime-work" / f"c230221-compat-{suffix}-primary-v1"
-        attempt = REPO / ".runtime-work" / f"c230221-saved-{suffix}-attempt-v1"
+        source = REPO / ".runtime-work" / f"c230221-recorder-compat-{suffix}-primary"
+        attempt = REPO / ".runtime-work" / f"c230221-recorder-saved-{suffix}-attempt"
         command = [str(REPO / ".venv-cpu/bin/python"), "runtime.py", "materialize",
                    "--manifest", str(MANIFEST), "--case", entry["case_id"],
                    "--output", str(attempt)]
@@ -38,7 +38,7 @@ def main():
             target = attempt / name
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(original, target)
-        output = REPO / ".runtime-work" / f"c230221-saved-{suffix}-v1"
+        output = REPO / ".runtime-work" / f"c230221-recorder-saved-{suffix}"
         args = [str(REPO / ".venv-cpu/bin/python"), "runtime.py", "process-saved",
                 "--manifest", str(MANIFEST), "--case", entry["case_id"],
                 "--attempt", str(attempt), "--output", str(output),

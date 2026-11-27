@@ -30,6 +30,21 @@ def speed(actor):
     return math.sqrt(velocity.x ** 2 + velocity.y ** 2 + velocity.z ** 2)
 
 
+def start_recorder(client, output):
+    path = Path(output) / "carla_recorder.log"
+    if path.exists():
+        raise RuntimeError("original CARLA recorder output already exists")
+    if client.start_recorder(str(path), True) is False:
+        raise RuntimeError("original CARLA recorder failed to start")
+    return path
+
+
+def stop_recorder(client, path):
+    client.stop_recorder()
+    if not path.is_file() or path.stat().st_size == 0:
+        raise RuntimeError("original CARLA recorder output missing or empty")
+
+
 def inspect_road(world, carla, scene, output, bus, stop):
     mapping = world.get_map()
     road_samples = []
@@ -41,14 +56,17 @@ def inspect_road(world, carla, scene, output, bus, stop):
     if stations[-1] != end_x:
         stations.append(end_x)
     for x in stations:
-        point = carla.Location(x=float(x), y=0.0, z=0.0)
+        point = carla.Location(x=float(x), y=scene["ego_start_xy_m"][1], z=0.0)
         waypoint = mapping.get_waypoint(point)
         if waypoint is None or math.hypot(waypoint.transform.location.x - x,
-                                         waypoint.transform.location.y) > 1.5:
+                                         waypoint.transform.location.y - point.y) > min(2.5, waypoint.lane_width / 2 + 0.3):
             raise ValueError("authored ego route absent from original Native road")
         road_samples.append(waypoint)
-    if len({item.road_id for item in road_samples}) != 1:
-        raise ValueError("ego route not on one original road")
+    if len({(item.road_id, item.lane_id) for item in road_samples}) != 1:
+        raise ValueError("ego route not on one original driving lane")
+    if any(abs(((item.transform.rotation.yaw + 180) % 360) - 180) > 30
+           for item in road_samples):
+        raise ValueError("original driving lane points away from authored ego approach")
     width = min(item.lane_width for item in road_samples)
     if not math.isfinite(width) or width < 3:
         raise ValueError("original road width cannot support authored approach")
@@ -77,6 +95,9 @@ def inspect_road(world, carla, scene, output, bus, stop):
                     "door_region_source": "engineering proxy from original bus body; actual door placement unverified",
                     "door_region_m": door_region},
             "ego_start_xy_m": scene["ego_start_xy_m"],
+            "ego_lane_start_position_m": [road_samples[0].transform.location.x,
+                                          road_samples[0].transform.location.y,
+                                          road_samples[0].transform.location.z],
             "ego_end_xy_m": scene["ego_end_xy_m"],
             "pedestrian_start_xy_m": scene["pedestrian_start_xy_m"],
             "pedestrian_end_xy_m": scene["pedestrian_end_xy_m"],
@@ -93,7 +114,24 @@ class Cameras:
              ("reference_corner", 1280, 720, (4, 4, 12, -45)),
              ("driver_reference", 1280, 720, (0, 0, 2, 0)))
 
-    def __init__(self, world, ego, output, carla):
+    @staticmethod
+    def transform(name, pose, site, carla):
+        x, y, z, pitch = pose
+        if name in ("approach", "reference_corner"):
+            stop = site["stop"]["position_m"]
+            bus = site["bus"]["position_m"]
+            target = ((stop[0] + bus[0]) / 2, (stop[1] + bus[1]) / 2, 1.5)
+            dx, dy = target[0] - x, target[1] - y
+            if math.hypot(dx, dy) < 1:
+                raise ValueError("transit encounter camera is too close to target")
+            yaw = math.degrees(math.atan2(dy, dx))
+            pitch = math.degrees(math.atan2(target[2] - z, math.hypot(dx, dy)))
+        else:
+            yaw = 0
+        return carla.Transform(carla.Location(x=x, y=y, z=z),
+                               carla.Rotation(pitch=pitch, yaw=yaw))
+
+    def __init__(self, world, ego, output, carla, site):
         self.sensors, self.encoders, self.queues = [], {}, {}
         try:
             for name, width, height, pose in self.SPECS:
@@ -101,9 +139,7 @@ class Cameras:
                 blueprint.set_attribute("image_size_x", str(width))
                 blueprint.set_attribute("image_size_y", str(height))
                 blueprint.set_attribute("fov", "90")
-                x, y, z, pitch = pose
-                transform = carla.Transform(carla.Location(x=x, y=y, z=z),
-                                            carla.Rotation(pitch=pitch))
+                transform = self.transform(name, pose, site, carla)
                 sensor = world.spawn_actor(blueprint, transform,
                                            attach_to=ego if name == "driver_reference" else None)
                 self.sensors.append(sensor)
@@ -165,7 +201,7 @@ def run_native(scene, output, host, port):
     world = client.get_world()
     original = world.get_settings()
     actors, cameras, capture, frame_map = [], None, None, None
-    phase, errors, count, restored = "initializing", [], 0, False
+    phase, errors, count, restored, recorder_started = "initializing", [], 0, False, False
     try:
         library = world.get_blueprint_library()
         vehicles = [item for item in library.filter(scene["ego_blueprint_filter"])
@@ -181,12 +217,22 @@ def run_native(scene, output, host, port):
         settings.fixed_delta_seconds = .05
         world.apply_settings(settings)
 
-        def spawn_at(point, yaw=0):
+        def spawn_at(point, yaw=0, align_driving=False):
             waypoint = world.get_map().get_waypoint(carla.Location(x=point[0], y=point[1], z=0))
             z = waypoint.transform.location.z + .5 if waypoint else .5
+            if align_driving:
+                if waypoint is None or math.hypot(waypoint.transform.location.x - point[0],
+                                                  waypoint.transform.location.y - point[1]) > min(
+                                                      2.5, waypoint.lane_width / 2 + 0.3):
+                    raise ValueError("ego spawn lacks original nearby driving lane")
+                if abs(((waypoint.transform.rotation.yaw + 180) % 360) - 180) > 30:
+                    raise ValueError("ego spawn lane points away from authored approach")
+                return carla.Transform(carla.Location(x=waypoint.transform.location.x,
+                                                      y=waypoint.transform.location.y,z=z),
+                                       carla.Rotation(yaw=waypoint.transform.rotation.yaw))
             return carla.Transform(carla.Location(x=point[0], y=point[1], z=z), carla.Rotation(yaw=yaw))
 
-        ego = world.spawn_actor(vehicles[0], spawn_at(scene["ego_start_xy_m"]))
+        ego = world.spawn_actor(vehicles[0], spawn_at(scene["ego_start_xy_m"], align_driving=True))
         actors.append(ego)
         bus = world.spawn_actor(buses[0], spawn_at(scene["bus_xy_m"]))
         actors.append(bus)
@@ -199,13 +245,15 @@ def run_native(scene, output, host, port):
             raise ValueError("original motorist, bus, stop and pedestrian identities not distinct")
         bus.set_simulate_physics(False)
         site = inspect_road(world, carla, scene, output, bus, stop)
-        cameras = Cameras(world, ego, output, carla)
+        cameras = Cameras(world, ego, output, carla, site)
         capture = PipelineCapture(client, ego, output, scene["case_id"])
         frame_map = FrameMap(output / "video_frames.jsonl")
         collision_events = []
         collision = world.spawn_actor(library.find("sensor.other.collision"), carla.Transform(), attach_to=ego)
         actors.append(collision)
         collision.listen(lambda event: collision_events.append((event.frame, event.other_actor.id)))
+        recorder_path = start_recorder(client, output)
+        recorder_started = True
         phase = "capturing"
         with (output / "encounter-history.jsonl").open("x", buffering=1) as stream:
             for index in range(round(scene["duration_s"] * scene["rate_hz"])):
@@ -258,6 +306,7 @@ def run_native(scene, output, host, port):
         capture.close(); capture = None
         frame_map.close(); frame_map = None
         cameras.close(); cameras = None
+        stop_recorder(client, recorder_path); recorder_started = False
         names = ["trace.jsonl", "video_frames.jsonl", "encounter-history.jsonl", "transit-site.json",
                  "map.xodr", "carla_recorder.log",
                  *[name + ".mkv" for name, *_ in Cameras.SPECS]]
@@ -268,6 +317,11 @@ def run_native(scene, output, host, port):
         errors.append(repr(error))
         raise
     finally:
+        if recorder_started:
+            try:
+                client.stop_recorder()
+            except BaseException as error:
+                errors.append(repr(error))
         for resource in (capture, frame_map, cameras):
             if resource:
                 try:

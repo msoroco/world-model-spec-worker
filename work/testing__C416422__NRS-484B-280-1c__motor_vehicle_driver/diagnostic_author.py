@@ -28,7 +28,7 @@ def write_case(label):
     site = {"format": "worker-near-road-site", "cell_id": "C416422",
             "layout": "single_lane_per_direction", "sidewalk_present": True,
             "map_source": {"path": "map.xodr", "sha256": digest(files["map.xodr"])},
-            "road": {"lateral_bounds_m": [-2, 2],
+            "road": {"lateral_bounds_m": [-6, 2],
                      "classification_source": "diagnostic Native-shaped driving-lane waypoint",
                      "edge_review_source": "diagnostic Native-shaped lane width"},
             "sidewalk": {"lateral_bounds_m": [2.5, 4.5],

@@ -1,5 +1,6 @@
 import importlib.util
 import json
+import math
 import os
 import sys
 import tempfile
@@ -30,9 +31,9 @@ class Actor:
 
 
 class Waypoint:
-    def __init__(self, x):
-        self.road_id, self.lane_id, self.lane_width = 9, -1, 4
-        self.transform = SimpleNamespace(location=loc(x, 0))
+    def __init__(self, x, y=0, yaw=0, lane_id=-1):
+        self.road_id, self.lane_id, self.lane_width = 9, lane_id, 4
+        self.transform = SimpleNamespace(location=loc(x, y), rotation=SimpleNamespace(yaw=yaw))
 
 
 class Map:
@@ -81,6 +82,59 @@ class NativeTransitTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "bus stop blueprint"):
             native.inspect_road(self.world, self.carla, self.scene, self.root,
                                 self.bus, self.stop)
+
+    def test_original_lane_center_projection_and_direction_are_checked(self):
+        self.map.get_waypoint = lambda position: Waypoint(position.x, y=1.75)
+        site = native.inspect_road(self.world, self.carla, self.scene, self.root,
+                                   self.bus, self.stop)
+        self.assertEqual(site["ego_lane_start_position_m"][:2],
+                         [self.scene["ego_start_xy_m"][0], 1.75])
+        self.map.get_waypoint = lambda position: Waypoint(position.x, y=1.75, yaw=180)
+        with self.assertRaisesRegex(ValueError, "points away"):
+            native.inspect_road(self.world, self.carla, self.scene, self.root,
+                                self.bus, self.stop)
+        self.map.get_waypoint = lambda position: Waypoint(position.x, y=4.5)
+        with self.assertRaisesRegex(ValueError, "route absent"):
+            native.inspect_road(self.world, self.carla, self.scene, self.root,
+                                self.bus, self.stop)
+
+    def test_encounter_cameras_point_at_original_bus_and_stop(self):
+        carla = SimpleNamespace(Location=lambda **values: SimpleNamespace(**values),
+                                Rotation=lambda **values: SimpleNamespace(**values),
+                                Transform=lambda location, rotation: SimpleNamespace(
+                                    location=location, rotation=rotation))
+        site = {"stop": {"position_m": [0, 7, 0]},
+                "bus": {"position_m": [1, 4.5, 0]}}
+        for name, _, _, pose in native.Cameras.SPECS:
+            if name not in ("approach", "reference_corner"):
+                continue
+            transform = native.Cameras.transform(name, pose, site, carla)
+            dx = 0.5 - transform.location.x
+            dy = 5.75 - transform.location.y
+            angle = math.degrees(math.atan2(dy, dx))
+            self.assertAlmostEqual(transform.rotation.yaw, angle)
+            self.assertLess(transform.rotation.pitch, 0)
+        self.assertGreater(native.Cameras.transform("reference_corner",
+            native.Cameras.SPECS[2][3], site, carla).rotation.yaw, 90)
+
+    def test_recorder_has_fresh_start_and_nonempty_stop(self):
+        path = self.root / "carla_recorder.log"
+        calls = []
+        client = SimpleNamespace(start_recorder=lambda name, additional: (
+            calls.append((name, additional)) or True),
+            stop_recorder=lambda: (calls.append("stop"), path.write_text("native recorder bytes")))
+        self.assertEqual(native.start_recorder(client, self.root), path)
+        self.assertEqual(calls, [(str(path), True)])
+        native.stop_recorder(client, path)
+        self.assertEqual(calls[-1], "stop")
+        with self.assertRaisesRegex(RuntimeError, "already exists"):
+            native.start_recorder(client, self.root)
+        path.unlink()
+        bad = SimpleNamespace(start_recorder=lambda name, additional: False)
+        with self.assertRaisesRegex(RuntimeError, "failed to start"):
+            native.start_recorder(bad, self.root)
+        with self.assertRaisesRegex(RuntimeError, "missing or empty"):
+            native.stop_recorder(SimpleNamespace(stop_recorder=lambda: None), path)
 
 
 if __name__ == "__main__":

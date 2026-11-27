@@ -5,19 +5,30 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
+import subprocess
 import sys
 import tempfile
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from accepted_source import ASSIGNMENT
-from review_accepted import review
+from review_accepted import review, verify_original_video
 from review_accepted_comparison import compare
 from signal_distance import EvidenceError
 from test_signal_distance import packet, write_sources
 
 
 class ReviewAcceptedTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        scratch = Path.cwd() / ".runtime-work" / "c178244-video-fixture"
+        scratch.mkdir(parents=True, exist_ok=True)
+        cls.video_fixture = scratch / "original-900.mkv"
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i",
+                        "color=c=black:s=16x16:r=20", "-frames:v", "900",
+                        "-c:v", "ffv1", str(cls.video_fixture)], check=True)
+        cls.video_bytes = cls.video_fixture.read_bytes()
+
     def setUp(self):
         scratch = Path.cwd() / ".runtime-work" / "c178244-review-tests"
         scratch.mkdir(parents=True, exist_ok=True)
@@ -29,7 +40,7 @@ class ReviewAcceptedTests(unittest.TestCase):
         self.trace = self.root / "trace.json"
         self.video = self.root / "raw.mkv"
         self.trace.write_text(json.dumps({"scenes": [{"t": 50 + i * 50} for i in range(900)]}) + "\n")
-        self.video.write_bytes(b"fixture-video-bytes")
+        self.video.write_bytes(self.video_bytes)
         meta = self.root / "inputs" / ASSIGNMENT / "accepted" / self.rid / "metadata.json"
         meta.parent.mkdir(parents=True)
         trace_hash = hashlib.sha256(self.trace.read_bytes()).hexdigest()
@@ -87,6 +98,24 @@ class ReviewAcceptedTests(unittest.TestCase):
         self.assertEqual(finding["core_time_join"]["scene_count"], 900)
         self.assertEqual(finding["core_time_join"]["joined_signal_samples"], 30)
         self.assertEqual(finding["core_time_join"]["core_indicator_samples_checked"], 0)
+        self.assertEqual(finding["video_decode"]["decoded_frames"], 900)
+
+    def test_corrupt_original_video_rejected_by_decode(self):
+        self.video.write_bytes(b"not a decodable original video")
+        with self.assertRaisesRegex(EvidenceError, "original video"):
+            verify_original_video(self.video, 900)
+
+    def test_short_original_video_rejected_by_decode(self):
+        with self.assertRaisesRegex(EvidenceError, "decoded frames disagree"):
+            verify_original_video(self.video, 901)
+
+    def test_wrong_original_video_frame_rate_rejected(self):
+        video = self.root / "wrong-rate.mkv"
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i",
+                        "color=c=black:s=16x16:r=25", "-frames:v", "30",
+                        "-c:v", "ffv1", str(video)], check=True)
+        with self.assertRaisesRegex(EvidenceError, "frame rate disagrees"):
+            verify_original_video(video, 30)
 
     def test_unbound_substitute_packet_rejected(self):
         self.packet["route_sha256"] = "substitute-route"
@@ -189,7 +218,7 @@ class ReviewAcceptedTests(unittest.TestCase):
         trace = folder / "trace.json"
         video = folder / "raw.mkv"
         trace.write_text(json.dumps({"scenes": [{"t": 50 + i * 50} for i in range(900)]}) + "\n")
-        video.write_bytes(b"second-fixture-video-bytes")
+        video.write_bytes(self.video_bytes)
         case_id = ASSIGNMENT + "__business_short"
         rid = "second-fixture-recording"
         meta = self.root / "inputs" / ASSIGNMENT / "accepted" / rid / "metadata.json"

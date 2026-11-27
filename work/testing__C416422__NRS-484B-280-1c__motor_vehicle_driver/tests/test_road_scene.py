@@ -29,7 +29,7 @@ class RoadSceneTests(unittest.TestCase):
         self.site = {"format": "worker-near-road-site", "cell_id": "C416422",
                      "layout": "single_lane_per_direction", "sidewalk_present": True,
                      "map_source": {"path": "map.xodr", "sha256": hashlib.sha256(b"<OpenDRIVE/>").hexdigest()},
-                     "road": {"lateral_bounds_m": [-2, 2],
+                     "road": {"lateral_bounds_m": [-6, 2],
                               "classification_source": "reviewed-map-road",
                               "edge_review_source": "reviewed-map-edges"},
                      "sidewalk": {"lateral_bounds_m": [2.5, 4.5],

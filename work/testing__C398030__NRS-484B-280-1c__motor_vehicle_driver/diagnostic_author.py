@@ -33,6 +33,12 @@ def write_case(label):
                 {"original_object_id": "diagnostic/11", "name": "School Zone Begin", "location_xy_m": [-15, 2]},
                 {"original_object_id": "diagnostic/12", "name": "School Zone End", "location_xy_m": [15, 2]}],
             "ego_start_xy_m": [-30, 0], "ego_end_xy_m": [30, 0],
+            "original_road_id": 3, "original_lane_id": 1, "original_lane_width_m": 4,
+            "ego_spawn_yaw_deg": 0,
+            "lane_route_samples": [
+                {"requested_x_m": x, "center_xy_m": [x, 0], "yaw_deg": 0,
+                 "road_id": 3, "lane_id": 1, "width_m": 4}
+                for x in range(-30, 31, 5)],
             "pedestrian_start_xy_m": [0, 3.5], "pedestrian_end_xy_m": [0, 3.5],
             "diagnostic_only": True}
     files["school-site.json"] = json.dumps(site, sort_keys=True) + "\n"

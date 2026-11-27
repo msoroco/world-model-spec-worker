@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import argparse
+from fractions import Fraction
 import json
 from pathlib import Path
+import subprocess
 
 from accepted_source import verify as verify_accepted, verify_packet_binding
 from signal_distance import EvidenceError, measure, verify_source_bindings
@@ -15,6 +17,46 @@ DISTRICT_FROM_CASE = {
     "residence_continuous": "residential", "residence_short": "residential",
     "other_area_continuous": "other", "other_area_short": "other",
 }
+
+
+def verify_original_video(video: Path, frames_declared: int) -> dict:
+    """Decode every original video frame before treating it as reviewed source."""
+    command = ["ffprobe", "-v", "error", "-count_frames", "-select_streams", "v:0",
+               "-show_entries", "stream=nb_read_frames,width,height,avg_frame_rate", "-of", "json", str(video)]
+    try:
+        process = subprocess.run(command, capture_output=True, text=True, check=False)
+    except OSError as exc:
+        raise EvidenceError("original video decoder is unavailable") from exc
+    if process.returncode != 0:
+        raise EvidenceError("original video full-frame decode failed")
+    try:
+        streams = json.loads(process.stdout).get("streams")
+    except json.JSONDecodeError as exc:
+        raise EvidenceError("original video decode receipt is malformed") from exc
+    if not isinstance(streams, list) or len(streams) != 1:
+        raise EvidenceError("original video must have one selected video stream")
+    stream = streams[0]
+    try:
+        count = int(stream["nb_read_frames"])
+        width = int(stream["width"])
+        height = int(stream["height"])
+        fps = Fraction(stream["avg_frame_rate"])
+    except (KeyError, TypeError, ValueError, ZeroDivisionError) as exc:
+        raise EvidenceError("original video frame count or dimensions missing") from exc
+    if count != frames_declared or width <= 0 or height <= 0:
+        raise EvidenceError("original video decoded frames disagree with accepted recording")
+    if fps != 20:
+        raise EvidenceError("original video frame rate disagrees with 20 Hz trace")
+    decode_command = ["ffmpeg", "-v", "error", "-xerror", "-err_detect", "explode",
+                      "-i", str(video), "-map", "0:v:0", "-f", "null", "-"]
+    try:
+        decoded = subprocess.run(decode_command, capture_output=True, text=True, check=False)
+    except OSError as exc:
+        raise EvidenceError("original video decoder is unavailable") from exc
+    if decoded.returncode != 0:
+        raise EvidenceError("original video full-frame decode failed")
+    return {"decoded_frames": count, "width": width, "height": height, "fps": str(fps),
+            "method": "ffprobe counted all frames; ffmpeg decoded all frames with -xerror"}
 
 
 def verify_core_time_join(trace: Path, frames_declared: int, samples: list[dict]) -> dict:
@@ -63,6 +105,7 @@ def verify_core_time_join(trace: Path, frames_declared: int, samples: list[dict]
 def review(repo: Path, recording_id: str, trace: Path, video: Path,
            packet_path: Path, source_root: Path) -> dict:
     admission = verify_accepted(repo, recording_id, trace, video)
+    video_decode = verify_original_video(video, admission["frames_declared"])
     packet_hash = verify_packet_binding(repo, recording_id, packet_path)
     packet = json.loads(packet_path.read_text())
     if packet.get("case_id") != admission["case_id"]:
@@ -87,6 +130,7 @@ def review(repo: Path, recording_id: str, trace: Path, video: Path,
         "recording_id": recording_id,
         "case_id": admission["case_id"],
         "admission": admission,
+        "video_decode": video_decode,
         "packet_source_sha256": packet_hash,
         "signal_sources_verified": bound,
         "core_time_join": core_time_join,

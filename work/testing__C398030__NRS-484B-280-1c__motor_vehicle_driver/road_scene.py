@@ -43,6 +43,30 @@ def load_site(path):
     px0, px1 = site["pedestrian_start_xy_m"][0], site["pedestrian_end_xy_m"][0]
     if not ex0 < start < px0 == px1 < end < ex1:
         raise ValueError("pedestrian not within original school marker boundaries")
+    route = site.get("lane_route_samples")
+    if (not isinstance(route, list) or len(route) < 2
+            or any(not isinstance(sample, dict) for sample in route)):
+        raise ValueError("original school lane route readback missing")
+    if (route[0].get("center_xy_m") != site["ego_start_xy_m"]
+            or route[-1].get("center_xy_m") != site["ego_end_xy_m"]
+            or route[0].get("yaw_deg") != site.get("ego_spawn_yaw_deg")):
+        raise ValueError("original school lane route endpoint mismatch")
+    previous_x = None
+    midpoint_y = pair(route[len(route) // 2].get("center_xy_m"))[1]
+    for sample in route:
+        center = pair(sample.get("center_xy_m"))
+        x = sample.get("requested_x_m")
+        yaw = sample.get("yaw_deg")
+        width = sample.get("width_m")
+        if (any(type(value) not in (int, float) or not math.isfinite(value)
+                for value in (x, yaw, width))
+                or sample.get("road_id") != site.get("original_road_id")
+                or sample.get("lane_id") != site.get("original_lane_id")
+                or abs(center[0] - x) > .75 or abs(center[1] - midpoint_y) > .35
+                or abs(yaw) > 1.0 or width < 3
+                or (previous_x is not None and x <= previous_x)):
+            raise ValueError("original school lane route readback invalid")
+        previous_x = x
     if site.get("school_designation_source") != "original Native school traffic-sign objects":
         raise ValueError("school designation provenance absent")
     if site.get("crossing_type") not in ("school_zone", "school_crossing_zone"):

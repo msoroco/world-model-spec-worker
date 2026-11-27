@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
 MANIFEST = ROOT / "execution-manifest.json"
 VALIDATOR = REPO / ".runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck"
+RUN_ROOT = Path(os.environ.get("C416422_RUN_ROOT", REPO / ".runtime-work/c416422-saved-v1"))
 
 
 def sha(path):
@@ -21,8 +22,8 @@ def main():
     manifest = json.loads(MANIFEST.read_text())
     for entry in manifest["cases"]:
         suffix = entry["case_id"].rsplit("__", 1)[-1]
-        source = REPO / ".runtime-work" / f"c416422-compat-{suffix}-primary-v1"
-        attempt = REPO / ".runtime-work" / f"c416422-saved-{suffix}-attempt-v1"
+        source = RUN_ROOT / f"compat-{suffix}-primary"
+        attempt = RUN_ROOT / f"saved-{suffix}-attempt"
         command = [str(REPO / ".venv-cpu/bin/python"), "runtime.py", "materialize",
                    "--manifest", str(MANIFEST), "--case", entry["case_id"],
                    "--output", str(attempt)]
@@ -38,7 +39,7 @@ def main():
             target = attempt / name
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(original, target)
-        output = REPO / ".runtime-work" / f"c416422-saved-{suffix}-v1"
+        output = RUN_ROOT / f"saved-{suffix}"
         args = [str(REPO / ".venv-cpu/bin/python"), "runtime.py", "process-saved",
                 "--manifest", str(MANIFEST), "--case", entry["case_id"],
                 "--attempt", str(attempt), "--output", str(output),

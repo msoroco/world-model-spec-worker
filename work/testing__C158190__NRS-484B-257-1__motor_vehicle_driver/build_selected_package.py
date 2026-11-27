@@ -13,8 +13,16 @@ COMMON = ("runner.py", "carla_yield_operator.py", "native_capture.py", "native_o
           "yield_scene_construction.py", "yield_view_measurement.py",
           "through_motion_measurement.py", "saved_finalizer.py", "analysis.py",
           "delivery_audit.py", "physical_completion.py", "case-plan.json")
+# Materialized bundles execute only tests for files actually carried into the
+# selected Native construction. Accepted-source review and the separate stop
+# candidate remain assignment-level checks in their owning directory.
+ASSIGNMENT_ONLY_TESTS = {
+    "test_source_and_queue.py", "test_accepted_source.py",
+    "test_compatible_binding_audit.py", "test_stop_sign_branch.py",
+    "test_stop_view_measurement.py",
+}
 TESTS = tuple(sorted("tests/" + p.name for p in (ROOT / "tests").glob("test*.py")
-                     if p.name != "test_source_and_queue.py"))
+                     if p.name not in ASSIGNMENT_ONLY_TESTS))
 CHANNELS = ("yield_sign_and_marking", "nearest_view_stations", "ego_motion_and_crossing",
             "through_vehicle_motion", "governing_control", "original_four_camera_pixels")
 ACQUISITION = {

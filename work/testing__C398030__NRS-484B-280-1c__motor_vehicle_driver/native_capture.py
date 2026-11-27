@@ -30,6 +30,52 @@ def speed(actor):
     return math.sqrt(velocity.x ** 2 + velocity.y ** 2 + velocity.z ** 2)
 
 
+def read_route(mapping, carla, midpoint_lane, start_x, end_x):
+    """Read the original lane throughout a route the straight controller can follow."""
+    midpoint_y = midpoint_lane.transform.location.y
+    count = max(1, math.ceil((end_x - start_x) / 5.0))
+    samples = []
+    for index in range(count + 1):
+        requested_x = start_x + (end_x - start_x) * index / count
+        waypoint = mapping.get_waypoint(carla.Location(x=requested_x, y=midpoint_y, z=0))
+        if waypoint is None or waypoint.lane_type != carla.LaneType.Driving:
+            raise ValueError("original school approach has no continuous driving lane")
+        location = waypoint.transform.location
+        yaw = (waypoint.transform.rotation.yaw + 180) % 360 - 180
+        if (waypoint.road_id != midpoint_lane.road_id or waypoint.lane_id != midpoint_lane.lane_id
+                or not all(math.isfinite(v) for v in (location.x, location.y, location.z,
+                                                        yaw, waypoint.lane_width))
+                or abs(location.x - requested_x) > .75
+                or abs(location.y - midpoint_y) > .35
+                or abs(yaw) > 1.0
+                or waypoint.lane_width < 3):
+            raise ValueError("original school approach lane changes or curves beyond straight-controller tolerance")
+        samples.append({"requested_x_m": requested_x,
+                        "center_xy_m": [location.x, location.y],
+                        "yaw_deg": yaw, "road_id": waypoint.road_id,
+                        "lane_id": waypoint.lane_id, "width_m": waypoint.lane_width})
+    return samples
+
+
+def ego_spawn_transform(mapping, carla, site):
+    """Recheck the original start lane immediately before spawning the ego."""
+    start = site["ego_start_xy_m"]
+    waypoint = mapping.get_waypoint(carla.Location(x=start[0], y=start[1], z=0))
+    if waypoint is None or waypoint.lane_type != carla.LaneType.Driving:
+        raise ValueError("original school ego spawn lane absent")
+    location = waypoint.transform.location
+    yaw = (waypoint.transform.rotation.yaw + 180) % 360 - 180
+    if (waypoint.road_id != site["original_road_id"]
+            or waypoint.lane_id != site["original_lane_id"]
+            or not all(math.isfinite(value) for value in (location.x, location.y,
+                                                            location.z, yaw))
+            or math.hypot(location.x - start[0], location.y - start[1]) > .1
+            or abs(yaw - site["ego_spawn_yaw_deg"]) > .1):
+        raise ValueError("original school ego spawn differs from lane route readback")
+    return carla.Transform(carla.Location(x=location.x, y=location.y,
+                                          z=location.z + .5), carla.Rotation(yaw=yaw))
+
+
 def inspect_school(world, carla, scene, output):
     """Acquire two original school signs and place the route between them.
 
@@ -59,12 +105,22 @@ def inspect_school(world, carla, scene, output):
             pairs.append((left, right, lane))
     if not pairs:
         raise ValueError("original Native school boundary signs and aligned driving lane absent")
-    left, right, lane = min(pairs, key=lambda row: row[1].bounding_box.location.x - row[0].bounding_box.location.x)
+    viable = []
+    for left, right, lane in pairs:
+        x0, x1 = left.bounding_box.location.x, right.bounding_box.location.x
+        try:
+            route = read_route(mapping, carla, lane, x0 - scene["ego_spawn_offset_m"], x1 + 20)
+        except ValueError:
+            continue
+        viable.append((left, right, lane, route))
+    if not viable:
+        raise ValueError("original school approach has no continuous straight driving lane")
+    left, right, lane, route = min(viable, key=lambda row: row[1].bounding_box.location.x - row[0].bounding_box.location.x)
     x0, x1 = left.bounding_box.location.x, right.bounding_box.location.x
-    y = lane.transform.location.y
-    scene["ego_start_xy_m"] = [x0 - scene["ego_spawn_offset_m"], y]
-    scene["ego_end_xy_m"] = [x1 + 20, y]
-    scene["pedestrian_start_xy_m"] = [(x0 + x1) / 2, y + lane.lane_width / 2 + 1.5]
+    scene["ego_start_xy_m"] = list(route[0]["center_xy_m"])
+    scene["ego_end_xy_m"] = list(route[-1]["center_xy_m"])
+    scene["ego_spawn_yaw_deg"] = route[0]["yaw_deg"]
+    scene["pedestrian_start_xy_m"] = [(x0 + x1) / 2, lane.transform.location.y + lane.lane_width / 2 + 1.5]
     scene["pedestrian_end_xy_m"] = list(scene["pedestrian_start_xy_m"])
     markers = [{"original_object_id": str(item.id), "name": str(item.name),
                 "location_xy_m": [item.bounding_box.location.x, item.bounding_box.location.y]}
@@ -76,6 +132,7 @@ def inspect_school(world, carla, scene, output):
             "school_boundary_markers": markers,
             "original_road_id": lane.road_id, "original_lane_id": lane.lane_id,
             "original_lane_width_m": lane.lane_width,
+            "lane_route_samples": route, "ego_spawn_yaw_deg": scene["ego_spawn_yaw_deg"],
             "ego_start_xy_m": scene["ego_start_xy_m"], "ego_end_xy_m": scene["ego_end_xy_m"],
             "pedestrian_start_xy_m": scene["pedestrian_start_xy_m"],
             "pedestrian_end_xy_m": scene["pedestrian_end_xy_m"]}
@@ -200,7 +257,7 @@ def run_native(scene, output, host, port):
             z = waypoint.transform.location.z + .5 if waypoint else .5
             return carla.Transform(carla.Location(x=point[0], y=point[1], z=z), carla.Rotation(yaw=yaw))
 
-        ego = world.spawn_actor(vehicles[0], spawn_at(scene["ego_start_xy_m"]))
+        ego = world.spawn_actor(vehicles[0], ego_spawn_transform(world.get_map(), carla, site))
         actors.append(ego)
         pedestrian = world.spawn_actor(walkers[0], spawn_at(scene["pedestrian_start_xy_m"], 90))
         actors.append(pedestrian)

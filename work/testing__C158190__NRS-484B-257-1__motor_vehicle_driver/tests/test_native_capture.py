@@ -143,6 +143,15 @@ class NativeCaptureTests(unittest.TestCase):
                 capture_module.capture(World(), Adapter({}, ASSIGNMENT+'__yield_slow_hazard'),
                                        {}, ASSIGNMENT+'__yield_slow_hazard', Path(tmp)/'bad', 'b'*64)
 
+    def test_crossing_without_through_vehicle_rejected_at_capture(self):
+        case_id = ASSIGNMENT+'__yield_slow_hazard'
+        site = {key: 'a'*64 for key in capture_module.SOURCE_FIELDS}
+        row = Adapter(site, case_id).read_original_frame(case_id, 1, 101)
+        row['through_vehicles'] = []
+        row['through_vehicle_ids'] = []
+        with self.assertRaisesRegex(ValueError, 'through-vehicle crossing'):
+            capture_module._validate_row(row, 1, 101, site, case_id)
+
 
 if __name__ == '__main__':
     unittest.main()

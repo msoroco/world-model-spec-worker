@@ -30,6 +30,25 @@ def speed(actor):
     return math.sqrt(velocity.x ** 2 + velocity.y ** 2 + velocity.z ** 2)
 
 
+class Recorder:
+    """Own the original CARLA recorder until its bytes are closed and readable."""
+
+    def __init__(self, client, path):
+        self.client, self.path, self.active = client, Path(path), False
+        if self.path.exists():
+            raise ValueError("original CARLA recorder path already exists")
+        client.start_recorder(str(self.path), True)
+        self.active = True
+
+    def close(self):
+        if not self.active:
+            return
+        self.client.stop_recorder()
+        self.active = False
+        if not self.path.is_file() or self.path.stat().st_size == 0:
+            raise ValueError("original CARLA recorder bytes absent after stop")
+
+
 def inspect_road(world, carla, scene, output):
     mapping = world.get_map()
     road_samples, sidewalk_samples, opposing_samples = [], [], []
@@ -46,6 +65,10 @@ def inspect_road(world, carla, scene, output):
         if waypoint is None or math.hypot(waypoint.transform.location.x - x,
                                          waypoint.transform.location.y) > 1.5:
             raise ValueError("authored ego route absent from original Native road")
+        if waypoint.lane_type != carla.LaneType.Driving or abs(
+            (waypoint.transform.rotation.yaw + 180) % 360 - 180
+        ) > 10:
+            raise ValueError("original ego lane does not drive along authored route")
         adjacent = [getattr(waypoint, direction)()
                     for direction in ("get_left_lane", "get_right_lane")]
         sidewalks = [lane for lane in adjacent if lane is not None
@@ -62,6 +85,8 @@ def inspect_road(world, carla, scene, output):
         ):
             raise ValueError("original Native road is not one driving lane per direction")
         opposite = opposing[0]
+        if abs((opposite.transform.rotation.yaw + 180) % 360 - 180) < 170:
+            raise ValueError("original opposing lane does not face against authored route")
         if any(
             neighbor is not None and neighbor.lane_type == carla.LaneType.Driving
             and neighbor.road_id == waypoint.road_id
@@ -93,14 +118,17 @@ def inspect_road(world, carla, scene, output):
         raise ValueError("sidewalk alignment or width cannot support authored route")
     side_center = sum(side_y) / len(side_y)
     side_bounds = [side_center - side_width / 2, side_center + side_width / 2]
-    if not (side_bounds[1] < -width / 2 or side_bounds[0] > width / 2):
+    driving_samples = road_samples + opposing_samples
+    road_bounds = [min(item.transform.location.y - item.lane_width / 2 for item in driving_samples),
+                   max(item.transform.location.y + item.lane_width / 2 for item in driving_samples)]
+    if not (side_bounds[1] < road_bounds[0] or side_bounds[0] > road_bounds[1]):
         raise ValueError("sidewalk overlaps the original road edge")
     source = output / "map.xodr"
     source.write_text(mapping.to_opendrive())
     site = {"format": "worker-near-road-site", "cell_id": "C416422",
             "layout": "single_lane_per_direction", "sidewalk_present": True,
             "map_source": {"path": "map.xodr", "sha256": sha(source)},
-            "road": {"lateral_bounds_m": [-width / 2, width / 2],
+            "road": {"lateral_bounds_m": road_bounds,
                      "classification_source": "original Native driving-lane waypoint road_id",
                      "edge_review_source": "original Native lane_width along route"},
             "sidewalk": {"lateral_bounds_m": side_bounds,
@@ -123,10 +151,10 @@ def inspect_road(world, carla, scene, output):
 
 
 class Cameras:
-    SPECS = (("overview", 1920, 1080, (0, 0, 45, -90)),
-             ("approach", 1280, 720, (-15, -12, 12, -25)),
-             ("reference_corner", 1280, 720, (4, 4, 12, -45)),
-             ("driver_reference", 1280, 720, (0, 0, 2, 0)))
+    SPECS = (("overview", 1920, 1080, (0, 0, 45, -90, 0)),
+             ("approach", 1280, 720, (-15, -12, 12, -25, 35)),
+             ("reference_corner", 1280, 720, (-8, 8, 10, -30, -30)),
+             ("driver_reference", 1280, 720, (0, 0, 2, 0, 0)))
 
     def __init__(self, world, ego, output, carla):
         self.sensors, self.encoders, self.queues = [], {}, {}
@@ -136,9 +164,9 @@ class Cameras:
                 blueprint.set_attribute("image_size_x", str(width))
                 blueprint.set_attribute("image_size_y", str(height))
                 blueprint.set_attribute("fov", "90")
-                x, y, z, pitch = pose
+                x, y, z, pitch, yaw = pose
                 transform = carla.Transform(carla.Location(x=x, y=y, z=z),
-                                            carla.Rotation(pitch=pitch))
+                                            carla.Rotation(pitch=pitch, yaw=yaw))
                 sensor = world.spawn_actor(blueprint, transform,
                                            attach_to=ego if name == "driver_reference" else None)
                 self.sensors.append(sensor)
@@ -186,6 +214,24 @@ class Cameras:
             raise RuntimeError("; ".join(errors))
 
 
+def spawn_at(mapping, carla, site, point, yaw=0, sidewalk=False):
+    location = carla.Location(x=point[0], y=point[1], z=0)
+    waypoint = (mapping.get_waypoint(location, project_to_road=False,
+                lane_type=carla.LaneType.Sidewalk) if sidewalk
+                else mapping.get_waypoint(location))
+    if waypoint is None or waypoint.road_id != site["road_id"] or (
+        waypoint.lane_type != (carla.LaneType.Sidewalk if sidewalk else carla.LaneType.Driving)
+    ) or waypoint.lane_id not in site[
+        "sample_sidewalk_lane_ids" if sidewalk else "sample_lane_ids"
+    ]:
+        raise ValueError("original Native route waypoint differs from reviewed road site")
+    if math.hypot(waypoint.transform.location.x - point[0],
+                  waypoint.transform.location.y - point[1]) > waypoint.lane_width / 2:
+        raise ValueError("authored spawn falls outside reviewed Native lane")
+    z = waypoint.transform.location.z + .5
+    return carla.Transform(carla.Location(x=point[0], y=point[1], z=z), carla.Rotation(yaw=yaw))
+
+
 def run_native(scene, output, host, port):
     import carla
     from pipeline_capture import PipelineCapture
@@ -199,7 +245,7 @@ def run_native(scene, output, host, port):
     client.set_timeout(30)
     world = client.get_world()
     original = world.get_settings()
-    actors, cameras, capture, frame_map = [], None, None, None
+    actors, cameras, capture, frame_map, recorder = [], None, None, None, None
     phase, errors, count, restored = "initializing", [], 0, False
     try:
         site = inspect_road(world, carla, scene, output)
@@ -212,20 +258,13 @@ def run_native(scene, output, host, port):
         settings.synchronous_mode = True
         settings.fixed_delta_seconds = .05
         world.apply_settings(settings)
+        recorder = Recorder(client, output / "carla_recorder.log")
 
-        def spawn_at(point, yaw=0, sidewalk=False):
-            location = carla.Location(x=point[0], y=point[1], z=0)
-            waypoint = (world.get_map().get_waypoint(location, project_to_road=False,
-                        lane_type=carla.LaneType.Sidewalk) if sidewalk
-                        else world.get_map().get_waypoint(location))
-            if sidewalk and waypoint is None:
-                raise ValueError("original Native sidewalk waypoint absent at pedestrian route")
-            z = waypoint.transform.location.z + .5 if waypoint else .5
-            return carla.Transform(carla.Location(x=point[0], y=point[1], z=z), carla.Rotation(yaw=yaw))
-
-        ego = world.spawn_actor(vehicles[0], spawn_at(scene["ego_start_xy_m"]))
+        ego = world.spawn_actor(vehicles[0], spawn_at(world.get_map(), carla, site,
+                                                       scene["ego_start_xy_m"]))
         actors.append(ego)
-        pedestrian = world.spawn_actor(walkers[0], spawn_at(scene["pedestrian_start_xy_m"], 0, True))
+        pedestrian = world.spawn_actor(walkers[0], spawn_at(world.get_map(), carla, site,
+                                                             scene["pedestrian_start_xy_m"], 0, True))
         actors.append(pedestrian)
         if ego is None or pedestrian is None or ego.id == pedestrian.id:
             raise ValueError("original vehicle and pedestrian identities not distinct")
@@ -258,7 +297,7 @@ def run_native(scene, output, host, port):
                                / scene["rate_hz"] / 2.0)
                 start, end = scene["pedestrian_start_xy_m"], scene["pedestrian_end_xy_m"]
                 destination = [start[axis] + fraction * (end[axis] - start[axis]) for axis in (0, 1)]
-                pedestrian.set_transform(spawn_at(destination, 0, True))
+                pedestrian.set_transform(spawn_at(world.get_map(), carla, site, destination, 0, True))
                 frame = world.tick()
                 snapshot = world.get_snapshot()
                 if snapshot.frame != frame:
@@ -281,6 +320,7 @@ def run_native(scene, output, host, port):
         capture.close(); capture = None
         frame_map.close(); frame_map = None
         cameras.close(); cameras = None
+        recorder.close(); recorder = None
         names = ["trace.jsonl", "video_frames.jsonl", "encounter-history.jsonl", "road-site.json",
                  "map.xodr", "carla_recorder.log",
                  *[name + ".mkv" for name, *_ in Cameras.SPECS]]
@@ -297,6 +337,11 @@ def run_native(scene, output, host, port):
                     resource.close()
                 except BaseException as error:
                     errors.append(repr(error))
+        if recorder:
+            try:
+                recorder.close()
+            except BaseException as error:
+                errors.append(repr(error))
         for actor in reversed(actors):
             if actor:
                 try:

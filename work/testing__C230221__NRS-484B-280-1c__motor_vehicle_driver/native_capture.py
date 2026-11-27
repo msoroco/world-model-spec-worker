@@ -30,6 +30,28 @@ def speed(actor):
     return math.sqrt(velocity.x ** 2 + velocity.y ** 2 + velocity.z ** 2)
 
 
+class Recorder:
+    """Own the original CARLA recorder from the first tick through the last tick."""
+
+    def __init__(self, client, path):
+        self.client = client
+        self.path = Path(path)
+        self.active = False
+
+    def start(self):
+        if self.active or self.path.exists():
+            raise ValueError("original CARLA recorder output must be fresh")
+        self.client.start_recorder(str(self.path), True)
+        self.active = True
+
+    def stop(self):
+        if self.active:
+            self.client.stop_recorder()
+            self.active = False
+            if not self.path.is_file() or not self.path.stat().st_size:
+                raise RuntimeError("original CARLA recorder output missing or empty")
+
+
 def inspect_crosswalk(world, carla, scene, output):
     """Build a crossing site only from actual OpenDRIVE and Native lane readback."""
     from xml.etree import ElementTree
@@ -63,11 +85,16 @@ def inspect_crosswalk(world, carla, scene, output):
     ids = [str(ego.road_id), str(second_id)]
     if len(set(ids)) != 2 or not set(ids) <= roads:
         raise ValueError('original crossing road IDs not in OpenDRIVE')
-    objects = {o.get('id'): o for o in root.findall('.//object') if o.get('type') == 'crosswalk'}
+    crossing_road = next((road for road in root.findall('.//road')
+                          if road.get('id') == str(center.road_id)), None)
+    if crossing_road is None:
+        raise ValueError('original crossing road absent from OpenDRIVE')
+    objects = {o.get('id'): o for o in crossing_road.findall('.//object')
+               if o.get('type') == 'crosswalk'}
     kind = scene['crosswalk_kind']
     if kind == 'marked':
         if not objects:
-            raise ValueError('marked crossing lacks original OpenDRIVE marking')
+            raise ValueError('marked crossing lacks original OpenDRIVE marking on crossing road')
         points = mapping.get_crosswalks()
         nearby = [(p.x, p.y) for p in points if abs(p.x) <= 5 and abs(p.y) <= 10]
         if len(nearby) < 4:
@@ -93,6 +120,7 @@ def inspect_crosswalk(world, carla, scene, output):
                 'case_id': scene['case_id'], 'cell_id': 'C230221', 'layout': 'road',
                 'control': 'crosswalk', 'crosswalk_kind': kind,
                 'intersecting_road_ids': ids,
+                'crossing_road_id': str(center.road_id),
                 'intersection_review_source': 'original Native junction waypoint and OpenDRIVE intersecting road IDs',
                 'curb_review_source': 'original Native opposing Sidewalk lane waypoints, widths and transforms',
                 'crossing_polygon_xy_m': [[xlo, ylo], [xhi, ylo], [xhi, yhi], [xlo, yhi]],
@@ -187,6 +215,7 @@ def run_native(scene, output, host, port):
     world = client.get_world()
     original = world.get_settings()
     actors, cameras, capture, frame_map = [], None, None, None
+    recorder = Recorder(client, output / "carla_recorder.log")
     phase, errors, count, restored = "initializing", [], 0, False
     try:
         site = inspect_crosswalk(world, carla, scene, output)
@@ -223,6 +252,7 @@ def run_native(scene, output, host, port):
         collision = world.spawn_actor(library.find("sensor.other.collision"), carla.Transform(), attach_to=ego)
         actors.append(collision)
         collision.listen(lambda event: collision_events.append((event.frame, event.other_actor.id)))
+        recorder.start()
         phase = "capturing"
         with (output / "encounter-history.jsonl").open("x", buffering=1) as stream:
             for index in range(round(scene["duration_s"] * scene["rate_hz"])):
@@ -265,6 +295,7 @@ def run_native(scene, output, host, port):
                 stream.write(json.dumps(row, allow_nan=False) + "\n")
                 count += 1
         phase = "closing"
+        recorder.stop()
         capture.close(); capture = None
         frame_map.close(); frame_map = None
         cameras.close(); cameras = None
@@ -278,6 +309,11 @@ def run_native(scene, output, host, port):
         errors.append(repr(error))
         raise
     finally:
+        if recorder.active:
+            try:
+                recorder.stop()
+            except BaseException as error:
+                errors.append(repr(error))
         for resource in (capture, frame_map, cameras):
             if resource:
                 try:

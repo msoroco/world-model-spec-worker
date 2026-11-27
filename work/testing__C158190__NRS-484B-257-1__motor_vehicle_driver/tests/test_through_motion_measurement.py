@@ -66,6 +66,15 @@ class OriginalMotionTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "motion required"):
                 inspect_original(self.write(directory, "one.json", packet))
 
+    def test_empty_crossing_traffic_rejected(self):
+        packet = self.packet()
+        for frame in packet["frames"][2:4]:
+            frame["through_vehicles"] = []
+            frame["through_vehicle_ids"] = []
+        with tempfile.TemporaryDirectory(dir=os.environ["SCENARIO_PIPELINE_OUTPUT_ROOT"]) as directory:
+            with self.assertRaisesRegex(ValueError, "motion required"):
+                inspect_original(self.write(directory, "empty.json", packet))
+
     def test_controlled_response_and_negative_fixed_source(self):
         with tempfile.TemporaryDirectory(dir=os.environ["SCENARIO_PIPELINE_OUTPUT_ROOT"]) as directory:
             left = self.write(directory, "left.json", self.packet())

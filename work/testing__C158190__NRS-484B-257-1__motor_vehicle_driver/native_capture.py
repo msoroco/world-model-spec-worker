@@ -74,6 +74,20 @@ def _validate_row(row, index, native_frame, site, case_id):
             type(row["ego_speed_mps"]) in (int, float) and row["ego_speed_mps"] >= 0 and
             isinstance(row["through_vehicle_ids"], list) and
             isinstance(row["through_vehicles"], list), "original yield/through observation missing")
+    if row["ego_within_intersection"]:
+        ids = row["through_vehicle_ids"]
+        vehicles = row["through_vehicles"]
+        require(bool(ids) and all(isinstance(value, str) and value for value in ids) and
+                len(ids) == len(set(ids)) and len(vehicles) == len(ids) and
+                all(isinstance(vehicle, dict) and vehicle.get("id") in ids and
+                    vehicle.get("through_highway") is True and
+                    type(vehicle.get("distance_to_conflict_m")) in (int, float) and
+                    math.isfinite(vehicle["distance_to_conflict_m"]) and
+                    type(vehicle.get("speed_mps")) in (int, float) and
+                    math.isfinite(vehicle["speed_mps"]) and vehicle["speed_mps"] >= 0
+                    for vehicle in vehicles) and
+                len({vehicle["id"] for vehicle in vehicles}) == len(ids),
+                "original through-vehicle crossing identity or motion missing")
     require(row.get("case_id") == case_id and
             row.get("control") == "yield_sign" and
             row.get("stop_line_present") is False and

@@ -45,7 +45,7 @@ def inspect_original(path: str | Path) -> dict:
     for index in crossing:
         frame = frames[index]
         vehicles = frame.get("through_vehicles")
-        if not isinstance(vehicles, list):
+        if not isinstance(vehicles, list) or not vehicles:
             raise ValueError("original through-vehicle motion required at every crossing frame")
         ids = []
         for vehicle in vehicles:

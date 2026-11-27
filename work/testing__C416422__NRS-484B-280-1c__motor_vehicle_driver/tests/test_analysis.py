@@ -31,7 +31,7 @@ class SavedAnalysisTests(unittest.TestCase):
         site = {"format": "worker-near-road-site", "cell_id": "C416422",
                 "layout": "single_lane_per_direction", "sidewalk_present": True,
                 "map_source": {"path": "map.xodr", "sha256": analysis.sha(self.root / "map.xodr")},
-                "road": {"lateral_bounds_m": [-2, 2], "classification_source": "original-map",
+                "road": {"lateral_bounds_m": [-6, 2], "classification_source": "original-map",
                          "edge_review_source": "original-map"},
                 "sidewalk": {"lateral_bounds_m": [2.5, 4.5],
                              "lane_source": "original-map sidewalk",

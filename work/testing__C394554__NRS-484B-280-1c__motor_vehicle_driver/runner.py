@@ -29,6 +29,8 @@ def load_scene(path=None):
     if not (scene["ego_start_xy_m"][0] < scene["pedestrian_start_xy_m"][0]
             < scene["ego_end_xy_m"][0]):
         raise ValueError("ego approach does not reach pedestrian road position")
+    if scene["ego_start_xy_m"][1] != scene["ego_end_xy_m"][1]:
+        raise ValueError("authored ego route changes driving lane")
     if any(not isinstance(value, (int, float)) or not math.isfinite(value)
            for point in (scene["ego_start_xy_m"], scene["ego_end_xy_m"],
                          scene["pedestrian_start_xy_m"], scene["pedestrian_end_xy_m"])

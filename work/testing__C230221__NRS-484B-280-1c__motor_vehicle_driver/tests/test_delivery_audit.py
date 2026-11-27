@@ -47,7 +47,7 @@ class DeliveryAuditTests(unittest.TestCase):
         (attempt / "map.xodr").write_text('<OpenDRIVE><road id="main"/><road id="crossing">' + marking + '</road></OpenDRIVE>')
         site = {"case_id": case, "cell_id": "C230221", "layout": "road", "control": "crosswalk",
                 "crosswalk_kind": kind, "map_source": {"path": "map.xodr", "sha256": sha(attempt / "map.xodr")},
-                "intersecting_road_ids": ["main", "crossing"],
+                "intersecting_road_ids": ["main", "crossing"], "crossing_road_id": "crossing",
                 "intersection_review_source": "original diagnostic junction road IDs",
                 "curb_review_source": "original diagnostic sidewalk geometry",
                 "crossing_polygon_xy_m": [[-1,-4],[1,-4],[1,4],[-1,4]],

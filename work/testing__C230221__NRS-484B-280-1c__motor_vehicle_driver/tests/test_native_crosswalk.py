@@ -9,7 +9,7 @@ from types import SimpleNamespace
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from native_capture import inspect_crosswalk
+from native_capture import Recorder, inspect_crosswalk
 
 
 class Carla:
@@ -30,11 +30,13 @@ class Waypoint:
 
 
 class Map:
-    def __init__(self, kind, missing_sidewalk=False):
-        self.kind, self.missing_sidewalk = kind, missing_sidewalk
+    def __init__(self, kind, missing_sidewalk=False, remote_marking=False):
+        self.kind, self.missing_sidewalk, self.remote_marking = kind, missing_sidewalk, remote_marking
 
     def to_opendrive(self):
-        marker = '<objects><object id="mark-1" type="crosswalk"/></objects>' if self.kind == 'marked' else '<objects/>'
+        marker = '<objects><object id="mark-1" type="crosswalk"/></objects>' if self.kind == 'marked' or self.remote_marking else '<objects/>'
+        if self.remote_marking:
+            return '<OpenDRIVE><road id="main">' + marker + '</road><road id="crossing"/></OpenDRIVE>'
         return '<OpenDRIVE><road id="main"/><road id="crossing">' + marker + '</road></OpenDRIVE>'
 
     def get_waypoint(self, location, project_to_road, lane_type):
@@ -84,6 +86,71 @@ class NativeCrosswalkReadbackTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'marking'):
                 inspect_crosswalk(World(Map('unmarked')), Carla,
                                   self.scene('marked'), Path(temp))
+
+    def test_marked_kind_rejects_only_remote_road_marking(self):
+        with tempfile.TemporaryDirectory(dir=os.environ['SCENARIO_PIPELINE_OUTPUT_ROOT']) as temp:
+            with self.assertRaisesRegex(ValueError, 'crossing road'):
+                inspect_crosswalk(World(Map('marked', remote_marking=True)), Carla,
+                                  self.scene('marked'), Path(temp))
+
+    def test_unmarked_kind_allows_remote_road_marking(self):
+        with tempfile.TemporaryDirectory(dir=os.environ['SCENARIO_PIPELINE_OUTPUT_ROOT']) as temp:
+            site = inspect_crosswalk(World(Map('unmarked', remote_marking=True)), Carla,
+                                     self.scene('unmarked'), Path(temp))
+            self.assertIsNone(site['marking_object_id'])
+            self.assertEqual(site['crossing_road_id'], 'crossing')
+
+    def test_original_recorder_lifecycle_and_fresh_source(self):
+        class Client:
+            def __init__(self):
+                self.calls = []
+
+            def start_recorder(self, path, additional_data):
+                self.calls.append(('start', path, additional_data))
+                Path(path).write_text('original CARLA recording')
+
+            def stop_recorder(self):
+                self.calls.append(('stop',))
+
+        with tempfile.TemporaryDirectory(dir=os.environ['SCENARIO_PIPELINE_OUTPUT_ROOT']) as temp:
+            path = Path(temp) / 'carla_recorder.log'
+            client = Client()
+            recorder = Recorder(client, path)
+            recorder.start()
+            self.assertTrue(recorder.active)
+            self.assertEqual(client.calls, [('start', str(path), True)])
+            recorder.stop()
+            recorder.stop()
+            self.assertFalse(recorder.active)
+            self.assertEqual(client.calls[-1], ('stop',))
+            self.assertEqual(len(client.calls), 2)
+            with self.assertRaisesRegex(ValueError, 'fresh'):
+                recorder.start()
+
+    def test_recorder_failure_cleanup_and_missing_output_rejected(self):
+        class Client:
+            def __init__(self):
+                self.stopped = False
+
+            def start_recorder(self, path, additional_data):
+                pass
+
+            def stop_recorder(self):
+                self.stopped = True
+
+        with tempfile.TemporaryDirectory(dir=os.environ['SCENARIO_PIPELINE_OUTPUT_ROOT']) as temp:
+            client = Client()
+            recorder = Recorder(client, Path(temp) / 'carla_recorder.log')
+            try:
+                recorder.start()
+                raise RuntimeError('capture failed')
+            except RuntimeError:
+                pass
+            finally:
+                with self.assertRaisesRegex(RuntimeError, 'missing or empty'):
+                    recorder.stop()
+            self.assertTrue(client.stopped)
+            self.assertFalse(recorder.active)
 
 
 if __name__ == '__main__':

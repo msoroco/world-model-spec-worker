@@ -208,3 +208,9 @@ The new 900-frame fixture passes, while a source-hash-consistent 899-frame fixtu
 | `cpu-accepted-video-strict.log` | `0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638` |
 
 Resume: review the corrected immutable branch/cell allocation and obtain source-bound original surveys and accepted trace/video bytes; select only control-compatible original cases, rerun their bound CPU proofs, and run `.venv-cpu/bin/python worker_check.py --assignment testing__C158190__NRS-484B-257-1__motor_vehicle_driver --complete --require-delivery-ready` before changing `result.json.status` to ready.
+
+## 2026-11-27 crossing traffic admission and selected-bundle proof refresh
+
+Independent review found two CPU defects. The original through-motion reviewer accepted an entire crossing with empty through-vehicle lists, leaving the selected comparison without observed through traffic. Capture and saved measurement now reject missing crossing traffic, with negative tests. The selected-bundle builder also embedded assignment-level tests for absent accepted-source and stop-sign modules; it now embeds only tests whose implementation is carried into each selected yield construction. Assignment-level tests remain in the owning directory.
+
+The assignment suite passes 55/55 tests (`cpu-nov27-deep-tests.log`); three exact selected bundles pass refreshed offline and positive/negative compatibility (`cpu-nov27-deep-offline-*.log`, `cpu-nov27-deep-compat-*.log`). Pinned preflight and scoped `--complete` pass. The exact scoped strict gate (`cpu-nov27-deep-strict.log`) still fails at truthful partial status. Frozen C158190 retains `stop_sign` while its selected branch requires `yield_sign`; no original reviewed site, accepted trace or video bytes are present. Keep result partial. Resume after corrected immutable allocation and original source review, then run the exact strict assignment gate before promotion.
