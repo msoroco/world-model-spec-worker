@@ -37,7 +37,7 @@ def main() -> None:
     for entry in manifest["cases"]:
         case_id = entry["case_id"]
         name = case_id[len(ASSIGNMENT) + 2:]
-        output = SCRATCH / ("compat-" + name + "-v1")
+        output = SCRATCH / ("compat-" + name + "-v3")
         command = [str(REPO / ".venv-cpu/bin/python"), str(REPO / "runtime.py"),
                    "compatibility", "--manifest", str(MANIFEST), "--case", case_id,
                    "--output", str(output), "--library", str(REPO / "runtime/library"),

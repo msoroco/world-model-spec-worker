@@ -35,10 +35,8 @@ def main():
     manifest = json.loads(MANIFEST.read_text())
     for entry in manifest["cases"]:
         suffix = entry["case_id"].removeprefix(ROOT.name + "__")
-        source = SCRATCH / ("saved-source-" + suffix + "-v1")
-        fixture = SCRATCH / ("saved-fixture-" + suffix + "-v1")
-        if source.exists() and fixture.exists() and suffix == "occupied_stop":
-            continue
+        source = SCRATCH / ("saved-source-" + suffix + "-v3")
+        fixture = SCRATCH / ("saved-fixture-" + suffix + "-v3")
         if source.exists() or fixture.exists():
             raise ValueError("choose fresh saved source version: " + suffix)
         command("materialize", "--manifest", MANIFEST, "--case", entry["case_id"],
@@ -55,8 +53,8 @@ def main():
                 shutil.copy2(path, destination)
     for entry in manifest["cases"]:
         suffix = entry["case_id"].removeprefix(ROOT.name + "__")
-        source = SCRATCH / ("saved-source-" + suffix + "-v1")
-        output = SCRATCH / ("saved-proof-" + suffix + "-v1")
+        source = SCRATCH / ("saved-source-" + suffix + "-v3")
+        output = SCRATCH / ("saved-proof-" + suffix + "-v3")
         if not (output / "v0001/processing.json").is_file():
             command("process-saved", "--manifest", MANIFEST, "--case", entry["case_id"],
                     "--attempt", source, "--output", output,

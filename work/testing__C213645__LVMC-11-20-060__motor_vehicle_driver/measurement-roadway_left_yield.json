@@ -1,0 +1,76 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "testing__C213645__LVMC-11-20-060__motor_vehicle_driver__roadway_left_yield",
+  "negative": {
+    "remove": [
+      "original-attempt/activity.json"
+    ],
+    "error_contains": "Missing required source: original-attempt/activity.json"
+  },
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "LVMC 11.20.060 applies to a vehicle driver in a business or residence district emerging or entering an alley, driveway or building; selected branch fixes residence district and driveway.",
+      "source": {
+        "path": "inputs/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/assignment.json",
+        "sha256": "3f7d75a52180aa77a5f70c1df7bb92abfe5ac2ba70fb995678429309ce0db7fd"
+      },
+      "output_key": "district_driveway_context",
+      "kind": "sourced_context",
+      "method": "measure_context",
+      "value_type": "object",
+      "inputs": [
+        "original-attempt/driveway_geometry.json",
+        "original-attempt/activity.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "Stop immediately before driving onto the sidewalk or sidewalk area extending across the driveway.",
+      "source": {
+        "path": "inputs/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/assignment.json",
+        "sha256": "3f7d75a52180aa77a5f70c1df7bb92abfe5ac2ba70fb995678429309ce0db7fd"
+      },
+      "output_key": "sidewalk_stop_evidence",
+      "kind": "measured",
+      "method": "measure_sidewalk_stop",
+      "value_type": "object",
+      "inputs": [
+        "original-attempt/driveway_geometry.json",
+        "original-attempt/activity.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "Yield to any pedestrian as necessary to avoid collision during sidewalk crossing.",
+      "source": {
+        "path": "inputs/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/assignment.json",
+        "sha256": "3f7d75a52180aa77a5f70c1df7bb92abfe5ac2ba70fb995678429309ce0db7fd"
+      },
+      "output_key": "pedestrian_precedence_evidence",
+      "kind": "measured",
+      "method": "measure_pedestrian",
+      "value_type": "object",
+      "inputs": [
+        "original-attempt/driveway_geometry.json",
+        "original-attempt/activity.json"
+      ]
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "Upon entering roadway yield to all vehicles approaching on that roadway, including both travel approaches in the selected two-direction road.",
+      "source": {
+        "path": "inputs/testing__C213645__LVMC-11-20-060__motor_vehicle_driver/assignment.json",
+        "sha256": "3f7d75a52180aa77a5f70c1df7bb92abfe5ac2ba70fb995678429309ce0db7fd"
+      },
+      "output_key": "roadway_approach_evidence",
+      "kind": "measured",
+      "method": "measure_roadway",
+      "value_type": "object",
+      "inputs": [
+        "original-attempt/driveway_geometry.json",
+        "original-attempt/activity.json"
+      ]
+    }
+  ]
+}

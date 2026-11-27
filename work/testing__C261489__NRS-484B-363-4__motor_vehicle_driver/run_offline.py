@@ -37,7 +37,7 @@ def main() -> None:
     for entry in manifest["cases"]:
         case_id = entry["case_id"]
         name = case_id[len(ASSIGNMENT) + 2:]
-        destination = SCRATCH / ("offline-" + name + "-v5")
+        destination = SCRATCH / ("offline-" + name + "-v7")
         command = [str(REPO / ".venv-cpu/bin/python"), str(REPO / "runtime.py"),
                    "offline", "--manifest", str(MANIFEST), "--case", case_id,
                    "--output", str(destination), "--python", str(REPO / ".venv-cpu/bin/python")]

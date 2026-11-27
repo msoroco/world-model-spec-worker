@@ -63,7 +63,7 @@ def main():
         lifecycle_command = [sys.executable, str(ROOT / 'prove_lifecycle.py'),
                              '--case', case, '--construction',
                              str(ROOT / entry['construction']), '--scratch',
-                             str(SCRATCH / (suffix + '-lifecycle-v9'))]
+                             str(SCRATCH / (suffix + '-lifecycle-v10'))]
         run(lifecycle_command, lifecycle_log, env)
         events = json.loads(lifecycle_log.read_text())['events']
         receipt = {'format': 'worker-officer-physical-diagnostic-proof',

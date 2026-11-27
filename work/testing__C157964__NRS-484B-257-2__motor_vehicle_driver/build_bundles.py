@@ -24,6 +24,7 @@ CHANNELS = [{"name": name, "method": method, "unit": unit,
                 ("ego_speed", "original Native velocity magnitude", "m/s"),
                 ("other_phase", "original body geometry within/approaching history", "source record"),
                 ("other_station", "original counterpart body station", "m"),
+                ("across_or_within", "original ego body overlap/clearance history", "source record"),
                 ("entrance_controls", "source-reviewed all-entrance inventory", "source record"))]
 RECORDING = {"channels": CHANNELS,
              "context_inputs": [{"name": "reviewed_officer_site_packet",
@@ -67,7 +68,8 @@ def main():
                            "recording_description": RECORDING},
                   "plan_sha256": hashlib.sha256(plan_path.read_bytes()).hexdigest(),
                   "rate_hz": 20, "frame_count": 900, "duration_s": 45,
-                  "control": {"officer_directive": case["draft_variables"]["officer_directive"]},
+                  "control": {"officer_directive": case["draft_variables"]["officer_directive"],
+                              "officer_lateral_offset_m": 0.0},
                   "cameras": CAMERAS, "required_atoms": [], "source_packets": [],
                   "diagnostic_only": True, "recording_description": RECORDING}
         files = [{"path": "config.json", "content": json.dumps(config, indent=2,
@@ -119,6 +121,14 @@ def main():
             "requirements": requirements,
             "negative": {"remove": ["original-attempt/officer-review.json"],
                          "error_contains": "Missing required source: original-attempt/officer-review.json"}})
+        fallback_config = dict(config, control=dict(config["control"],
+                        officer_lateral_offset_m=1.0))
+        fallback_files = [dict(item, content=json.dumps(fallback_config, indent=2,
+                          sort_keys=True) + "\n") if item["path"] == "config.json"
+                          else item for item in files]
+        fallback = dict(construction, candidate_id="fallback1", files=fallback_files)
+        fallback_path = f"cases/{suffix}/fallback1/construction.json"
+        fallback_sha = write(ROOT / fallback_path, fallback)
         rows.append({"case_id": case_id, "kind": "delivery",
                      "construction": relative, "construction_sha256": digest,
                      "diagnostic_only": True,
@@ -128,8 +138,14 @@ def main():
                                         "host_env_var": "CARLA_HOST",
                                         "port_env_var": "CARLA_PORT"},
                      "candidate_risk": {"status": "physical",
-                                        "reason": "Original gesture visibility and officer/vehicle timing require CARLA review."},
-                     "candidates": []})
+                                        "reason": "The original officer gesture may be hidden from the approach view by the ego body or intersection furniture."},
+                     "candidates": [{"id": "fallback1",
+                                     "construction": fallback_path,
+                                     "construction_sha256": fallback_sha,
+                                     "trigger": {"source": "original four-view video and officer body projection",
+                                                 "metric": "visible officer gesture pixel coverage during first ego entry",
+                                                 "failure_condition": "independent reviewer cannot see the active directive in the original approach view"},
+                                     "changed_knobs": ["officer_lateral_offset_m: 0.0 to 1.0 within source-reviewed placement tolerance"]}]})
     write(ROOT / "execution-manifest.json", {
         "format": "worker-execution-manifest", "assignment_id": ROOT.name,
         "runtime_manifest_sha256": hashlib.sha256(

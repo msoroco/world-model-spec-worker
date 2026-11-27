@@ -3,6 +3,11 @@
   "cases": [
     {
       "acquisition": {
+        "across_or_within": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/across_or_within.jsonl",
+          "method": "saved_original_channel"
+        },
         "ego_entry": {
           "entrypoint": "analysis.py",
           "evidence": "channels/ego_entry.jsonl",
@@ -45,19 +50,75 @@
         }
       },
       "candidate_risk": {
-        "reason": "Original gesture visibility and officer/vehicle timing require CARLA review.",
+        "reason": "The original officer gesture may be hidden from the approach view by the ego body or intersection furniture.",
         "status": "physical"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "changed_knobs": [
+            "officer_lateral_offset_m: 0.0 to 1.0 within source-reviewed placement tolerance"
+          ],
+          "compatibility": {
+            "log": "cpu-compat-analysis-fallback-occupied_stop.log",
+            "negative_log": "cpu-compat-negative-fallback-occupied_stop.log",
+            "receipt": "cpu-compat-fallback-occupied_stop.json",
+            "sha256": "a02a50240e76f5871a8cb1dbae8b280d572a07f3278b928f69523df03e16145e"
+          },
+          "construction": "cases/occupied_stop/fallback1/construction.json",
+          "construction_sha256": "efef670e6532462dd827c35a1267a8151da70ff4ad64f2df8251d5b512b6a0d0",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__occupied_stop --candidate fallback1 --output .runtime-work/c157964-nov27/offline-v8-fallback-occupied_stop --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "construction_sha256": "efef670e6532462dd827c35a1267a8151da70ff4ad64f2df8251d5b512b6a0d0",
+            "exit_code": 0,
+            "log": "cpu-offline-fallback-occupied_stop.log",
+            "log_sha256": "3ac9dddea60f82a40e85eda139693dcbe79aa994ab3044977e47eab8186b9270"
+          },
+          "trigger": {
+            "failure_condition": "independent reviewer cannot see the active directive in the original approach view",
+            "metric": "visible officer gesture pixel coverage during first ego entry",
+            "source": "original four-view video and officer body projection"
+          }
+        }
+      ],
       "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__occupied_stop",
       "compatibility": {
         "log": "cpu-compat-analysis-occupied_stop.log",
         "negative_log": "cpu-compat-negative-occupied_stop.log",
         "receipt": "cpu-compat-occupied_stop.json",
-        "sha256": "3f85a4524c46a5e114d8969306e7c312c86e7d58b0ad570601ea6f7f7de7f605"
+        "sha256": "d131362182b5dda38006a6586da8dd0dbdbc680185508fb641260ed72d3c98e0"
       },
       "construction": "cases/occupied_stop/construction.json",
-      "construction_sha256": "544394829b02eb97b4fdefabee22a2f06f34e0a4b71901d5ccb6241297c5249e",
+      "construction_sha256": "a7c242f15118aade0b061aecdd82d493d200ec157f1894a6d70b4c6d9ab491a1",
+      "delivery_acceptance": {
+        "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__occupied_stop",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --stage /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c157964-nov27/saved-proof-occupied_stop-v3/v0001/analysis --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__occupied_stop --diagnostic-fixture --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/selected-delivery-audit-occupied_stop.json",
+        "diagnostic_audit": "selected-delivery-audit-occupied_stop.json",
+        "diagnostic_audit_sha256": "793366c1def62896ab358833eea5c45901312258fe56a12b2d11adea0691810d",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --stage /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c157964-nov27/delivery-corrupt-occupied_stop-v1 --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__occupied_stop --diagnostic-fixture --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c157964-nov27/delivery-rejected-occupied_stop-v1.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "sealed original source changed",
+        "negative_log": "cpu-delivery-occupied_stop-negative.log",
+        "negative_log_sha256": "c8e2c54c88b11efd80de789fde7925ad935292a0bc62ae1e23f1eb1ff103a1b3",
+        "physical_acceptance_claimed": false,
+        "script": "delivery_audit.py",
+        "script_sha256": "f9ea324f57e9ac5ad848b650ff9ca73b471df7fc53cc70dcdb6e96a6c22d583b",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-occupied_stop-positive.log",
+        "test_log_sha256": "d0236c54ddececed852083895265f092cde83ae493a1d09c4feb42baa6ae2184"
+      },
       "diagnostic_only": true,
       "fixture_recipe": "work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/diagnostic-occupied_stop-recipe.json",
       "kind": "delivery",
@@ -74,25 +135,40 @@
         "log": "cpu-compat-negative-occupied_stop.log"
       },
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__occupied_stop --output .runtime-work/c157964-nov27/offline-v6-occupied_stop --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
-        "construction_sha256": "544394829b02eb97b4fdefabee22a2f06f34e0a4b71901d5ccb6241297c5249e",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__occupied_stop --candidate primary --output .runtime-work/c157964-nov27/offline-v8-occupied_stop --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "construction_sha256": "a7c242f15118aade0b061aecdd82d493d200ec157f1894a6d70b4c6d9ab491a1",
         "exit_code": 0,
         "log": "cpu-offline-occupied_stop.log",
-        "log_sha256": "cccdd4c60b282a84b7da214b8f8fc027ac4757712267e489a785492433530e1c"
+        "log_sha256": "a6846c3aa18b92942b01b77cf750dff7e4842b7473d01491e2d320f58dbac414"
       },
       "physical_preparation": {
         "receipt": "cpu-physical-occupied_stop-receipt.json",
-        "sha256": "88f94a5e2469d4ee425e0289b669814c4108ea64641dfe3ef1d6021cdcf5a412"
+        "sha256": "1c8bd38a7f2bcca4f62bb312f1cd39bb834619464ea5cc309cb90e81af0a7c50"
+      },
+      "post_capture": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__occupied_stop --attempt ${C157964_ATTEMPT} --output ${C157964_SAVED_OUTPUT} --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator ${C157964_ADAPTER_CHECK} --owner-release-receipt ${C157964_OWNER_RELEASE}",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__occupied_stop --attempt ${C157964_ATTEMPT} --output ${C157964_SAVED_OUTPUT} --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator ${C157964_ADAPTER_CHECK} --owner-release-receipt ${C157964_OWNER_RELEASE}",
+        "owner_release_required_for_original_capture": true,
+        "proof_scope": "selected source-gated synthetic saved-only CPU receipt; original Native source pending",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-occupied_stop.json",
+        "test_log_sha256": "c6d93107003ce85cdf385722ab9c1806b35a60368eda32daab49ab85fcbfdc9a"
       },
       "saved_diagnostic": {
         "physical_acceptance_claimed": false,
         "receipt": "cpu-saved-occupied_stop.json",
-        "sha256": "bd79fff2a2a2cbc989f3177a6d75000a622734f4a0758220a417298beb35f3e2",
-        "source": ".runtime-work/c157964-nov27/saved-source-occupied_stop-v1"
+        "sha256": "c6d93107003ce85cdf385722ab9c1806b35a60368eda32daab49ab85fcbfdc9a",
+        "source": ".runtime-work/c157964-nov27/saved-source-occupied_stop-v3"
       }
     },
     {
       "acquisition": {
+        "across_or_within": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/across_or_within.jsonl",
+          "method": "saved_original_channel"
+        },
         "ego_entry": {
           "entrypoint": "analysis.py",
           "evidence": "channels/ego_entry.jsonl",
@@ -135,19 +211,75 @@
         }
       },
       "candidate_risk": {
-        "reason": "Original gesture visibility and officer/vehicle timing require CARLA review.",
+        "reason": "The original officer gesture may be hidden from the approach view by the ego body or intersection furniture.",
         "status": "physical"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "changed_knobs": [
+            "officer_lateral_offset_m: 0.0 to 1.0 within source-reviewed placement tolerance"
+          ],
+          "compatibility": {
+            "log": "cpu-compat-analysis-fallback-occupied_proceed.log",
+            "negative_log": "cpu-compat-negative-fallback-occupied_proceed.log",
+            "receipt": "cpu-compat-fallback-occupied_proceed.json",
+            "sha256": "306b7f747e481b58e36f1350687949addf7d49f9614a9ea146c3c409e1ac59a2"
+          },
+          "construction": "cases/occupied_proceed/fallback1/construction.json",
+          "construction_sha256": "a071e2ae86eed13d21d81585558dffa9ccfafa00f02b2a16de45a76d72f79e1a",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__occupied_proceed --candidate fallback1 --output .runtime-work/c157964-nov27/offline-v8-fallback-occupied_proceed --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "construction_sha256": "a071e2ae86eed13d21d81585558dffa9ccfafa00f02b2a16de45a76d72f79e1a",
+            "exit_code": 0,
+            "log": "cpu-offline-fallback-occupied_proceed.log",
+            "log_sha256": "ec3fcda25e74b32741fbfbadd99e2b3da85cd0e383d4a5fbb263d0d385d308e3"
+          },
+          "trigger": {
+            "failure_condition": "independent reviewer cannot see the active directive in the original approach view",
+            "metric": "visible officer gesture pixel coverage during first ego entry",
+            "source": "original four-view video and officer body projection"
+          }
+        }
+      ],
       "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__occupied_proceed",
       "compatibility": {
         "log": "cpu-compat-analysis-occupied_proceed.log",
         "negative_log": "cpu-compat-negative-occupied_proceed.log",
         "receipt": "cpu-compat-occupied_proceed.json",
-        "sha256": "abd72429788daf0477b09aa632a52fc80612413b6cd3f683dff69c253513d5d0"
+        "sha256": "47d1839895e4c4ddce268e2e76c6d747a5e71cc91e2440d23ae74284a5d1e6e6"
       },
       "construction": "cases/occupied_proceed/construction.json",
-      "construction_sha256": "449f0ea90b24a007d5386351a11e3ae2ef681eb0c4f199826a603062a4bbc057",
+      "construction_sha256": "dc13819def87d9a16ed54e01f799988eaa2ad0abd8a9d9fbb2608aa8cb88c36f",
+      "delivery_acceptance": {
+        "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__occupied_proceed",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --stage /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c157964-nov27/saved-proof-occupied_proceed-v3/v0001/analysis --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__occupied_proceed --diagnostic-fixture --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/selected-delivery-audit-occupied_proceed.json",
+        "diagnostic_audit": "selected-delivery-audit-occupied_proceed.json",
+        "diagnostic_audit_sha256": "7c15c930a7bb9daa4d10983d4bc3a71d7263d46196d9e247799512e4286d2482",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --stage /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c157964-nov27/delivery-corrupt-occupied_proceed-v1 --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__occupied_proceed --diagnostic-fixture --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c157964-nov27/delivery-rejected-occupied_proceed-v1.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "sealed original source changed",
+        "negative_log": "cpu-delivery-occupied_proceed-negative.log",
+        "negative_log_sha256": "c8e2c54c88b11efd80de789fde7925ad935292a0bc62ae1e23f1eb1ff103a1b3",
+        "physical_acceptance_claimed": false,
+        "script": "delivery_audit.py",
+        "script_sha256": "f9ea324f57e9ac5ad848b650ff9ca73b471df7fc53cc70dcdb6e96a6c22d583b",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-occupied_proceed-positive.log",
+        "test_log_sha256": "7a23127991a4b63d1b5c53f1a4aaffd0c5a7a68534a0fe5fad31f5f585a197e5"
+      },
       "diagnostic_only": true,
       "fixture_recipe": "work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/diagnostic-occupied_proceed-recipe.json",
       "kind": "delivery",
@@ -164,25 +296,40 @@
         "log": "cpu-compat-negative-occupied_proceed.log"
       },
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__occupied_proceed --output .runtime-work/c157964-nov27/offline-v6-occupied_proceed --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
-        "construction_sha256": "449f0ea90b24a007d5386351a11e3ae2ef681eb0c4f199826a603062a4bbc057",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__occupied_proceed --candidate primary --output .runtime-work/c157964-nov27/offline-v8-occupied_proceed --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "construction_sha256": "dc13819def87d9a16ed54e01f799988eaa2ad0abd8a9d9fbb2608aa8cb88c36f",
         "exit_code": 0,
         "log": "cpu-offline-occupied_proceed.log",
-        "log_sha256": "209ba7e31fe29c4e601183ee99f61f7a44499df16e0bb13dd17caf0d459fa9ab"
+        "log_sha256": "14df7a2c580b94728d5a80e4a1bc5f2a6f92b323e710f22757075d2041346a8f"
       },
       "physical_preparation": {
         "receipt": "cpu-physical-occupied_proceed-receipt.json",
-        "sha256": "2716c89ccd10ad6cf6424d30f897cc38a5b6cd31cf4986653281816111aa9bcd"
+        "sha256": "b304d2e2011f5f8ba880ac07c7bd6b376ebf27a4e46a81948b8eabaee36fe59c"
+      },
+      "post_capture": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__occupied_proceed --attempt ${C157964_ATTEMPT} --output ${C157964_SAVED_OUTPUT} --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator ${C157964_ADAPTER_CHECK} --owner-release-receipt ${C157964_OWNER_RELEASE}",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__occupied_proceed --attempt ${C157964_ATTEMPT} --output ${C157964_SAVED_OUTPUT} --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator ${C157964_ADAPTER_CHECK} --owner-release-receipt ${C157964_OWNER_RELEASE}",
+        "owner_release_required_for_original_capture": true,
+        "proof_scope": "selected source-gated synthetic saved-only CPU receipt; original Native source pending",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-occupied_proceed.json",
+        "test_log_sha256": "64b941f47f9f8541399cf576bedc3342a5e2ea3d0b373af4fc5f082b02faba95"
       },
       "saved_diagnostic": {
         "physical_acceptance_claimed": false,
         "receipt": "cpu-saved-occupied_proceed.json",
-        "sha256": "1dc1d6b2b964d68862570835131be408a43f4a73dd65dcb501479eafc062c3ec",
-        "source": ".runtime-work/c157964-nov27/saved-source-occupied_proceed-v1"
+        "sha256": "64b941f47f9f8541399cf576bedc3342a5e2ea3d0b373af4fc5f082b02faba95",
+        "source": ".runtime-work/c157964-nov27/saved-source-occupied_proceed-v3"
       }
     },
     {
       "acquisition": {
+        "across_or_within": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/across_or_within.jsonl",
+          "method": "saved_original_channel"
+        },
         "ego_entry": {
           "entrypoint": "analysis.py",
           "evidence": "channels/ego_entry.jsonl",
@@ -225,19 +372,75 @@
         }
       },
       "candidate_risk": {
-        "reason": "Original gesture visibility and officer/vehicle timing require CARLA review.",
+        "reason": "The original officer gesture may be hidden from the approach view by the ego body or intersection furniture.",
         "status": "physical"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "changed_knobs": [
+            "officer_lateral_offset_m: 0.0 to 1.0 within source-reviewed placement tolerance"
+          ],
+          "compatibility": {
+            "log": "cpu-compat-analysis-fallback-approaching_near_stop.log",
+            "negative_log": "cpu-compat-negative-fallback-approaching_near_stop.log",
+            "receipt": "cpu-compat-fallback-approaching_near_stop.json",
+            "sha256": "dee30a4884b70f9a3f71727e258104941bb2a0318337884e15d0aa5475337ab0"
+          },
+          "construction": "cases/approaching_near_stop/fallback1/construction.json",
+          "construction_sha256": "7fa40ddfc286f3c45cf58f04b3d22e8badd78226e03e2c38201a6469deb5959e",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__approaching_near_stop --candidate fallback1 --output .runtime-work/c157964-nov27/offline-v8-fallback-approaching_near_stop --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "construction_sha256": "7fa40ddfc286f3c45cf58f04b3d22e8badd78226e03e2c38201a6469deb5959e",
+            "exit_code": 0,
+            "log": "cpu-offline-fallback-approaching_near_stop.log",
+            "log_sha256": "17bc959beb48e2d154d29e1e9d2fb17c54b66af562f502cdd5f92a59cf9625ae"
+          },
+          "trigger": {
+            "failure_condition": "independent reviewer cannot see the active directive in the original approach view",
+            "metric": "visible officer gesture pixel coverage during first ego entry",
+            "source": "original four-view video and officer body projection"
+          }
+        }
+      ],
       "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__approaching_near_stop",
       "compatibility": {
         "log": "cpu-compat-analysis-approaching_near_stop.log",
         "negative_log": "cpu-compat-negative-approaching_near_stop.log",
         "receipt": "cpu-compat-approaching_near_stop.json",
-        "sha256": "0e41d5b67dcbc11b24896a16eefde2bcd6576c9c3b3b9e1d9e0e53e10aec9740"
+        "sha256": "e68b6ec1ebc9fd5409048edcc42fb67689de0d631662d4ca0aa89c150896a83d"
       },
       "construction": "cases/approaching_near_stop/construction.json",
-      "construction_sha256": "2172d9e67c2e0ebadca43ddcc77d8f19992d4d0fa2fc12828a17852f69093e0b",
+      "construction_sha256": "7ded5548b8b3b1859d98b4c05dc2e3b889f994f09cf91772a3004c9b81de2fc8",
+      "delivery_acceptance": {
+        "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__approaching_near_stop",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --stage /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c157964-nov27/saved-proof-approaching_near_stop-v3/v0001/analysis --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__approaching_near_stop --diagnostic-fixture --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/selected-delivery-audit-approaching_near_stop.json",
+        "diagnostic_audit": "selected-delivery-audit-approaching_near_stop.json",
+        "diagnostic_audit_sha256": "f94821199139aeb201a97872e8437172aefbc39c2654dddcbdd311b87e9730da",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --stage /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c157964-nov27/delivery-corrupt-approaching_near_stop-v1 --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__approaching_near_stop --diagnostic-fixture --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c157964-nov27/delivery-rejected-approaching_near_stop-v1.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "sealed original source changed",
+        "negative_log": "cpu-delivery-approaching_near_stop-negative.log",
+        "negative_log_sha256": "c8e2c54c88b11efd80de789fde7925ad935292a0bc62ae1e23f1eb1ff103a1b3",
+        "physical_acceptance_claimed": false,
+        "script": "delivery_audit.py",
+        "script_sha256": "f9ea324f57e9ac5ad848b650ff9ca73b471df7fc53cc70dcdb6e96a6c22d583b",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-approaching_near_stop-positive.log",
+        "test_log_sha256": "c237db8623b2b3287198b3f62ad70450442e48389fbdb221204ebbd733928bad"
+      },
       "diagnostic_only": true,
       "fixture_recipe": "work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/diagnostic-approaching_near_stop-recipe.json",
       "kind": "delivery",
@@ -254,25 +457,40 @@
         "log": "cpu-compat-negative-approaching_near_stop.log"
       },
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__approaching_near_stop --output .runtime-work/c157964-nov27/offline-v6-approaching_near_stop --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
-        "construction_sha256": "2172d9e67c2e0ebadca43ddcc77d8f19992d4d0fa2fc12828a17852f69093e0b",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__approaching_near_stop --candidate primary --output .runtime-work/c157964-nov27/offline-v8-approaching_near_stop --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "construction_sha256": "7ded5548b8b3b1859d98b4c05dc2e3b889f994f09cf91772a3004c9b81de2fc8",
         "exit_code": 0,
         "log": "cpu-offline-approaching_near_stop.log",
-        "log_sha256": "e524667a4a7315350f8b4e6169afe1e4cda547217dfc292dba1ee3a03ae34808"
+        "log_sha256": "d7f8332384192583d5c2711712e079013fe4e869b956816c3c9a71bec1fb88ce"
       },
       "physical_preparation": {
         "receipt": "cpu-physical-approaching_near_stop-receipt.json",
-        "sha256": "ae983562a306bb0d1d06dd19877c5eea14f4cf63c1c9494066b474066152bd16"
+        "sha256": "60c27c171f932866c9b2d7dd6f2ebf756202996d24e230686fdee4a25672f423"
+      },
+      "post_capture": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__approaching_near_stop --attempt ${C157964_ATTEMPT} --output ${C157964_SAVED_OUTPUT} --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator ${C157964_ADAPTER_CHECK} --owner-release-receipt ${C157964_OWNER_RELEASE}",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__approaching_near_stop --attempt ${C157964_ATTEMPT} --output ${C157964_SAVED_OUTPUT} --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator ${C157964_ADAPTER_CHECK} --owner-release-receipt ${C157964_OWNER_RELEASE}",
+        "owner_release_required_for_original_capture": true,
+        "proof_scope": "selected source-gated synthetic saved-only CPU receipt; original Native source pending",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-approaching_near_stop.json",
+        "test_log_sha256": "d5adaf454d87652e9b326d47b103ef8c922af4a593b4e3ecb4f0d0585738c80b"
       },
       "saved_diagnostic": {
         "physical_acceptance_claimed": false,
         "receipt": "cpu-saved-approaching_near_stop.json",
-        "sha256": "62072bbbffee6682182fe40a028f5862a6e213aa029e9ce0e6dd6b02f4c83bb1",
-        "source": ".runtime-work/c157964-nov27/saved-source-approaching_near_stop-v1"
+        "sha256": "d5adaf454d87652e9b326d47b103ef8c922af4a593b4e3ecb4f0d0585738c80b",
+        "source": ".runtime-work/c157964-nov27/saved-source-approaching_near_stop-v3"
       }
     },
     {
       "acquisition": {
+        "across_or_within": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/across_or_within.jsonl",
+          "method": "saved_original_channel"
+        },
         "ego_entry": {
           "entrypoint": "analysis.py",
           "evidence": "channels/ego_entry.jsonl",
@@ -315,19 +533,75 @@
         }
       },
       "candidate_risk": {
-        "reason": "Original gesture visibility and officer/vehicle timing require CARLA review.",
+        "reason": "The original officer gesture may be hidden from the approach view by the ego body or intersection furniture.",
         "status": "physical"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "changed_knobs": [
+            "officer_lateral_offset_m: 0.0 to 1.0 within source-reviewed placement tolerance"
+          ],
+          "compatibility": {
+            "log": "cpu-compat-analysis-fallback-approaching_near_proceed.log",
+            "negative_log": "cpu-compat-negative-fallback-approaching_near_proceed.log",
+            "receipt": "cpu-compat-fallback-approaching_near_proceed.json",
+            "sha256": "d06fa1a25747541a6f6f95610463da541126dff0d51baf5c76cc7d70dbc364f2"
+          },
+          "construction": "cases/approaching_near_proceed/fallback1/construction.json",
+          "construction_sha256": "6b52ee33609962064c694515e181401adb3052efc5619beb32f47a3668743120",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__approaching_near_proceed --candidate fallback1 --output .runtime-work/c157964-nov27/offline-v8-fallback-approaching_near_proceed --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "construction_sha256": "6b52ee33609962064c694515e181401adb3052efc5619beb32f47a3668743120",
+            "exit_code": 0,
+            "log": "cpu-offline-fallback-approaching_near_proceed.log",
+            "log_sha256": "0dfdfeece75156ce5d9b84f171db7207f3094afe7248b19841ac603c93d4105c"
+          },
+          "trigger": {
+            "failure_condition": "independent reviewer cannot see the active directive in the original approach view",
+            "metric": "visible officer gesture pixel coverage during first ego entry",
+            "source": "original four-view video and officer body projection"
+          }
+        }
+      ],
       "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__approaching_near_proceed",
       "compatibility": {
         "log": "cpu-compat-analysis-approaching_near_proceed.log",
         "negative_log": "cpu-compat-negative-approaching_near_proceed.log",
         "receipt": "cpu-compat-approaching_near_proceed.json",
-        "sha256": "a702b1a65b1a86c6952fc8a21fb5a62c0dfa3a8ce97c880936cb0c377ed831de"
+        "sha256": "aa6038ab2fbd77b1896ef6a04656416d09eadc60ccc6da328fb5a1e7bd5b66b3"
       },
       "construction": "cases/approaching_near_proceed/construction.json",
-      "construction_sha256": "62b59ed1bf7e2409fe8f4c15b2cc8127e057cc531507ccdba44747583e527ed2",
+      "construction_sha256": "4bafab0077a2628c1a30c2d8b8601390c1765d1ef98439c7c6783084826298a7",
+      "delivery_acceptance": {
+        "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__approaching_near_proceed",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --stage /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c157964-nov27/saved-proof-approaching_near_proceed-v3/v0001/analysis --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__approaching_near_proceed --diagnostic-fixture --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/selected-delivery-audit-approaching_near_proceed.json",
+        "diagnostic_audit": "selected-delivery-audit-approaching_near_proceed.json",
+        "diagnostic_audit_sha256": "68559a171b22600ba9815f02035e3470a4f014e2e606844c16cc8090d8a1e252",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --stage /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c157964-nov27/delivery-corrupt-approaching_near_proceed-v1 --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__approaching_near_proceed --diagnostic-fixture --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c157964-nov27/delivery-rejected-approaching_near_proceed-v1.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "sealed original source changed",
+        "negative_log": "cpu-delivery-approaching_near_proceed-negative.log",
+        "negative_log_sha256": "c8e2c54c88b11efd80de789fde7925ad935292a0bc62ae1e23f1eb1ff103a1b3",
+        "physical_acceptance_claimed": false,
+        "script": "delivery_audit.py",
+        "script_sha256": "f9ea324f57e9ac5ad848b650ff9ca73b471df7fc53cc70dcdb6e96a6c22d583b",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-approaching_near_proceed-positive.log",
+        "test_log_sha256": "707bfc9df2eba03119d170f27e8a8cf40659a7ee42fe770e413a403de1392ae6"
+      },
       "diagnostic_only": true,
       "fixture_recipe": "work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/diagnostic-approaching_near_proceed-recipe.json",
       "kind": "delivery",
@@ -344,25 +618,40 @@
         "log": "cpu-compat-negative-approaching_near_proceed.log"
       },
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__approaching_near_proceed --output .runtime-work/c157964-nov27/offline-v6-approaching_near_proceed --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
-        "construction_sha256": "62b59ed1bf7e2409fe8f4c15b2cc8127e057cc531507ccdba44747583e527ed2",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__approaching_near_proceed --candidate primary --output .runtime-work/c157964-nov27/offline-v8-approaching_near_proceed --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "construction_sha256": "4bafab0077a2628c1a30c2d8b8601390c1765d1ef98439c7c6783084826298a7",
         "exit_code": 0,
         "log": "cpu-offline-approaching_near_proceed.log",
-        "log_sha256": "7e4eb0b6fd55be40793e245731e0d17e41cd87aeb53f1ef63e23d880ceab495b"
+        "log_sha256": "3c08fe763df830f3e165f2668fed09d0dfdcc7272835586f2a11cc0a097dfbe6"
       },
       "physical_preparation": {
         "receipt": "cpu-physical-approaching_near_proceed-receipt.json",
-        "sha256": "f71537c376bee14cf72f132ce535ace4f01ba788b9968707d3743ef64e9ee968"
+        "sha256": "b0ecff6b713034367db033871562d17e0c8d0bed706623ed0651b9be4d83d7d3"
+      },
+      "post_capture": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__approaching_near_proceed --attempt ${C157964_ATTEMPT} --output ${C157964_SAVED_OUTPUT} --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator ${C157964_ADAPTER_CHECK} --owner-release-receipt ${C157964_OWNER_RELEASE}",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__approaching_near_proceed --attempt ${C157964_ATTEMPT} --output ${C157964_SAVED_OUTPUT} --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator ${C157964_ADAPTER_CHECK} --owner-release-receipt ${C157964_OWNER_RELEASE}",
+        "owner_release_required_for_original_capture": true,
+        "proof_scope": "selected source-gated synthetic saved-only CPU receipt; original Native source pending",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-approaching_near_proceed.json",
+        "test_log_sha256": "73ea155793303a75718e9a82535c07034159b94acb133aaf7440890fe39748f3"
       },
       "saved_diagnostic": {
         "physical_acceptance_claimed": false,
         "receipt": "cpu-saved-approaching_near_proceed.json",
-        "sha256": "02580bcbffcc9fbbd132936f0c60aa5ce6eadc458ce4ebc819a521712d4e8298",
-        "source": ".runtime-work/c157964-nov27/saved-source-approaching_near_proceed-v1"
+        "sha256": "73ea155793303a75718e9a82535c07034159b94acb133aaf7440890fe39748f3",
+        "source": ".runtime-work/c157964-nov27/saved-source-approaching_near_proceed-v3"
       }
     },
     {
       "acquisition": {
+        "across_or_within": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/across_or_within.jsonl",
+          "method": "saved_original_channel"
+        },
         "ego_entry": {
           "entrypoint": "analysis.py",
           "evidence": "channels/ego_entry.jsonl",
@@ -405,19 +694,75 @@
         }
       },
       "candidate_risk": {
-        "reason": "Original gesture visibility and officer/vehicle timing require CARLA review.",
+        "reason": "The original officer gesture may be hidden from the approach view by the ego body or intersection furniture.",
         "status": "physical"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "changed_knobs": [
+            "officer_lateral_offset_m: 0.0 to 1.0 within source-reviewed placement tolerance"
+          ],
+          "compatibility": {
+            "log": "cpu-compat-analysis-fallback-approaching_far_stop.log",
+            "negative_log": "cpu-compat-negative-fallback-approaching_far_stop.log",
+            "receipt": "cpu-compat-fallback-approaching_far_stop.json",
+            "sha256": "8a47c44ee5b8c1a5eb3cb1397a0082217f7a86c83479a60af4c6f8c342493774"
+          },
+          "construction": "cases/approaching_far_stop/fallback1/construction.json",
+          "construction_sha256": "63a31fc4a2fe7e56aeb44004dd6f716e8fb6e404cce425136f734a5c38cb412b",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__approaching_far_stop --candidate fallback1 --output .runtime-work/c157964-nov27/offline-v8-fallback-approaching_far_stop --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "construction_sha256": "63a31fc4a2fe7e56aeb44004dd6f716e8fb6e404cce425136f734a5c38cb412b",
+            "exit_code": 0,
+            "log": "cpu-offline-fallback-approaching_far_stop.log",
+            "log_sha256": "d8f273298f585376e3060dca06a86e74540334035217481ed14b278998a531ee"
+          },
+          "trigger": {
+            "failure_condition": "independent reviewer cannot see the active directive in the original approach view",
+            "metric": "visible officer gesture pixel coverage during first ego entry",
+            "source": "original four-view video and officer body projection"
+          }
+        }
+      ],
       "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__approaching_far_stop",
       "compatibility": {
         "log": "cpu-compat-analysis-approaching_far_stop.log",
         "negative_log": "cpu-compat-negative-approaching_far_stop.log",
         "receipt": "cpu-compat-approaching_far_stop.json",
-        "sha256": "ede096e5027239f7973d497ad18370e4765c238df1775b2ab099689e7eaed6a9"
+        "sha256": "225cb3e1ca93e1c2f0d6f254e1a89d5a5bfda243c381df53b1f03798cc62d97b"
       },
       "construction": "cases/approaching_far_stop/construction.json",
-      "construction_sha256": "d0cac70be113b1d9723f34c7b2542c1261b3b742421f84706b25b8096813404b",
+      "construction_sha256": "cae6913cfc8d53e1e49e431c95177a58bfa981d2bbf064a6e026301d8818cd86",
+      "delivery_acceptance": {
+        "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__approaching_far_stop",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --stage /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c157964-nov27/saved-proof-approaching_far_stop-v3/v0001/analysis --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__approaching_far_stop --diagnostic-fixture --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/selected-delivery-audit-approaching_far_stop.json",
+        "diagnostic_audit": "selected-delivery-audit-approaching_far_stop.json",
+        "diagnostic_audit_sha256": "b9544ca74a578f97ba290d3218443b296afb4615cf441f09f990fc80eda21421",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --stage /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c157964-nov27/delivery-corrupt-approaching_far_stop-v1 --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__approaching_far_stop --diagnostic-fixture --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c157964-nov27/delivery-rejected-approaching_far_stop-v1.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "sealed original source changed",
+        "negative_log": "cpu-delivery-approaching_far_stop-negative.log",
+        "negative_log_sha256": "c8e2c54c88b11efd80de789fde7925ad935292a0bc62ae1e23f1eb1ff103a1b3",
+        "physical_acceptance_claimed": false,
+        "script": "delivery_audit.py",
+        "script_sha256": "f9ea324f57e9ac5ad848b650ff9ca73b471df7fc53cc70dcdb6e96a6c22d583b",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-approaching_far_stop-positive.log",
+        "test_log_sha256": "39f61fab235a1cf7d5b805fc73c994a8b319e3e295d7d0f74946e9a0126de35b"
+      },
       "diagnostic_only": true,
       "fixture_recipe": "work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/diagnostic-approaching_far_stop-recipe.json",
       "kind": "delivery",
@@ -434,25 +779,40 @@
         "log": "cpu-compat-negative-approaching_far_stop.log"
       },
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__approaching_far_stop --output .runtime-work/c157964-nov27/offline-v6-approaching_far_stop --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
-        "construction_sha256": "d0cac70be113b1d9723f34c7b2542c1261b3b742421f84706b25b8096813404b",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__approaching_far_stop --candidate primary --output .runtime-work/c157964-nov27/offline-v8-approaching_far_stop --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "construction_sha256": "cae6913cfc8d53e1e49e431c95177a58bfa981d2bbf064a6e026301d8818cd86",
         "exit_code": 0,
         "log": "cpu-offline-approaching_far_stop.log",
-        "log_sha256": "e8416872dbe6de6f852f3c838f61e3822beb61b2a308bb80e32bf7f41e29ab5b"
+        "log_sha256": "a96dc394e93ce95de0521f3c503615dd294ae12b3e40d344edac901e17cd9f95"
       },
       "physical_preparation": {
         "receipt": "cpu-physical-approaching_far_stop-receipt.json",
-        "sha256": "35e72c11bccd801c9e5ca1a5f758ff0ad7c825da89159c2f4459c1a73b71eb94"
+        "sha256": "902fe67ea37f2fa050a3194538f59ee5c5e935ce319f2dcf0206856efaa9a4eb"
+      },
+      "post_capture": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__approaching_far_stop --attempt ${C157964_ATTEMPT} --output ${C157964_SAVED_OUTPUT} --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator ${C157964_ADAPTER_CHECK} --owner-release-receipt ${C157964_OWNER_RELEASE}",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__approaching_far_stop --attempt ${C157964_ATTEMPT} --output ${C157964_SAVED_OUTPUT} --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator ${C157964_ADAPTER_CHECK} --owner-release-receipt ${C157964_OWNER_RELEASE}",
+        "owner_release_required_for_original_capture": true,
+        "proof_scope": "selected source-gated synthetic saved-only CPU receipt; original Native source pending",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-approaching_far_stop.json",
+        "test_log_sha256": "a9f674f38b31805183a4eee12dd83663428e7994ae4a879393c8a6b76ff4d796"
       },
       "saved_diagnostic": {
         "physical_acceptance_claimed": false,
         "receipt": "cpu-saved-approaching_far_stop.json",
-        "sha256": "463c4e64c072c373b87470575dea5c6abacfcd8c8b8e7c43f31f4c4f2209eb22",
-        "source": ".runtime-work/c157964-nov27/saved-source-approaching_far_stop-v1"
+        "sha256": "a9f674f38b31805183a4eee12dd83663428e7994ae4a879393c8a6b76ff4d796",
+        "source": ".runtime-work/c157964-nov27/saved-source-approaching_far_stop-v3"
       }
     },
     {
       "acquisition": {
+        "across_or_within": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/across_or_within.jsonl",
+          "method": "saved_original_channel"
+        },
         "ego_entry": {
           "entrypoint": "analysis.py",
           "evidence": "channels/ego_entry.jsonl",
@@ -495,19 +855,75 @@
         }
       },
       "candidate_risk": {
-        "reason": "Original gesture visibility and officer/vehicle timing require CARLA review.",
+        "reason": "The original officer gesture may be hidden from the approach view by the ego body or intersection furniture.",
         "status": "physical"
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "changed_knobs": [
+            "officer_lateral_offset_m: 0.0 to 1.0 within source-reviewed placement tolerance"
+          ],
+          "compatibility": {
+            "log": "cpu-compat-analysis-fallback-approaching_far_proceed.log",
+            "negative_log": "cpu-compat-negative-fallback-approaching_far_proceed.log",
+            "receipt": "cpu-compat-fallback-approaching_far_proceed.json",
+            "sha256": "1c5004b3a0ff257ad881ce3598385090422d1af6b72ffd98a75f92d9f46a21f6"
+          },
+          "construction": "cases/approaching_far_proceed/fallback1/construction.json",
+          "construction_sha256": "76e7ebf013d5b8fc1387f6388aa13619e80c9c1868899daf9d735672db63fc4d",
+          "id": "fallback1",
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__approaching_far_proceed --candidate fallback1 --output .runtime-work/c157964-nov27/offline-v8-fallback-approaching_far_proceed --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+            "construction_sha256": "76e7ebf013d5b8fc1387f6388aa13619e80c9c1868899daf9d735672db63fc4d",
+            "exit_code": 0,
+            "log": "cpu-offline-fallback-approaching_far_proceed.log",
+            "log_sha256": "2247b37df3ef94a9d043101662207407c02a806acde737495c7b80f35b40d75f"
+          },
+          "trigger": {
+            "failure_condition": "independent reviewer cannot see the active directive in the original approach view",
+            "metric": "visible officer gesture pixel coverage during first ego entry",
+            "source": "original four-view video and officer body projection"
+          }
+        }
+      ],
       "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__approaching_far_proceed",
       "compatibility": {
         "log": "cpu-compat-analysis-approaching_far_proceed.log",
         "negative_log": "cpu-compat-negative-approaching_far_proceed.log",
         "receipt": "cpu-compat-approaching_far_proceed.json",
-        "sha256": "68cac1c8b67602b638c57f178133791d82057cb61fb3f6e5bad438b7ac22ba88"
+        "sha256": "57bf467fd9a0bb862bec3afda6b67956e952855a376ac7c25fa503430e604b73"
       },
       "construction": "cases/approaching_far_proceed/construction.json",
-      "construction_sha256": "fc0e34f60628d0312126d8613546362fdbe516f1420dc1522d569607fd83f75b",
+      "construction_sha256": "3d24986d8f7e2c68d7bbf2af28e08316c6e97a9c8b3c5df5ba0cdd0d157ecd93",
+      "delivery_acceptance": {
+        "case_id": "testing__C157964__NRS-484B-257-2__motor_vehicle_driver__approaching_far_proceed",
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --stage /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c157964-nov27/saved-proof-approaching_far_proceed-v3/v0001/analysis --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__approaching_far_proceed --diagnostic-fixture --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/selected-delivery-audit-approaching_far_proceed.json",
+        "diagnostic_audit": "selected-delivery-audit-approaching_far_proceed.json",
+        "diagnostic_audit_sha256": "c1d678e3662414a703f34d36bb23d83b6fc6596cd307266b611cc61d3c1def26",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/delivery_audit.py --stage /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c157964-nov27/delivery-corrupt-approaching_far_proceed-v1 --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__approaching_far_proceed --diagnostic-fixture --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c157964-nov27/delivery-rejected-approaching_far_proceed-v1.json",
+        "negative_exit_code": 1,
+        "negative_expected_error": "sealed original source changed",
+        "negative_log": "cpu-delivery-approaching_far_proceed-negative.log",
+        "negative_log_sha256": "c8e2c54c88b11efd80de789fde7925ad935292a0bc62ae1e23f1eb1ff103a1b3",
+        "physical_acceptance_claimed": false,
+        "script": "delivery_audit.py",
+        "script_sha256": "f9ea324f57e9ac5ad848b650ff9ca73b471df7fc53cc70dcdb6e96a6c22d583b",
+        "sets": [
+          "demo-test",
+          "full-test"
+        ],
+        "test_exit_code": 0,
+        "test_log": "cpu-delivery-approaching_far_proceed-positive.log",
+        "test_log_sha256": "beb7fa73c8210dc043987d7acb392d7e83c8513c205a5a3f9caeb443aec934d8"
+      },
       "diagnostic_only": true,
       "fixture_recipe": "work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/diagnostic-approaching_far_proceed-recipe.json",
       "kind": "delivery",
@@ -524,21 +940,31 @@
         "log": "cpu-compat-negative-approaching_far_proceed.log"
       },
       "offline": {
-        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__approaching_far_proceed --output .runtime-work/c157964-nov27/offline-v6-approaching_far_proceed --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
-        "construction_sha256": "fc0e34f60628d0312126d8613546362fdbe516f1420dc1522d569607fd83f75b",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11 runtime.py offline --manifest work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__approaching_far_proceed --candidate primary --output .runtime-work/c157964-nov27/offline-v8-approaching_far_proceed --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/tools/uv-python/cpython-3.11.17-linux-aarch64-gnu/bin/python3.11",
+        "construction_sha256": "3d24986d8f7e2c68d7bbf2af28e08316c6e97a9c8b3c5df5ba0cdd0d157ecd93",
         "exit_code": 0,
         "log": "cpu-offline-approaching_far_proceed.log",
-        "log_sha256": "0e5abefc96d3ba115eb21d90916add6c071ff80180260cce5cf9c4baa04d7d3f"
+        "log_sha256": "9befbf3c10cf0113a5afa2ff6332e087cc887b05d5296d18271ed0efc8ac3a07"
       },
       "physical_preparation": {
         "receipt": "cpu-physical-approaching_far_proceed-receipt.json",
-        "sha256": "5d83e46ab84495204d1ed404776fb8907a044a20ce93def469aaa73557fb52e8"
+        "sha256": "081fe09ea794f9ca2d995e3f3189b2d37899e304e5d7fb034a57248307ab7f6b"
+      },
+      "post_capture": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__approaching_far_proceed --attempt ${C157964_ATTEMPT} --output ${C157964_SAVED_OUTPUT} --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator ${C157964_ADAPTER_CHECK} --owner-release-receipt ${C157964_OWNER_RELEASE}",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C157964__NRS-484B-257-2__motor_vehicle_driver/execution-manifest.json --case testing__C157964__NRS-484B-257-2__motor_vehicle_driver__approaching_far_proceed --attempt ${C157964_ATTEMPT} --output ${C157964_SAVED_OUTPUT} --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator ${C157964_ADAPTER_CHECK} --owner-release-receipt ${C157964_OWNER_RELEASE}",
+        "owner_release_required_for_original_capture": true,
+        "proof_scope": "selected source-gated synthetic saved-only CPU receipt; original Native source pending",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cpu-saved-approaching_far_proceed.json",
+        "test_log_sha256": "fd6237f09b67394773341de6f1c95a0803205328ca56df806fdafd91b36aae74"
       },
       "saved_diagnostic": {
         "physical_acceptance_claimed": false,
         "receipt": "cpu-saved-approaching_far_proceed.json",
-        "sha256": "64e99d5a5493914e0ebc74ffdca54673d98c47bc625921c3f4fd85b54e4a46da",
-        "source": ".runtime-work/c157964-nov27/saved-source-approaching_far_proceed-v1"
+        "sha256": "fd6237f09b67394773341de6f1c95a0803205328ca56df806fdafd91b36aae74",
+        "source": ".runtime-work/c157964-nov27/saved-source-approaching_far_proceed-v3"
       }
     }
   ],

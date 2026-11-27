@@ -2,6 +2,11 @@
 
 Archived checkpoints: [2026-11-22 through 2026-11-25](RETURN-REPORT-archive-2026-11-22-to-2026-11-25.md).
 
+## 2026-11-27 13:20 UTC: C378707 business-alley package and C378132 bus A2 published
+
+- `testing__C378132__LVMC-11-60-030-A2__bus_driver` passed its owner scoped strict gate and the lead independent scoped strict gate; its 10 exact cases and 9 comparisons were published. `testing__C378707__NRS-484B-477-1a__motor_vehicle_driver` passed the lead exact scoped strict gate after 12 primary/fallback offline and pinned compatibility proofs, six recorded-only saved positive/missing-source proofs, 18 physical diagnostic outcomes with Native closure, six independent delivery positive/negative audits and five controlled comparison audits. Its six exact cases are `passenger_active_stop`, `passenger_wait_stand`, `passenger_driver_exit_park`, `goods_active_load`, `goods_wait_interrupted`, and `ordinance_passenger_authorized`; five comparisons are published. The shared queue is **227 ready assignments, 1,570 cases, 1,092 comparisons**, 4,299,300 bytes, SHA256 `053a4a17ceb8d892234a2a59ca94eb914429f4ac07c2b10bc7caf1ecc57bf67d`. No original CARLA physical or legal acceptance is claimed.
+- C157964 and C261489 continue near-ready source-bound CPU packages; a third owner began C213645 residential driveway construction. Fifteen batch assignments remain outside the ready queue. The batch-wide strict gate therefore remains pending. No Git command was run.
+
 ## 2026-11-27 12:51 UTC: two packages published; business-alley exact offline proofs
 
 - `testing__C386411__LVMC-11-60-030-A1__bus_driver` and `testing__C179819__NRS-484B-633-2__motor_vehicle_driver` each passed the owner's exact scoped strict gate and the lead's independent exact scoped strict gate. Their syntax-checked proposals published **16 cases and 8 comparisons**. The shared queue is **225 ready assignments, 1,554 cases, 1,078 comparisons**, 4,230,554 bytes, SHA256 `23cf62a40615c209fbd04550535f4629a83d5fd719c9a28bb018f8028fb3c68b`. No original physical or legal acceptance is claimed.

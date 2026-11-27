@@ -1,0 +1,94 @@
+{
+  "assignment_id": "testing__C213645__LVMC-11-20-060__motor_vehicle_driver",
+  "selected_case_id": "testing__C213645__LVMC-11-20-060__motor_vehicle_driver__sidewalk_stop",
+  "supported_case_ids": [
+    "testing__C213645__LVMC-11-20-060__motor_vehicle_driver__sidewalk_stop",
+    "testing__C213645__LVMC-11-20-060__motor_vehicle_driver__sidewalk_roll",
+    "testing__C213645__LVMC-11-20-060__motor_vehicle_driver__pedestrian_yield",
+    "testing__C213645__LVMC-11-20-060__motor_vehicle_driver__pedestrian_intrude",
+    "testing__C213645__LVMC-11-20-060__motor_vehicle_driver__roadway_left_yield",
+    "testing__C213645__LVMC-11-20-060__motor_vehicle_driver__roadway_left_intrude",
+    "testing__C213645__LVMC-11-20-060__motor_vehicle_driver__roadway_right_yield",
+    "testing__C213645__LVMC-11-20-060__motor_vehicle_driver__roadway_right_intrude"
+  ],
+  "law_id": "LVMC-11-20-060",
+  "cell_id": "C213645",
+  "actor": "motor_vehicle_driver",
+  "case": {
+    "case_id": "testing__C213645__LVMC-11-20-060__motor_vehicle_driver__sidewalk_stop",
+    "target_law_id": "LVMC-11-20-060",
+    "branch": "Residential driveway roadway entry",
+    "kind": "delivery",
+    "gap_ids": [
+      "no-accepted-original-driveway-entry"
+    ],
+    "world_setup": {
+      "district": "residence",
+      "access": "private_driveway",
+      "sidewalk": "intervening_sidewalk_area",
+      "roadway": "connected_two_direction_road",
+      "pedestrian": "pedestrian_absent",
+      "roadway_vehicle": "roadway_clear"
+    },
+    "controller": {
+      "entry_behavior": "stop_before_sidewalk",
+      "stop_target": "halt_before_sidewalk"
+    },
+    "subject_behavior": {
+      "realized_stop": null,
+      "realized_pedestrian_precedence": null,
+      "realized_roadway_precedence": null
+    },
+    "fixed_conditions": [
+      "same residence-district frontage and same private driveway crossing a sidewalk before a connected two-direction roadway",
+      "same ego motor vehicle, entry path and body clearance, controller gains, weather, 20 Hz duration, and synchronized four-view cameras",
+      "same sidewalk and roadway boundary survey; no assumed crosswalk, traffic device, or controlled-access entrance",
+      "same inactive participant policy except the deliberately varied pedestrian or approaching roadway vehicle"
+    ],
+    "deliberate_condition": "stop_before_sidewalk; pedestrian_absent; roadway_clear",
+    "measurement": "original frame-joined ego velocity, body polygons, sidewalk/roadway boundary survey, pedestrian and roadway-vehicle activity and precedence",
+    "legal_judgment": "unverified; immediately-prior, necessary-to-avoid-collision, and right-of-way remain for independent review",
+    "candidate_risk": {
+      "status": "physical",
+      "reason": "The surveyed driveway-to-sidewalk-to-roadway path and participant clearance may be disrupted by a local CARLA map or collision placement; retain a same-law/camera/duration fallback with a measurable clearance trigger."
+    },
+    "planned_original_capture": true
+  },
+  "plan_sha256": "8eef1695257d9f57e6248a2d349e862c6d387ae41f685d9ec1a2685aa4014668",
+  "rate_hz": 20,
+  "frame_count": 900,
+  "duration_s": 45,
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "pose_strategy": "reviewed original map survey with all critical bodies and boundaries",
+      "fov_deg": 90
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "reviewed original map survey with all critical bodies and boundaries",
+      "fov_deg": 90
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "reviewed original map survey with all critical bodies and boundaries",
+      "fov_deg": 90
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "pose_strategy": "reviewed original map survey with all critical bodies and boundaries",
+      "fov_deg": 90
+    }
+  ],
+  "required_atoms": [],
+  "source_packets": [],
+  "fallback_spawn_offset_m": 0
+}

@@ -137,6 +137,7 @@ def build(attempt: Path) -> tuple[dict, dict]:
         "ego_speed": lambda row: row["state"]["ego"]["speed_mps"],
         "other_phase": lambda row: row["state"]["other"]["phase"],
         "other_station": lambda row: row["state"]["other"]["center_station_m"],
+        "across_or_within": lambda row: row["state"]["ego"]["across_or_within"],
         "entrance_controls": lambda row: site["entrances"],
     }
     description = construction["recording_description"]
