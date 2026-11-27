@@ -76,7 +76,7 @@ if __name__ == '__main__':
                                            'missing_evidence', 'lifecycle'), required=True)
     parser.add_argument('--case', choices=('condition_a', 'condition_b',
         'distance_below_500ft', 'distance_at_500ft', 'distance_above_500ft',
-        'visibility_dim', 'visibility_high'))
+        'visibility_dim', 'visibility_high', 'device_dim', 'device_high'))
     args = parser.parse_args()
     if args.kind != 'lifecycle' and not args.case:
         parser.error('--case is required for motion fixtures')

@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 
 from oncoming_beam import measure_trace
@@ -56,6 +57,20 @@ def measure_saved(attempt):
             abs(row["time_s"] - frame["time_s"]) > 1e-6
             for row, frame in zip(rows, frames)):
         raise ValueError("original beam Native/video 600-frame join differs")
+    clocks = []
+    for row in rows:
+        value = row.get("civil_time_utc")
+        if not isinstance(value, str):
+            raise ValueError("original per-tick UTC clock missing")
+        try:
+            instant = datetime.fromisoformat(value)
+        except ValueError as error:
+            raise ValueError("original UTC clock invalid") from error
+        if instant.tzinfo is None or instant.utcoffset() != timezone.utc.utcoffset(instant):
+            raise ValueError("original per-tick clock must be UTC")
+        clocks.append(instant)
+    if any(later <= earlier for earlier, later in zip(clocks, clocks[1:])):
+        raise ValueError("original per-tick UTC clock must advance")
     road = json.loads(source(root, "road-position-source.json").read_text())
     timing = json.loads(source(root, "lighting-trigger-source.json").read_text())
     other = json.loads(source(root, "oncoming-driver-source.json").read_text())
@@ -66,6 +81,8 @@ def measure_saved(attempt):
         raise ValueError("original oncoming vehicle source required")
     if not timing.get("NRS_484D_100_review_required"):
         raise ValueError("incorporated lighting trigger review required")
+    if not timing.get("utc_clock_capture") or not timing.get("local_site_and_sun_event_review_required"):
+        raise ValueError("original civil-clock and local sun-event review source required")
     scene = {"road_position": road.get("road_position"),
              "road_source": road.get("map_and_adjacency_source"),
              "lighting_trigger": timing.get("lighting_trigger"),

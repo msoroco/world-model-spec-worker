@@ -1,6 +1,7 @@
 """Source-bound recorded-only measurement positive and negative diagnostics."""
 import json
 import os
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 import shutil
 
@@ -32,15 +33,19 @@ put("road.xodr", "<OpenDRIVE><road id=\"183394\"/></OpenDRIVE>\n")
 put("road-position-source.json", {"road_position": "adjacent_shoulder",
                                   "map_and_adjacency_source": "synthetic diagnostic road"})
 put("lighting-trigger-source.json", {"lighting_trigger": "night_interval",
-    "original_trigger_source": "synthetic clock", "NRS_484D_100_review_required": True})
+    "original_trigger_source": "synthetic clock", "NRS_484D_100_review_required": True,
+    "utc_clock_capture": "synthetic diagnostic UTC ticks",
+    "local_site_and_sun_event_review_required": True})
 put("oncoming-driver-source.json", {"oncoming_actor_source": "synthetic opposed actor"})
 put("eye-region-source.json", {"driver_reference_camera": "driver_reference",
                                     "pixel_review_required": True})
 rows, frames = [], []
+clock_start = datetime(2026, 11, 27, 9, 0, tzinfo=timezone.utc)
 for i in range(600):
     t = i / 20
     distance = 300 - 10*t
     rows.append({"frame": i, "native_frame": 1000 + i, "time_s": t,
+        "civil_time_utc": (clock_start + timedelta(seconds=t)).isoformat(),
         "ego_x_m": 5*t, "ego_y_m": -5.0, "ego_heading_x": 1, "ego_heading_y": 0,
         "oncoming_x_m": 300 - 5*t, "oncoming_y_m": 1.75,
         "oncoming_heading_x": -1, "oncoming_heading_y": 0,
@@ -73,4 +78,12 @@ put("video_frames.jsonl", "".join(json.dumps(row) + "\n" for row in frames))
 put("beam-context.json", dict(context, source_sha256={
     **context["source_sha256"], "video_frames.jsonl": sha(root / "video_frames.jsonl")}))
 reject(lambda: measure_saved(root), "600-frame join")
+put("video_frames.jsonl", "".join(json.dumps(dict(frame, native_frame=1000+i)) + "\n"
+                                   for i, frame in enumerate(frames)))
+rows[10]["civil_time_utc"] = rows[9]["civil_time_utc"]
+put("beam-rows.jsonl", "".join(json.dumps(row) + "\n" for row in rows))
+put("beam-context.json", dict(context, source_sha256={
+    **context["source_sha256"], "beam-rows.jsonl": sha(root / "beam-rows.jsonl"),
+    "video_frames.jsonl": sha(root / "video_frames.jsonl")}))
+reject(lambda: measure_saved(root), "clock must advance")
 print("PASS: 600-frame saved beam source join and stale/eye/missing-frame negatives")

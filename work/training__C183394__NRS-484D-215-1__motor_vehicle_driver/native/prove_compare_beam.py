@@ -1,6 +1,7 @@
 """Independent beam-only contrast positive and changed-fixed-source negative."""
 import json
 import os
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 import runpy
 import shutil
@@ -25,11 +26,17 @@ a = scratch / "saved-beam-proof"
 b = scratch / "comparison-high"
 if b.exists():
     shutil.rmtree(b)
+restored_rows = load_rows(a / "beam-rows.jsonl")
+clock_start = datetime(2026, 11, 27, 9, 0, tzinfo=timezone.utc)
+for index, row in enumerate(restored_rows):
+    row["civil_time_utc"] = (clock_start + timedelta(seconds=index/20)).isoformat()
+(a / "beam-rows.jsonl").write_text("".join(json.dumps(row) + "\n" for row in restored_rows))
 frames = load_rows(a / "video_frames.jsonl")
 frames[10]["native_frame"] = 1010
 (a / "video_frames.jsonl").write_text("".join(json.dumps(row) + "\n" for row in frames))
 context = json.loads((a / "beam-context.json").read_text())
 context["source_sha256"]["video_frames.jsonl"] = sha(a / "video_frames.jsonl")
+context["source_sha256"]["beam-rows.jsonl"] = sha(a / "beam-rows.jsonl")
 (a / "beam-context.json").write_text(json.dumps(context) + "\n")
 shutil.copytree(a, b)
 rows = load_rows(b / "beam-rows.jsonl")

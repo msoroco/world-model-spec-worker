@@ -106,12 +106,17 @@ def execute(case, output, host, port):
     output = Path(output).resolve()
     if not root.is_relative_to(scratch) or not output.is_relative_to(scratch):
         raise ValueError("Set output root and capture output under .runtime-work")
-    if not output.is_dir() or any(output.iterdir()):
-        raise ValueError("Capture output must be an existing empty scratch directory")
+    if not output.is_dir() or output != HERE:
+        raise ValueError("Capture requires its fresh materialized exact bundle")
+    if any((output / name).exists() for name in (
+            "native-request.json", "observed-actors.jsonl", "motion_history.jsonl",
+            "video_frames.jsonl", "trace.jsonl", "capture-seal.json")):
+        raise ValueError("Original acquisition already exists")
     sys.path.insert(0, str(REPO / "runtime"))
     import carla
     import numpy as np
     from scenario_pipeline.worker_exchange.world_restore import snapshot, restore
+    from scenario_pipeline.worker_exchange.native_output import seal_capture
 
     item = request(case)
     client = carla.Client(host, port)
@@ -184,6 +189,7 @@ def execute(case, output, host, port):
                 stdin=subprocess.PIPE, stderr=handles[name])
         with (output / "observed-actors.jsonl").open("x") as observed_file, \
              (output / "motion_history.jsonl").open("x") as motion_file, \
+             (output / "trace.jsonl").open("x") as trace_file, \
              (output / "video_frames.jsonl").open("x") as frame_file:
             for index in range(item["frames"]):
                 target = item["ego_response_policy"]
@@ -227,6 +233,11 @@ def execute(case, output, host, port):
                     "ego_speed_mps": observed["ego"]["native_speed_mps"],
                     "emergency_speed_mps": observed["emergency"]["native_speed_mps"],
                     "ego_brake_observed": ego.get_control().brake}) + "\n")
+                trace_file.write(json.dumps({"frame": native_frame,
+                    "time_s": index / 20,
+                    "position_m": [ego.get_location().x, ego.get_location().y],
+                    "ego_speed_mps": observed["ego"]["native_speed_mps"],
+                    "emergency_speed_mps": observed["emergency"]["native_speed_mps"]}) + "\n")
                 for spec in item["cameras"]:
                     name = spec["name"]
                     image = cameras[name].get(timeout=30)
@@ -273,6 +284,12 @@ def execute(case, output, host, port):
             "vehicle_and_lamp_qualification_required": True})
     if error or frames != item["frames"]:
         raise RuntimeError("Native capture incomplete; inspect scratch report")
+    (output / "acquisition-provenance.json").write_text(json.dumps({
+        "provenance_kind": "native", "diagnostic_fixture": False,
+        "physical_acceptance_claimed": False}) + "\n")
+    seal_capture(output, frames=frames, restoration=restored, errors=[],
+                 encoder_exit_codes={name: 0 for name in cameras},
+                 context={"case_id": item["case_id"], "road_id": item["road_id"]})
 
 
 if __name__ == "__main__":

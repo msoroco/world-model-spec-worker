@@ -7,6 +7,7 @@ they do not claim an emitted ray, an actual driver-eye region or legal result.
 import hashlib
 import json
 import math
+from datetime import datetime, timezone
 from pathlib import Path
 import queue
 import shutil
@@ -115,7 +116,9 @@ def run(bundle, output, host, port):
             "lighting_trigger": "night_interval",
             "original_trigger_source": "original simulator weather request and timestamp; dated Nevada sun-event review pending",
             "NRS_484D_100_review_required": True,
-            "civil_time_condition_verified": False})
+            "civil_time_condition_verified": False,
+            "utc_clock_capture": "datetime.now(timezone.utc) sampled at each original Native tick",
+            "local_site_and_sun_event_review_required": True})
         put(output / "oncoming-driver-source.json", {
             "oncoming_actor_source": "original opposed vehicle transform and Native actor id",
             "actor_id": scene["oncoming"].id,
@@ -134,6 +137,7 @@ def run(bundle, output, host, port):
                 ep, op = ego.get_transform(), other.get_transform()
                 ev, ov = ego.get_velocity(), other.get_velocity()
                 row = {"frame": index, "native_frame": native_frame, "time_s": time_s,
+                    "civil_time_utc": datetime.now(timezone.utc).isoformat(),
                     "ego_x_m": ep.location.x, "ego_y_m": ep.location.y,
                     "ego_heading_x": math.cos(math.radians(ep.rotation.yaw)),
                     "ego_heading_y": math.sin(math.radians(ep.rotation.yaw)),

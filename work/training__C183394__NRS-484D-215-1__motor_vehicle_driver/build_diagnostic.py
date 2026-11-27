@@ -5,6 +5,7 @@ only by the pinned fixture generator in ignored .runtime-work on demand.
 """
 import hashlib
 import json
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 import sys
 
@@ -15,6 +16,7 @@ sys.path.insert(0, str(ROOT / "native"))
 from beam_scene import CAMERAS, MODES, beam_request, road_opendrive  # noqa: E402
 from probe_scene import MODES as PROBE_MODES, request as probe_request  # noqa: E402
 from visibility_scene import MODES as VISIBILITY_MODES, request as visibility_request  # noqa: E402
+from device_scene import MODES as DEVICE_MODES, road_opendrive as device_road  # noqa: E402
 
 
 def sha(path):
@@ -38,24 +40,35 @@ def bbox(x, y):
 
 def build(case):
     aid = "training__C183394__NRS-484D-215-1__motor_vehicle_driver"
-    case_id = aid + ("__" if case in PROBE_MODES or case in VISIBILITY_MODES else "__selected_6fb122bc__") + case
+    case_id = aid + ("__" if case in PROBE_MODES or case in VISIBILITY_MODES or case in DEVICE_MODES else "__selected_6fb122bc__") + case
     dest = ROOT / "fixture-source" / case
     dest.mkdir(parents=True, exist_ok=True)
     files = {}
-    write(dest / "road.xodr", road_opendrive() + "\n")
+    write(dest / "road.xodr", (device_road() if case in DEVICE_MODES else road_opendrive()) + "\n")
     visibility_plan = visibility_request(case) if case in VISIBILITY_MODES else None
     for name, value in {
         "road-position-source.json": {"road_position": "adjacent_shoulder",
             "map_and_adjacency_source": "synthetic authored OpenDRIVE lane -2 adjacent lane -1",
             "highway_status_review_required": True},
-        "lighting-trigger-source.json": ({"lighting_trigger": "poor_visibility",
+        "lighting-trigger-source.json": ({"lighting_trigger": "official_device",
+            "original_trigger_source": "synthetic authored OpenDRIVE signal; official authority unverified",
+            "NRS_484D_100_review_required": True,
+            "authored_device_signal": {"id": "100", "name": "AUTHORED_LAMP_USE_INSTRUCTION"},
+            "official_authority_verified": False, "ego_applicability_verified": False,
+            "utc_clock_capture": "synthetic diagnostic 20 Hz civil clock",
+            "local_site_and_sun_event_review_required": True} if case in DEVICE_MODES else
+            {"lighting_trigger": "poor_visibility",
             "original_trigger_source": "synthetic controlled fog request and vehicle target",
             "NRS_484D_100_review_required": True,
             "authored_initial_target_ft": 1000,
-            "discernibility_verified": False} if visibility_plan else
+            "discernibility_verified": False,
+            "utc_clock_capture": "synthetic diagnostic 20 Hz civil clock",
+            "local_site_and_sun_event_review_required": True} if visibility_plan else
             {"lighting_trigger": "night_interval",
             "original_trigger_source": "synthetic night request only",
-            "NRS_484D_100_review_required": True, "civil_time_condition_verified": False}),
+            "NRS_484D_100_review_required": True, "civil_time_condition_verified": False,
+            "utc_clock_capture": "synthetic diagnostic 20 Hz civil clock",
+            "local_site_and_sun_event_review_required": True}),
         "oncoming-driver-source.json": {"oncoming_actor_source": "synthetic opposed actor",
             "driver_eye_identity_review_required": True},
         "eye-region-source.json": {"driver_reference_camera": "driver_reference",
@@ -67,6 +80,7 @@ def build(case):
     beam, frames, trace, evidence, native_frames, graphs = [], [], [], [], [], []
     probe_plan = probe_request(case) if case in PROBE_MODES else None
     speed = 3.0 if visibility_plan else 2.5
+    clock_start = datetime(2026, 11, 27, 9, 0, tzinfo=timezone.utc)
     for i in range(600):
         t = i / 20
         ex = -100 + speed*t
@@ -74,8 +88,9 @@ def build(case):
               visibility_plan["oncoming"]["start_xyz_m"][0] if visibility_plan else 100) - speed*t
         ey, oy = -5.0, 1.75
         separation = ((ex-ox)**2 + (ey-oy)**2)**.5
-        state = beam_request((MODES | PROBE_MODES | VISIBILITY_MODES)[case], separation)
+        state = beam_request((MODES | PROBE_MODES | VISIBILITY_MODES | DEVICE_MODES)[case], separation)
         beam.append({"frame": i, "native_frame": i, "time_s": t,
+            "civil_time_utc": (clock_start + timedelta(seconds=t)).isoformat(),
             "ego_x_m": ex, "ego_y_m": ey, "ego_heading_x": 1, "ego_heading_y": 0,
             "oncoming_x_m": ox, "oncoming_y_m": oy,
             "oncoming_heading_x": -1, "oncoming_heading_y": 0,

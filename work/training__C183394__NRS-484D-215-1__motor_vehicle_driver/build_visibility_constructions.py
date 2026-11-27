@@ -40,7 +40,9 @@ def source(name):
         old = '''"lighting_trigger": "night_interval",
             "original_trigger_source": "original simulator weather request and timestamp; dated Nevada sun-event review pending",
             "NRS_484D_100_review_required": True,
-            "civil_time_condition_verified": False'''
+            "civil_time_condition_verified": False,
+            "utc_clock_capture": "datetime.now(timezone.utc) sampled at each original Native tick",
+            "local_site_and_sun_event_review_required": True'''
         new = '''"lighting_trigger": "poor_visibility",
             "original_trigger_source": "controlled fog request and original oncoming actor; decoded 1000-foot discernibility review pending",
             "NRS_484D_100_review_required": True,
@@ -48,7 +50,9 @@ def source(name):
             "original_target_actor_id": scene["oncoming"].id,
             "original_target_transform_m": [scene["oncoming"].get_transform().location.x,
                                             scene["oncoming"].get_transform().location.y],
-            "discernibility_verified": False'''
+            "discernibility_verified": False,
+            "utc_clock_capture": "datetime.now(timezone.utc) sampled at each original Native tick",
+            "local_site_and_sun_event_review_required": True'''
         if old not in value:
             raise ValueError('Capture trigger seam changed')
         value = value.replace(old, new)
