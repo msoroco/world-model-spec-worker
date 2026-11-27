@@ -36,7 +36,12 @@ description = {
         'reference_frame': 'original Native frame and source-hashed grade crossing',
         'uncertainty': 'virtual observer proxy, collision rays and original device review require physical confirmation',
     } for name in channels],
-    'context_inputs': ['source-hashed original railway, jurisdiction, flagman and signal reviews'],
+    'context_inputs': [{
+        'name': 'original_crossing_source_review', 'unit': 'structured',
+        'method': 'source-hashed original railway, jurisdiction, flagman and signal reviews',
+        'reference_frame': 'original Native map and actor identities',
+        'uncertainty': 'physical railway and exception qualification require independent review',
+    }],
     'limitations': [
         'Collision ray proxy does not establish actual driver perception or legal clear visibility.',
         'Requested speed is not achieved speed or prima facie legal outcome.',
@@ -56,11 +61,36 @@ cameras = [{'name': name, 'width': width, 'height': height, 'fps': 20,
 
 source_names = ('runner.py', 'controller.py', 'rail_native_rays.py',
                 'rail_sight.py', 'source_review.py', 'rail_join.py',
-                'frame_capture.py')
+                'frame_capture.py', 'finalize.py')
+source_inputs = ['road.xodr', 'rail-body.jsonl', 'rail-rays.jsonl',
+                 'reviewed-exceptions.jsonl', 'reviewed-exceptions-review.json',
+                 'video_frames.jsonl', 'trace.jsonl'] + [
+                     'original-source-review/' + role + ending for role in
+                     ('railway', 'approach', 'flagman', 'signal') for ending in
+                     ('.json', '.source.txt')]
+measure_methods = [('rail_sight_and_speed', 'measure_rail_geometry'),
+                   ('crossing_exceptions', 'measure_exception'),
+                   ('selected_witness', 'measure_selected_witness')]
 manifest_cases = []
 for case in plan['cases']:
     case_id = case['case_id']
     suffix = case_id.split('__')[-1]
+    requirements = []
+    for index, disposition in enumerate(plan['requirement_dispositions']):
+        if case_id in disposition['case_ids']:
+            key, method = measure_methods[index]
+            requirements.append({'disposition_index': index,
+                                 'requirement': disposition['requirement'],
+                                 'source': disposition['source'],
+                                 'output_key': key, 'method': method,
+                                 'value_type': 'object', 'kind': 'measured',
+                                 'inputs': source_inputs})
+    write(ROOT / 'selected-measurements' / suffix / 'measurement-contract.json', {
+        'format': 'worker-measurement-contract', 'case_id': case_id,
+        'requirements': requirements,
+        'negative': {'remove': ['rail-rays.jsonl'],
+                     'error_contains': 'Missing required source: rail-rays.jsonl'},
+    })
     candidates = []
     for candidate, gain in (('primary', 1.0), ('fallback1', 1.25)):
         config = {
@@ -107,6 +137,9 @@ for case in plan['cases']:
     manifest_cases.append({
         'case_id': case_id, 'kind': 'delivery', 'construction': candidates[0][1],
         'construction_sha256': candidates[0][2],
+        'measurement_procedure': {'entrypoint': 'finalize.py'},
+        'measurement_contract': 'selected-measurements/' + suffix + '/measurement-contract.json',
+        'fixture_recipe': 'work/' + ASSIGNMENT + '/diagnostic-' + suffix + '-recipe.json',
         'candidate_risk': {'status': 'physical',
                            'reason': 'Measured approach and rail traffic may not realize the requested sight or speed contrast.'},
         'candidates': [{'id': 'fallback1', 'construction': candidates[1][1],
@@ -118,6 +151,21 @@ for case in plan['cases']:
     })
 
 runtime_sha = sha(Path('runtime/SOURCE-MANIFEST.json'))
+write(ROOT / 'proposals/cases.json', {
+    'status': 'draft', 'cell_id': plan['cell_id'], 'actor': plan['actor'],
+    'sweep_specs': [], 'sweeps_expanded': True,
+    'cases': [{
+        'case_id': case['case_id'], 'target_law_id': plan['law_id'],
+        'target_type': 'delivery',
+        'rationale': case['claim'],
+        'variable_assignments': case['construction_design'],
+        'unresolved_judgment_calls': [
+            'Actual clear unobstructed view and qualification of railway, flagman and signal require independent original review.',
+            'Prima facie legal effect is not computed by this worker.'
+        ],
+        'recording_description': description,
+    } for case in plan['cases']],
+})
 for entry in manifest_cases:
     old = prior_cases.get(entry['case_id'], {})
     if old.get('construction_sha256') == entry['construction_sha256'] and old.get('offline'):

@@ -2,7 +2,7 @@
   "format": "worker-package-compatibility",
   "case_id": "training__C183394__NRS-484D-215-1__motor_vehicle_driver__selected_6fb122bc__condition_b",
   "candidate_id": "fallback1",
-  "construction_sha256": "4293c92595838f06a832a9b6bd8f68087f2682acea214f954986c036be6a11e4",
+  "construction_sha256": "753bfd26c628109dda2b6f069b6c15c192a20a5a16d82e9ff4be0728553e304a",
   "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
   "fixture_sha256": "fb12d8937e736c246bfb15517ae6f345cf8abb05850467a4b0a52085e71bf6d5",
   "passed": true,
@@ -20,7 +20,7 @@
     "negative_case_source"
   ],
   "scope": "diagnostic software compatibility only",
-  "analysis_sha256": "69a14162a4e4394525361b4f7c8f6ef17bb29e9df851670901fd4d2ea4c83b0a",
+  "analysis_sha256": "0d7c9ae8922a39c06e13e0d87abf3903b30413a02a282276d1b75ea5ed61fda0",
   "fixture_manifest": {
     "acquisition-provenance.json": "6ba259484894b39f144b4aaa57fa7a1051fea78ea1db754940a2eca00ddd2293",
     "approach.mkv": "d077c2db2b25939cd8ff45cc6651871057150ebed6352c7db211e6b9806402ea",
@@ -644,10 +644,12 @@
   "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
   "fixture_generator_sha256": "0857d9ac6c0a08c5bc25f4b58fef81c93cf1fe31d6845e904ce6a10c4f6eab53",
   "fixture_recipe_sha256": "0bff6f86836312c65d65920161d3ef94dd4d4d15b5a7717fb30c09f8ab262ae7",
-  "measurement_contract_sha256": "e260411c427a5f356af482083d06e6fca237066a4b957f68685768b0482b93f2",
-  "analysis_report_sha256": "a1f62f8e6ea9e52aaae723df2bb835c25372eb3e7bda64a5e6394a6119267209",
+  "measurement_contract_sha256": "c692505003e1c400d1a8138bb4fec19e4dcfea071fd378e649698034f0d122a0",
+  "analysis_report_sha256": "73d0037069e02f9fcfa12fc3ab22233cef2ef76e09b38e6766f4499a4809cbb0",
   "measurement_keys": [
     "activation_beam_context",
+    "adjacent_shoulder_scope",
+    "lowermost_distribution_route",
     "oncoming_beam_interaction"
   ],
   "measurement_examples": {
@@ -680,9 +682,43 @@
         "eye-region-source.json": "ecad3307c49b5f114869811816088d2e4fddeffc89150db05a23ca86554da6cd",
         "video_frames.jsonl": "6fa6fc6de076acb3620e6c64f45ed47964807e67a9802db99e96b988bfd968ce"
       }
+    },
+    "lowermost_distribution_route": {
+      "method": "lowermost_distribution_route",
+      "value": {
+        "statutory_source": "NRS 484D.210(2)",
+        "source_url": "https://www.leg.state.nv.us/nrs/NRS-484D.html",
+        "minimum_reveal_distance_ft": 100,
+        "straight_level_road_eye_exposure_limit": true,
+        "observed_light_state_bits": [
+          5
+        ],
+        "eye_region_camera": "driver_reference",
+        "deeming_invoked": false,
+        "equipment_distribution_identity_verified": false,
+        "original_optical_review_required": true
+      },
+      "sources": {
+        "beam-rows.jsonl": "a3125c82a457ffe851808b807dca91e2e4de709ad6948911f25bab17ee244d87",
+        "eye-region-source.json": "ecad3307c49b5f114869811816088d2e4fddeffc89150db05a23ca86554da6cd"
+      }
+    },
+    "adjacent_shoulder_scope": {
+      "method": "adjacent_shoulder_scope",
+      "value": {
+        "road_position": "adjacent_shoulder",
+        "map_and_adjacency_source": "synthetic authored OpenDRIVE lane -2 adjacent lane -1",
+        "road_map_file": "road.xodr",
+        "public_highway_status_verified": false,
+        "original_lane_and_adjacency_review_required": true
+      },
+      "sources": {
+        "road.xodr": "7c51476c0b5002fde18768ad7c9f63c8f184125c8284a60608cecddc1ae79902",
+        "road-position-source.json": "178323409fdd924a85d01aa0ba237f00c704106ab7b4f46f7f5dca69d8e2a2a9"
+      }
     }
   },
   "negative_removed": "beam-rows.jsonl",
   "negative_error_contains": "Missing required source: beam-rows.jsonl",
-  "negative_log_sha256": "399caa218911ebdb95e1c70a34e2cfd113e5b660ae9509eced81d4fddd6ebb4b"
+  "negative_log_sha256": "8befb35a9ec6f864baeca3aae8d0d97be7cddd19a0635cb23c3652a61498a8dd"
 }

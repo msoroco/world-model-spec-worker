@@ -33,6 +33,8 @@ def measure_trace(rows: list[dict], crossing: dict) -> dict:
     flagman = 0
     inactive_signal = 0
     started_outside = False
+    first_traffic = None
+    last_traffic = None
     for i, row in enumerate(rows):
         if row.get("frame") != i or abs(row.get("time_s", -1) - i / FRAME_RATE) > 1e-6:
             raise ValueError("source frame identity or 20 Hz join failed")
@@ -48,6 +50,17 @@ def measure_trace(rows: list[dict], crossing: dict) -> dict:
                 raise ValueError("crossing, visibility and exception sources required")
         if not row.get("observer_pose_source") or not row.get("rail_ray_source"):
             raise ValueError("dynamic observer and two-direction ray source required")
+        traffic = row.get("rail_vehicle_positions_m")
+        if not isinstance(traffic, dict) or set(traffic) != {"left", "right"}:
+            raise ValueError("both original rail vehicle position sources required")
+        for side in ("left", "right"):
+            xy = traffic[side]
+            if (not isinstance(xy, list) or len(xy) != 2
+                    or any(not isinstance(v, (int, float)) or not isfinite(v) for v in xy)):
+                raise ValueError("invalid original rail vehicle position")
+        if first_traffic is None:
+            first_traffic = traffic
+        last_traffic = traffic
         try:
             observer = tuple(float(v) for v in row["observer_xy_m"])
         except (KeyError, TypeError, ValueError) as exc:
@@ -76,6 +89,10 @@ def measure_trace(rows: list[dict], crossing: dict) -> dict:
         "fifteen_mph_mps": FIFTEEN_MPH_MPS,
         "flagman_on_duty_frames": flagman,
         "visible_inactive_signal_frames": inactive_signal,
+        "rail_vehicle_displacement_m": {side: (
+            (last_traffic[side][0] - first_traffic[side][0])**2 +
+            (last_traffic[side][1] - first_traffic[side][1])**2)**.5
+            for side in ("left", "right")},
         "legal_visibility_conclusion": None,
         "legal_exception_conclusion": None,
         "source_kind": "unverified_raw_rail_rays_and_actor_fields",

@@ -69,7 +69,7 @@
     {
       "case_id": "training__C31675__NRS-484B-450-1m__motor_vehicle_driver__false",
       "target_law_id": "NRS-484B-450-1m",
-      "planning_status": "unverified_definition",
+      "planning_status": "native_offline_proven_unselected",
       "target_type": "attempt",
       "comparison_variable": "stationary_footprint_on_bridge",
       "comparison_unit": "bool",
@@ -82,12 +82,17 @@
         "text-1",
         "reviewed-scope-0"
       ],
-      "selected": false
+      "selected": false,
+      "gap_ids": [
+        "unverified_accepted_originals"
+      ],
+      "construction_primary": "cases/false/primary/construction.json",
+      "construction_fallback1": "cases/false/fallback1/construction.json"
     },
     {
       "case_id": "training__C31675__NRS-484B-450-1m__motor_vehicle_driver__true",
       "target_law_id": "NRS-484B-450-1m",
-      "planning_status": "unverified_definition",
+      "planning_status": "native_offline_proven_unselected",
       "target_type": "attempt",
       "comparison_variable": "stationary_footprint_on_bridge",
       "comparison_unit": "bool",
@@ -100,7 +105,12 @@
         "text-1",
         "reviewed-scope-0"
       ],
-      "selected": false
+      "selected": false,
+      "gap_ids": [
+        "unverified_accepted_originals"
+      ],
+      "construction_primary": "cases/true/primary/construction.json",
+      "construction_fallback1": "cases/true/fallback1/construction.json"
     }
   ],
   "comparisons": [
@@ -143,45 +153,49 @@
   ],
   "source_observation_mapping": {
     "drv.standing_or_parked": {
-      "evidence": "Proposed capture only: stopping, standing or parking. No Native channel or Core atom proof yet.",
+      "evidence": "Authored exact Native source plan and current offline CPU check; physical observation and legal finding pending",
       "channels": [
-        "stationary_footprint_on_bridge"
+        "bridge-trace.jsonl",
+        "trace.jsonl"
       ],
       "source_refs": [
         "inputs/training__C31675__NRS-484B-450-1m__motor_vehicle_driver/assignment.json"
       ]
     },
     "st.elevated_structure": {
-      "evidence": "Proposed capture only: a bridge, other elevated structure or tunnel. No Native channel or Core atom proof yet.",
+      "evidence": "Authored exact Native source plan and current offline CPU check; physical observation and legal finding pending",
       "channels": [
-        "stationary_footprint_on_bridge"
+        "bridge-map.json",
+        "road.xodr"
       ],
       "source_refs": [
         "inputs/training__C31675__NRS-484B-450-1m__motor_vehicle_driver/assignment.json"
       ]
     },
     "rel.occupies": {
-      "evidence": "Proposed capture only: the footprint on or within it while at rest. No Native channel or Core atom proof yet.",
+      "evidence": "Authored exact Native source plan and current offline CPU check; physical observation and legal finding pending",
       "channels": [
-        "stationary_footprint_on_bridge"
+        "bridge-trace.jsonl",
+        "bridge-map.json"
       ],
       "source_refs": [
         "inputs/training__C31675__NRS-484B-450-1m__motor_vehicle_driver/assignment.json"
       ]
     },
     "kin.velocity": {
-      "evidence": "Proposed capture only: at rest rather than passing over. No Native channel or Core atom proof yet.",
+      "evidence": "Authored exact Native source plan and current offline CPU check; physical observation and legal finding pending",
       "channels": [
-        "stationary_footprint_on_bridge"
+        "bridge-trace.jsonl",
+        "trace.jsonl"
       ],
       "source_refs": [
         "inputs/training__C31675__NRS-484B-450-1m__motor_vehicle_driver/assignment.json"
       ]
     },
     "drv.forced_halt": {
-      "evidence": "Proposed capture only: the traffic-conflict exception. No Native channel or Core atom proof yet.",
+      "evidence": "Authored exact Native source plan and current offline CPU check; physical observation and legal finding pending",
       "channels": [
-        "stationary_footprint_on_bridge"
+        "bridge-trace.jsonl"
       ],
       "source_refs": [
         "inputs/training__C31675__NRS-484B-450-1m__motor_vehicle_driver/assignment.json"
@@ -200,24 +214,43 @@
     {
       "path": "inputs/coverage/branch-sources.json",
       "sha256": "ab199471886c9ff9abf7aba8fb82ab1a1e4e6c08a2560def7637911a23a28d80"
+    },
+    {
+      "path": "inputs/training__C31675__NRS-484B-450-1m__motor_vehicle_driver/review-context/review.json",
+      "sha256": "76400081536b6bd12fa24540f0e7a51c9f609532dd34fe90022d9aaf7417637b"
     }
   ],
   "existing_evidence": [
     {
       "set_id": "full-train",
       "membership_rows": 8,
-      "status": "unreviewed_membership_only",
+      "status": "reviewed_membership_only_no_demonstrated_equivalence",
       "reuse_receipt": null
     }
   ],
   "runtime_uncertainties": [
-    "No exact Native construction, four distinct candidate plans, offline feasibility checks, or positive/negative compatibility proofs have been produced.",
-    "No saved-only processing, semantic-stage validation, independent audit or comparison audit has passed.",
-    "Membership rows do not prove statutory coverage or accepted equivalence; no source-hashed reuse receipt was verified.",
-    "CARLA execution, physical realization, camera framing and legal judgments are unverified.",
-    "Tunnel/elevated-structure alternatives require distinct physical setting."
+    "Four exact primary/fallback Native bundles passed current-runtime offline CPU checks, but public positive/negative compatibility, saved processing and semantic/delivery proofs are pending.",
+    "Original accepted-recording evidence inventory is absent; eight membership/review labels do not demonstrate physical bridge, stop cause or exception equivalence.",
+    "Physical bridge support, realized halt, camera pixels, traffic-conflict necessity and legal/police/device directions remain unverified.",
+    "Other elevated-structure and highway-tunnel alternatives, and exception branches, require separate selected constructions or source-backed reuse."
   ],
   "selection_targets": [
     "full-train"
-  ]
+  ],
+  "evidence_review": {
+    "reviewer": "worker C31675 owner",
+    "method": "Read all eight review-context membership rows, each with reuse=false and receipt_sources=[]; original accepted recording evidence.json and source inventory were not exported, so no demonstrated physical facts or equivalence are asserted.",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "unverified_accepted_originals",
+        "requirement": "original bridge-deck, vehicle-body, halt-cause, exception and pixel source for eight accepted memberships",
+        "source": {
+          "path": "inputs/training__C31675__NRS-484B-450-1m__motor_vehicle_driver/review-context/review.json",
+          "sha256": "76400081536b6bd12fa24540f0e7a51c9f609532dd34fe90022d9aaf7417637b"
+        },
+        "why_existing_insufficient": "Review context lists eight accepted memberships and labels, but no source-hashed original measurement or receipt_sources for any recording; original equivalence cannot be checked."
+      }
+    ]
+  }
 }

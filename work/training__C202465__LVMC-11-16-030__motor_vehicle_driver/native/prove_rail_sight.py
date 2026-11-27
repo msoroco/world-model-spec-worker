@@ -36,6 +36,8 @@ for i in range(FRAME_COUNT):
         "observer_pose_source": f"synthetic_native_sample_pose_{i}",
         "observer_xy_m": [distance * -1, 0.0],
         "rail_ray_source": f"synthetic_native_sample_left_right_{i}",
+        "rail_vehicle_positions_m": {"left": [0, -70 + .01*i],
+                                     "right": [0, 70 - .01*i]},
     })
 assert speed_request("slower_traversal") < FIFTEEN_MPH_MPS
 assert speed_request("faster_traversal") > FIFTEEN_MPH_MPS

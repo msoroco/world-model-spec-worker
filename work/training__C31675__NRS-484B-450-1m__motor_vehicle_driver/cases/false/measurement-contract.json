@@ -1,0 +1,52 @@
+{
+  "case_id": "training__C31675__NRS-484B-450-1m__motor_vehicle_driver__false",
+  "format": "worker-measurement-contract",
+  "negative": {
+    "error_contains": "Missing required source: bridge-map.json",
+    "remove": [
+      "bridge-map.json"
+    ]
+  },
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "inputs": [
+        "bridge-trace.jsonl",
+        "road.xodr"
+      ],
+      "kind": "sourced_context",
+      "method": "exception_observation",
+      "output_key": "exception_context",
+      "requirement": "text-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "value_type": "object"
+    },
+    {
+      "disposition_index": 1,
+      "inputs": [
+        "bridge-map.json",
+        "bridge-trace.jsonl",
+        "video_frames.jsonl"
+      ],
+      "kind": "measured",
+      "method": "place_observation",
+      "output_key": "bridge_place",
+      "requirement": "text-1",
+      "source": "inputs/coverage/branch-sources.json",
+      "value_type": "object"
+    },
+    {
+      "disposition_index": 2,
+      "inputs": [
+        "bridge-map.json",
+        "bridge-trace.jsonl"
+      ],
+      "kind": "measured",
+      "method": "bridge_scope_observation",
+      "output_key": "bridge_scope",
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "value_type": "object"
+    }
+  ]
+}

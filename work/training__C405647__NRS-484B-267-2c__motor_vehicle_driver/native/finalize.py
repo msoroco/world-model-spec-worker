@@ -12,6 +12,56 @@ CHANNELS = ('ego_motion', 'emergency_motion', 'flashing_lights',
             'visible_indication', 'officer_direction', 'braking_response')
 
 
+def qualifying_approach_context(observed, review):
+    return {'approach_frames': observed['approaching_frame_count_after_trigger'],
+            'vehicle_class': review['vehicle_class'],
+            'lights_reviewed': observed['lights_meet_484A_480_3_reviewed'],
+            'officer_direction_reviewed': observed['officer_direction_present_reviewed'],
+            'trigger_frame': observed['trigger_frame']}
+
+
+def stop_preparedness_response(observed, review):
+    return {'first_brake_frame': observed['first_brake_frame'],
+            'braked_approach_fraction': observed['braked_approach_fraction'],
+            'observed_stop_distance_m': observed['observed_stop_distance_m'],
+            'peak_observed_deceleration_mps2': observed['peak_observed_deceleration_mps2'],
+            'legal_threshold_asserted': False}
+
+
+def visible_indication_context(observed, review):
+    return {'indication_kinds_at_trigger': observed['indication_kinds_at_trigger'],
+            'visible_to_approaching_driver_reviewed': review['visible_to_approaching_driver'],
+            'review_source': review['visible_motion_source']}
+
+
+def visible_movement_observed(observed, review):
+    return observed['emergency_motion_visible_at_trigger']
+
+
+def visible_hand_signal_observed(observed, review):
+    return observed['hand_signal_visible_at_trigger']
+
+
+def already_moving_subject_observed(observed, review):
+    return observed['emergency_moving_at_trigger']
+
+
+REQUIREMENT_MEASUREMENTS = (
+    ('qualifying_approach_context', qualifying_approach_context,
+     ('approach_trace.jsonl', 'emergency_review.json', 'video_frames.jsonl')),
+    ('stop_preparedness_response', stop_preparedness_response,
+     ('approach_trace.jsonl', 'video_frames.jsonl')),
+    ('visible_indication_context', visible_indication_context,
+     ('approach_trace.jsonl', 'emergency_review.json', 'approach.mkv')),
+    ('visible_movement_observed', visible_movement_observed,
+     ('approach_trace.jsonl', 'emergency_review.json')),
+    ('visible_hand_signal_observed', visible_hand_signal_observed,
+     ('approach_trace.jsonl', 'emergency_review.json')),
+    ('already_moving_subject_observed', already_moving_subject_observed,
+     ('approach_trace.jsonl', 'video_frames.jsonl')),
+)
+
+
 def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
@@ -69,10 +119,13 @@ def finalize(attempt, output):
                 stream.write(json.dumps({'time_s': frame['time_s'], 'value': values[name](row)},
                                         allow_nan=False) + '\n')
         evidence.append({'name': name, 'unit': item['unit'], 'reference': 'channels/' + target.name})
+    measurements = {'approach_readiness': {
+        'method': 'measure_readiness', 'value': observed, 'sources': observed['sources']}}
+    for key, method, sources in REQUIREMENT_MEASUREMENTS:
+        measurements[key] = {'method': method.__name__, 'value': method(observed, review),
+                             'sources': {name: observed['sources'][name] for name in sources}}
     report = {'format': 'c405647-2c-saved-analysis-v1', 'case_id': captured_request['case_id'],
-              'measurements': {'approach_readiness': {
-                  'method': 'measure_readiness', 'value': observed,
-                  'sources': observed['sources']}},
+              'measurements': measurements,
               'original_capture_audit': capture_audit,
               'physical_acceptance_claimed': False, 'legal_verdict_claimed': False}
     requested_brake = int(condition == 'braking_capacity_available')

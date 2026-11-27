@@ -32,6 +32,31 @@ def oncoming_beam_interaction(measured, root):
             "glare_at_eyes_conclusion": None}
 
 
+def lowermost_distribution_route(measured, root):
+    """Preserve the statutory equipment route without asserting CARLA equivalence."""
+    rows = load_rows(source(root, "beam-rows.jsonl"))
+    eyes = json.loads(source(root, "eye-region-source.json").read_text())
+    return {"statutory_source": "NRS 484D.210(2)",
+            "source_url": "https://www.leg.state.nv.us/nrs/NRS-484D.html",
+            "minimum_reveal_distance_ft": 100,
+            "straight_level_road_eye_exposure_limit": True,
+            "observed_light_state_bits": sorted({row.get("observed_light_state_bits") for row in rows if row.get("observed_light_state_bits") is not None}),
+            "eye_region_camera": eyes["driver_reference_camera"],
+            "deeming_invoked": False,
+            "equipment_distribution_identity_verified": False,
+            "original_optical_review_required": True}
+
+
+def adjacent_shoulder_scope(measured, root):
+    """Report authored map and original position source without a highway finding."""
+    road = json.loads(source(root, "road-position-source.json").read_text())
+    return {"road_position": road["road_position"],
+            "map_and_adjacency_source": road["map_and_adjacency_source"],
+            "road_map_file": "road.xodr",
+            "public_highway_status_verified": False,
+            "original_lane_and_adjacency_review_required": True}
+
+
 def finalize(attempt, output):
     root, destination = Path(attempt).resolve(), Path(output)
     if destination.exists():
@@ -103,7 +128,15 @@ def finalize(attempt, output):
                 "value": oncoming_beam_interaction(values, root),
                 "sources": {name: measured["source_sha256"][name] for name in
                             ("beam-rows.jsonl", "oncoming-driver-source.json",
-                             "eye-region-source.json", "video_frames.jsonl")}}},
+                             "eye-region-source.json", "video_frames.jsonl")}},
+            "lowermost_distribution_route": {"method": "lowermost_distribution_route",
+                "value": lowermost_distribution_route(values, root),
+                "sources": {name: measured["source_sha256"][name] for name in
+                            ("beam-rows.jsonl", "eye-region-source.json")}},
+            "adjacent_shoulder_scope": {"method": "adjacent_shoulder_scope",
+                "value": adjacent_shoulder_scope(values, root),
+                "sources": {name: measured["source_sha256"][name] for name in
+                            ("road.xodr", "road-position-source.json")}}},
         "legal_compliance": "unassessed", "physical_acceptance_claimed": False}
     destination.write_text(json.dumps(report, indent=2, allow_nan=False) + "\n")
     return report

@@ -57,6 +57,9 @@ def load(root, road_sha256, *, diagnostic_fixture=False):
         raise ValueError("rail axis must be unit length")
     if rail.get("surveyed_left_extent_m", 0) < 121.92 or rail.get("surveyed_right_extent_m", 0) < 121.92:
         raise ValueError("both 400-foot surveyed railway extents required")
+    tolerance = rail.get("rail_vehicle_lateral_tolerance_m")
+    if not isinstance(tolerance, (int, float)) or not 0 < tolerance <= 3:
+        raise ValueError("reviewed rail vehicle lateral tolerance required")
     vehicle_ids = rail.get("rail_vehicle_actor_ids")
     if (not isinstance(vehicle_ids, dict) or set(vehicle_ids) != {"left", "right"}
             or any(type(value) is not int or value <= 0 for value in vehicle_ids.values())

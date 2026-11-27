@@ -119,6 +119,7 @@ def sight_row(frame, ego, railway, rail_traffic, blockers, flagman, signal):
         "observer_xy_m": list(observer),
         "rail_ray_source": railway["source_ref"] + ":frame:" + str(frame),
         "rail_vehicle_source_refs": [a["source_ref"] for a in rail_traffic],
+        "rail_vehicle_positions_m": {a["side"]: list(a["center_xy_m"]) for a in rail_traffic},
         "blocker_source_refs": [b["source_ref"] for b in blockers],
         "flagman_source_ref": flagman["source_ref"],
         "signal_source_ref": signal["source_ref"],

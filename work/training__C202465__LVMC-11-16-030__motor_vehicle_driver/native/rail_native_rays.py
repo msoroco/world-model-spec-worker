@@ -65,8 +65,11 @@ def observe(world, ego, rail_vehicles, review, location_factory, frame):
             raise ValueError("original active railway vehicle actor required")
         center = actor.get_transform().location
         along = (center.x-crossing[0])*ux + (center.y-crossing[1])*uy
+        lateral = abs((center.x-crossing[0])*(-uy) + (center.y-crossing[1])*ux)
         if sign*along <= 0 or abs(along) > FOUR_HUNDRED_FEET_M:
             raise ValueError("rail traffic actor outside signed 400-foot source extent")
+        if lateral > review.get("rail_vehicle_lateral_tolerance_m", 0):
+            raise ValueError("original rail traffic actor is off reviewed physical track")
         rays = []
         clear_distance = 0.0
         for distance in list(range(1, 122)) + [FOUR_HUNDRED_FEET_M]:

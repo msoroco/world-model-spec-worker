@@ -67,7 +67,7 @@ def audit_pair(attempt_a, attempt_b, delivery_a, delivery_b, output):
         raise ValueError('Beam comparison requires distinct original recordings')
     payload = {'format': 'worker-comparison-audit', 'passed': True,
                'case_ids': [case_a, case_b],
-               'comparison_id': case_a.rsplit('__', 1)[0] + '__comparison',
+               'comparison_id': observation['comparison_id'],
                'delivery_audit_sha256': [sha(delivery_a), sha(delivery_b)],
                'recording_ids': [first['recording_id'], second['recording_id']],
                'fixed_source_count': observation['fixed_source_count'],

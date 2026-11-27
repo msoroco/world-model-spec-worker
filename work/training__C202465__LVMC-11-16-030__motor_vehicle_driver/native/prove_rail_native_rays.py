@@ -49,7 +49,8 @@ class World:
 review = {"review_status": "independently_reviewed", "provenance_kind": "original_native",
           "crossing_kind": "at_grade", "source_sha256": "a"*64,
           "railway_identity": "reviewed original motor railway", "crossing_xyz_m": [0, 0, 0],
-          "rail_unit_direction_xy": [0, 1]}
+          "rail_unit_direction_xy": [0, 1],
+          "rail_vehicle_lateral_tolerance_m": 1.5}
 ego = Actor(1, 0)
 ego.pose = Transform(Location(-30, 0, 0))
 actors = [{"side": "left", "actor": Actor(2, -70)},
@@ -79,4 +80,8 @@ reject(lambda: observe(world, ego, actors, dict(review, rail_unit_direction_xy=[
        "unit length")
 reject(lambda: observe(world, ego, [actors[0], {"side": "right", "actor": Actor(4, -70)}],
                        review, Location, 42), "outside signed")
+off_track = Actor(5, 70)
+off_track.pose.location.x = 5
+reject(lambda: observe(world, ego, [actors[0], {"side": "right", "actor": off_track}],
+                       review, Location, 42), "off reviewed physical track")
 print("PASS: Native world.cast_ray call path, source geometry and two traffic directions")

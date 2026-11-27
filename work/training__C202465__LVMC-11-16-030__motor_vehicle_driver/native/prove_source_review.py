@@ -23,6 +23,7 @@ records = {
                 "railway_identity": "fixture electric railway", "crossing_xyz_m": [0, 0, 0],
                 "rail_unit_direction_xy": [0, 1], "surveyed_left_extent_m": 122,
                 "surveyed_right_extent_m": 122,
+                "rail_vehicle_lateral_tolerance_m": 1.5,
                 "rail_vehicle_actor_ids": {"left": 2, "right": 3}},
     "approach": {"driver_role": "motor_vehicle_driver", "municipal_jurisdiction_verified": True,
                  "approach_maneuver": "cross_railway", "approach_direction_xy": [1, 0],

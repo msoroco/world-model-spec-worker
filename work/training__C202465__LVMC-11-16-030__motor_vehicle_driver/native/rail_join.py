@@ -41,6 +41,9 @@ def joined_row(frame, body, rays, reviews, flagman, signal):
     for side in ("left", "right"):
         if not directions[side].get("actor_id") or not directions[side].get("rail_rays") or not directions[side].get("body_rays"):
             raise ValueError("original railway traffic and ray records required")
+        position = directions[side].get("actor_position_m")
+        if not isinstance(position, list) or len(position) != 3:
+            raise ValueError("original railway traffic position required")
     crossing_ray = rays.get("crossing", {})
     if type(crossing_ray.get("clear")) is not bool or not crossing_ray.get("method"):
         raise ValueError("original crossing sight ray required")
@@ -64,6 +67,8 @@ def joined_row(frame, body, rays, reviews, flagman, signal):
         "observer_xy_m": eye[:2],
         "rail_ray_source": "original-world-cast-ray:" + str(frame),
         "rail_vehicle_source_refs": ["original-actor:" + str(directions[s]["actor_id"]) for s in ("left", "right")],
+        "rail_vehicle_positions_m": {s: directions[s]["actor_position_m"][:2]
+                                     for s in ("left", "right")},
         "flagman_source_ref": flagman["source_ref"],
         "signal_source_ref": signal["source_ref"],
         "railway_review_sha256": railway["source_sha256"],

@@ -29,7 +29,16 @@ for probe in PROBES:
                    '--candidate', candidate, '--output', str(output),
                    '--library', str(REPO/'runtime/library'), '--validator',
                    str(REPO/'.runtime-work/c183394/decoder/.lake/build/bin/adapterCheck')]
-        if not (output/'compatibility.json').is_file():
+        selected = entry if candidate == 'primary' else entry['candidates'][0]
+        receipt_path = output/'compatibility.json'
+        current = False
+        if receipt_path.is_file():
+            old = json.loads(receipt_path.read_text())
+            current = (old.get('passed') is True and
+                       old.get('construction_sha256') == selected['construction_sha256'] and
+                       old.get('measurement_contract_sha256') == sha(ROOT/entry['measurement_contract']) and
+                       old.get('analysis_sha256') == sha(ROOT/'native/finalize.py'))
+        if not current:
             if output.exists():
                 shutil.rmtree(output)
             result = subprocess.run(command, cwd=REPO, env=os.environ,
@@ -44,7 +53,7 @@ for probe in PROBES:
                                ('negative-analysis.log', 'negative.log')]:
             shutil.copyfile(output/source, bound/target)
         receipt = json.loads((bound/'compatibility.json').read_text())
-        construction = entry if candidate == 'primary' else entry['candidates'][0]
+        construction = selected
         if receipt['construction_sha256'] != construction['construction_sha256'] or receipt['case_id'] != entry['case_id']:
             raise ValueError('Public compatibility receipt changed identity')
         construction['compatibility'] = {'receipt': str((bound/'compatibility.json').relative_to(ROOT)),
