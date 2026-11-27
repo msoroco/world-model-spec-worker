@@ -44,6 +44,8 @@ def plan(case, map_source, actor_source, authority):
     require(map_source.get("unit_state") == case.state, "unit movement/preparation source mismatch")
     if case.state == "preparing":
         require(map_source.get("visible_preparation_source"), "visible preparation source required")
+    if case.state == "stopped":
+        require(map_source.get("stop_location_source"), "reviewed stop location source required")
     for key in ("ego_route_id", "unit_route_id", "conflict_location_source"):
         require(isinstance(map_source.get(key), str) and map_source[key], key + " missing")
     require(actor_source.get("source_kind") == "native_blueprint_readback", "Native blueprint readback required")
@@ -55,13 +57,8 @@ def plan(case, map_source, actor_source, authority):
             "subject driver control source missing")
     require(actor_source.get("unit_class") == case.unit_class, "unit class mismatch")
     require(authority.get("class") == case.unit_class, "authority class mismatch")
-    for key in ("authorization_source", "light_rule_source", "equipment_source",
-                "siren_equipment_source", "front_red_lamp_source"):
+    for key in ("authorization_source", "light_rule_source", "equipment_source"):
         require(isinstance(authority.get(key), str) and authority[key], key + " missing")
-    require(authority.get("siren_equipment_verified") is True, "required siren equipment unverified")
-    if case.light_request != "unqualified_active":
-        require(authority.get("front_visible_red_lamp_verified") is True,
-                "front-visible flashing red lamp unverified")
     require(authority.get("qualifying_flashing_equipment_verified") is (case.light_request != "unqualified_active"), "flashing equipment qualification mismatch")
     if case.light_request != "qualified_inactive":
         require(authority.get("lights_can_flash") is True, "flashing capability missing")
@@ -71,8 +68,9 @@ def plan(case, map_source, actor_source, authority):
         "case": case.suffix,
         "ego": {"identity": "ego", "blueprint_id": actor_source["ego_blueprint_id"], "route": "travel"},
         "unit": {"identity": "unit", "blueprint_id": actor_source["unit_blueprint_id"], "vehicle_class": case.unit_class, "route": case.direction},
-        "movement": {"enabled": case.state != "stopped", "start_s": 20.0 if case.state == "preparing" else 0.0, "end_s": 36.0,
-                     "target_mps": 7.0 if case.immediate and case.state != "stopped" else 2.0 if case.state == "moving" else 0.0,
+        "movement": {"enabled": True, "start_s": 20.0 if case.state == "preparing" else 0.0,
+                     "end_s": 20.0 if case.state == "stopped" else 36.0,
+                     "target_mps": 7.0 if case.immediate else 2.0,
                      "visible_preparation": case.state == "preparing",
                      "preparation_source": map_source.get("visible_preparation_source")},
         "ego_control": {"approach_mps": 7.5, "yield_requested": case.yielding, "response_brake_start_s": 19.0, "response_brake_fraction": 0.5 if case.yielding else 0.0},

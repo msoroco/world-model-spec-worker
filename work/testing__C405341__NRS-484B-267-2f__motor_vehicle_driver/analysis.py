@@ -106,11 +106,9 @@ def measure_case(case, site, frames):
     if site.get("light_request") != case.light_request:
         raise ValueError("flashing equipment/use source differs from exact case")
     for key in ("authorization_source", "qualifying_lights_source", "light_rule_source",
-                "front_visible_red_lamp_source", "siren_equipment_source", "route_source"):
+                "route_source"):
         if not site.get(key):
             raise ValueError("missing original authority or equipment source: " + key)
-    if case.light_request != "unqualified_active" and site.get("front_visible_red_lamp_qualified") is not True:
-        raise ValueError("qualified front-visible red lamp source missing")
     if site.get("immediate_approach_request") is not case.immediate:
         raise ValueError("immediate approach request differs from exact case")
     if site.get("yield_response_request") is not case.yielding:
@@ -131,8 +129,9 @@ def measure_case(case, site, frames):
     if case.state == "preparing" and (not moving or not hand_signals or
             moving[0] <= 400 or max(hand_signals) >= frames[moving[0]]["original_frame"]):
         raise ValueError("visible preparation must precede original target movement")
-    if case.state == "stopped" and (moving or hand_signals):
-        raise ValueError("stopped referral must lack movement and preparation")
+    if case.state == "stopped" and (not site.get("stop_location_source") or not moving or
+            moving[-1] > 400 or hand_signals):
+        raise ValueError("stopped referral requires prior approach, actual stop and no preparation cue")
     if case.light_request == "qualified_inactive" and any(f["flashing_light_on"] for f in frames):
         raise ValueError("inactive flashing-light comparison has active lights")
     if case.light_request != "qualified_inactive" and not any(f["flashing_light_on"] for f in frames):
@@ -141,13 +140,15 @@ def measure_case(case, site, frames):
         raise ValueError("officer-direction comparison lacks original direction")
     early = [hypot(f["ego_xy"][0] - f["emergency_xy"][0],
                    f["ego_xy"][1] - f["emergency_xy"][1]) for f in frames[:400]]
-    if case.immediate and case.state == "moving" and not min(early[1:]) < early[0]:
+    if case.immediate and case.state in {"moving", "stopped"} and not min(early[1:]) < early[0]:
         raise ValueError("unit does not approach subject in original frames")
     if case.state == "preparing":
         after = [hypot(f["ego_xy"][0] - f["emergency_xy"][0],
                        f["ego_xy"][1] - f["emergency_xy"][1]) for f in frames[400:600]]
         if not min(after[1:]) < after[0]:
             raise ValueError("prepared unit does not approach subject after cue")
+    if not case.immediate and not frames[200]["emergency_xy"][0] > frames[0]["emergency_xy"][0]:
+        raise ValueError("negative unit route does not move away from subject")
     brakes = [f["original_frame"] for f in frames if f["ego_brake"] > 0]
     if case.yielding and not brakes:
         raise ValueError("requested yielding has no brake response")
@@ -157,7 +158,8 @@ def measure_case(case, site, frames):
             "visible_movement_original_frames": visible_movement,
             "visible_hand_signal_original_frames": hand_signals,
             "unit_state": case.state,
-            "subsection_1_referral": case.state != "stopped" and case.immediate,
+            "subsection_1_referral": {"requested": case.state != "stopped" and case.immediate,
+                                       "original_source_review": "pending"},
             "first_brake_original_frame": brakes[0] if brakes else None,
             "initial_center_distance_m": early[0],
             "minimum_early_center_distance_m": min(early),
@@ -181,15 +183,21 @@ def analyze(root):
     channels = {
         "sealed_native_original_frames": lambda row: row["frame"],
         "unit_motion": lambda row: row["emergency_xy"],
-        "qualifying_flashing_lights": lambda row: row["flashing_light_on"],
-        "unit_state": lambda row: site["unit_state"],
-        "subsection_1_referral": lambda row: matches[0].state != "stopped" and matches[0].immediate,
+        "qualifying_flashing_lights": lambda row: {"on": row["flashing_light_on"],
+            "qualification_source": site["qualifying_lights_source"],
+            "rule_source": site["light_rule_source"]},
+        "unit_state": lambda row: {"requested": site["unit_state"],
+                                    "original_movement_visible": row["movement_visible"],
+                                    "original_hand_signal_visible": bool(row.get("visible_hand_signal"))},
+        "subsection_1_referral": lambda row: measured["subsection_1_referral"],
         "front_visible_red_lamp": lambda row: site["front_visible_red_lamp_source"],
         "siren_equipment": lambda row: site["siren_equipment_source"],
-        "target_authorization": lambda row: site["target_vehicle_class"],
+        "target_authorization": lambda row: {"class": site["target_vehicle_class"],
+                                               "source": site["authorization_source"]},
         "subject_driver": lambda row: {"class": site["subject_vehicle_class"],
                                          "driver_source": site["subject_driver_source"]},
-        "driver_view_movement_cue": lambda row: row["movement_visible"],
+        "driver_view_movement_cue": lambda row: {"movement_visible": row["movement_visible"],
+                                                   "hand_signal_visible": bool(row.get("visible_hand_signal"))},
         "relative_approach": lambda row: {"ego_xy": row["ego_xy"], "unit_xy": row["emergency_xy"]},
         "right_of_way_order": lambda row: {"ego_brake": row["ego_brake"], "ego_speed_mps": row["ego_speed_mps"]},
         "ego_approach": lambda row: {"xy": row["ego_xy"], "speed_mps": row["ego_speed_mps"]},

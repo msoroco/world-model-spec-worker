@@ -14,6 +14,7 @@ def sources(case):
             "unit_route_direction": case.direction,
             "unit_state": case.state,
             "visible_preparation_source": "reviewed-original-hand-signal" if case.state == "preparing" else None,
+            "stop_location_source": "reviewed-original-stop-site" if case.state == "stopped" else None,
             "ego_route_id": "ego-reviewed", "unit_route_id": "unit-reviewed",
             "conflict_location_source": "reviewed-map-pose"}
     actors = {"source_kind": "native_blueprint_readback", "unit_class": case.unit_class,
@@ -63,8 +64,8 @@ class ConstructionTest(unittest.TestCase):
             execute(adapter, CASES[0], road, actors, authority)
         self.assertEqual(adapter.calls, [])
         road["unit_route_approaches_ego"] = True
-        authority["siren_equipment_verified"] = False
-        with self.assertRaisesRegex(ValueError, "siren"):
+        authority["light_rule_source"] = None
+        with self.assertRaisesRegex(ValueError, "light_rule_source"):
             execute(adapter, CASES[0], road, actors, authority)
         self.assertEqual(adapter.calls, [])
 

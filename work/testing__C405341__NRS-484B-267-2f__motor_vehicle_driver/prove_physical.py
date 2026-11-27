@@ -1,4 +1,4 @@
-"""Run three outcome fixtures and Native closure for every exact signal case."""
+"""Run three outcome fixtures and Native closure for every exact approach case."""
 from __future__ import annotations
 
 import hashlib

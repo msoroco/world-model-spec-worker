@@ -35,16 +35,18 @@ def write(path, obj, compact=False):
 
 def frame(index, case):
     time_s = index / 20
-    unit_x = (180.0 - 7.0 * time_s) if case.immediate else (400.0 - 2.0 * time_s)
+    unit_x = (180.0 - 7.0 * time_s) if case.immediate else (400.0 + 2.0 * time_s)
     if case.direction == "same_direction":
         unit_x = -220.0 + 9.0 * time_s
     if case.state == "preparing":
         unit_x = 180.0 - 7.0 * max(0.0, time_s - 20.0)
     if case.state == "stopped":
-        unit_x = 180.0
+        unit_x = 180.0 - 7.0 * min(time_s, 20.0)
     ego_x = (-180.0 + 7.5 * time_s if not case.yielding else
              -180.0 + 7.5 * min(time_s, 19.0) + 5.0 * max(0.0, time_s - 19.0))
-    movement_visible = case.state == "moving" or case.state == "preparing" and time_s >= 20.0
+    movement_visible = (case.state == "moving" or
+                        case.state == "preparing" and time_s >= 20.0 or
+                        case.state == "stopped" and time_s < 20.0)
     return {"frame": index, "native_frame": index + 100, "original_frame": index + 100,
             "time_s": time_s, "ego_xy": [ego_x, 0.0], "emergency_xy": [unit_x, 4.0],
             "flashing_light_on": case.light_request != "qualified_inactive" and index % 8 < 4,
@@ -86,6 +88,7 @@ def build():
             "approach_direction": case.direction,
             "unit_state": case.state,
             "visible_preparation_source": "synthetic-original-driver-view-hand-signal" if case.state == "preparing" else None,
+            "stop_location_source": "synthetic-original-unit-stop-site" if case.state == "stopped" else None,
             "authorization_source": "synthetic-authority", "qualifying_lights_source": "synthetic-equipment",
             "light_rule_source": "DEF-NRS-484A-480-3", "route_source": "synthetic-native-map",
             "front_visible_red_lamp_source": "synthetic-front-view-lamp",

@@ -1,22 +1,11 @@
-# testing__C405341__NRS-484B-267-2a__motor_vehicle_driver
+# C405341 / NRS 484B.267(2)(a) handoff
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: partial while current-runtime compatibility, saved-only, physical-protocol, and independent audit proofs run. No physical or legal acceptance is claimed.
 
-Exact law: NRS 484B.267(2)(a); with 484B.267(4) — Upon approaching an authorized emergency vehicle or an official vehicle of a regulatory agency which is moving or preparing to move in any direction, including, without limitation, arriving at or leaving the scene of a crash or other incident, and making use of flashing lights meeting the requirements of subsection 3 of NRS 484A.480 [DEF-NRS-484A-480-3], the driver of any other vehicle shall, except when otherwise directed by a law enforcement officer: Decrease the speed of his or her vehicle to a speed that is reasonable and proper, pursuant to the criteria set forth in subsection 1 of NRS 484B.600 [NRS-484B-600-1a]. As used in this section, “preparing to move” means any indication that is visible to an approaching driver that an authorized emergency vehicle or an official vehicle of a regulatory agency is about to move, including, without limitation: (a) A movement of the vehicle; or (b) The use of hand signals by the driver of the vehicle.
-Assigned branch(es): Preparing to move through a visible vehicle-movement indication..
-Cell: C405341 (paved_road, travel, emergency_vehicle); actor: motor_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+The frozen evidence inventory contains no accepted recording. Eleven exact cases and ten controlled comparisons cover visible vehicle movement, no movement, occluded movement, visible hand signal, already moving, inactive or unqualified flashing lights, law-enforcement direction, nonapproach, regulatory official vehicle, and the speed-response contrast. The case IDs are listed in `case-plan.json`; each new capture remains unexecuted. No training judgment range is defined for this exact law and actor.
 
-## Next CPU actions
+The incorporated NRS 484B.600(1)(a) source requires traffic, surface, highway width, weather and other highway conditions in the reviewed Native packet and sealed site. The speed response and its original pose history are checked together. The saved measurement leaves the reasonable-and-proper judgment unresolved, with no invented numeric legal cutoff. Target authorization, qualifying flashing equipment and actual driver-view cue visibility remain source and pixel review questions.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C405341__NRS-484B-267-2a__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+The exact constructions use a reviewed map, actor and authority packet, four 20 Hz cameras for 900 frames, target movement or hand signal, real occluder geometry for the occlusion case, ego speed control and world restoration. A distinct reviewed connected unit route is the one fallback per case. The latest source and construction hash set has passed all eleven primary and eleven fallback offline checks and 14 focused tests; fresh compatibility receipts are being generated under `.runtime-work/c405341-2a/compat-*-v6`.
 
-## Proven checks and dependency boundary
-
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
-
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+Next CPU actions: finish positive and negative compatibility for all primary and fallback candidates; run `prove_saved.py`, `prove_physical.py`, `prove_audits.py`, and `build_queue_proposal.py`; update `result.json` only after all bound proof receipts pass. Then run `.venv-cpu/bin/python worker_check.py --assignment testing__C405341__NRS-484B-267-2a__motor_vehicle_driver --complete --require-delivery-ready` and repair every failure. Actual CARLA motion, original pixels, equipment authority and legal judgment remain later local checks.

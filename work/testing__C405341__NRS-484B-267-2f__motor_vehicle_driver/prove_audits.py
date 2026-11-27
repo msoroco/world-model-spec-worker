@@ -12,7 +12,7 @@ from native_packet import AID
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-SCRATCH = ROOT / ".runtime-work/c405341-2f/audits-v2"
+SCRATCH = ROOT / ".runtime-work/c405341-2f/audits-v4"
 MANIFEST = HERE / "execution-manifest.json"
 PLAN = HERE / "case-plan.json"
 CHECKS = ["native_source", "all_participants", "time_join",
@@ -44,7 +44,7 @@ def main():
     for entry in manifest["cases"]:
         case_id = entry["case_id"]
         name = case_id.removeprefix(AID + "__")
-        attempt = ROOT / ".runtime-work/c405341-2f" / ("compat-" + name + "-v1")
+        attempt = ROOT / ".runtime-work/c405341-2f" / ("compat-" + name + "-v4")
         output = SCRATCH / (name + "-delivery.json")
         if output.exists():
             output.unlink()
@@ -93,7 +93,7 @@ def main():
         for case_id in comparison["case_ids"]:
             suffix = case_id.removeprefix(AID + "__")
             command += ["--attempt", str(ROOT / ".runtime-work/c405341-2f" /
-                                         ("compat-" + suffix + "-v1"))]
+                                         ("compat-" + suffix + "-v4"))]
         output = SCRATCH / (name + "-comparison.json")
         if output.exists():
             output.unlink()
@@ -114,9 +114,9 @@ def main():
     # a changed condition that was declared fixed, using only scratch copies.
     first_spec = plan["comparisons"][0]
     base = ROOT / ".runtime-work/c405341-2f" / (
-        "compat-" + first_spec["case_ids"][0].removeprefix(AID + "__") + "-v1")
+        "compat-" + first_spec["case_ids"][0].removeprefix(AID + "__") + "-v4")
     contrasting = ROOT / ".runtime-work/c405341-2f" / (
-        "compat-" + first_spec["case_ids"][1].removeprefix(AID + "__") + "-v1")
+        "compat-" + first_spec["case_ids"][1].removeprefix(AID + "__") + "-v4")
     small = SCRATCH / "comparison-negative-source"
     small.mkdir(exist_ok=True)
     for name in ("config.json", "diagnostic-source-note.json", "emergency-site.json",

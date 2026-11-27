@@ -1,22 +1,58 @@
-# testing__C405341__NRS-484B-267-2f__motor_vehicle_driver
+# C405341 / NRS 484B.267(2)(f) CPU handoff
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: partial while exact current-runtime proofs run. The frozen evidence inventory contains zero accepted recordings. No physical or legal acceptance is claimed.
 
-Exact law: NRS 484B.267(2)(f); with 484B.267(4) — Upon approaching an authorized emergency vehicle or an official vehicle of a regulatory agency which is moving or preparing to move in any direction, including, without limitation, arriving at or leaving the scene of a crash or other incident, and making use of flashing lights meeting the requirements of subsection 3 of NRS 484A.480 [DEF-NRS-484A-480-3], the driver of any other vehicle shall, except when otherwise directed by a law enforcement officer: If the authorized emergency vehicle or official vehicle of a regulatory agency: (1) Approaches the driver’s vehicle, proceed as required pursuant to subsection 1 [NRS-484B-267-1a, NRS-484B-267-1b, NRS-484B-267-1c]; or (2) Stops, proceed as required pursuant to NRS 484B.607 [NRS-484B-607-1a, NRS-484B-607-1b, NRS-484B-607-1c, NRS-484B-607-1d]. As used in this section, “preparing to move” means any indication that is visible to an approaching driver that an authorized emergency vehicle or an official vehicle of a regulatory agency is about to move, including, without limitation: (a) A movement of the vehicle; or (b) The use of hand signals by the driver of the vehicle.
-Assigned branch(es): Emergency vehicle approaches ego; referral to subsection 1.
-Cell: C405341 (paved_road, travel, emergency_vehicle); actor: motor_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+The 2f clause requires qualifying flashing lights. It does not itself require a siren or front-visible red lamp; those inherited 1a prerequisites were removed.
 
-## Next CPU actions
+Ten selected cases cover moving-unit approach and requested response, no response, distant/non-immediate approach, inactive and unqualified lights, officer direction, regulatory-official alternative, same-direction approach, visible hand-signal preparation followed by movement, and an approaching unit that then stops. Nine controlled comparisons hold all undeclared conditions fixed. The stopped alternative preserves the NRS 484B.607 referral without inventing its duties. Subsection 1 references 1a, 1b, and 1c; the assignment supplies 1c separately and this package does not infer missing 1a/1b duties.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C405341__NRS-484B-267-2f__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+`build_constructions.py`, `emergency_construction.py`, `runner.py`, `analysis.py`, and source packet validation implement ten exact source-gated constructions and saved original-frame measurements. `build_diagnostics.py` creates source-hashed synthetic diagnostics under this assignment; fixtures are software probes only. Ten primary and ten fallback `runtime.py offline` checks passed. Ten physical/lifecycle fixture checks passed. Four unit tests passed in `cpu-tests.log`.
 
-## Proven checks and dependency boundary
+Next: finish `prove_compatibility.py` v4 for every primary/fallback; run `prove_saved.py`, `prove_audits.py`, `build_queue_proposal.py`; run `worker_check.py --assignment testing__C405341__NRS-484B-267-2f__motor_vehicle_driver --complete --require-delivery-ready`, repair findings, then mark ready. All scratch is under `.runtime-work/c405341-2f/`.
 
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
+Remaining local GPU checks: original Native authority, qualifying equipment/light use, visible hand signal and movement, both approach relationships, driver response, officer direction, full four-camera pixel visibility, and independent legal review of the referenced subsection.
 
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+## Exact selected identities
+
+Cases:
+
+- `testing__C405341__NRS-484B-267-2f__motor_vehicle_driver__immediate_approach_yield`
+- `testing__C405341__NRS-484B-267-2f__motor_vehicle_driver__immediate_approach_no_yield`
+- `testing__C405341__NRS-484B-267-2f__motor_vehicle_driver__no_immediate_approach`
+- `testing__C405341__NRS-484B-267-2f__motor_vehicle_driver__lights_inactive`
+- `testing__C405341__NRS-484B-267-2f__motor_vehicle_driver__lights_unqualified`
+- `testing__C405341__NRS-484B-267-2f__motor_vehicle_driver__officer_directs_otherwise`
+- `testing__C405341__NRS-484B-267-2f__motor_vehicle_driver__regulatory_official_yield`
+- `testing__C405341__NRS-484B-267-2f__motor_vehicle_driver__same_direction_approach_yield`
+- `testing__C405341__NRS-484B-267-2f__motor_vehicle_driver__preparing_visible_hand_signal`
+- `testing__C405341__NRS-484B-267-2f__motor_vehicle_driver__stopped_referral`
+
+Comparisons:
+
+- `testing__C405341__NRS-484B-267-2f__motor_vehicle_driver__yield_vs_immediate_approach_no_yield`
+- `testing__C405341__NRS-484B-267-2f__motor_vehicle_driver__yield_vs_no_immediate_approach`
+- `testing__C405341__NRS-484B-267-2f__motor_vehicle_driver__yield_vs_lights_inactive`
+- `testing__C405341__NRS-484B-267-2f__motor_vehicle_driver__yield_vs_lights_unqualified`
+- `testing__C405341__NRS-484B-267-2f__motor_vehicle_driver__yield_vs_officer_directs_otherwise`
+- `testing__C405341__NRS-484B-267-2f__motor_vehicle_driver__yield_vs_regulatory_official_yield`
+- `testing__C405341__NRS-484B-267-2f__motor_vehicle_driver__yield_vs_same_direction_approach_yield`
+- `testing__C405341__NRS-484B-267-2f__motor_vehicle_driver__yield_vs_preparing_visible_hand_signal`
+- `testing__C405341__NRS-484B-267-2f__motor_vehicle_driver__yield_vs_stopped_referral`
+
+## Exact CPU proof commands
+
+Set `SCENARIO_PIPELINE_OUTPUT_ROOT="$PWD/.runtime-work/c405341-2f/output-root"`, `TMPDIR="$PWD/.runtime-work/c405341-2f/tmp"`, and `PYTHONDONTWRITEBYTECODE=1` first.
+
+```sh
+.venv-cpu/bin/python work/testing__C405341__NRS-484B-267-2f__motor_vehicle_driver/build_diagnostics.py
+.venv-cpu/bin/python work/testing__C405341__NRS-484B-267-2f__motor_vehicle_driver/build_constructions.py
+.venv-cpu/bin/python work/testing__C405341__NRS-484B-267-2f__motor_vehicle_driver/build_semantic_proposals.py
+.venv-cpu/bin/python work/testing__C405341__NRS-484B-267-2f__motor_vehicle_driver/prove_offline.py
+.venv-cpu/bin/python work/testing__C405341__NRS-484B-267-2f__motor_vehicle_driver/prove_fallback.py
+.venv-cpu/bin/python work/testing__C405341__NRS-484B-267-2f__motor_vehicle_driver/prove_physical.py
+.venv-cpu/bin/python work/testing__C405341__NRS-484B-267-2f__motor_vehicle_driver/prove_compatibility.py
+.venv-cpu/bin/python work/testing__C405341__NRS-484B-267-2f__motor_vehicle_driver/prove_saved.py
+.venv-cpu/bin/python work/testing__C405341__NRS-484B-267-2f__motor_vehicle_driver/prove_audits.py
+.venv-cpu/bin/python work/testing__C405341__NRS-484B-267-2f__motor_vehicle_driver/build_queue_proposal.py
+.venv-cpu/bin/python worker_check.py --assignment testing__C405341__NRS-484B-267-2f__motor_vehicle_driver --complete --require-delivery-ready
+```

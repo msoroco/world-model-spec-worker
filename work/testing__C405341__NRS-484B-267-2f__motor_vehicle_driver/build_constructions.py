@@ -27,8 +27,6 @@ def description():
         ("unit_state", "moving/preparing/stopped", "original unit poses and visible preparation cue"),
         ("subsection_1_referral", "branch", "both approach relationships and unit state"),
         ("qualifying_flashing_lights", "on/off", "original emergency light state"),
-        ("front_visible_red_lamp", "source", "reviewed front-visible red lamp installation and original pixels"),
-        ("siren_equipment", "source", "reviewed required siren equipment"),
         ("target_authorization", "source", "reviewed authorized emergency or regulatory official status"),
         ("subject_driver", "source", "reviewed ordinary other-vehicle class and actual driver control"),
         ("relative_approach", "metres and m/s", "original ego/unit positions and route direction"),
@@ -46,7 +44,7 @@ def description():
             "context_inputs": [], "limitations": [
                 "Both approaches and the referred subsection 1 response remain source-dependent, with no invented numeric threshold.",
                 "Stopped vehicles take the distinct NRS 484B.607 referral; no 484B.607 duty is inferred here.",
-                "Equipment qualification and target authorization need independent source review.",
+                "NRS 484A.480(3) equipment qualification and target authorization need independent source review; no siren or front-red requirement is inferred from 2f.",
                 "Actual light visibility, approach and yielding require original pixels and independent review."]}
 
 

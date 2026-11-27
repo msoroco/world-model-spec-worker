@@ -53,7 +53,7 @@ def audit(attempts, comparison_id, plan):
                "no_immediate_approach": {"immediate_approach_request", "route_source"},
                "same_direction_approach_yield": {"approach_direction", "route_source"},
                "preparing_visible_hand_signal": {"unit_state", "visible_preparation_source"},
-               "stopped_referral": {"unit_state", "yield_response_request"}}.get(suffix, set())
+               "stopped_referral": {"unit_state", "yield_response_request", "stop_location_source"}}.get(suffix, set())
     for key in set(first[1]) | set(second[1]):
         if key not in allowed and first[1].get(key) != second[1].get(key):
             raise ValueError("emergency comparison fixed site context differs: " + key)
@@ -98,8 +98,9 @@ def audit(attempts, comparison_id, plan):
             bool(b["movement_original_frames"])
     elif suffix == "stopped_referral":
         valid = first[1]["unit_state"] == "moving" and second[1]["unit_state"] == "stopped" and \
-            bool(a["movement_original_frames"]) and not b["movement_original_frames"] and \
-            b["subsection_1_referral"] is False
+            bool(a["movement_original_frames"]) and bool(b["movement_original_frames"]) and \
+            max(b["movement_original_frames"]) <= 500 and \
+            b["subsection_1_referral"]["requested"] is False
     else:
         raise ValueError("unknown emergency contrast")
     if not valid:
