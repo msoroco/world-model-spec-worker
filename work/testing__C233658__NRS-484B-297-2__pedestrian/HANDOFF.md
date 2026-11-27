@@ -1,6 +1,6 @@
 # testing__C233658__NRS-484B-297-2__pedestrian
 
-Status: **partial**. Four exact source-gated construction bundles pass the runtime offline check. The strict delivery-ready gate fails because the package is partial; no physical or canonical acceptance is claimed.
+Status: **partial**. Six exact source-gated construction bundles pass current-runtime diagnostic compatibility and saved-only processing. Their synthetic fixtures are software tests only. The strict delivery-ready gate fails because the package is partial; no physical or canonical acceptance is claimed.
 
 ## Source and scope
 
@@ -16,10 +16,12 @@ The original site packet must substantiate public highway status, public vehicul
 | `east_approach_right_side` | eastbound vehicle | right highway side, facing the vehicle |
 | `west_approach_left_side` | westbound vehicle | left highway side, facing the vehicle |
 | `west_approach_right_side` | westbound vehicle | right highway side, facing the vehicle |
+| `east_approach_left_with_traffic` | eastbound vehicle | same left edge, walking with traffic behind |
+| `west_approach_left_with_traffic` | westbound vehicle | same left edge, walking with traffic behind |
 
-All full IDs are the assignment ID followed by `__` and the suffix. The plan has `east_approach_side`, `west_approach_side`, and `approach_direction` comparisons. The first two vary lateral walking side while retaining approach direction, heading, camera plan and duration. The third verifies mirrored approach directions while retaining the left-side/facing relation. Physical readback must verify intended routes and sides; the authored coordinates are only construction requests.
+All full IDs are the assignment ID followed by `__` and the suffix. The plan has `east_approach_side`, `west_approach_side`, `approach_direction`, `east_approach_facing`, and `west_approach_facing` comparisons. The first two vary lateral walking side while retaining approach direction, heading, camera plan and duration. The third verifies mirrored approach directions while retaining the left-side/facing relation. The last two hold the left edge fixed and vary pedestrian heading to isolate facing. Physical readback must verify intended routes and sides; the authored coordinates are only construction requests.
 
-`case-plan.json` lists the one selected requirement disposition, original observations, gap ID, witness review and camera plan. `road_geometry.py` supplies mirrored routes. `build_bundles.py` creates each inline construction, config, measurement contract and case spec under `cases/`. `runner.py --check` validates the exact bundle without CARLA. `walking_measure.py` measures source-shaped original pedestrian side, facing, approach and progress; `analysis.py` contains a saved finalizer with source-hash and frame/time joins, but its positive and negative runtime compatibility remain untested. The runner's live path currently stops after source validation; actual Native capture remains unimplemented. There are no fallbacks yet; walker/controller and camera risks need measurable candidate tuning, proof and independent review before ready status.
+`case-plan.json` lists the one selected requirement disposition, original observations, gap ID, witness review and camera plan. `road_geometry.py` supplies mirrored routes. `build_bundles.py` creates each inline construction, config, measurement contract and case spec under `cases/`. `runner.py --check` validates the exact bundle without CARLA. `walking_measure.py` measures source-shaped original pedestrian side, facing, approach and progress; `analysis.py` contains a saved finalizer with source-hash and frame/time joins, with positive and missing-source-negative current-runtime compatibility receipts in every exact case folder. The runner's live path currently stops after source validation; actual Native capture remains unimplemented. There are no fallbacks yet; walker/controller and camera risks need measurable candidate tuning, proof and independent review before ready status.
 
 ## Proven checks
 
@@ -32,11 +34,11 @@ PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT="$PWD/.runtime-work/pede
 PYTHONDONTWRITEBYTECODE=1 SCENARIO_PIPELINE_OUTPUT_ROOT="$PWD/.runtime-work/pedestrian-output" .venv-cpu/bin/python worker_check.py --assignment testing__C233658__NRS-484B-297-2__pedestrian --complete --require-delivery-ready
 ```
 
-The first test passed four tests, and runtime offline passed all four exact cases. Their small logs and SHA256 values are in `result.json`. `strict.log` retains the current readiness failure. The generator does not establish CARLA motion.
+The unit suite passed five tests; runtime compatibility and saved-only processing passed all six exact cases. Their small logs and SHA256 values are in `result.json`. `strict.log` retains the current readiness failure. The generator does not establish CARLA motion.
 
 ## Remaining CPU work
 
 1. Implement source-gated CARLA pedestrian and vehicle spawning, 20 Hz original transform capture, synchronized four-camera capture, FrameMap, ownership cleanup/world restoration, and actual completion checks. Remove the explicit unfinished Native error in `runner.py` only when this code is tested.
-2. Complete and test the saved finalizer and measurement contracts against case-specific diagnostic recipes; obtain positive and missing-source negative runtime compatibility proofs for every case and each justified fallback.
+2. Preserve the six passing case-specific diagnostic compatibility and saved-only receipts while adding any justified fallback. Add negative saved-only failure feedback and compare original site packets on the physical run.
 3. Author canonical semantic stage proposals and semantic index. Add saved-only processing proofs, independent delivery and comparison audits with negative rejection, physical/lifecycle fixture tests, complete execution manifest and a concrete queue proposal.
 4. Independently review the exact law and branch alternatives, then rerun the strict assignment gate. Actual physical outcome remains for the local GPU operator after CPU readiness.

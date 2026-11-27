@@ -1,6 +1,6 @@
 # testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: partial CPU construction. Four exact cases and three controlled comparisons are proposed; no original recording is accepted.
 
 Exact law: NRS 484B.270(7)(a) — The operator of a bicycle, an electric bicycle or an electric scooter shall not: Intentionally interfere with the movement of a motor vehicle.
 Assigned branch(es): Electric-bicycle operator.

@@ -35,11 +35,12 @@ def build() -> None:
         y = -4.5 if east == left else 4.5
         rows = []
         for index, mapped in enumerate(mapping):
-            px = 20.0 - index if east else -20.0 + index
+            facing = case["pedestrian_heading"] == "facing"
+            px = (20.0 - index) if east == facing else (-20.0 + index)
             vx = -30.0 + index if east else 30.0 - index
             rows.append({"frame": mapped["carla_frame"], "time_s": mapped["time_s"],
                          "pedestrian_xyz_m": [px, y, 0.0], "vehicle_xyz_m": [vx, 0.0, 0.0],
-                         "pedestrian_forward_xy": [-1.0, 0.0] if east else [1.0, 0.0],
+                         "pedestrian_forward_xy": [-1.0, 0.0] if east == facing else [1.0, 0.0],
                          "vehicle_forward_xy": [1.0, 0.0] if east else [-1.0, 0.0],
                          "observation_source": "synthetic_diagnostic"})
         packet = {"assignment_id": HERE.name, "case_id": case["case_id"],
@@ -57,6 +58,7 @@ def build() -> None:
         files["fixture-provenance.json"] = json.dumps({"case_id": case["case_id"],
             "scope": "Synthetic 9-frame walking software diagnostic, not original public highway or legal evidence"}, sort_keys=True) + "\n"
         path = folder / "diagnostic.json"
+        path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(diagnostic, separators=(",", ":")) + "\n", encoding="utf-8")
         rel = str(path.relative_to(ROOT))
         write(folder / "fixture-recipe.json", {"format": "worker-fixture-recipe",

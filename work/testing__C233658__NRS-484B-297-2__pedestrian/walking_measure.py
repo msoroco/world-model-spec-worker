@@ -48,5 +48,4 @@ def measure(packet: dict) -> dict:
             "pedestrian_side_history": side_history, "faces_traffic_history": facing_history,
             "vehicle_approaches_history": approach_history,
             "all_frames_facing": all(facing_history), "any_frame_vehicle_approaching": any(approach_history),
-            "site_qualifications_reviewed": True,
-            "legal_verdict": None}
+            "site_qualifications_reviewed": True}

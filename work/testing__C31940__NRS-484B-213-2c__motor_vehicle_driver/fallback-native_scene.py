@@ -74,11 +74,23 @@ def validate(packet, case_id):
             "ego heading contradicts bridge approach")
     require(type(ego.get("target_speed_mps")) in (int, float) and
             0 < ego["target_speed_mps"] < 50, "reviewed ego speed required")
-    start_station = (ego["pose"][0]-road["centerline_origin_xy"][0])*axis[0] + (ego["pose"][1]-road["centerline_origin_xy"][1])*axis[1]
-    gap_m = road["bridge_entrance_station_m"]-start_station
+    half_length = ego.get("reviewed_body_half_length_m")
+    require(type(half_length) in (int, float) and 0.5 < half_length < 5 and
+            ego.get("body_dimensions_source_sha256"),
+            "reviewed ego body length and source required")
+    start_center_station = ((ego["pose"][0]-road["centerline_origin_xy"][0])*axis[0] +
+                            (ego["pose"][1]-road["centerline_origin_xy"][1])*axis[1])
+    start_front_gap_m = road["bridge_entrance_station_m"]-(start_center_station+half_length)
     requested = {"obstructed_beyond_100ft": 30.7848,
                  "obstructed_at_100ft": 30.48}.get(variant, 30.1752)
-    require(abs(gap_m-requested) <= 2.0, "reviewed spawn is outside selected 100-foot probe band")
+    require(abs(start_front_gap_m-requested) <= .05,
+            "reviewed front body edge misses selected 100-foot probe")
+    origin = road["centerline_origin_xy"]
+    laterals = [-(point[0]-origin[0])*axis[1]+(point[1]-origin[1])*axis[0]
+                for point in route]
+    require((max(laterals) <= 0 if variant == "right_side_within_100ft"
+             else max(laterals) > 0.5),
+            "reviewed route does not construct selected left-side position")
     if variant != "clear_within_100ft":
         blocker = packet.get("opaque_blocker")
         require(isinstance(blocker, dict) and blocker.get("blueprint") and

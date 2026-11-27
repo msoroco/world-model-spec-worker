@@ -42,6 +42,13 @@ def analyze(attempt: Path, output: Path) -> dict:
         raise ValueError("original walking source receipt identity or hash differs")
     if packet.get("diagnostic_fixture") is False and packet.get("original_trace_id") != "Native:" + sha(required(attempt, "trace.jsonl")):
         raise ValueError("original walking trace source differs")
+    if packet.get("diagnostic_fixture") is False:
+        reviewed = json.loads(required(attempt, "reviewed-site-receipt.json").read_text(encoding="utf-8"))
+        if reviewed.get("packet", {}).get("sha256") != packet.get("site_source_sha256"):
+            raise ValueError("reviewed original site packet hash differs")
+        for item in [reviewed["packet"], *reviewed.get("sources", {}).values()]:
+            if sha(required(attempt, item["path"])) != item.get("sha256"):
+                raise ValueError("reviewed original source hash differs")
     measurement = measure_walking_source(packet)
     frames = packet["frames"]
     frame_map = rows(required(attempt, "video_frames.jsonl"))
@@ -72,7 +79,7 @@ def analyze(attempt: Path, output: Path) -> dict:
                 stream.write(json.dumps({"time_s": frame["time_s"], "value": values[name](frame)}) + "\n")
         evidence.append({"name": name, "unit": channel["unit"], "reference": ref})
     context = "channels/public_highway_and_sidewalk.json"
-    (attempt / context).write_text(json.dumps({"site": packet["site"], "site_source_sha256": packet["site_source_sha256"]}) + "\n", encoding="utf-8")
+    (attempt / context).write_text(json.dumps({"public_highway_and_sidewalk": {"site": packet["site"], "site_source_sha256": packet["site_source_sha256"]}}) + "\n", encoding="utf-8")
     evidence.append({"name": "public_highway_and_sidewalk", "unit": "source", "reference": context})
     native = {"case_id": case_id, "measured_values": {"walking_side_and_facing": measurement},
               "target_checks": [{"target": "source-bound original walking along highway", "requested": True,

@@ -24,9 +24,139 @@
   "topic_inventory": {
     "exact-text": "The operator of a bicycle, an electric bicycle or an electric scooter shall not: Intentionally interfere with the movement of a motor vehicle."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__planned_merge_braking",
+      "target_law_id": "NRS-484B-270-7a",
+      "branch": "Electric-bicycle operator and separate moving motor vehicle",
+      "electric_bicycle_class": "Class 1, source verified",
+      "bicycle_path_request": "merge",
+      "motor_response_request": "brake",
+      "authored_intention_target": "impede_motor_vehicle",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction": "interference.construct: spawn source-qualified electric bicycle and separate statutory motor vehicle, assign reviewed routes and response request",
+      "measurement": "interference.measure_original: 600 original 20 Hz samples of lane histories, vehicle speed, braking and body gap",
+      "physical_risk": "Later local Native capture must establish e-bike model/geometry, actual actor movement, merge and four-camera pixel coverage",
+      "legal_judgment": "unresolved; no physical proxy establishes intent"
+    },
+    {
+      "case_id": "testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__planned_merge_no_braking",
+      "target_law_id": "NRS-484B-270-7a",
+      "branch": "Electric-bicycle operator and separate moving motor vehicle",
+      "electric_bicycle_class": "Class 1, source verified",
+      "bicycle_path_request": "merge",
+      "motor_response_request": "continue",
+      "authored_intention_target": "impede_motor_vehicle",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction": "interference.construct: spawn source-qualified electric bicycle and separate statutory motor vehicle, assign reviewed routes and response request",
+      "measurement": "interference.measure_original: 600 original 20 Hz samples of lane histories, vehicle speed, braking and body gap",
+      "physical_risk": "Later local Native capture must establish e-bike model/geometry, actual actor movement, merge and four-camera pixel coverage",
+      "legal_judgment": "unresolved; no physical proxy establishes intent"
+    },
+    {
+      "case_id": "testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__ordinary_merge_braking",
+      "target_law_id": "NRS-484B-270-7a",
+      "branch": "Electric-bicycle operator and separate moving motor vehicle",
+      "electric_bicycle_class": "Class 1, source verified",
+      "bicycle_path_request": "merge",
+      "motor_response_request": "brake",
+      "authored_intention_target": null,
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction": "interference.construct: spawn source-qualified electric bicycle and separate statutory motor vehicle, assign reviewed routes and response request",
+      "measurement": "interference.measure_original: 600 original 20 Hz samples of lane histories, vehicle speed, braking and body gap",
+      "physical_risk": "Later local Native capture must establish e-bike model/geometry, actual actor movement, merge and four-camera pixel coverage",
+      "legal_judgment": "unresolved; no physical proxy establishes intent"
+    },
+    {
+      "case_id": "testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__hold_lane_braking",
+      "target_law_id": "NRS-484B-270-7a",
+      "branch": "Electric-bicycle operator and separate moving motor vehicle",
+      "electric_bicycle_class": "Class 1, source verified",
+      "bicycle_path_request": "hold",
+      "motor_response_request": "brake",
+      "authored_intention_target": null,
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "construction": "interference.construct: spawn source-qualified electric bicycle and separate statutory motor vehicle, assign reviewed routes and response request",
+      "measurement": "interference.measure_original: 600 original 20 Hz samples of lane histories, vehicle speed, braking and body gap",
+      "physical_risk": "Later local Native capture must establish e-bike model/geometry, actual actor movement, merge and four-camera pixel coverage",
+      "legal_judgment": "unresolved; no physical proxy establishes intent"
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "merge_effect",
+      "case_ids": [
+        "testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__planned_merge_braking",
+        "testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__planned_merge_no_braking"
+      ],
+      "fixed_conditions": "same source-qualified e-bike, separate motor vehicle, intended merge, authored intent declaration, road, lane origins, camera and duration",
+      "deliberate_differences": [
+        "motor response request; actual brake and speed readback checked"
+      ]
+    },
+    {
+      "comparison_id": "intent_source",
+      "case_ids": [
+        "testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__planned_merge_braking",
+        "testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__ordinary_merge_braking"
+      ],
+      "fixed_conditions": "same source-qualified e-bike, separate motor vehicle, merge request, motor response request, road, lane origins, camera and duration",
+      "deliberate_differences": [
+        "authored, source-bound intent declaration versus no declaration; physical motion cannot prove mental state"
+      ]
+    },
+    {
+      "comparison_id": "merge_presence",
+      "case_ids": [
+        "testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__ordinary_merge_braking",
+        "testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator__hold_lane_braking"
+      ],
+      "fixed_conditions": "same source-qualified e-bike, separate motor vehicle, no authored intent, road, lane origins, camera and duration",
+      "deliberate_differences": [
+        "bicycle merge versus hold-lane route; original motor braking must be read back"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "electric_bicycle_classification",
+      "mandatory": true,
+      "description": "Reviewed original source for wheels, pedals, saddle, motor rating, assistance policy, and moped/scooter exclusions."
+    },
+    {
+      "name": "motor_vehicle_identity_and_movement",
+      "mandatory": true,
+      "description": "Separate statutory motor vehicle ID and full original speed history."
+    },
+    {
+      "name": "bicycle_and_motor_motion",
+      "mandatory": true,
+      "description": "Original synchronized lane, route, speed, brake, and body-gap histories."
+    },
+    {
+      "name": "authored_intention_declaration",
+      "mandatory": true,
+      "description": "Pre-run declaration bound to bicycle, target vehicle, source and interval; absence remains unknown intent, not affirmative lack of intent."
+    },
+    {
+      "name": "camera_frame_identity",
+      "mandatory": true,
+      "description": "Four synchronized original camera streams and Native frame/time joins."
+    },
+    {
+      "name": "legal_intent_and_interference",
+      "mandatory": false,
+      "description": "Qualitative legal review remains separate from numeric observations and synthetic fixtures."
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator/assignment.json",
@@ -51,17 +181,28 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "Physical realization and four-camera pixels require later original CARLA review.",
+    "Authored intention is a source-bound declaration, not an inference from motion or a legal finding.",
+    "Exact offline/compatibility, saved-only, physical, delivery and comparison proofs and canonical proposals are still CPU work."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
+    "method": "Read the exact frozen evidence inventory (zero recordings), assignment, witness and law. No accepted recording can establish this actor, target, intent or movement; physical and mental elements remain distinct.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "no-accepted-recording",
+        "requirement": "Source-qualified electric bicycle, distinct moving motor vehicle, authored intention and original interaction history",
+        "source": {
+          "path": "inputs/testing__C147344__NRS-484B-270-7a__cycle_or_scooter_operator/evidence.json",
+          "sha256": "9cfaaacd9b54f2955008aa63f9d632ddad83686f67259a6e1ef465be54933d87"
+        },
+        "why_existing_insufficient": "The frozen accepted-recording inventory is empty."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "executable_cpu_design_partial_proofs",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",

@@ -33,13 +33,23 @@ class RoadGeometryTests(unittest.TestCase):
             source = root / "map.txt"
             source.write_text("reviewed map source", encoding="utf-8")
             binding = {"path": source.name, "sha256": sha256(source.read_bytes()).hexdigest()}
-            packet = {key: binding for key in ("public_highway_source", "public_access_source", "highway_boundaries_source", "sidewalk_inventory_source", "subsection_6_review_source")}
-            packet.update({"map_name": "original-map", "map_sha256": binding["sha256"], "walking_segment": [0, 20], "reviewer": "fixture-only", "reviewed_public_highway": True, "reviewed_sidewalk_absent": True, "reviewed_subsection_6_inapplicable": True})
+            packet = {key: binding for key in ("public_highway_source", "public_access_source", "highway_boundaries_source", "sidewalk_inventory_source", "subsection_6_review_source", "opendrive_source")}
+            packet.update({"map_name": "original-map", "map_sha256": binding["sha256"], "walking_segment": [0, 20], "reviewer": "fixture-only", "reviewed_public_highway": True, "reviewed_sidewalk_absent": True, "reviewed_subsection_6_inapplicable": True, "routes": {"fixture": {}}, "cameras": {"fixture": {}}, "centerline_xy_m": [[-30.0, 0.0], [30.0, 0.0]]})
             packet_path.write_text(json.dumps(packet), encoding="utf-8")
             self.assertEqual(load_reviewed_site(packet_path)["map_name"], "original-map")
             source.write_text("changed", encoding="utf-8")
             with self.assertRaisesRegex(ValueError, "stale original source"):
                 load_reviewed_site(packet_path)
+
+    def test_same_left_edge_with_traffic_changes_heading_only(self):
+        for direction in ("east", "west"):
+            with self.subTest(direction=direction):
+                vehicle, facing = construction_routes(direction, "left", "facing")
+                same_vehicle, with_traffic = construction_routes(direction, "left", "with_traffic")
+                self.assertEqual(vehicle, same_vehicle)
+                self.assertEqual(facing.start[1], with_traffic.start[1])
+                self.assertTrue(pedestrian_faces_approach(vehicle, facing))
+                self.assertFalse(pedestrian_faces_approach(vehicle, with_traffic))
 
 
 if __name__ == "__main__":

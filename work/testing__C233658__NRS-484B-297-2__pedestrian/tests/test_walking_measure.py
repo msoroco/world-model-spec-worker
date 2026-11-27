@@ -21,7 +21,7 @@ class WalkingMeasurementTests(unittest.TestCase):
         self.assertEqual(value["pedestrian_side_history"], ["center_right"] * 3)
         self.assertTrue(value["all_frames_facing"])
         self.assertTrue(value["any_frame_vehicle_approaching"])
-        self.assertIsNone(value["legal_verdict"])
+        self.assertTrue(value["site_qualifications_reviewed"])
 
     def test_missing_source_and_unreviewed_site_rejected(self):
         packet = self.packet()

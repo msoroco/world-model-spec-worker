@@ -1,0 +1,79 @@
+{
+  "template_id": "NRS-484B-213-2c@motor_vehicle_driver",
+  "law_id": "NRS-484B-213-2c",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "A vehicle must not be driven to the left side of the highway at any time: When the view is obstructed upon approaching within 100 feet of any bridge, viaduct or tunnel. Subsection 2 does not apply upon a one-way highway.",
+  "structure": {
+    "law_id": "NRS-484B-213-2c",
+    "activation": {
+      "condition": "Motor vehicle driver approaches a source-reviewed bridge on a public highway.",
+      "numeric_conditions": [
+        {
+          "variable": "approach_front_distance_target_ft",
+          "operator": "<=",
+          "value": 100,
+          "unit": "ft"
+        }
+      ]
+    },
+    "obligation": {
+      "type": "must_not",
+      "description": "Do not drive to the left side of the highway while the stated bridge-approach and obstructed-view conditions apply.",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "trigger": "The highway is one-way.",
+        "effect": "Subsection 2 does not apply.",
+        "replacement_obligation": "No NRS 484B.213(2)(c) prohibition is inferred.",
+        "source_clause": "Subsection 2 does not apply upon a one-way highway."
+      }
+    ],
+    "timing": {
+      "description": "Observe approach progression, body position, bridge entrance and original view geometry at common frames.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "the view is obstructed",
+        "note": "Qualitative source phrase; measured ray brackets and original pixels are retained without a legal cutoff."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "approach_front_distance_target_ft",
+      "kind": "controller",
+      "range_or_domain": [
+        99,
+        100,
+        101
+      ]
+    },
+    {
+      "name": "planned_opaque_blocker",
+      "kind": "world_setup",
+      "range_or_domain": [
+        false,
+        true
+      ]
+    },
+    {
+      "name": "one_way_highway",
+      "kind": "world_setup",
+      "range_or_domain": [
+        false,
+        true
+      ]
+    },
+    {
+      "name": "left_of_center_route",
+      "kind": "controller",
+      "range_or_domain": [
+        false,
+        true
+      ]
+    }
+  ]
+}

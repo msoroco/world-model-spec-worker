@@ -45,17 +45,20 @@ def pedestrian_faces_approach(vehicle_route: Route, pedestrian_route: Route) -> 
     return vx * px + vy * py < 0
 
 
-def construction_routes(approach: str, side: str) -> tuple[Route, Route]:
+def construction_routes(approach: str, side: str, heading: str = "facing") -> tuple[Route, Route]:
     """Return distinct vehicle/pedestrian paths on a two-directional road.
 
     The side is defined in the pedestrian's direction of travel: a pedestrian
     facing the oncoming vehicle at the left highway edge is left-facing.
     """
-    if approach not in {"east", "west"} or side not in {"left", "right"}:
+    if approach not in {"east", "west"} or side not in {"left", "right"} or heading not in {"facing", "with_traffic"}:
         raise ValueError("unsupported route request")
     vehicle = Route((-30.0, 0.0), (30.0, 0.0)) if approach == "east" else Route((30.0, 0.0), (-30.0, 0.0))
     # A facing pedestrian walks opposite the approaching vehicle. To isolate
     # highway side, keep both variants facing and change only the lateral edge.
     y = -4.5 if (approach == "east") == (side == "left") else 4.5
-    pedestrian = Route((20.0, y), (-20.0, y)) if approach == "east" else Route((-20.0, y), (20.0, y))
+    if (approach == "east") == (heading == "facing"):
+        pedestrian = Route((20.0, y), (-20.0, y))
+    else:
+        pedestrian = Route((-20.0, y), (20.0, y))
     return vehicle, pedestrian

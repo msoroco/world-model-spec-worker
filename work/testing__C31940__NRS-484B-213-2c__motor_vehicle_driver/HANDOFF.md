@@ -1,22 +1,11 @@
-# testing__C31940__NRS-484B-213-2c__motor_vehicle_driver
+# NRS 484B.213(2)(c) bridge approach delivery
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: CPU delivery prepared; original CARLA acceptance pending. Exact assignment: `testing__C31940__NRS-484B-213-2c__motor_vehicle_driver`.
 
-Exact law: NRS 484B.213(2)(c); with 484B.213(3) — A vehicle must not be driven to the left side of the highway at any time: When the view is obstructed upon approaching within 100 feet of any bridge, viaduct or tunnel. Subsection 2 does not apply upon a one-way highway.
-Assigned branch(es): bridge approach.
-Cell: C31940 (bridge, travel, centerline); actor: motor_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+Six exact cases cover the obstructed bridge approach at 101, 100 and 99 feet from the reviewed entrance, clear view, right-side travel and the one-way-highway subsection 3 exception. The 101-foot case uses root `construction.json`; five other primary constructions are under `cases/`. Each case has a concrete fallback controller, and `case-plan.json` defines five controlled comparisons. The statutory distance is measured from the reviewed bridge entrance to the ego front body edge; no engineering tolerance is treated as a legal tolerance. Original view obstruction and highway directionality require review.
 
-## Next CPU actions
+The manifest `execution-manifest.json` pins each construction, offline and compatibility receipts, source-bound physical fixture/lifecycle proofs, saved-only processing, independent delivery audit and controlled comparisons. `semantic-index.json` under `proposals/` binds exact law, exception, parameters and unresolved view-obstruction judgment. `queue-proposal.json` has the six delivery rows and comparison follow-ups.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C31940__NRS-484B-213-2c__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+CPU checks: four focused unit tests pass. All six primary and six fallback offline/compatibility runs pass. All six saved-only runs pass. Each physical fixture/lifecycle proof passes. Delivery audits accept intact diagnostic receipts and reject missing original bridge history; five comparison audits accept the intact pair and reject altered history. These diagnostic CPU fixtures do not establish original CARLA motion or legal view obstruction.
 
-## Proven checks and dependency boundary
-
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
-
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+GPU delivery must provide a reviewed source packet binding the actual public-highway bridge, entrance, centerline, highway directionality, ego body length and planned occluder. Use `result.json` `first_gpu_delivery_command` with the local runtime/DB/CARLA variables. Preserve original videos, bridge history, source hashes, Native exit, restoration and owner release; independently review pixels and the statutory view condition.
