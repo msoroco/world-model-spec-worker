@@ -7,8 +7,13 @@ command unchanged, so shortening the queue does not change the local job.
 import argparse
 import hashlib
 import json
+import os
 import subprocess
+import sys
 from pathlib import Path
+
+sys.dont_write_bytecode = True
+
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -58,6 +63,16 @@ def main():
     if args.show:
         print(command)
         return 0
+    if args.stage == "comparison":
+        assignment = args.identifier.split("::", 1)[0]
+        if assignment in ("testing__C10307__LVMC-11-40-130__cycle_or_scooter_operator",
+                          "testing__C188132__LVMC-11-30-060-B__pedestrian"):
+            from fixed_camera_guard import check as check_fixed_cameras
+            left_key, right_key = (("LEFT_ATTEMPT", "RIGHT_ATTEMPT") if "C10307" in assignment
+                                   else ("FIRST_ATTEMPT", "SECOND_ATTEMPT"))
+            if not os.environ.get(left_key) or not os.environ.get(right_key):
+                raise ValueError("comparison original attempt paths required")
+            check_fixed_cameras(ROOT, args.identifier, os.environ[left_key], os.environ[right_key])
     return subprocess.run(["bash", "-c", command], cwd=ROOT, check=False).returncode
 
 
