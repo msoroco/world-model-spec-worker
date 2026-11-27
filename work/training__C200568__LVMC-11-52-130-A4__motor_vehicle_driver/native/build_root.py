@@ -30,7 +30,10 @@ def main():
                        ('tests/test_offline.py', ROOT / 'tests/test_offline.py'),
                        ('finalize.py', NATIVE / 'finalize.py'),
                        ('saved_hydrant.py', NATIVE / 'saved_hydrant.py')):
-        construction['files'].append({'path': name, 'content': path.read_text()})
+        item = {'path': name, 'content': path.read_text()}
+        if path.parent == NATIVE:
+            item['source'] = 'work/' + ROOT.name + '/native/' + path.name
+        construction['files'].append(item)
     construction['measurement_plan'] = {'channels': [item['name'] for item in
                                              primary['recording_description']['channels']],
                                     'source': 'original Native actor, hydrant survey and four camera frame joins'}

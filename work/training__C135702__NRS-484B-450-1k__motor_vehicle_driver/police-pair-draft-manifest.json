@@ -39,7 +39,70 @@
         "test_log_sha256": "907e54c9dc58cfacb546834dcff8f1c8da39bd43b0eacefeaa6ae10e592f9829",
         "processing_receipt": "cases/police_absent/saved-processing.json",
         "processing_receipt_sha256": "907e54c9dc58cfacb546834dcff8f1c8da39bd43b0eacefeaa6ae10e592f9829"
-      }
+      },
+      "physical_preparation": {
+        "receipt": "cases/police_absent/physical-receipt.json",
+        "sha256": "ed16bfc7528a58c5106bd4150ff5121b1b97dcbd0f943eeb45a6ecc9df041c6e"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_police_source__police_absent",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "branch_delivery_audit.py",
+        "script_sha256": "4d83587e52a10628dd277f692136aa172a0d18f211fd139fd32128a169ea1a7f",
+        "command": ".venv-cpu/bin/python work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/branch_delivery_audit.py --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_police_source__police_absent --self-test",
+        "test_exit_code": 0,
+        "test_log": "cases/police_absent/delivery-positive.log",
+        "test_log_sha256": "394db5c6bf1d7d0037617112f0e48fb95031c15d06b96e60aabe32d952b5c55b",
+        "negative_command": ".venv-cpu/bin/python work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/branch_delivery_audit.py --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_police_source__police_absent --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing exact original Native result",
+        "negative_log": "cases/police_absent/delivery-negative.log",
+        "negative_log_sha256": "1143b245995f5ded0fffa8e28c30c0e7eceadb6330c0fa51f52cf830e58c5519",
+        "scope": "CPU source protocol only; original police instruction and physical/legal applicability pending"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original passing vehicle may not sustain a stable pre-obstruction halt with the primary braking station."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/police_absent/fallback1-construction.json",
+          "construction_sha256": "9e722398c532006a4fccba313e62467b1cc071725d4fe54168c00639b48b3fbc",
+          "trigger": {
+            "source": "original native_samples.jsonl",
+            "metric": "minimum_passing_speed_m_s and passing_halt_frames",
+            "failure_condition": "fewer than 20 source halt frames before the physical obstruction"
+          },
+          "changed_knobs": [
+            "passing_throttle .25 to .35",
+            "brake_station_x_m -11 to -15"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/police-pair-draft-manifest.json --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_police_source__police_absent --candidate fallback1 --output .runtime-work/c135702-temp/offline-police_absent-fallback1 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "9e722398c532006a4fccba313e62467b1cc071725d4fe54168c00639b48b3fbc",
+            "log": "cases/police_absent/fallback1-offline.log",
+            "log_sha256": "14d7452788df6f040aced2152c30ec496ae2856ff0b39b10e8b96c832ca5cad9"
+          },
+          "compatibility": {
+            "receipt": "cases/police_absent/fallback1-compatibility.json",
+            "sha256": "b37334556156042815a6f208923aa6885e0a6ec7f341b71fb074e1770fa9d0f1",
+            "log": "cases/police_absent/fallback1-analysis.log",
+            "negative_log": "cases/police_absent/fallback1-negative.log"
+          }
+        }
+      ]
     },
     {
       "case_id": "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_police_source__police_present",
@@ -76,7 +139,70 @@
         "test_log_sha256": "3cdd175f42948d3b89ff9a98e5d7255986f8d7c627888d6c1a68073fbd254dc6",
         "processing_receipt": "cases/police_present/saved-processing.json",
         "processing_receipt_sha256": "3cdd175f42948d3b89ff9a98e5d7255986f8d7c627888d6c1a68073fbd254dc6"
-      }
+      },
+      "physical_preparation": {
+        "receipt": "cases/police_present/physical-receipt.json",
+        "sha256": "8e398c880f93a43fce2bec08bf789d6bd863b12c5f45512aacb35bf50fc5341d"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_police_source__police_present",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "branch_delivery_audit.py",
+        "script_sha256": "4d83587e52a10628dd277f692136aa172a0d18f211fd139fd32128a169ea1a7f",
+        "command": ".venv-cpu/bin/python work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/branch_delivery_audit.py --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_police_source__police_present --self-test",
+        "test_exit_code": 0,
+        "test_log": "cases/police_present/delivery-positive.log",
+        "test_log_sha256": "d5626bd9e072ba3d2ca3158eba25124216898faa0968e578902cae8880918fbc",
+        "negative_command": ".venv-cpu/bin/python work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/branch_delivery_audit.py --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_police_source__police_present --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing exact original Native result",
+        "negative_log": "cases/police_present/delivery-negative.log",
+        "negative_log_sha256": "1143b245995f5ded0fffa8e28c30c0e7eceadb6330c0fa51f52cf830e58c5519",
+        "scope": "CPU source protocol only; original police instruction and physical/legal applicability pending"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original passing vehicle may not sustain a stable pre-obstruction halt with the primary braking station."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/police_present/fallback1-construction.json",
+          "construction_sha256": "d669704aad89c630b6c9755ecc58bffb01e5a874af484743bfc650fb07faedc4",
+          "trigger": {
+            "source": "original native_samples.jsonl",
+            "metric": "minimum_passing_speed_m_s and passing_halt_frames",
+            "failure_condition": "fewer than 20 source halt frames before the physical obstruction"
+          },
+          "changed_knobs": [
+            "passing_throttle .25 to .35",
+            "brake_station_x_m -11 to -15"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/police-pair-draft-manifest.json --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_police_source__police_present --candidate fallback1 --output .runtime-work/c135702-temp/offline-police_present-fallback1 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "d669704aad89c630b6c9755ecc58bffb01e5a874af484743bfc650fb07faedc4",
+            "log": "cases/police_present/fallback1-offline.log",
+            "log_sha256": "98a5be89ab2815eef1793f0bb7978318386e01714b875cbf86449fdf8f8e3f3d"
+          },
+          "compatibility": {
+            "receipt": "cases/police_present/fallback1-compatibility.json",
+            "sha256": "25ec1642606ab52102905949239090cbd921cc170db1820228f96236dfc5af72",
+            "log": "cases/police_present/fallback1-analysis.log",
+            "negative_log": "cases/police_present/fallback1-negative.log"
+          }
+        }
+      ]
     }
   ]
 }

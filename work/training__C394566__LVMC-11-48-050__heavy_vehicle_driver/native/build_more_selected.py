@@ -15,9 +15,12 @@ def sha(path):
 def build():
     plan = json.loads((FOLDER / 'case-plan.json').read_text())
     manifest_path = FOLDER / 'execution-probe-manifest.json'
-    manifest = json.loads(manifest_path.read_text())
-    manifest['cases'] = [entry for entry in manifest['cases']
-                         if entry['case_id'].endswith(('__truck_route', '__non_truck_route'))]
+    manifest = json.loads((NATIVE / 'route-probe-manifest.json').read_text())
+    for entry in manifest['cases']:
+        entry['measurement_contract'] = 'measurement-' + entry['case_id'].split('__')[-1] + '.json'
+        entry['construction'] = 'native/' + entry['construction']
+        for candidate in entry['candidates']:
+            candidate['construction'] = 'native/' + candidate['construction']
     base = json.loads((NATIVE / 'config.json').read_text())
     standard = {name: (NATIVE / name).read_text() for name in
                 ('runner.py', 'source_contract.py', 'route_measurement.py')}

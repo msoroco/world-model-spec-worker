@@ -1,10 +1,10 @@
 # C394566 / LVMC 11.48.050 current CPU checkpoint (2026-11-27)
 
-Status: partial. Sixteen source-branch cases and eight controlled comparisons are planned; none is marked selected. Exact 19:00 and 06:00 endpoints remain legal interpretation questions. All 31 primary/fallback inline Native constructions passed current scoped offline checks. The first route-pair public compatibility receipts were made stale by a construction rebuild and are being rerun with all other candidates. A current permit-scope representative passed positive source-bound analysis, missing permit-authority negative, Native validation, Core conversion and four-view final decode.
+Status: partial. Seventeen source-branch cases and eight controlled comparisons are planned; none is marked selected. A below/at/above 8,000 lb weight boundary has been added, and the pinned semantic stage check passes on the numeric threshold. Exact 19:00 and 06:00 endpoints remain legal interpretation questions. Thirty-three primary/fallback inline Native constructions have been rebuilt; their final scoped offline and public checks are in progress. Earlier public receipts are diagnostic history on superseded construction hashes.
 
 A prior synthetic acquisition passed saved-only reprocessing with 600 timestamp joins, preserved original hashes and final media decode, but its receipt predates the construction rebuild and must be rerun. These are diagnostic software proofs, not original CARLA execution or source-authority review. Synthetic fixtures do not certify weight, district, route authority or written permit authenticity/scope and do not decide legal result.
 
-Next CPU work: complete current public checks, rerun saved-only proof for all 16 primaries, bind exact case selection, semantic, physical/lifecycle and independent delivery/comparison audits, then run the strict assignment gate.
+Next CPU work: complete the 33 current offline/public checks, rerun saved-only proof for all 17 primaries, bind exact case selection, physical/lifecycle and independent delivery audits, then run the strict assignment gate. All eight independent source-fact comparisons and missing-source negatives pass CPU checks on diagnostic fixtures.
 
 ## Earlier handoff
 

@@ -1,4 +1,5 @@
 """Build bounded synthetic source fixtures for the remaining planned contrasts."""
+import copy
 import hashlib
 import json
 from pathlib import Path
@@ -50,6 +51,7 @@ def build():
             if changes.get('stationary'):
                 row.update(ego_x_m=0.0, ego_y_m=0.0, ego_speed_mps=0.0)
             rows.append(json.dumps(row, separators=(',', ':')))
+        graphs = copy.deepcopy(original['graphs'])
         if changes.get('stationary'):
             trace = []
             for line in files['trace.jsonl'].splitlines():
@@ -59,6 +61,27 @@ def build():
                            speed_mph=0.0, velocity_mps=[0.0, 0.0, 0.0])
                 trace.append(json.dumps(row, separators=(',', ':')))
             files['trace.jsonl'] = '\n'.join(trace) + '\n'
+            evidence = []
+            for line in files['capture/evidence.jsonl'].splitlines():
+                row = json.loads(line)
+                row['ego']['position_m'] = [0.0, 0.0, 0.0]
+                row['ego']['speed_mps'] = 0.0
+                for participant in row['original_observations']['participants']:
+                    if participant['actor_id'] == row['actor_id']:
+                        participant['position_m'] = [0.0, 0.0, 0.0]
+                        participant['velocity_mps'] = [0.0, 0.0, 0.0]
+                        participant['speed_mps'] = 0.0
+                evidence.append(json.dumps(row, separators=(',', ':')))
+            files['capture/evidence.jsonl'] = '\n'.join(evidence) + '\n'
+            for graph, observed_line in zip(graphs, evidence):
+                observed = json.loads(observed_line)
+                graph['attributes']['observed_evidence'] = observed['original_observations']
+                for node in graph['nodes']:
+                    if node.get('id') == 'ego':
+                        node['attributes']['vertex'] = [0.0, 0.0, 0.0]
+            capture = json.loads(files['capture/manifest.json'])
+            capture['sources']['trace.jsonl'] = hashlib.sha256(files['trace.jsonl'].encode()).hexdigest()
+            files['capture/manifest.json'] = json.dumps(capture, separators=(',', ':')) + '\n'
         assert len(rows) == len(maps) == 600
         files['original-route-rows.jsonl'] = '\n'.join(rows) + '\n'
         facts = {'unladen_weight_lb': 8001, 'district': 'residence', 'truck_route': False,
@@ -93,7 +116,7 @@ def build():
         seal = {'case_id': case, 'sha256': {name: hashlib.sha256(files[name].encode()).hexdigest()
                                            for name in protected}, 'physical_or_legal_accepted': False}
         files['capture-seal.json'] = json.dumps(seal, sort_keys=True) + '\n'
-        specification = {'files': files, 'graphs': original['graphs'], 'videos': original['videos']}
+        specification = {'files': files, 'graphs': graphs, 'videos': original['videos']}
         out = FOLDER / ('diagnostic-' + suffix + '.json')
         out.write_text(json.dumps(specification, separators=(',', ':')) + '\n')
         if out.stat().st_size > 2 * 1024 * 1024:

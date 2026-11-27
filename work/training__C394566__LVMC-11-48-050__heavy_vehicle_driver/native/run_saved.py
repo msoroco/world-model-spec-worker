@@ -18,7 +18,7 @@ def sha(path):
 
 def one(case):
     suffix = case.removeprefix(FOLDER.name + '__')
-    scratch = ROOT / '.runtime-work' / ('c394566-saved-final-' + suffix)
+    scratch = ROOT / '.runtime-work' / ('c394566-saved-v17-' + suffix)
     command = [str(ROOT / '.venv-cpu/bin/python'), '-B', str(FOLDER / 'native/prove_saved.py'),
                '--case', case, '--scratch', str(scratch), '--library', str(ROOT / 'runtime/library'),
                '--validator', str(VALIDATOR)]
@@ -47,9 +47,7 @@ def main():
     with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
         results = list(pool.map(one, [entry['case_id'] for entry in manifest['cases']]))
     proofs = dict(results)
-    for entry in manifest['cases']:
-        entry['post_capture'] = proofs[entry['case_id']]
-    (FOLDER / 'execution-probe-manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
+    (FOLDER / 'saved/proof-index.json').write_text(json.dumps(proofs, indent=2) + '\n')
     print(json.dumps({'saved_only_cases': len(results)}))
 
 

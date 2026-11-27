@@ -46,6 +46,7 @@ def build():
                       "probe": {"primary_variable": "park_y_m",
                                 "comparison_or_standard": "same road and physical obstruction with two parked positions",
                                 "target_value_or_branch": intent}})
+    selected_cases = json.loads(json.dumps(cases))
     for suffix, request in (("police_absent", 0), ("police_present", 1)):
         assignments = json.loads(json.dumps(common))
         assignments["park_y_m"]["value"] = -1.1
@@ -69,10 +70,15 @@ def build():
                                 "target_value_or_branch": "present" if request else "absent"}})
     result = {"cell_id": "C135702", "actor": "motor_vehicle_driver",
               "status": "draft", "sweeps_expanded": True,
-              "cases": cases, "sweep_specs": []}
+              "cases": selected_cases, "sweep_specs": []}
     path = ROOT / "proposals/cases.json"
     path.parent.mkdir(exist_ok=True)
+    if path.is_file():
+        result["sweep_specs"] = json.loads(path.read_text()).get("sweep_specs", [])
     path.write_text(json.dumps(result, indent=2) + "\n")
+    police_draft = dict(result, cases=cases)
+    (ROOT / "proposals/police-cases-draft.json").write_text(
+        json.dumps(police_draft, indent=2) + "\n")
 
 
 if __name__ == "__main__":

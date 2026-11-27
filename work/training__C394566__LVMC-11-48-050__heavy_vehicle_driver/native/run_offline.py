@@ -20,7 +20,7 @@ def sha(path):
 def check(item):
     case, candidate, construction_sha = item
     suffix = case.removeprefix(FOLDER.name + '__')
-    scratch = ROOT / '.runtime-work' / ('c394566-offline-final-' + suffix + '-' + candidate)
+    scratch = ROOT / '.runtime-work' / ('c394566-offline-v17-' + suffix + '-' + candidate)
     if scratch.exists():
         raise ValueError('Fresh offline scratch required: ' + str(scratch))
     command = [str(ROOT / '.venv-cpu/bin/python'), '-B', str(ROOT / 'runtime.py'), 'offline',
