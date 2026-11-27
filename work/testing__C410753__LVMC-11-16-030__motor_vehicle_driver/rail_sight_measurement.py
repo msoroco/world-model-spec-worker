@@ -131,7 +131,10 @@ def measure(root, packet, live_opendrive, frames):
         "on_duty_flagman_observed": any(frames[i]["flagman_on_duty"] for i in crossing),
         "clearly_visible_nonwarning_signal_observed": any(
             frames[i]["signal_installed"] and frames[i]["signal_clearly_visible"] and
-            not frames[i]["signal_immediate_train_approach"] for i in crossing)}
+            not frames[i]["signal_immediate_train_approach"] for i in crossing),
+        "clearly_visible_warning_signal_observed": any(
+            frames[i]["signal_installed"] and frames[i]["signal_clearly_visible"] and
+            frames[i]["signal_immediate_train_approach"] for i in crossing)}
     return {"crossing_original_frames": [frames[i]["original_frame"] for i in crossing],
             "approach_observation_frames": [row["original_frame"] for row in approach],
             "all_three_sight_rays_clear_during_approach": all(all(ray) for ray in rays),

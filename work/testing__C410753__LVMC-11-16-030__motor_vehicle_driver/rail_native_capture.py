@@ -36,6 +36,20 @@ def _write_source(root, relative, value):
     return {"path": relative, "sha256": hashlib.sha256(raw).hexdigest()}
 
 
+def _bind_packet(root, packet):
+    """Seal the exact reviewed input packet alongside the original attempt."""
+    relative = "reviewed-rail-packet.json"
+    path = root / relative
+    raw = _encoded(packet)
+    if path.exists():
+        if path.is_symlink() or path.read_bytes() != raw:
+            raise ValueError("reviewed rail packet changed")
+    else:
+        with path.open("xb") as stream:
+            stream.write(raw)
+    return {"path": relative, "sha256": hashlib.sha256(raw).hexdigest()}
+
+
 def capture(*, case_id, packet, world, ego, route_reader, ray_reader,
             exception_reader, camera_reader, brake, attempt_root,
             before_tick=None, frame_count=900):
@@ -54,6 +68,7 @@ def capture(*, case_id, packet, world, ego, route_reader, ray_reader,
         raise ValueError("new reviewed rail attempt directory required")
     road = world.get_map().to_opendrive()
     read_reviewed_site(root, packet, road)
+    packet_ref = _bind_packet(root, packet)
     frames = []
     camera_map = []
     try:
@@ -136,7 +151,7 @@ def capture(*, case_id, packet, world, ego, route_reader, ray_reader,
         camera_ref = _write_source(root, "native-rail-camera-map.json", camera_map)
         receipt = {"case_id": case_id, "capture_kind": "original_native",
                    "fps": 20, "duration_s": 45, "frame_count": 900,
-                   "frames": frame_ref, "camera_map": camera_ref,
+                   "packet": packet_ref, "frames": frame_ref, "camera_map": camera_ref,
                    "measurement": measurement, "legal_conclusion": None}
         _write_source(root, "native-rail-receipt.json", receipt)
         return receipt

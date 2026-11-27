@@ -1,0 +1,82 @@
+{
+  "actor": "heavy_vehicle_driver",
+  "law_id": "LVMC-11-48-050",
+  "parameter_refs": [
+    {
+      "kind": "world_setup",
+      "name": "target_unladen_lb",
+      "range_or_domain": "vehicle-specific unladen weight targets 7,999, 8,000 and 8,001 lb"
+    },
+    {
+      "kind": "world_setup",
+      "name": "target_local_time",
+      "range_or_domain": "18:59, 19:00, 20:00, 05:59 and 06:00 local civil time"
+    },
+    {
+      "kind": "world_setup",
+      "name": "target_district",
+      "range_or_domain": "residence or nonresidence with original frontage sources"
+    },
+    {
+      "kind": "world_setup",
+      "name": "target_street_class",
+      "range_or_domain": "non-truck street or designated truck route"
+    },
+    {
+      "kind": "world_setup",
+      "name": "target_permit_status",
+      "range_or_domain": "none, application only, issued matching written permit, route/time condition breach"
+    }
+  ],
+  "quote": "No vehicle in excess of eight thousand pounds unladen weight shall be operated or moved upon any street (other than a truck route), in any residence district between the hours of seven p.m. and six a.m.; provided, however, that the Department of Public Works may, at its discretion, upon application in writing, issue a special permit in writing authorizing the applicant to operate or move such vehicle between the hours of seven p.m. and six a.m. In issuing such permit, the Department may impose such conditions thereon, such as routes to be followed, time of operation or movement, or other matters, as it deems necessary or desirable.",
+  "status": "draft",
+  "structure": {
+    "activation": {
+      "condition": "Vehicle-specific actual unladen weight exceeds 8,000 lb; original ego operates or moves on a municipal residence-district street other than a truck route during the 7 p.m.\u20136 a.m. civil-time window.",
+      "numeric_conditions": [
+        {
+          "name": "unladen_weight_boundary",
+          "operator": "greater_than",
+          "unit": "lb",
+          "value": 8000,
+          "variable": "actual_unladen_weight_lb"
+        }
+      ]
+    },
+    "exceptions": [
+      {
+        "description": "DPW may issue a written special permit upon written application; applicant, vehicle, authorized route/time and all conditions need original review.",
+        "numeric_conditions": [],
+        "source_clause": "special permit in writing"
+      }
+    ],
+    "judgment_calls_needed": [
+      {
+        "note": "Vehicle-specific unladen weight, local civil time, residence frontage/business exclusion, truck-route extents and written DPW permit scope/conditions require independent original-source review. No worker legal verdict.",
+        "phrase": "residence district"
+      },
+      {
+        "note": "Vehicle-specific unladen weight, local civil time, residence frontage/business exclusion, truck-route extents and written DPW permit scope/conditions require independent original-source review. No worker legal verdict.",
+        "phrase": "truck route"
+      },
+      {
+        "note": "Vehicle-specific unladen weight, local civil time, residence frontage/business exclusion, truck-route extents and written DPW permit scope/conditions require independent original-source review. No worker legal verdict.",
+        "phrase": "between seven p.m. and six a.m."
+      },
+      {
+        "note": "Vehicle-specific unladen weight, local civil time, residence frontage/business exclusion, truck-route extents and written DPW permit scope/conditions require independent original-source review. No worker legal verdict.",
+        "phrase": "written permit authorization and conditions"
+      }
+    ],
+    "obligation": {
+      "description": "No vehicle in excess of eight thousand pounds unladen weight shall be operated or moved upon any street (other than a truck route), in any residence district between the hours of seven p.m. and six a.m.; provided, however, that the Department of Public Works may, at its discretion, upon application in writing, issue a special permit in writing authorizing the applicant to operate or move such vehicle between the hours of seven p.m. and six a.m. In issuing such permit, the Department may impose such conditions thereon, such as routes to be followed, time of operation or movement, or other matters, as it deems necessary or desirable.",
+      "numeric_conditions": [],
+      "type": "must_not"
+    },
+    "timing": {
+      "description": "Join original UTC start and 20 Hz operation to source-reviewed local timezone; stage 18:59/19:00, 05:59/06:00 endpoints without deciding legal inclusivity.",
+      "numeric_conditions": []
+    }
+  },
+  "template_id": "LVMC-11-48-050@heavy_vehicle_driver"
+}

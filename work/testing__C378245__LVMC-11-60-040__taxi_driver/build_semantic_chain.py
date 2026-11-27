@@ -124,6 +124,10 @@ def build() -> None:
                   "missing_inputs": ["Source-reviewed feasible passenger loading/unloading mechanism and physical duration range",
                                      "Original independent activity review covering each planned physical interval"],
                   "rationale": "No defensible physical sweep range can be asserted before original passenger mechanism and site review."}]}
+    # There are no complete sweep specifications to materialize. Preserve the
+    # incomplete judgment plan rather than inventing physical setpoints.
+    if all(spec["status"] == "incomplete" for spec in result["sweep_specs"]):
+        result["sweeps_expanded"] = True
     write("cases.json", result)
     names = {"relevance_batch": "relevance_batch.json",
              "relevance": "relevance.json", "template": "template.json",

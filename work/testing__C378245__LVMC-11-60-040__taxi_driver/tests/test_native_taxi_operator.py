@@ -33,7 +33,7 @@ def site():
             "halt_poses": {"in_stand": pose(2, 2), "outside_stand": pose(8, 2)},
             "passenger_start_pose": pose(9, 3), "passenger_door_pose": pose(8, 2),
             "camera_mounts": {name: {"attach_to": "taxi", "transform": pose(0, 0), "fov_deg": 90}
-                              for name in ("overview", "approach", "curb_reference", "passenger_side")},
+                              for name in ("overview", "approach", "reference_corner", "driver_reference")},
         },
     }
 

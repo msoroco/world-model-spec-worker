@@ -22,7 +22,7 @@ def build() -> None:
     manifest = json.loads(manifest_path.read_text())
     if len(manifest["cases"]) != 1 or manifest["cases"][0]["case_id"] != IDENTITY + "__" + FIRST:
         raise ValueError("first proven taxi case must remain pinned")
-    shared = ["runner.py", "native_taxi_operator.py", "encode_taxi_views.py", "taxi_stand_measurement.py",
+    shared = ["runner.py", "native_taxi_operator.py", "encode_taxi_views.py", "taxi_stand_measurement.py", "analysis.py",
               "case-plan.json", "tests/test_exact_case_config.py",
               "tests/test_native_taxi_operator.py", "tests/test_taxi_stand_measurement.py"]
     base_config = json.loads((ROOT / "config.json").read_text())

@@ -3,14 +3,36 @@
   "assignment_id": "testing__C378245__LVMC-11-60-040__taxi_driver",
   "camera_plan": {
     "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "full capture",
+        "subject": "taxi, stand, street and passenger",
+        "view": "overview"
+      },
+      {
+        "interval": "full capture",
+        "subject": "taxi approach and curb position",
+        "view": "approach"
+      },
+      {
+        "interval": "full capture",
+        "subject": "stand designation boundary",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "full capture",
+        "subject": "passenger side and taxi door",
+        "view": "driver_reference"
+      }
+    ],
     "duration_s": 45,
     "profile": "overview1080-capability",
     "rate_hz": 20,
     "views": [
       "overview",
       "approach",
-      "curb_reference",
-      "passenger_side"
+      "reference_corner",
+      "driver_reference"
     ]
   },
   "cases": [
@@ -811,16 +833,88 @@
     }
   ],
   "source_observation_mapping": {
-    "business_district_and_street": "independent site and jurisdiction source",
-    "four_camera_frames": "native-taxi/<view>/<frame>.png with frame SHA-256 ledger",
-    "native_frame": "native_frames.json original world tick",
-    "other_stopping_parking_regulations": "independent applicable other-regulations source",
-    "passenger_activity_review": "independent original activity_review JSON and camera SHA-256",
-    "taxi_center_xy_m": "native_frames.json original taxi transform",
-    "taxi_footprint_xy_m": "native_frames.json original taxi bounding box",
-    "taxi_licence_and_operator": "independent taxi licence and operator source",
-    "taxi_speed_mps": "native_frames.json original taxi velocity",
-    "taxi_stand_designation": "independent official designation source"
+    "business_district_and_street": {
+      "channels": [],
+      "evidence": "source-hashed site and jurisdiction",
+      "source_refs": [
+        "reviewed_site.json"
+      ]
+    },
+    "four_camera_frames": {
+      "channels": [
+        "four_camera_frames"
+      ],
+      "evidence": "original four-view frame ledger and pixels",
+      "source_refs": [
+        "native_frames.json"
+      ]
+    },
+    "native_frame": {
+      "channels": [
+        "native_frame"
+      ],
+      "evidence": "Native tick ledger",
+      "source_refs": [
+        "native_frames.json"
+      ]
+    },
+    "other_stopping_parking_regulations": {
+      "channels": [],
+      "evidence": "source-hashed applicable rules",
+      "source_refs": [
+        "other_regulations.json"
+      ]
+    },
+    "passenger_activity_review": {
+      "channels": [
+        "passenger_activity_review"
+      ],
+      "evidence": "source-hashed independent activity review",
+      "source_refs": [
+        "activity_review.json"
+      ]
+    },
+    "taxi_center_xy_m": {
+      "channels": [
+        "taxi_center_xy_m"
+      ],
+      "evidence": "taxi transform",
+      "source_refs": [
+        "native_frames.json"
+      ]
+    },
+    "taxi_footprint_xy_m": {
+      "channels": [
+        "taxi_footprint_xy_m"
+      ],
+      "evidence": "taxi body corners",
+      "source_refs": [
+        "native_frames.json"
+      ]
+    },
+    "taxi_licence_and_operator": {
+      "channels": [],
+      "evidence": "source-hashed taxi licence",
+      "source_refs": [
+        "taxi_licence.json"
+      ]
+    },
+    "taxi_speed_mps": {
+      "channels": [
+        "taxi_speed_mps"
+      ],
+      "evidence": "taxi velocity",
+      "source_refs": [
+        "native_frames.json"
+      ]
+    },
+    "taxi_stand_designation": {
+      "channels": [],
+      "evidence": "source-hashed official designation",
+      "source_refs": [
+        "stand_designation.json"
+      ]
+    }
   },
   "sources": [
     {

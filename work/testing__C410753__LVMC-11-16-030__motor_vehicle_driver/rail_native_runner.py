@@ -6,6 +6,7 @@ import math
 from pathlib import Path
 
 from rail_construction import TARGETS, spawn_occluder
+from rail_exception_construction import spawn_exception_actor
 from rail_exception_reader import ReviewedRailExceptionReader
 from rail_native_capture import capture
 from rail_ray_reader import ReviewedRailRayReader
@@ -84,10 +85,13 @@ def run_case(*, case_key, packet, attempt_root, world, ego, location_factory,
         packet, exceptions, root, original_exception_reader)
     controller = RailRouteController(route_reader, TARGETS[case_key][0], control_factory)
     occluder = None
+    exception_actor = None
     started = False
     try:
         occluder = spawn_occluder(world, transform_factory, root, packet,
                                   packet["road_sha256"], case_key)
+        exception_actor = spawn_exception_actor(world, transform_factory, root, packet,
+                                                packet["road_sha256"], case_key)
         camera_adapter.start()
         started = True
         return capture(
@@ -103,5 +107,9 @@ def run_case(*, case_key, packet, attempt_root, world, ego, location_factory,
             if started:
                 camera_adapter.stop()
         finally:
-            if occluder is not None:
-                occluder.destroy()
+            try:
+                if occluder is not None:
+                    occluder.destroy()
+            finally:
+                if exception_actor is not None:
+                    exception_actor.destroy()

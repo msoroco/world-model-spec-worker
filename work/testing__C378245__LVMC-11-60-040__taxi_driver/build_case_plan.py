@@ -25,9 +25,19 @@ def build() -> dict:
     ids = {suffix: IDENTITY + "__" + suffix for suffix, *_ in CASES}
     camera = {
         "duration_s": 45, "rate_hz": 20,
-        "views": ["overview", "approach", "curb_reference", "passenger_side"],
+        "views": ["overview", "approach", "reference_corner", "driver_reference"],
         "profile": "overview1080-capability",
         "composition": "synchronized_four_view_primary",
+        "coverage": [
+            {"view": "overview", "subject": "taxi, stand, street and passenger",
+             "interval": "full capture"},
+            {"view": "approach", "subject": "taxi approach and curb position",
+             "interval": "full capture"},
+            {"view": "reference_corner", "subject": "stand designation boundary",
+             "interval": "full capture"},
+            {"view": "driver_reference", "subject": "passenger side and taxi door",
+             "interval": "full capture"},
+        ],
     }
     channels = [
         {"name": "native_frame", "unit": "frame", "sampling_rate_hz": 20,
@@ -61,16 +71,16 @@ def build() -> dict:
     plan["observations"] = [{"name": row["name"], "source": row["method"], "mandatory": True}
                             for row in channels]
     plan["source_observation_mapping"] = {
-        "native_frame": "native_frames.json original world tick",
-        "taxi_center_xy_m": "native_frames.json original taxi transform",
-        "taxi_footprint_xy_m": "native_frames.json original taxi bounding box",
-        "taxi_speed_mps": "native_frames.json original taxi velocity",
-        "four_camera_frames": "native-taxi/<view>/<frame>.png with frame SHA-256 ledger",
-        "passenger_activity_review": "independent original activity_review JSON and camera SHA-256",
-        "taxi_stand_designation": "independent official designation source",
-        "business_district_and_street": "independent site and jurisdiction source",
-        "taxi_licence_and_operator": "independent taxi licence and operator source",
-        "other_stopping_parking_regulations": "independent applicable other-regulations source",
+        "native_frame": {"evidence": "Native tick ledger", "channels": ["native_frame"], "source_refs": ["native_frames.json"]},
+        "taxi_center_xy_m": {"evidence": "taxi transform", "channels": ["taxi_center_xy_m"], "source_refs": ["native_frames.json"]},
+        "taxi_footprint_xy_m": {"evidence": "taxi body corners", "channels": ["taxi_footprint_xy_m"], "source_refs": ["native_frames.json"]},
+        "taxi_speed_mps": {"evidence": "taxi velocity", "channels": ["taxi_speed_mps"], "source_refs": ["native_frames.json"]},
+        "four_camera_frames": {"evidence": "original four-view frame ledger and pixels", "channels": ["four_camera_frames"], "source_refs": ["native_frames.json"]},
+        "passenger_activity_review": {"evidence": "source-hashed independent activity review", "channels": ["passenger_activity_review"], "source_refs": ["activity_review.json"]},
+        "taxi_stand_designation": {"evidence": "source-hashed official designation", "channels": [], "source_refs": ["stand_designation.json"]},
+        "business_district_and_street": {"evidence": "source-hashed site and jurisdiction", "channels": [], "source_refs": ["reviewed_site.json"]},
+        "taxi_licence_and_operator": {"evidence": "source-hashed taxi licence", "channels": [], "source_refs": ["taxi_licence.json"]},
+        "other_stopping_parking_regulations": {"evidence": "source-hashed applicable rules", "channels": [], "source_refs": ["other_regulations.json"]},
     }
     plan["cases"] = [
         {

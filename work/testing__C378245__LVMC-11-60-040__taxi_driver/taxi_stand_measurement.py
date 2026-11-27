@@ -12,7 +12,7 @@ import math
 from pathlib import Path
 
 ASSIGNMENT = "testing__C378245__LVMC-11-60-040__taxi_driver"
-VIEWS = ("overview", "approach", "curb_reference", "passenger_side")
+VIEWS = ("overview", "approach", "reference_corner", "driver_reference")
 
 
 def raw_source(root: Path, ref: dict) -> bytes:
@@ -79,7 +79,11 @@ def measure(packet: dict, root: Path) -> dict:
         raise ValueError("four original camera source references required")
     camera_hashes = {name: hashlib.sha256(raw_source(root, cameras[name])).hexdigest()
                      for name in VIEWS}
-    if site.get("source_kind") != "original_independent_site_review":
+    diagnostic = packet.get("diagnostic_fixture") is True
+    site_kind = "synthetic_independent_site_review" if diagnostic else "original_independent_site_review"
+    native_kind = "synthetic_native" if diagnostic else "original_native"
+    activity_kind = "synthetic_independent_activity_review" if diagnostic else "original_independent_activity_review"
+    if site.get("source_kind") != site_kind:
         raise ValueError("original independent stand site review required")
     if site.get("cell_id") != "C378245" or site.get("business_district") is not True:
         raise ValueError("reviewed business-district cell differs")
@@ -99,13 +103,13 @@ def measure(packet: dict, root: Path) -> dict:
         raise ValueError("operator identity differs")
     if documents["other_regulations"].get("review_id") != site.get("other_regulation_review_id"):
         raise ValueError("other stop/parking regulation review differs")
-    if native.get("source_kind") != "original_native" or native.get("case_id") != case:
+    if native.get("source_kind") != native_kind or native.get("case_id") != case:
         raise ValueError("original exact-case Native result required")
     if native.get("frame_count") != 900 or not isinstance(frames, list) or len(frames) != 900:
         raise ValueError("complete 900-frame Native history required")
     if native.get("recording_id") != packet.get("recording_id"):
         raise ValueError("original recording identity differs")
-    if activity.get("source_kind") != "original_independent_activity_review":
+    if activity.get("source_kind") != activity_kind:
         raise ValueError("independent passenger activity review required")
     if activity.get("recording_id") != packet["recording_id"] or activity.get("case_id") != case:
         raise ValueError("activity review identity differs")
@@ -160,6 +164,7 @@ def measure(packet: dict, root: Path) -> dict:
             raise ValueError("passenger event lacks original review")
     return {
         "format": "worker-taxi-stand-measurement",
+        "diagnostic_fixture": diagnostic,
         "case_id": case,
         "recording_id": packet["recording_id"],
         "reviewed_activity": activity["activity"],

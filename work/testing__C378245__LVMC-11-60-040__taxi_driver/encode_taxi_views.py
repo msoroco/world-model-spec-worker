@@ -14,6 +14,9 @@ from taxi_stand_measurement import VIEWS
 def encode_views(original_frames: Path, destination: Path) -> dict:
     original_frames = Path(original_frames)
     destination = Path(destination)
+    ledger = json.loads((original_frames / "native_frames.json").read_text())
+    if not isinstance(ledger, list) or len(ledger) != 900:
+        raise ValueError("original taxi camera frame ledger is incomplete")
     if destination.exists():
         raise ValueError("retain prior taxi camera encodes")
     destination.mkdir(parents=True)
@@ -23,6 +26,13 @@ def encode_views(original_frames: Path, destination: Path) -> dict:
         frames = sorted(folder.glob("*.png"))
         if len(frames) != 900 or [path.name for path in frames] != [f"{i:04d}.png" for i in range(900)]:
             raise ValueError("original taxi camera stream lacks 900 ordered frames: " + name)
+        for index, frame in enumerate(frames):
+            record = ledger[index]
+            source = record.get("cameras", {}).get(name, {})
+            if (record.get("frame") != index
+                    or source.get("path") != str(frame.relative_to(original_frames))
+                    or hashlib.sha256(frame.read_bytes()).hexdigest() != source.get("sha256")):
+                raise ValueError("original taxi camera frame SHA-256 differs: " + name)
         target = destination / ("raw.mkv" if name == "overview" else name + ".mkv")
         command = ["ffmpeg", "-hide_banner", "-loglevel", "error", "-nostdin", "-y",
                    "-framerate", "20", "-i", str(folder / "%04d.png"),

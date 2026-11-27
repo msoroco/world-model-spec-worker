@@ -19,7 +19,7 @@ def write(path: Path, value: dict) -> None:
 def build() -> None:
     plan = json.loads((ROOT / "case-plan.json").read_text())
     case = next(c for c in plan["cases"] if c["case_id"] == ASSIGNMENT + "__" + SUFFIX)
-    names = ["runner.py", "native_taxi_operator.py", "encode_taxi_views.py", "taxi_stand_measurement.py",
+    names = ["runner.py", "native_taxi_operator.py", "encode_taxi_views.py", "taxi_stand_measurement.py", "analysis.py",
              "case-plan.json", "config.json", "tests/test_runner.py",
              "tests/test_native_taxi_operator.py", "tests/test_taxi_stand_measurement.py"]
     files = [{"path": name, "content": (ROOT / name).read_text(),

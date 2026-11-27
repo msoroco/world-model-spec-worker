@@ -33,6 +33,9 @@ def verify_camera_row(root, row, frame):
     from PIL import Image
     hashes = {}
     for name, dimensions in CAMERAS.items():
+        expected_path = f"original-cameras/{name}/{frame:08d}.png"
+        if row["sources"][name].get("path") != expected_path:
+            raise ValueError("original rail camera frame path differs")
         source = _source(root, row["sources"][name])
         raw = source.read_bytes()
         with Image.open(BytesIO(raw)) as image:
@@ -56,6 +59,9 @@ def verify_saved(root, packet, expected_case_id):
             (receipt.get("fps"), receipt.get("duration_s"), receipt.get("frame_count")) !=
             (20, 45, 900) or receipt.get("legal_conclusion") is not None):
         raise ValueError("original rail receipt identity or profile differs")
+    reviewed_packet = json.loads(_source(root, receipt.get("packet")).read_text())
+    if reviewed_packet != packet:
+        raise ValueError("reviewed rail packet differs from original capture")
     frames = json.loads(_source(root, receipt.get("frames")).read_text())
     cameras = json.loads(_source(root, receipt.get("camera_map")).read_text())
     if not isinstance(frames, list) or not isinstance(cameras, list) or (

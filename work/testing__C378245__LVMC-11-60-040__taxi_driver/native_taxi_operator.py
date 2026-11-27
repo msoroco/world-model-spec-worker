@@ -16,7 +16,7 @@ from pathlib import Path
 from taxi_stand_measurement import VIEWS, finite, polygon, within
 
 SIZES = {"overview": (1920, 1080), "approach": (1280, 720),
-         "curb_reference": (1280, 720), "passenger_side": (1280, 720)}
+         "reference_corner": (1280, 720), "driver_reference": (1280, 720)}
 
 
 def pose(value: dict) -> dict:
