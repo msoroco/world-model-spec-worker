@@ -4,6 +4,8 @@ import argparse
 import json
 import math
 import queue
+import shutil
+import threading
 from pathlib import Path
 
 CASE = "training__C230266__NRS-484B-280-1a__motor_vehicle_driver__probe_1"
@@ -55,7 +57,9 @@ def read_survey(path):
             and isinstance(source.get("pedestrian_walk_speed_mps"), (int, float))
             and 0 < source["pedestrian_walk_speed_mps"] <= 3
             and source.get("pedestrian_classification_source")
-            and source.get("control_relationship_source"), "Original road and pedestrian survey missing")
+            and source.get("control_relationship_source")
+            and type(source.get("pedestrian_crosses_vehicle_path")) is bool,
+            "Original road and pedestrian survey missing")
     return source
 
 
@@ -84,6 +88,8 @@ def execute(config, output_dir, survey_path, host, port):
     original = snapshot(client)
     actors, sensors = [], []
     images = queue.Queue()
+    collision_events = []
+    collision_lock = threading.Lock()
     try:
         require(world.get_map().name == source["map_name"], "Road survey map differs")
         settings = world.get_settings()
@@ -101,6 +107,20 @@ def execute(config, output_dir, survey_path, host, port):
                                     carla.Transform(carla.Location(x=x, y=y, z=z)))
         require(ped is not None, "Pedestrian spawn occupied")
         actors.append(ped)
+        collision_bp = world.get_blueprint_library().find("sensor.other.collision")
+        collision_sensor = world.spawn_actor(collision_bp, carla.Transform(), attach_to=ego)
+        actors.append(collision_sensor)
+        sensors.append(collision_sensor)
+
+        def record_collision(event):
+            with collision_lock:
+                collision_events.append({"native_frame": event.frame,
+                                         "other_actor_id": event.other_actor.id,
+                                         "pedestrian_contact": event.other_actor.id == ped.id,
+                                         "sensor_actor_id": collision_sensor.id})
+
+        collision_sensor.listen(record_collision)
+        shutil.copyfile(survey_path, output / "road_survey.json")
         end_x, end_y, _ = source["pedestrian_path_end_xyz_m"]
         path_length = math.hypot(end_x - x, end_y - y)
         require(path_length > 0.5, "Independent pedestrian path required")
@@ -163,16 +183,27 @@ def execute(config, output_dir, survey_path, host, port):
                                         "ped_y_m": ped_pose.location.y,
                                         "ego_speed_mps": speed,
                                         "ped_speed_mps": math.hypot(ped_speed.x, ped_speed.y),
+                                        "ego_actor_id": ego.id,
+                                        "pedestrian_actor_id": ped.id,
+                                        "vehicle_classification_source": config["vehicle_blueprint"],
+                                        "pedestrian_classification_source": source["pedestrian_classification_source"],
+                                        "control_relationship_source": source["control_relationship_source"],
                                         "vehicle_radius_m": math.hypot(ego.bounding_box.extent.x, ego.bounding_box.extent.y),
                                         "pedestrian_radius_m": math.hypot(ped.bounding_box.extent.x, ped.bounding_box.extent.y),
                                         "pedestrian_path_end_xyz_m": source["pedestrian_path_end_xyz_m"],
                                         "path_survey_source": source["road_boundary_source"],
-                                        "contact_sensor": None,
-                                        "contact_source": None,
+                                        "path_conflict_survey": source["pedestrian_crosses_vehicle_path"],
+                                        "contact_sensor_actor_id": collision_sensor.id,
+                                        "contact_sensor_alive": collision_sensor.is_alive,
                                         "driver_observed_pedestrian": None,
                                         "driver_observation_source": None,
                                         "line_of_sight_clear": None,
                                         "requested_control": request}) + "\n")
+        collision_sensor.stop()
+        sensors.remove(collision_sensor)
+        with collision_lock, (output / "contact_events.jsonl").open("x") as stream:
+            for event in collision_events:
+                stream.write(json.dumps(event, sort_keys=True) + "\n")
     finally:
         for sensor in sensors:
             sensor.stop()

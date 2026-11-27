@@ -801,6 +801,42 @@
         "test_log_sha256": "f1fc3c0196b2fc603d719b13a846338246cb8d5b51a4bab8199c72f17f099410",
         "test_exit_code": 0
       }
+    },
+    {
+      "case_id": "training__C143691__LVMC-11-27-010-A__motor_vehicle_driver__mobility_device",
+      "kind": "delivery",
+      "construction": "draft-exact/mobility_device/selected/construction.json",
+      "construction_sha256": "d681c5573cc7a928fa0de70c79442700a51ef7d9ba9cd97c829654068a7866dc",
+      "measurement_contract": "measurement-mobility_device.json",
+      "fixture_recipe": "work/training__C143691__LVMC-11-27-010-A__motor_vehicle_driver/diagnostic-recipe-mobility_device.json",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original mobility-device asset, actor eligibility and barrier passage require independent review"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "draft-exact/mobility_device/fallback1/construction.json",
+          "construction_sha256": "39f50a024248b775097b9e9f6fdc5e0aab40414bc2d7d84fede6458b81cb76b3",
+          "trigger": {
+            "source": "original Native trail-inventory.json and vehicle-poses.jsonl",
+            "metric": "barrier_clear_gap_m minus subject width and observed passage",
+            "failure_condition": "primary opening lacks positive Native body clearance or passage fails"
+          },
+          "changed_knobs": [
+            "barrier lateral centers move from -4/+4 m to -5/+5 m; subject, route, context and camera plan stay fixed"
+          ]
+        }
+      ],
+      "measurement_procedure": {
+        "entrypoint": "finalize_trail.py"
+      },
+      "preparation_status": "incomplete",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
     }
   ]
 }

@@ -31,6 +31,9 @@ def original_native_source_contract(packet, measured, behavior='park'):
             'requested_behavior': behavior,
             'requested_motion_event_observed': request_observed,
             'event_window_frames': [event_window[0]['frame'], event_window[-1]['frame']],
+            'event_nearest_footprint_gap_m': min(
+                (row['footprint_to_nearest_rail_m'] for row in event_window if row['at_rest']),
+                default=None),
             'rested_nearest_footprint_gap_m': min(
                 (row['footprint_to_nearest_rail_m'] for row in rested),
                 default=None),
@@ -65,9 +68,7 @@ def run(attempt, output):
     (channels / 'rail-footprint.jsonl').write_text(
         ''.join(json.dumps(row, allow_nan=False) + '\n' for row in values))
     from worker_exchange.native_output import physical_result, write_result
-    observed_gap = (summary['final_hold_nearest_footprint_gap_m']
-                    if config['behavior_variant'] == 'park' else
-                    summary['rested_nearest_footprint_gap_m'])
+    observed_gap = summary['event_nearest_footprint_gap_m']
     if observed_gap is None:
         observed_gap = summary['nearest_observed_footprint_gap_m']
     result = {'case_id': case_id, 'measured_values': summary,

@@ -13,7 +13,7 @@
   ],
   "source_law": {
     "source": "NRS 484B.560(7)(a); with 484B.560(8)",
-    "text": "It is unlawful for the driver of any vehicle: When crossing at grade any track or tracks of a railroad, to fail to completely cross the track or tracks without stopping due to insufficient: (1) Space for the vehicle on the opposite side of the railroad crossing; or (2) Undercarriage clearance of the vehicle. As used in this section, “completely cross” means to travel across a railroad track or tracks in such a manner that the trailing end of the vehicle is 15 feet or more past the nearest rail of the railroad track or tracks.",
+    "text": "It is unlawful for the driver of any vehicle: When crossing at grade any track or tracks of a railroad, to fail to completely cross the track or tracks without stopping due to insufficient: (1) Space for the vehicle on the opposite side of the railroad crossing; or (2) Undercarriage clearance of the vehicle. As used in this section, \u201ccompletely cross\u201d means to travel across a railroad track or tracks in such a manner that the trailing end of the vehicle is 15 feet or more past the nearest rail of the railroad track or tracks.",
     "sha256": "05c9b0823793d39cc18cda9ff91c2bb887599d2304a29c0773bd297a73685fd0"
   },
   "summary_status": "selected_cpu_original_source_pending",
@@ -163,7 +163,12 @@
         "original at-grade rail source",
         "20 Hz and four-camera policy",
         "same controller family and 30-second duration"
-      ]
+      ],
+      "status": "cpu_source_comparison_passed_original_pending",
+      "audit": "proofs/comparisons/opposite_space-positive.log",
+      "negative_audit": "proofs/comparisons/opposite_space-negative.log",
+      "result": "proofs/comparisons/opposite_space.json",
+      "result_sha256": "aee38a8ae0ac6b1f65704bfc5ef6cb8e972984fa6b8e5761fda83374ef5f8a3f"
     },
     {
       "comparison_id": "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__undercarriage_clearance",
@@ -179,7 +184,12 @@
         "original at-grade rail source",
         "20 Hz and four-camera policy",
         "same controller family and 30-second duration"
-      ]
+      ],
+      "status": "cpu_source_comparison_passed_original_pending",
+      "audit": "proofs/comparisons/undercarriage_clearance-positive.log",
+      "negative_audit": "proofs/comparisons/undercarriage_clearance-negative.log",
+      "result": "proofs/comparisons/undercarriage_clearance.json",
+      "result_sha256": "f8c0c09eb8b079a940d1c4f19218d981b7279686d97bf485dcae4222aced45f9"
     },
     {
       "comparison_id": "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__trailing_end_15_feet",
@@ -195,7 +205,12 @@
         "original at-grade rail source",
         "20 Hz and four-camera policy",
         "same controller family and 30-second duration"
-      ]
+      ],
+      "status": "cpu_source_comparison_passed_original_pending",
+      "audit": "proofs/comparisons/trailing_end_15_feet-positive.log",
+      "negative_audit": "proofs/comparisons/trailing_end_15_feet-negative.log",
+      "result": "proofs/comparisons/trailing_end_15_feet.json",
+      "result_sha256": "19397b7ff1c2e3eaff3a12a48f5fd3958f82f050bddfcb7e30085944692e42cc"
     }
   ],
   "mandatory_observation_terms": [
@@ -236,7 +251,7 @@
     },
     {
       "term": "st.grade",
-      "purpose": "(2) undercarriage clearance — the hump geometry that grounds a vehicle",
+      "purpose": "(2) undercarriage clearance \u2014 the hump geometry that grounds a vehicle",
       "status": "measurement_mapping_pending"
     },
     {
@@ -358,7 +373,7 @@
     {
       "name": "st.grade",
       "mandatory": true,
-      "reason": "(2) undercarriage clearance — the hump geometry that grounds a vehicle"
+      "reason": "(2) undercarriage clearance \u2014 the hump geometry that grounds a vehicle"
     },
     {
       "name": "kin.velocity",
@@ -367,10 +382,10 @@
     }
   ],
   "runtime_uncertainties": [
-    "Native map can realize the fixed cell and legal mechanism",
-    "Actor blueprint and route can realize each requested target",
-    "Cameras can inspect the decisive physical distinction",
-    "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
+    "Original CARLA map and selected vehicle blueprint must establish at-grade reference rail, opposite-side space and vehicle undercarriage geometry.",
+    "Original 600-frame Native actor and four-camera capture must independently establish whether the requested crossing motion occurred.",
+    "Attribution of any preclear stop to insufficient opposite-side space or undercarriage clearance requires original source review; synthetic fixture labels do not establish cause.",
+    "Physical completion and legal outcome remain unverified until original source and independent reviews pass."
   ],
   "camera_plan": {
     "profile": "overview1080-capability",
@@ -398,5 +413,151 @@
         "interval": "0-30 seconds"
       }
     ]
+  },
+  "source_observation_mapping": {
+    "st.railway_crossing": {
+      "evidence": "600-frame saved Native rail/vehicle source and four-camera join; original physical attribution pending",
+      "channels": [
+        "st.railway_crossing"
+      ],
+      "source_refs": [
+        "road.xodr",
+        "rail-context.json",
+        "rail-actors.jsonl",
+        "video_frames.jsonl",
+        "rail-review/rail-geometry.json",
+        "rail-review/opposite-space.json",
+        "rail-review/undercarriage-grade.json",
+        "vehicle-extent.json"
+      ]
+    },
+    "drv.crossing_line": {
+      "evidence": "600-frame saved Native rail/vehicle source and four-camera join; original physical attribution pending",
+      "channels": [
+        "drv.crossing_line"
+      ],
+      "source_refs": [
+        "road.xodr",
+        "rail-context.json",
+        "rail-actors.jsonl",
+        "video_frames.jsonl",
+        "rail-review/rail-geometry.json",
+        "rail-review/opposite-space.json",
+        "rail-review/undercarriage-grade.json",
+        "vehicle-extent.json"
+      ]
+    },
+    "drv.cleared_line": {
+      "evidence": "600-frame saved Native rail/vehicle source and four-camera join; original physical attribution pending",
+      "channels": [
+        "drv.cleared_line"
+      ],
+      "source_refs": [
+        "road.xodr",
+        "rail-context.json",
+        "rail-actors.jsonl",
+        "video_frames.jsonl",
+        "rail-review/rail-geometry.json",
+        "rail-review/opposite-space.json",
+        "rail-review/undercarriage-grade.json",
+        "vehicle-extent.json"
+      ]
+    },
+    "kin.extent": {
+      "evidence": "600-frame saved Native rail/vehicle source and four-camera join; original physical attribution pending",
+      "channels": [
+        "kin.extent"
+      ],
+      "source_refs": [
+        "road.xodr",
+        "rail-context.json",
+        "rail-actors.jsonl",
+        "video_frames.jsonl",
+        "rail-review/rail-geometry.json",
+        "rail-review/opposite-space.json",
+        "rail-review/undercarriage-grade.json",
+        "vehicle-extent.json"
+      ]
+    },
+    "drv.stopped": {
+      "evidence": "600-frame saved Native rail/vehicle source and four-camera join; original physical attribution pending",
+      "channels": [
+        "drv.stopped"
+      ],
+      "source_refs": [
+        "road.xodr",
+        "rail-context.json",
+        "rail-actors.jsonl",
+        "video_frames.jsonl",
+        "rail-review/rail-geometry.json",
+        "rail-review/opposite-space.json",
+        "rail-review/undercarriage-grade.json",
+        "vehicle-extent.json"
+      ]
+    },
+    "rel.surface_gap": {
+      "evidence": "600-frame saved Native rail/vehicle source and four-camera join; original physical attribution pending",
+      "channels": [
+        "rel.surface_gap"
+      ],
+      "source_refs": [
+        "road.xodr",
+        "rail-context.json",
+        "rail-actors.jsonl",
+        "video_frames.jsonl",
+        "rail-review/rail-geometry.json",
+        "rail-review/opposite-space.json",
+        "rail-review/undercarriage-grade.json",
+        "vehicle-extent.json"
+      ]
+    },
+    "drv.following": {
+      "evidence": "600-frame saved Native rail/vehicle source and four-camera join; original physical attribution pending",
+      "channels": [
+        "drv.following"
+      ],
+      "source_refs": [
+        "road.xodr",
+        "rail-context.json",
+        "rail-actors.jsonl",
+        "video_frames.jsonl",
+        "rail-review/rail-geometry.json",
+        "rail-review/opposite-space.json",
+        "rail-review/undercarriage-grade.json",
+        "vehicle-extent.json"
+      ]
+    },
+    "st.grade": {
+      "evidence": "600-frame saved Native rail/vehicle source and four-camera join; original physical attribution pending",
+      "channels": [
+        "st.grade"
+      ],
+      "source_refs": [
+        "road.xodr",
+        "rail-context.json",
+        "rail-actors.jsonl",
+        "video_frames.jsonl",
+        "rail-review/rail-geometry.json",
+        "rail-review/opposite-space.json",
+        "rail-review/undercarriage-grade.json",
+        "vehicle-extent.json"
+      ]
+    },
+    "kin.velocity": {
+      "evidence": "600-frame saved Native rail/vehicle source and four-camera join; original physical attribution pending",
+      "channels": [
+        "kin.velocity"
+      ],
+      "source_refs": [
+        "road.xodr",
+        "rail-context.json",
+        "rail-actors.jsonl",
+        "video_frames.jsonl",
+        "rail-review/rail-geometry.json",
+        "rail-review/opposite-space.json",
+        "rail-review/undercarriage-grade.json",
+        "vehicle-extent.json"
+      ]
+    }
   }
 }

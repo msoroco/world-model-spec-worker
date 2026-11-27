@@ -8,7 +8,7 @@
       "case_id": "training__C229398__NRS-484B-450-1i__motor_vehicle_driver__selected_98183a3f__condition_a",
       "kind": "delivery",
       "construction": "native/condition_a/construction.json",
-      "construction_sha256": "3633c237aa5b6c97d4a2b75a9ea821f022eff2f9de97bec0613b47b85d6f44a2",
+      "construction_sha256": "42cc693670620f9b8e973f7439aebbb0aece11489826daf2c5f749c2ccd02b48",
       "measurement_contract": "measurement-condition_a.json",
       "measurement_procedure": {
         "entrypoint": "rail_finalize.py",
@@ -21,16 +21,210 @@
         "port_env_var": "CARLA_PORT"
       },
       "candidate_risk": {
-        "status": "none",
-        "reason": "Diagnostic public probe uses primary only"
+        "status": "physical",
+        "reason": "Ten-meter approach can overshoot or fail to settle at the rail event target; a slower seven-meter approach preserves the exact gap and capture contract."
       },
-      "candidates": [],
-      "compatibility": {
-        "receipt": "compatibility/condition_a-primary-compatibility.json",
-        "sha256": "372db19876dfe453da0356ae09b5d33ad4123abd56a52908173d8816784baa01",
-        "log": "compatibility/condition_a-primary-analysis.log",
-        "negative_log": "compatibility/condition_a-primary-negative.log"
-      }
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/condition_a/fallback1/construction.json",
+          "construction_sha256": "d2c9a486321655b6e37a01fab0a91e839f7605dd3e2c8f05b8702691df30c430",
+          "trigger": {
+            "source": "original Native speed/pose trace",
+            "metric": "target approach overshoot or no requested rest interval",
+            "failure_condition": "vehicle passes requested rail event target or does not remain at rest during its requested hold phase"
+          },
+          "changed_knobs": [
+            "approach_distance_m: 10.0 -> 7.0",
+            "approach_speed_cap_mps: 1.5 -> 1.0"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "training__C229398__NRS-484B-450-1i__motor_vehicle_driver__selected_98183a3f__condition_b",
+      "kind": "delivery",
+      "construction": "native/condition_b/construction.json",
+      "construction_sha256": "d571bc852951653b2c6eb5e32f7a810dea738f6e3d272404c855f01c1a72bc16",
+      "measurement_contract": "measurement-condition_b.json",
+      "measurement_procedure": {
+        "entrypoint": "rail_finalize.py",
+        "output_schema": "worker-analysis-report"
+      },
+      "fixture_recipe": "work/training__C229398__NRS-484B-450-1i__motor_vehicle_driver/selected-recipe-condition_b.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Ten-meter approach can overshoot or fail to settle at the rail event target; a slower seven-meter approach preserves the exact gap and capture contract."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/condition_b/fallback1/construction.json",
+          "construction_sha256": "620389b4128c90b3a850987790031f256101cd0ccf479330a4479e5027e4ff70",
+          "trigger": {
+            "source": "original Native speed/pose trace",
+            "metric": "target approach overshoot or no requested rest interval",
+            "failure_condition": "vehicle passes requested rail event target or does not remain at rest during its requested hold phase"
+          },
+          "changed_knobs": [
+            "approach_distance_m: 10.0 -> 7.0",
+            "approach_speed_cap_mps: 1.5 -> 1.0"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "training__C229398__NRS-484B-450-1i__motor_vehicle_driver__stop_1",
+      "kind": "delivery",
+      "construction": "native/stop_1/construction.json",
+      "construction_sha256": "d520c62c3e4b61a440f8c5a51a62e84bd8c09c5f025fb6d201f46fec9782ee97",
+      "measurement_contract": "measurement-stop_1.json",
+      "measurement_procedure": {
+        "entrypoint": "rail_finalize.py",
+        "output_schema": "worker-analysis-report"
+      },
+      "fixture_recipe": "work/training__C229398__NRS-484B-450-1i__motor_vehicle_driver/selected-recipe-stop_1.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Ten-meter approach can overshoot or fail to settle at the rail event target; a slower seven-meter approach preserves the exact gap and capture contract."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/stop_1/fallback1/construction.json",
+          "construction_sha256": "60f8542fd0cccfe99bfedeea849062252cd08a0a5e85f01f0bcd1c62f90f77dd",
+          "trigger": {
+            "source": "original Native speed/pose trace",
+            "metric": "target approach overshoot or no requested rest interval",
+            "failure_condition": "vehicle passes requested rail event target or does not remain at rest during its requested hold phase"
+          },
+          "changed_knobs": [
+            "approach_distance_m: 10.0 -> 7.0",
+            "approach_speed_cap_mps: 1.5 -> 1.0"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "training__C229398__NRS-484B-450-1i__motor_vehicle_driver__stop_2",
+      "kind": "delivery",
+      "construction": "native/stop_2/construction.json",
+      "construction_sha256": "1577b1828d13fb2900bccfbfe57adee44d85cc65d99a136310a0a750f773a06a",
+      "measurement_contract": "measurement-stop_2.json",
+      "measurement_procedure": {
+        "entrypoint": "rail_finalize.py",
+        "output_schema": "worker-analysis-report"
+      },
+      "fixture_recipe": "work/training__C229398__NRS-484B-450-1i__motor_vehicle_driver/selected-recipe-stop_2.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Ten-meter approach can overshoot or fail to settle at the rail event target; a slower seven-meter approach preserves the exact gap and capture contract."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/stop_2/fallback1/construction.json",
+          "construction_sha256": "0d852e9699e57c74967ec44a80994fc497522b424560b0916225be5d6bc6f1bf",
+          "trigger": {
+            "source": "original Native speed/pose trace",
+            "metric": "target approach overshoot or no requested rest interval",
+            "failure_condition": "vehicle passes requested rail event target or does not remain at rest during its requested hold phase"
+          },
+          "changed_knobs": [
+            "approach_distance_m: 10.0 -> 7.0",
+            "approach_speed_cap_mps: 1.5 -> 1.0"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "training__C229398__NRS-484B-450-1i__motor_vehicle_driver__stand_1",
+      "kind": "delivery",
+      "construction": "native/stand_1/construction.json",
+      "construction_sha256": "5032b3faa1cff0e75dce896d8be2bbee63cd6dd91e4eba324630485434bff88d",
+      "measurement_contract": "measurement-stand_1.json",
+      "measurement_procedure": {
+        "entrypoint": "rail_finalize.py",
+        "output_schema": "worker-analysis-report"
+      },
+      "fixture_recipe": "work/training__C229398__NRS-484B-450-1i__motor_vehicle_driver/selected-recipe-stand_1.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Ten-meter approach can overshoot or fail to settle at the rail event target; a slower seven-meter approach preserves the exact gap and capture contract."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/stand_1/fallback1/construction.json",
+          "construction_sha256": "c183de680a14f0290b288cffdf399b2039f209f91fcfe3fff3e07af03b6d0c48",
+          "trigger": {
+            "source": "original Native speed/pose trace",
+            "metric": "target approach overshoot or no requested rest interval",
+            "failure_condition": "vehicle passes requested rail event target or does not remain at rest during its requested hold phase"
+          },
+          "changed_knobs": [
+            "approach_distance_m: 10.0 -> 7.0",
+            "approach_speed_cap_mps: 1.5 -> 1.0"
+          ]
+        }
+      ]
+    },
+    {
+      "case_id": "training__C229398__NRS-484B-450-1i__motor_vehicle_driver__stand_2",
+      "kind": "delivery",
+      "construction": "native/stand_2/construction.json",
+      "construction_sha256": "ec2f449e7f0a267f95e7f2538db09376ec08f1ad522b099f1e33cf313d355771",
+      "measurement_contract": "measurement-stand_2.json",
+      "measurement_procedure": {
+        "entrypoint": "rail_finalize.py",
+        "output_schema": "worker-analysis-report"
+      },
+      "fixture_recipe": "work/training__C229398__NRS-484B-450-1i__motor_vehicle_driver/selected-recipe-stand_2.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Ten-meter approach can overshoot or fail to settle at the rail event target; a slower seven-meter approach preserves the exact gap and capture contract."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "native/stand_2/fallback1/construction.json",
+          "construction_sha256": "1a04841f52b96696d8c93022ff114e8ebbc3ebcddff091a7fe607965d825864a",
+          "trigger": {
+            "source": "original Native speed/pose trace",
+            "metric": "target approach overshoot or no requested rest interval",
+            "failure_condition": "vehicle passes requested rail event target or does not remain at rest during its requested hold phase"
+          },
+          "changed_knobs": [
+            "approach_distance_m: 10.0 -> 7.0",
+            "approach_speed_cap_mps: 1.5 -> 1.0"
+          ]
+        }
+      ]
     }
   ]
 }

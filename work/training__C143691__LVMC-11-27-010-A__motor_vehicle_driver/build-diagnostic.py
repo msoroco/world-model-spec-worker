@@ -8,7 +8,7 @@ from native.geometry import open_drive
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
 SUFFIXES = ('outside', 'all_present', 'no_designation', 'no_dedication',
-            'no_posting', 'emergency', 'maintenance')
+            'no_posting', 'emergency', 'maintenance', 'mobility_device')
 CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
 
@@ -31,7 +31,8 @@ def build(suffix):
     if suffix not in SUFFIXES:
         raise ValueError('Unknown exact trail case')
     case_id = HERE.name + '__' + suffix
-    proposal = json.loads((HERE / 'draft-exact' / suffix / 'primary' /
+    variant = 'selected' if suffix == 'mobility_device' else 'primary'
+    proposal = json.loads((HERE / 'draft-exact' / suffix / variant /
                            'construction.json').read_text())
     config = json.loads(next(item['content'] for item in proposal['files']
                              if item['path'] == 'config.json'))

@@ -20,18 +20,18 @@ def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def fixture(root):
+def fixture(root, case_id=CASE):
     rails = [{'rail_id': 'west-rail', 'source_kind': 'native_survey',
               'source_ref': 'native-map:rail-west', 'polyline_xy_m': [[0, -10], [0, 10]]},
              {'rail_id': 'east-rail', 'source_kind': 'native_survey',
               'source_ref': 'native-map:rail-east', 'polyline_xy_m': [[1.435, -10], [1.435, 10]]}]
     write(root / 'original-rail-survey.json', {
-        'source_kind': 'diagnostic_rail_geometry', 'case_id': CASE,
+        'source_kind': 'diagnostic_rail_geometry', 'case_id': case_id,
         'review_status': 'original_geometry_pending_independent_review', 'rails': rails})
     rows, maps = [], []
     for i in range(600):
         native = 1000 + i
-        rows.append({'source_kind': 'diagnostic_native_shape', 'case_id': CASE,
+        rows.append({'source_kind': 'diagnostic_native_shape', 'case_id': case_id,
                      'native_frame': native, 'video_frame': i, 'time_s': i / 20,
                      'vehicle_actor_id': 42, 'vehicle_center_xy_m': [-12, -3],
                      'vehicle_half_extent_xy_m': [2, 1], 'vehicle_yaw_rad': 0,
@@ -48,11 +48,11 @@ def fixture(root):
     names = ['original-rail-survey.json', 'original-native-rows.jsonl', 'video_frames.jsonl']
     names += [name + '.mkv' for name in CAMERAS]
     write(root / 'original-source-seal.json', {
-        'format': 'diagnostic-rail-source-shape-seal', 'case_id': CASE,
+        'format': 'diagnostic-rail-source-shape-seal', 'case_id': case_id,
         'sha256': {name: sha(root / name) for name in names}})
     (root / 'trace.jsonl').write_text('synthetic trace shape\n')
     (root / 'capture').mkdir()
-    write(root / 'capture/manifest.json', {'case_id': CASE, 'frames': 600,
+    write(root / 'capture/manifest.json', {'case_id': case_id, 'frames': 600,
           'extraction_confirmed': True, 'sources': {'trace.jsonl': sha(root / 'trace.jsonl')}})
     all_names = names + ['original-source-seal.json', 'trace.jsonl', 'capture/manifest.json']
     write(root / 'capture-seal.json', {'format': 'worker-sealed-capture',

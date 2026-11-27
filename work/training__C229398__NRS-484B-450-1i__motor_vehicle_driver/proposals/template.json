@@ -1,0 +1,79 @@
+{
+  "template_id": "NRS-484B-450-1i@motor_vehicle_driver",
+  "law_id": "NRS-484B-450-1i",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "A person shall not stop, stand or park a vehicle, except when necessary to avoid conflict with other traffic or in compliance with law or the directions of a police officer or official traffic-control device, in any of the following places: Within 50 feet of the nearest rail of a railroad.",
+  "structure": {
+    "law_id": "NRS-484B-450-1i",
+    "activation": {
+      "condition": "A driver stops, stands or parks within 50 feet of the nearest physical rail of a railroad.",
+      "numeric_conditions": [
+        {
+          "value": 50,
+          "unit": "ft",
+          "quantity": "distance to nearest rail"
+        }
+      ]
+    },
+    "obligation": {
+      "type": "must_not",
+      "description": "Do not stop, stand or park within the statutory rail distance unless a source exception applies.",
+      "source_clause": "shall not stop, stand or park a vehicle",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "trigger": "Necessary to avoid conflict with other traffic",
+        "effect": "The prohibition has an exception only when actual necessity is established from original traffic evidence.",
+        "replacement_obligation": "Retain original vehicle conflict observations for independent review.",
+        "source_clause": "except when necessary to avoid conflict with other traffic"
+      },
+      {
+        "trigger": "In compliance with law",
+        "effect": "The prohibition has an exception when another applicable law actually requires or permits the activity.",
+        "replacement_obligation": "Retain and independently review the cited law and original conduct.",
+        "source_clause": "in compliance with law"
+      },
+      {
+        "trigger": "Directions of a police officer",
+        "effect": "The prohibition has an exception when an actual police direction applies.",
+        "replacement_obligation": "Retain original officer direction and response for review.",
+        "source_clause": "the directions of a police officer"
+      },
+      {
+        "trigger": "Official traffic-control device",
+        "effect": "The prohibition has an exception when an official device direction applies.",
+        "replacement_obligation": "Retain original device identity, indication and response for review.",
+        "source_clause": "official traffic-control device"
+      }
+    ],
+    "timing": {
+      "description": "Observe the complete requested stop, stand or park interval; the law gives no activity duration threshold.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": []
+  },
+  "parameter_refs": [
+    {
+      "name": "requested_rail_footprint_gap_m",
+      "kind": "controller",
+      "range_or_domain": "engineering placement relative to surveyed rail, metres"
+    },
+    {
+      "name": "requested_activity",
+      "kind": "controller",
+      "range_or_domain": "stop, stand or park request"
+    },
+    {
+      "name": "requested_exception_context",
+      "kind": "controller",
+      "range_or_domain": "traffic, other law, police direction or official device request"
+    },
+    {
+      "name": "observed_rail_activity",
+      "kind": "subject_behavior",
+      "range_or_domain": "original body footprint, speed, rest and departure or unknown"
+    }
+  ]
+}

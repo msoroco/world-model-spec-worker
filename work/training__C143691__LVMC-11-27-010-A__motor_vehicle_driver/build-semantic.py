@@ -38,14 +38,14 @@ def main():
         ('emergency vehicle', 'Vehicle blueprint/role is insufficient to establish emergency status.'),
         ('maintenance of the right-of-way', 'The particular right-of-way and use must be sourced.'),
         ('designed for and used by a mobility-impaired person',
-         'Actor/asset eligibility remains unresolved in the frozen motor_vehicle_driver cell.'),
+         'The B(3) request is source conditional; original device-design, impaired-user-use and frozen-actor eligibility require review.'),
     ]
     parameters = [
         {'name': 'route_case', 'kind': 'controller', 'range_or_domain': 'outside or within the source corridor'},
         {'name': 'official_designation', 'kind': 'world_setup', 'range_or_domain': 'source-reviewed status, separate from requested value'},
         {'name': 'city_dedication', 'kind': 'world_setup', 'range_or_domain': 'source-reviewed status, separate from requested value'},
         {'name': 'appropriate_posting', 'kind': 'world_setup', 'range_or_domain': 'source-reviewed sign content and pixels'},
-        {'name': 'exception_kind', 'kind': 'world_setup', 'range_or_domain': 'none, emergency, right-of-way maintenance; mobility unresolved'},
+        {'name': 'exception_kind', 'kind': 'world_setup', 'range_or_domain': 'none, emergency, right-of-way maintenance, or source-conditional mobility device'},
     ]
     template = {
         'template_id': TEMPLATE_ID, 'law_id': LAW_ID, 'actor': ACTOR,
@@ -62,7 +62,7 @@ def main():
                 {'source_clause': 'Any vehicle that is being used in connection with maintenance of the right-of-way',
                  'description': 'Use in maintenance of this right-of-way requires original review.'},
                 {'source_clause': 'Any motorized wheelchair or other device that is designed for and used by a mobility-impaired person',
-                 'description': 'Eligible device and operator binding is pending in the frozen motor_vehicle_driver cell.'}],
+                 'description': 'Original eligible device, impaired-person use and operator binding require review in the frozen motor_vehicle_driver cell.'}],
             'timing': {'description': 'Occupancy assessed throughout the original recorded interval.',
                        'numeric_conditions': []},
             'judgment_calls_needed': [{'phrase': phrase, 'note': note} for phrase, note in judgment],
@@ -110,8 +110,10 @@ def main():
                       'no_dedication': 'city_dedication',
                       'no_posting': 'appropriate_posting',
                       'emergency': 'exception_kind',
-                      'maintenance': 'exception_kind'}[suffix]
-        construction = json.loads((HERE / 'draft-exact' / suffix / 'primary' /
+                      'maintenance': 'exception_kind',
+                      'mobility_device': 'exception_kind'}[suffix]
+        variant = 'selected' if suffix == 'mobility_device' else 'primary'
+        construction = json.loads((HERE / 'draft-exact' / suffix / variant /
                                    'construction.json').read_text())
         request = case['source_context_request']
         assignments = {'route_case': {'kind': 'controller',

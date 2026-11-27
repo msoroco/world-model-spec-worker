@@ -1,5 +1,6 @@
 import copy
 import json
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -34,6 +35,22 @@ class DraftNativeContract(unittest.TestCase):
     def test_source_and_control(self):
         with self.assertRaises(FileNotFoundError):
             read_survey("missing-original-road-survey.json")
+        source = {"source_kind": "original_native_road_survey", "map_name": "Town01",
+                  "road_boundary_source": "survey-1", "vehicle_spawn_index": 0,
+                  "pedestrian_spawn_xyz_m": [0, 1, 0.5],
+                  "pedestrian_path_end_xyz_m": [0, -1, 0.5],
+                  "pedestrian_walk_speed_mps": 1.2,
+                  "pedestrian_classification_source": "original walker blueprint",
+                  "control_relationship_source": "original driver input",
+                  "pedestrian_crosses_vehicle_path": True}
+        with tempfile.TemporaryDirectory(dir=Path.cwd()) as temporary:
+            path = Path(temporary) / "road_survey.json"
+            path.write_text(json.dumps(source))
+            self.assertTrue(read_survey(path)["pedestrian_crosses_vehicle_path"])
+            source.pop("pedestrian_crosses_vehicle_path")
+            path.write_text(json.dumps(source))
+            with self.assertRaisesRegex(ValueError, "Original road"):
+                read_survey(path)
         self.assertEqual(control(25, 8)["phase"], "approach_request")
         self.assertEqual(control(10, 8)["phase"], "slow_request")
         with self.assertRaisesRegex(ValueError, "Measured"):
