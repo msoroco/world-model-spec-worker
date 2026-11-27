@@ -1,10 +1,10 @@
 # C229398 current handoff (2026-11-27)
 
-Status: partial. Fourteen exact cases cover park, stop, stand and four separately requested exception contexts in seven comparisons. All 28 primary/fallback selected offline checks pass. The exception diagnostic park fixture was corrected to retain a fixed 12.5 m rail gap; condition A was rebuilt to match condition B's approach and park timeline. Public positive/missing-source and saved-only checks are running on final source fixtures. The current manifest and root construction are CPU drafts.
+Status: ready for original Native delivery. The exact assignment-scoped strict gate passed on the 14 selected cases after all selected CPU proofs were bound. Fourteen primary and fourteen fallback offline checks pass. All 28 public compatibility checks pass with positive source fixtures and missing-source negatives; 14 primary saved-only checks pass. Semantic validation covers all 14 cases. Fourteen physical/lifecycle CPU fixtures, 14 independent delivery audit positive/negative tests, and seven comparison audits with a missing-source negative pass.
 
-Synthetic sources prove software joins and rejection, not original physical rail identity, actual activity, traffic-conflict necessity, officer/device authority, pixel meaning or legal applicability. Independent Native source and human review are required at delivery.
+The seven comparisons cover parking distance, stop-only distance, stand-only distance, traffic-conflict necessity, other-law compliance, police direction and official-device direction. The reviewed curbside-parking witness is assigned to the two parking cases and has its own source-joined rail-footprint measurement. The exception requests retain their context as source-cited inputs; diagnostic fields do not establish necessity or authority.
 
-Current receipt counts are in `result.json`; exact artifacts are under `native/`, `compatibility/`, `saved/`, `physical-proof/` and `comparison-proof/`. Rebind all receipts and run the scoped strict gate on final bytes before setting ready.
+Original Native physical rails, actual stop/stand/park behavior, traffic-conflict necessity, legal or officer/device authority, synchronized pixels and legal application remain independent delivery review. The synthetic CPU fixtures establish software joins and source rejection only. The first GPU command is in `result.json`; the selected constructions, measured receipt chain and acceptance predicates are bound in `execution-manifest.json`.
 
 ## Earlier checkpoints
 

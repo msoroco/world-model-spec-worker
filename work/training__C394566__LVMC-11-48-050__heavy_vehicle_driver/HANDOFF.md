@@ -1,3 +1,15 @@
+# C394566 / LVMC 11.48.050 current CPU checkpoint (2026-11-27)
+
+Status: partial. The original law has eight planned controlled comparisons and 16 unselected cases: truck route designation, unladen weight at/above 8000 lb, residence district, each side of the 7 p.m. and 6 a.m. clock transitions, written permit presence, permit route/time scope, and movement. The exact 19:00 and 06:00 endpoints remain unresolved legal questions; the existing factual meter probes them without assigning a legal result. No case has a selected construction or public/saved proof yet.
+
+`native/source_contract.py` now joins 600 original-route rows to 600 frame-map rows, verifies a source seal and five independently cited factual authority files, and rejects missing or changed sources. `native/route_measurement.py` connects that joined packet to the existing 8000-lb/nighttime/residence/route/permit factual meter. `native/prove_source_contract.py` passes a synthetic positive and missing authority, changed seal and changed frame-join negatives; its log is `native/source-contract-cpu.log`. This is a diagnostic source contract, not an original authority review.
+
+`native/runner.py` is a prospective CARLA route controller that requires a reviewed Native map/route survey and five cited original context files. It records 600 synchronized four-view source frames, original road/speed rows, PipelineCapture and canonical frame map, seals source bytes, and restores the world. Its CPU `--check` passes in `native/runner-check.log`. It has not been selected into a construction or tested in CARLA. The new source and runner files remain worker-owned CPU work to integrate into per-case finalization and selected proof chains.
+
+Next CPU work: build exact per-case finalizer and measurement contracts, construct and offline-check the first route comparison, run public positive/missing-source and saved-only chain, then expand the other branches and independent audits. Keep administrative permit authenticity, physical route and legal meaning for independent original delivery review. Runtime verify and CPU preflight passed this checkpoint.
+
+## Earlier handoff
+
 # training__C394566__LVMC-11-48-050__heavy_vehicle_driver
 
 Status: partial. No selected delivery case, accepted recording or legal verdict is claimed.

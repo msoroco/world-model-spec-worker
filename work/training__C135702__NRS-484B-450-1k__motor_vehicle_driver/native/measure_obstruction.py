@@ -75,8 +75,11 @@ def measure(path: Path, expected_sha256: str) -> dict:
     passing_crossed_obstruction_x = False
     prior_traffic_center = None
     prior_traffic_speed = None
+    native_start = rows[0].get("native_frame")
+    if type(native_start) is not int or native_start < 0:
+        raise ValueError("Original Native frame start missing")
     for index, row in enumerate(rows):
-        if row.get("native_frame") != index or abs(_number(row.get("time_s"), "time_s") - index / 20) > 1e-7:
+        if row.get("native_frame") != native_start + index or abs(_number(row.get("time_s"), "time_s") - index / 20) > 1e-7:
             raise ValueError("Native frame/time join differs")
         if row.get("road_xy_m") != first["road_xy_m"] or row.get("obstruction_xy_m") != first["obstruction_xy_m"] or row.get("obstruction_kind") != first["obstruction_kind"]:
             raise ValueError("Original highway obstruction geometry differs")

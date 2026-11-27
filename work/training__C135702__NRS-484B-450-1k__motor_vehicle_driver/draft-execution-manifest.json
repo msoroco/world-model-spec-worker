@@ -1,0 +1,156 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C135702__NRS-484B-450-1k__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "offline_draft_only",
+  "cases": [
+    {
+      "case_id": "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_dacdf461__condition_a",
+      "kind": "delivery",
+      "construction": "construction.json",
+      "construction_sha256": "b8b1e0d65bb4b5d499d1005360b8b44783edea7478d11b0aa00babfaa23b3dae",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Passing actor may not reach a stable pre-obstruction halt with the primary braking station."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/condition_a/fallback1-construction.json",
+          "construction_sha256": "66750476da827dca346397e5b745d93e97037fc990ee95e0c40b15e11bfe4a93",
+          "trigger": {
+            "source": "original native_samples.jsonl",
+            "metric": "minimum_passing_speed_m_s and passing_halt_frames",
+            "failure_condition": "condition_a has fewer than 20 source halt frames before the obstruction"
+          },
+          "changed_knobs": [
+            "passing_throttle .25 to .35",
+            "brake_station_x_m -11 to -15"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/draft-execution-manifest.json --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_dacdf461__condition_a --candidate fallback1 --output .runtime-work/c135702-temp/offline-v3-a-fallback1 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "66750476da827dca346397e5b745d93e97037fc990ee95e0c40b15e11bfe4a93",
+            "log": "a-fallback1-offline.log",
+            "log_sha256": "8d317ed27732286987d173820e35b75ac812916f5e16f21e709a283a902980cc"
+          }
+        }
+      ],
+      "measurement_contract": "measurement-condition_a.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/draft-execution-manifest.json --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_dacdf461__condition_a --candidate primary --output .runtime-work/c135702-temp/offline-v3-a-primary --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "construction_sha256": "b8b1e0d65bb4b5d499d1005360b8b44783edea7478d11b0aa00babfaa23b3dae",
+        "log": "a-primary-offline.log",
+        "log_sha256": "8d317ed27732286987d173820e35b75ac812916f5e16f21e709a283a902980cc"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_dacdf461__condition_a",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "24626d08add711dbdc427dca889b250359486ee0df0523ee057dd07909ad3ef9",
+        "command": ".venv-cpu/bin/python work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/delivery_audit.py --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_dacdf461__condition_a --self-test",
+        "test_exit_code": 0,
+        "test_log": "a-delivery-positive.log",
+        "test_log_sha256": "0f8029238edb156e4f87d09151b60b2dc7be5faa2b2d32c0473e254b00b17bdd",
+        "negative_command": ".venv-cpu/bin/python work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/delivery_audit.py --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_dacdf461__condition_a --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing exact original Native result",
+        "negative_log": "a-delivery-negative.log",
+        "negative_log_sha256": "0b2c15fbef164da509ceb8324cc3ed4d3fad176a1d2d355ebe51402cf2de6011"
+      }
+    },
+    {
+      "case_id": "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_dacdf461__condition_b",
+      "kind": "delivery",
+      "construction": "cases/condition_b/construction.json",
+      "construction_sha256": "177d6e2e7efb1afb433ce8c300e293792643474b875ca409e28a03dd7925a2e9",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Passing actor may not reach a stable pre-obstruction halt with the primary braking station."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/condition_b/fallback1-construction.json",
+          "construction_sha256": "df75eef7c02959d67d826569dbef0c76cd03c59c217511fb17d2fa5e2d5db1bd",
+          "trigger": {
+            "source": "original native_samples.jsonl",
+            "metric": "minimum_passing_speed_m_s and passing_halt_frames",
+            "failure_condition": "condition_a has fewer than 20 source halt frames before the obstruction"
+          },
+          "changed_knobs": [
+            "passing_throttle .25 to .35",
+            "brake_station_x_m -11 to -15"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/draft-execution-manifest.json --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_dacdf461__condition_b --candidate fallback1 --output .runtime-work/c135702-temp/offline-v3-b-fallback1 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "df75eef7c02959d67d826569dbef0c76cd03c59c217511fb17d2fa5e2d5db1bd",
+            "log": "b-fallback1-offline.log",
+            "log_sha256": "11bb86458d02b6dcfd3256a85e48aed35514a91b6664d7d0ff74bcbedfddff15"
+          }
+        }
+      ],
+      "measurement_contract": "measurement-condition_b.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/draft-execution-manifest.json --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_dacdf461__condition_b --candidate primary --output .runtime-work/c135702-temp/offline-v3-b-primary --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "construction_sha256": "177d6e2e7efb1afb433ce8c300e293792643474b875ca409e28a03dd7925a2e9",
+        "log": "b-primary-offline.log",
+        "log_sha256": "11bb86458d02b6dcfd3256a85e48aed35514a91b6664d7d0ff74bcbedfddff15"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_dacdf461__condition_b",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "24626d08add711dbdc427dca889b250359486ee0df0523ee057dd07909ad3ef9",
+        "command": ".venv-cpu/bin/python work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/delivery_audit.py --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_dacdf461__condition_b --self-test",
+        "test_exit_code": 0,
+        "test_log": "b-delivery-positive.log",
+        "test_log_sha256": "618d6044987060af068e98314b6259b10c0b2a55c46252ea72c4a3522842ff43",
+        "negative_command": ".venv-cpu/bin/python work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/delivery_audit.py --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_dacdf461__condition_b --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing exact original Native result",
+        "negative_log": "b-delivery-negative.log",
+        "negative_log_sha256": "0b2c15fbef164da509ceb8324cc3ed4d3fad176a1d2d355ebe51402cf2de6011"
+      }
+    }
+  ]
+}
