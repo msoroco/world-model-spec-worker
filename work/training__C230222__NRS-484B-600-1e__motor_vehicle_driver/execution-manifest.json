@@ -1,0 +1,455 @@
+{
+  "assignment_id": "training__C230222__NRS-484B-600-1e__motor_vehicle_driver",
+  "cases": [
+    {
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "native_motion.jsonl"
+          ],
+          "method": "Euclidean norm of original Native velocity in mph"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "native_motion.jsonl"
+          ],
+          "method": "original post-tick Native three-axis velocity"
+        },
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "native_motion.jsonl",
+            "road_context.json"
+          ],
+          "method": "original Native actor ID and vehicle blueprint plus saved review"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Lower speed attempt has no identified additional construction risk",
+        "status": "none"
+      },
+      "candidates": [],
+      "case_id": "training__C230222__NRS-484B-600-1e__motor_vehicle_driver__probe_01",
+      "compatibility": {
+        "log": "native/proofs/probe_01/public-analysis.log",
+        "negative_log": "native/proofs/probe_01/negative-analysis.log",
+        "receipt": "native/proofs/probe_01/compatibility.json",
+        "sha256": "315e705f7aa677550f33b6aff36ffb6b960b3a40a7c95b14b8be7da17aea0765"
+      },
+      "construction": "native/probe_01-construction.json",
+      "construction_sha256": "d14cd66d6a2866bb449bd4bcb9ee3700816ea0cca904c965556e35a2a4d1a38a",
+      "fixture_recipe": "work/training__C230222__NRS-484B-600-1e__motor_vehicle_driver/native/diagnostic/probe_01/fixture-recipe.json",
+      "id": "probe_01",
+      "kind": "delivery",
+      "measurement_contract": "native/probe_01-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "expected_error": "Missing required source: native_motion.jsonl",
+        "log": "native/proofs/probe_01/negative-analysis.log",
+        "log_sha256": "026a3aa0a257351fe8a3c788ffb59fec2a2e26920ea4bc91cd1868d589c48dc3"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C230222__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C230222__NRS-484B-600-1e__motor_vehicle_driver__probe_01 --output .runtime-work/c230222/offline-v2-probe_01 --python .venv-cpu/bin/python",
+        "construction_sha256": "d14cd66d6a2866bb449bd4bcb9ee3700816ea0cca904c965556e35a2a4d1a38a",
+        "exit_code": 0,
+        "log": "native/probe_01-offline.log",
+        "log_sha256": "b60de0f462cd5aed9a21ae0ce36337e075d1dbb401af2cfa81ab2abfcf5d5c76"
+      },
+      "physical_preparation": {
+        "receipt": "native/proofs/probe_01/physical-preparation.json",
+        "sha256": "4541d5910db841cd201b5da0741e068adfa3e3ee6c52358be04bfd0c3aab9a9c"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "three-axis post-tick Native vehicle velocity",
+            "name": "kin.velocity",
+            "reference_frame": "authored road/travel/curb 1,800 m corridor",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms Native sampling; physical source review pending",
+            "unit": "m/s"
+          },
+          {
+            "method": "norm of original Native velocity divided by 0.44704",
+            "name": "kin.speed",
+            "reference_frame": "authored road/travel/curb 1,800 m corridor",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms Native sampling; physical source review pending",
+            "unit": "mph"
+          },
+          {
+            "method": "Native actor ID and reviewed vehicle identity",
+            "name": "ru.subject",
+            "reference_frame": "authored road/travel/curb 1,800 m corridor",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms Native sampling; physical source review pending",
+            "unit": "identifier"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Controller request is not measured speed",
+          "CPU diagnostics do not establish physical speed or pixels"
+        ]
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C230222__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C230222__NRS-484B-600-1e__motor_vehicle_driver__probe_01 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$SAVED_OUTPUT/v0001/feedback.json\" # training__C230222__NRS-484B-600-1e__motor_vehicle_driver__probe_01",
+        "test_log": "native/proofs/probe_01/saved.log",
+        "test_log_sha256": "7d5c5938864455aaab866775ea39ffbdca1894c042ffadfeb1653c12b4085a1b",
+        "test_exit_code": 0,
+        "proof": ".runtime-work/c230222/saved-v2-probe_01/v0001/processing.json"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C230222__NRS-484B-600-1e__motor_vehicle_driver__probe_01",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "absolute_measured_speed_and_vehicle_identity"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "7dbde629921da3e38baa8d3db7ddb8e60678177f6d29a0cb70b67c223e9fcc93",
+        "command": ".venv-cpu/bin/python -B work/training__C230222__NRS-484B-600-1e__motor_vehicle_driver/delivery_audit.py --case training__C230222__NRS-484B-600-1e__motor_vehicle_driver__probe_01 --candidate primary --attempt .runtime-work/c230222/compat-v2-probe_01 --processing .runtime-work/c230222/saved-v2-probe_01/v0001/processing.json --output .runtime-work/c230222/audit-probe_01-positive.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/probe_01/delivery-positive.log",
+        "test_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C230222__NRS-484B-600-1e__motor_vehicle_driver/delivery_audit.py --case training__C230222__NRS-484B-600-1e__motor_vehicle_driver__probe_01 --candidate primary --attempt .runtime-work/c230222/compat-v2-probe_01 --processing .runtime-work/c230222/saved-v2-probe_01/v0001/processing.json --output .runtime-work/c230222/audit-probe_01-negative.json --diagnostic --omit-source native_motion.jsonl",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: native_motion.jsonl",
+        "negative_log": "native/proofs/probe_01/delivery-negative.log",
+        "negative_log_sha256": "42fc783236ebcba601389df8581dacfe841dc32245052024b3a02a5ffa4822fb",
+        "proof_scope": "Synthetic saved-source diagnostic only; original Native pixels, physical travel and legal judgment remain pending."
+      }
+    },
+    {
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "native_motion.jsonl"
+          ],
+          "method": "Euclidean norm of original Native velocity in mph"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "native_motion.jsonl"
+          ],
+          "method": "original post-tick Native three-axis velocity"
+        },
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "native_motion.jsonl",
+            "road_context.json"
+          ],
+          "method": "original Native actor ID and vehicle blueprint plus saved review"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Lower speed attempt has no identified additional construction risk",
+        "status": "none"
+      },
+      "candidates": [],
+      "case_id": "training__C230222__NRS-484B-600-1e__motor_vehicle_driver__probe_02",
+      "compatibility": {
+        "log": "native/proofs/probe_02/public-analysis.log",
+        "negative_log": "native/proofs/probe_02/negative-analysis.log",
+        "receipt": "native/proofs/probe_02/compatibility.json",
+        "sha256": "232701d2b7cb7cdb4e0e383b9807554b28dd1c2c815ade698218ac31a97d8248"
+      },
+      "construction": "native/probe_02-construction.json",
+      "construction_sha256": "8e8dc19216540753fed60298d95b9848d18dd45de20d3792f0d3248f10bfed29",
+      "fixture_recipe": "work/training__C230222__NRS-484B-600-1e__motor_vehicle_driver/native/diagnostic/probe_02/fixture-recipe.json",
+      "id": "probe_02",
+      "kind": "delivery",
+      "measurement_contract": "native/probe_02-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "expected_error": "Missing required source: native_motion.jsonl",
+        "log": "native/proofs/probe_02/negative-analysis.log",
+        "log_sha256": "8553b4a674226bb636992d4a3fb0381dab8410bd379cdaf42058af1788c19f57"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C230222__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C230222__NRS-484B-600-1e__motor_vehicle_driver__probe_02 --output .runtime-work/c230222/offline-v2-probe_02 --python .venv-cpu/bin/python",
+        "construction_sha256": "8e8dc19216540753fed60298d95b9848d18dd45de20d3792f0d3248f10bfed29",
+        "exit_code": 0,
+        "log": "native/probe_02-offline.log",
+        "log_sha256": "b60de0f462cd5aed9a21ae0ce36337e075d1dbb401af2cfa81ab2abfcf5d5c76"
+      },
+      "physical_preparation": {
+        "receipt": "native/proofs/probe_02/physical-preparation.json",
+        "sha256": "e889437c6f7619a348a494c983d0ba4b5c43874239b76adabf155aa31ab70377"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "three-axis post-tick Native vehicle velocity",
+            "name": "kin.velocity",
+            "reference_frame": "authored road/travel/curb 1,800 m corridor",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms Native sampling; physical source review pending",
+            "unit": "m/s"
+          },
+          {
+            "method": "norm of original Native velocity divided by 0.44704",
+            "name": "kin.speed",
+            "reference_frame": "authored road/travel/curb 1,800 m corridor",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms Native sampling; physical source review pending",
+            "unit": "mph"
+          },
+          {
+            "method": "Native actor ID and reviewed vehicle identity",
+            "name": "ru.subject",
+            "reference_frame": "authored road/travel/curb 1,800 m corridor",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms Native sampling; physical source review pending",
+            "unit": "identifier"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Controller request is not measured speed",
+          "CPU diagnostics do not establish physical speed or pixels"
+        ]
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C230222__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C230222__NRS-484B-600-1e__motor_vehicle_driver__probe_02 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$SAVED_OUTPUT/v0001/feedback.json\" # training__C230222__NRS-484B-600-1e__motor_vehicle_driver__probe_02",
+        "test_log": "native/proofs/probe_02/saved.log",
+        "test_log_sha256": "e8da3f5c3819b135a3bc389fa9d9e64deeb79eeeeb40ba6f53355940ca8d712c",
+        "test_exit_code": 0,
+        "proof": ".runtime-work/c230222/saved-v2-probe_02/v0001/processing.json"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C230222__NRS-484B-600-1e__motor_vehicle_driver__probe_02",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "absolute_measured_speed_and_vehicle_identity"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "7dbde629921da3e38baa8d3db7ddb8e60678177f6d29a0cb70b67c223e9fcc93",
+        "command": ".venv-cpu/bin/python -B work/training__C230222__NRS-484B-600-1e__motor_vehicle_driver/delivery_audit.py --case training__C230222__NRS-484B-600-1e__motor_vehicle_driver__probe_02 --candidate primary --attempt .runtime-work/c230222/compat-v2-probe_02 --processing .runtime-work/c230222/saved-v2-probe_02/v0001/processing.json --output .runtime-work/c230222/audit-probe_02-positive.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/probe_02/delivery-positive.log",
+        "test_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C230222__NRS-484B-600-1e__motor_vehicle_driver/delivery_audit.py --case training__C230222__NRS-484B-600-1e__motor_vehicle_driver__probe_02 --candidate primary --attempt .runtime-work/c230222/compat-v2-probe_02 --processing .runtime-work/c230222/saved-v2-probe_02/v0001/processing.json --output .runtime-work/c230222/audit-probe_02-negative.json --diagnostic --omit-source native_motion.jsonl",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: native_motion.jsonl",
+        "negative_log": "native/proofs/probe_02/delivery-negative.log",
+        "negative_log_sha256": "42fc783236ebcba601389df8581dacfe841dc32245052024b3a02a5ffa4822fb",
+        "proof_scope": "Synthetic saved-source diagnostic only; original Native pixels, physical travel and legal judgment remain pending."
+      }
+    },
+    {
+      "acquisition": {
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "native_motion.jsonl"
+          ],
+          "method": "Euclidean norm of original Native velocity in mph"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "native_motion.jsonl"
+          ],
+          "method": "original post-tick Native three-axis velocity"
+        },
+        "ru.subject": {
+          "entrypoint": "runner.py",
+          "evidence": [
+            "native_motion.jsonl",
+            "road_context.json"
+          ],
+          "method": "original Native actor ID and vehicle blueprint plus saved review"
+        }
+      },
+      "candidate_risk": {
+        "reason": "Requested speed may not be achieved on a reviewed clear route",
+        "status": "physical"
+      },
+      "candidates": [
+        {
+          "changed_knobs": [
+            "throttle proportional speed-error gain from 0.14 to 0.18 at unchanged 82 mph request"
+          ],
+          "compatibility": {
+            "log": "native/proofs/probe_03/fallback1-public-analysis.log",
+            "negative_log": "native/proofs/probe_03/fallback1-negative-analysis.log",
+            "receipt": "native/proofs/probe_03/fallback1-compatibility.json",
+            "sha256": "8b88d349ba22ae6f1d192182985a6adf51e778ca99ab0cf34eb584fe8aae16b7"
+          },
+          "construction": "native/probe_03-fallback1-construction.json",
+          "construction_sha256": "2f8ed2aef22209041bd605ae1b11f3dd9656c9f9eb488114040f4bf977b45dfe",
+          "id": "fallback1",
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C230222__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C230222__NRS-484B-600-1e__motor_vehicle_driver__probe_03 --candidate fallback1 --output .runtime-work/c230222/offline-fallback1 --python .venv-cpu/bin/python",
+            "construction_sha256": "2f8ed2aef22209041bd605ae1b11f3dd9656c9f9eb488114040f4bf977b45dfe",
+            "exit_code": 0,
+            "log": "native/proofs/probe_03/fallback1-offline.log",
+            "log_sha256": "b60de0f462cd5aed9a21ae0ce36337e075d1dbb401af2cfa81ab2abfcf5d5c76"
+          },
+          "trigger": {
+            "failure_condition": "primary 82 mph request does not produce an original measured interval strictly above 80 mph after source completeness and clear-route review",
+            "metric": "original measured speed in the selected 600-frame window",
+            "source": "original native_motion.jsonl and result.json"
+          }
+        }
+      ],
+      "case_id": "training__C230222__NRS-484B-600-1e__motor_vehicle_driver__probe_03",
+      "compatibility": {
+        "log": "native/proofs/probe_03/public-analysis.log",
+        "negative_log": "native/proofs/probe_03/negative-analysis.log",
+        "receipt": "native/proofs/probe_03/compatibility.json",
+        "sha256": "71531c12c78352785951280a47ebc488da8054acc7abc528f7daedd2398a8872"
+      },
+      "construction": "native/probe_03-construction.json",
+      "construction_sha256": "f297013c2c8def8ca02c8a1f22789eafc1668184ca573861fee82cb7011a7658",
+      "fixture_recipe": "work/training__C230222__NRS-484B-600-1e__motor_vehicle_driver/native/diagnostic/probe_03/fixture-recipe.json",
+      "id": "probe_03",
+      "kind": "delivery",
+      "measurement_contract": "native/probe_03-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "native_handoff": {
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT",
+        "python_env_var": "CARLA_PYTHON"
+      },
+      "negative": {
+        "expected_error": "Missing required source: native_motion.jsonl",
+        "log": "native/proofs/probe_03/negative-analysis.log",
+        "log_sha256": "689c278d0b2c051fdf523c69f60498d2fd91c069b529d07299dde53748d88945"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C230222__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C230222__NRS-484B-600-1e__motor_vehicle_driver__probe_03 --output .runtime-work/c230222/offline-v2-probe_03 --python .venv-cpu/bin/python",
+        "construction_sha256": "f297013c2c8def8ca02c8a1f22789eafc1668184ca573861fee82cb7011a7658",
+        "exit_code": 0,
+        "log": "native/probe_03-offline.log",
+        "log_sha256": "b60de0f462cd5aed9a21ae0ce36337e075d1dbb401af2cfa81ab2abfcf5d5c76"
+      },
+      "physical_preparation": {
+        "receipt": "native/proofs/probe_03/physical-preparation.json",
+        "sha256": "b340ab9e1c5aabbd99e46aa25db4627987f66a44460513b304fd9bba6618e080"
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "method": "three-axis post-tick Native vehicle velocity",
+            "name": "kin.velocity",
+            "reference_frame": "authored road/travel/curb 1,800 m corridor",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms Native sampling; physical source review pending",
+            "unit": "m/s"
+          },
+          {
+            "method": "norm of original Native velocity divided by 0.44704",
+            "name": "kin.speed",
+            "reference_frame": "authored road/travel/curb 1,800 m corridor",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms Native sampling; physical source review pending",
+            "unit": "mph"
+          },
+          {
+            "method": "Native actor ID and reviewed vehicle identity",
+            "name": "ru.subject",
+            "reference_frame": "authored road/travel/curb 1,800 m corridor",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms Native sampling; physical source review pending",
+            "unit": "identifier"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Controller request is not measured speed",
+          "CPU diagnostics do not establish physical speed or pixels"
+        ]
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C230222__NRS-484B-600-1e__motor_vehicle_driver/execution-manifest.json --case training__C230222__NRS-484B-600-1e__motor_vehicle_driver__probe_03 --attempt \"$ATTEMPT\" --output \"$SAVED_OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$SAVED_OUTPUT/v0001/feedback.json\" # training__C230222__NRS-484B-600-1e__motor_vehicle_driver__probe_03",
+        "test_log": "native/proofs/probe_03/saved.log",
+        "test_log_sha256": "c4b30d0dc5268706c683d5458289c61c56c4095069c5386976c178b64a4db6a0",
+        "test_exit_code": 0,
+        "proof": ".runtime-work/c230222/saved-v2-probe_03/v0001/processing.json"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C230222__NRS-484B-600-1e__motor_vehicle_driver__probe_03",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "absolute_measured_speed_and_vehicle_identity"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "7dbde629921da3e38baa8d3db7ddb8e60678177f6d29a0cb70b67c223e9fcc93",
+        "command": ".venv-cpu/bin/python -B work/training__C230222__NRS-484B-600-1e__motor_vehicle_driver/delivery_audit.py --case training__C230222__NRS-484B-600-1e__motor_vehicle_driver__probe_03 --candidate primary --attempt .runtime-work/c230222/compat-v2-probe_03 --processing .runtime-work/c230222/saved-v2-probe_03/v0001/processing.json --output .runtime-work/c230222/audit-probe_03-positive.json --diagnostic",
+        "test_exit_code": 0,
+        "test_log": "native/proofs/probe_03/delivery-positive.log",
+        "test_log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "negative_command": ".venv-cpu/bin/python -B work/training__C230222__NRS-484B-600-1e__motor_vehicle_driver/delivery_audit.py --case training__C230222__NRS-484B-600-1e__motor_vehicle_driver__probe_03 --candidate primary --attempt .runtime-work/c230222/compat-v2-probe_03 --processing .runtime-work/c230222/saved-v2-probe_03/v0001/processing.json --output .runtime-work/c230222/audit-probe_03-negative.json --diagnostic --omit-source native_motion.jsonl",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: native_motion.jsonl",
+        "negative_log": "native/proofs/probe_03/delivery-negative.log",
+        "negative_log_sha256": "42fc783236ebcba601389df8581dacfe841dc32245052024b3a02a5ffa4822fb",
+        "proof_scope": "Synthetic saved-source diagnostic only; original Native pixels, physical travel and legal judgment remain pending."
+      }
+    }
+  ],
+  "format": "worker-execution-manifest",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "draft"
+}

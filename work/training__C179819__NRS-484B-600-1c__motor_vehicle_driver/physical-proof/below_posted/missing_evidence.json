@@ -1,0 +1,254 @@
+{
+  "case_id": "training__C179819__NRS-484B-600-1c__motor_vehicle_driver__below_posted",
+  "measured_values": {
+    "format": "saved-posted-speed-observation",
+    "assignment_id": "training__C179819__NRS-484B-600-1c__motor_vehicle_driver",
+    "case_id": "training__C179819__NRS-484B-600-1c__motor_vehicle_driver__below_posted",
+    "review_kind": "synthetic_diagnostic",
+    "sources": {
+      "road_context.json": "b3de67b1b90079a51137851c48fa995a9a134fc6f482fec1295c77f03c558cac",
+      "road.xodr": "a1f5cd04a875c883a7df2d69e28a168d2aaafbc286c0070ab5d0efc03edcb366",
+      "native_motion.jsonl": "488416a9ef895a10b98b90a0f79a8f32e181612ecd550fde79bc222b98a2e583",
+      "video_frames.jsonl": "554e1824bd195670dab152daeb4bf831e09ecabf66604adfcf355c811fec3ffc",
+      "trace.jsonl": "5f69219585dfad627288e65d67872afcccac46f59109c9d5a07efa5f55a6ecf3",
+      "capture/evidence.jsonl": "dd60b877adba5de20bf65d5fc1673c837bb26a4c9807f101ba2c67f3cca7b1c1",
+      "overview.mkv": "52263cfc6338696954b034a9b812508649033d34de9e9409aa753c9c6819bb2e",
+      "approach.mkv": "6f2ee6d23fc46044ddef5604518b5dbdffbfebfea32d9987e8b00a77734ed938",
+      "reference_corner.mkv": "6f2ee6d23fc46044ddef5604518b5dbdffbfebfea32d9987e8b00a77734ed938",
+      "driver_reference.mkv": "6f2ee6d23fc46044ddef5604518b5dbdffbfebfea32d9987e8b00a77734ed938"
+    },
+    "sample_count": 600,
+    "governed_frame_count": 537,
+    "posted_mph": 30,
+    "sign_passage_frame": 63,
+    "min_measured_mph": 25.000000000509598,
+    "max_measured_mph": 25.000000000509598,
+    "frames_above_posted": [],
+    "authority_source": "synthetic public-authority review fixture",
+    "highway_source": "synthetic highway-portion review fixture",
+    "legal_verdict_claimed": false,
+    "physical_acceptance_claimed": false
+  },
+  "target_checks": [
+    {
+      "target": "observed governed-zone speed near requested diagnostic target",
+      "requested": 25.0,
+      "measured": 25.000000000509598,
+      "method": "measure_speed",
+      "tolerance": 1e-09,
+      "matched": true,
+      "physical_cause_confirmed": false,
+      "cause_evidence": [
+        "native_motion.jsonl",
+        "road_context.json",
+        "video_frames.jsonl",
+        "trace.jsonl",
+        "capture/evidence.jsonl",
+        "road.xodr",
+        "overview.mkv",
+        "approach.mkv",
+        "reference_corner.mkv",
+        "driver_reference.mkv"
+      ]
+    }
+  ],
+  "setup_confirmed": false,
+  "behavior_attempted": false,
+  "maneuver_completed": false,
+  "termination_reason": "Saved evidence assessed; maneuver unverified; legal judgments remain separate",
+  "physical_failure_flags": [
+    "Physical speed, camera pixels and route completion unverified"
+  ],
+  "trace_reference": "trace.jsonl",
+  "video_references": [
+    "overview.mkv",
+    "approach.mkv",
+    "reference_corner.mkv",
+    "driver_reference.mkv"
+  ],
+  "video_frame_map_reference": "video_frames.jsonl",
+  "recording_description": {
+    "channels": [
+      {
+        "name": "ego_pose",
+        "unit": "m",
+        "sampling_rate_hz": 20,
+        "method": "Original Native actor position after each tick",
+        "time_window": "600 frames / 30 s",
+        "reference_frame": "reviewed highway portion",
+        "uncertainty": "50 ms sampling and original map review"
+      },
+      {
+        "name": "measured_speed_vs_posted_limit",
+        "unit": "mph",
+        "sampling_rate_hz": 20,
+        "method": "Norm of original Native three-axis velocity with sourced posting context",
+        "time_window": "600 frames / 30 s",
+        "reference_frame": "original sign passage and governed portion",
+        "uncertainty": "50 ms sampling; original authority and posting review pending"
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "public_authority_posting",
+        "unit": "structured",
+        "method": "original source with independent review"
+      },
+      {
+        "name": "governed_highway_portion",
+        "unit": "structured",
+        "method": "original source with independent review"
+      },
+      {
+        "name": "sign_position",
+        "unit": "structured",
+        "method": "original source with independent review"
+      },
+      {
+        "name": "native_map",
+        "unit": "structured",
+        "method": "original source with independent review"
+      }
+    ],
+    "limitations": [
+      "Requested speed does not establish measured speed.",
+      "Authored sign does not establish a public-authority posting.",
+      "No legal outcome is inferred from CPU diagnostics."
+    ]
+  },
+  "recording_evidence": [
+    {
+      "name": "ego_pose",
+      "unit": "m",
+      "reference": "channels/ego_pose.jsonl"
+    },
+    {
+      "name": "measured_speed_vs_posted_limit",
+      "unit": "mph",
+      "reference": "channels/measured_speed_vs_posted_limit.jsonl"
+    },
+    {
+      "name": "public_authority_posting",
+      "unit": "structured",
+      "reference": "instance-context.json"
+    },
+    {
+      "name": "governed_highway_portion",
+      "unit": "structured",
+      "reference": "instance-context.json"
+    },
+    {
+      "name": "sign_position",
+      "unit": "structured",
+      "reference": "instance-context.json"
+    },
+    {
+      "name": "native_map",
+      "unit": "structured",
+      "reference": "instance-context.json"
+    }
+  ],
+  "realized_observables": {},
+  "provenance_kind": "synthetic_fixture",
+  "accepted": false,
+  "physical_checks": {
+    "setup": {
+      "status": "unverified",
+      "method": "source-bound setup assessment",
+      "intervals": [],
+      "sources": {
+        "config.json": "6e0639e00e70f61aefbf277e6e73da94887df73c46377667b6dd81dec0a7142d",
+        "video_frames.jsonl": "554e1824bd195670dab152daeb4bf831e09ecabf66604adfcf355c811fec3ffc"
+      },
+      "details": {
+        "criterion": {
+          "format": "worker-physical-completion-criteria",
+          "criterion": "travel_progress",
+          "motion_source": "trace.jsonl",
+          "position_key": "position_m",
+          "minimum_progress_m": 100.0,
+          "minimum_samples": 2,
+          "engineering_tolerances_not_legal": true,
+          "context_sources": [],
+          "completion_goal_method": "Original Native roadway travel through sourced posted zone"
+        },
+        "reason": "Required original source is missing"
+      },
+      "missing_evidence": [
+        "trace.jsonl"
+      ],
+      "legal_verdict_claimed": false,
+      "physical_causation_claimed": false
+    },
+    "target": {
+      "status": "unverified",
+      "method": "source-bound target assessment",
+      "intervals": [],
+      "sources": {
+        "config.json": "6e0639e00e70f61aefbf277e6e73da94887df73c46377667b6dd81dec0a7142d",
+        "video_frames.jsonl": "554e1824bd195670dab152daeb4bf831e09ecabf66604adfcf355c811fec3ffc"
+      },
+      "details": {
+        "criterion": {
+          "format": "worker-physical-completion-criteria",
+          "criterion": "travel_progress",
+          "motion_source": "trace.jsonl",
+          "position_key": "position_m",
+          "minimum_progress_m": 100.0,
+          "minimum_samples": 2,
+          "engineering_tolerances_not_legal": true,
+          "context_sources": [],
+          "completion_goal_method": "Original Native roadway travel through sourced posted zone"
+        },
+        "reason": "Required original source is missing"
+      },
+      "missing_evidence": [
+        "trace.jsonl"
+      ],
+      "legal_verdict_claimed": false,
+      "physical_causation_claimed": false
+    },
+    "maneuver": {
+      "status": "unverified",
+      "method": "source-bound maneuver assessment",
+      "intervals": [],
+      "sources": {
+        "config.json": "6e0639e00e70f61aefbf277e6e73da94887df73c46377667b6dd81dec0a7142d",
+        "video_frames.jsonl": "554e1824bd195670dab152daeb4bf831e09ecabf66604adfcf355c811fec3ffc"
+      },
+      "details": {
+        "criterion": {
+          "format": "worker-physical-completion-criteria",
+          "criterion": "travel_progress",
+          "motion_source": "trace.jsonl",
+          "position_key": "position_m",
+          "minimum_progress_m": 100.0,
+          "minimum_samples": 2,
+          "engineering_tolerances_not_legal": true,
+          "context_sources": [],
+          "completion_goal_method": "Original Native roadway travel through sourced posted zone"
+        },
+        "reason": "Required original source is missing"
+      },
+      "missing_evidence": [
+        "trace.jsonl"
+      ],
+      "legal_verdict_claimed": false,
+      "physical_causation_claimed": false
+    },
+    "attempt": {
+      "status": "unverified",
+      "method": "observed finite original motion; separate from target success",
+      "intervals": [],
+      "sources": {
+        "config.json": "6e0639e00e70f61aefbf277e6e73da94887df73c46377667b6dd81dec0a7142d",
+        "video_frames.jsonl": "554e1824bd195670dab152daeb4bf831e09ecabf66604adfcf355c811fec3ffc"
+      },
+      "physical_causation_claimed": false
+    }
+  },
+  "physical_observations": {},
+  "diagnostic_fixture": true,
+  "scope": "Source protocol provenance, not physical or legal acceptance",
+  "physical_acceptance_claimed": false
+}

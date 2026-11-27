@@ -11,7 +11,9 @@ import subprocess
 from pathlib import Path
 
 MPH_PER_MPS = 1 / 0.44704
-CAMERAS = ('forward', 'rear', 'left', 'right')
+CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
+CAMERA_SIZES = {'overview': (1920, 1080), 'approach': (1280, 720),
+                'reference_corner': (1280, 720), 'driver_reference': (1280, 720)}
 FRAMES = 600
 
 
@@ -46,7 +48,7 @@ def measure(root):
         raise ValueError('Requires all 600 original 20 Hz samples')
     video_hashes = {}
     for camera in CAMERAS:
-        path = root / ('camera_' + camera + '.mkv')
+        path = root / (camera + '.mkv')
         if not path.is_file() or path.stat().st_size == 0:
             raise ValueError('Missing nonempty original camera: ' + camera)
         probe = subprocess.run(['ffprobe', '-v', 'error', '-count_frames', '-select_streams', 'v:0',
@@ -84,11 +86,11 @@ def measure(root):
         for camera in CAMERAS:
             stream = subprocess.run(['ffprobe', '-v', 'error', '-select_streams', 'v:0',
                                      '-show_entries', 'stream=width,height', '-of', 'json',
-                                     str(root / ('camera_' + camera + '.mkv'))],
+                                     str(root / (camera + '.mkv'))],
                                     capture_output=True, text=True, check=True)
             dimensions = json.loads(stream.stdout)['streams'][0]
-            if (dimensions['width'], dimensions['height']) != (1920, 1080):
-                raise ValueError('Original camera profile must be full resolution: ' + camera)
+            if (dimensions['width'], dimensions['height']) != CAMERA_SIZES[camera]:
+                raise ValueError('Original camera profile differs: ' + camera)
     speeds = []
     previous_native = -1
     previous_time = -1.0
@@ -120,7 +122,7 @@ def measure(root):
         'source_kind': review['review_kind'],
         'sources': {'video_frames.jsonl': sha(frame_path), 'bus_motion.jsonl': sha(motion_path),
                     'passenger_trip_review.json': sha(review_path),
-                    **{'camera_' + k + '.mkv': v for k, v in video_hashes.items()}},
+                    **{k + '.mkv': v for k, v in video_hashes.items()}},
         'sample_count': FRAMES, 'sample_span_s': previous_time - frames[0]['time_s'],
         'maximum_observed_mph': max(speeds),
         'frames_above_55_mph': [i for i, v in enumerate(speeds) if v > 55],

@@ -32,7 +32,7 @@ def expect_error(name, fragment, mutate):
 def main():
     ROOT.mkdir(parents=True, exist_ok=True)
     for camera, color in zip(module.CAMERAS, ('red', 'green', 'blue', 'yellow')):
-        path = ROOT / ('camera_' + camera + '.mkv')
+        path = ROOT / (camera + '.mkv')
         subprocess.run(['ffmpeg', '-v', 'error', '-y', '-f', 'lavfi', '-i',
                         'color=c=' + color + ':s=64x48:r=20', '-frames:v', '600',
                         '-c:v', 'ffv1', str(path)], check=True)
@@ -57,7 +57,7 @@ def main():
               'trip_purpose_source': 'synthetic diagnostic context',
               'pupils_aboard': True, 'observed_pupil_count': 3,
               'pupil_evidence_frames': [0, 300, 599],
-              'camera_sha256': {camera: module.sha(ROOT / ('camera_' + camera + '.mkv'))
+              'camera_sha256': {camera: module.sha(ROOT / (camera + '.mkv'))
                                 for camera in module.CAMERAS}}
     review_path = ROOT / 'passenger_trip_review.json'
     write(review_path, review)
@@ -89,7 +89,7 @@ def main():
     failures['missing_driver_join_source'] = expect_error('missing_driver_join_source', 'not source-joined', lambda: write(review_path, bad_review))
     write(review_path, review)
     bad_review = copy.deepcopy(review)
-    bad_review['camera_sha256']['forward'] = '0' * 64
+    bad_review['camera_sha256']['overview'] = '0' * 64
     failures['stale_video'] = expect_error('stale_video', 'not bound', lambda: write(review_path, bad_review))
     write(review_path, review)
     bad_motion = original_motion.replace('synthetic_native_sample', 'original_native_velocity', 1)

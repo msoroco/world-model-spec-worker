@@ -182,6 +182,7 @@ def execute(output, host, port):
             'source_kind': 'original_native_private_way_entry',
             'case_id': config['case_id'], 'native_map_survey': surveyed,
             'all_vehicle_inventory_method': 'every world vehicle actor body each frame',
+            'private_way_and_highway': surveyed,
             'physical_and_legal_acceptance_claimed': False,
         }, indent=2) + '\n')
         source_names = ('road.xodr', 'private-entry-context.json', 'private-entry-actors.jsonl',

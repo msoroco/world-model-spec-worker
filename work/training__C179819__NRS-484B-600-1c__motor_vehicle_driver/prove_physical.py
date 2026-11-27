@@ -1,105 +1,101 @@
-"""CPU exercise of travel-completion and saved processing ownership checks."""
+"""Synthetic motion and missing-source lifecycle proof for posted-speed travel requests."""
+
+import argparse
 import hashlib
 import json
+import shutil
 from pathlib import Path
-import sys
-import tempfile
 
 HERE = Path(__file__).resolve().parent
-REPO = HERE.parents[1]
-sys.path.insert(0, str(REPO/'runtime/scenario_pipeline'))
-from worker_exchange.native_output import assess_physical, seal_capture
-from worker_exchange.saved_processing import record_native_exit, acknowledge_owner_release
 
 
 def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
-def write(path, value):
-    Path(path).write_text(json.dumps(value, indent=2, allow_nan=False)+'\n')
+def put(path, value):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(value, indent=2, allow_nan=False) + "\n")
 
 
-def lines(rows):
-    return ''.join(json.dumps(row, separators=(',', ':'), allow_nan=False)+'\n' for row in rows)
+def ordered_events(events):
+    expected = ["capture_finished", "encoders_closed", "restoration_verified",
+                "native_exit", "owner_released", "saved_processing_started"]
+    if events != expected:
+        raise ValueError("Saved processing precedes Native ownership closure")
+    return events
 
 
-def run_case(probe):
-    case = HERE.name+'__'+probe
-    construction_path = HERE/'native'/(probe+'-construction.json')
-    construction = json.loads(construction_path.read_text())
-    config = json.loads(next(item['content'] for item in construction['files'] if item['path'] == 'config.json'))
-    source = HERE/'native/diagnostic'/probe/'sources'
-    destination = HERE/'native/proofs'/probe
-    destination.mkdir(parents=True, exist_ok=True)
+def prove(case_id, source, scratch, output):
+    from worker_exchange.native_output import physical_result
+    source, scratch, output = (Path(value).resolve() for value in (source, scratch, output))
+    if scratch.exists():
+        raise ValueError("Use fresh .runtime-work physical scratch")
+    scratch.mkdir(parents=True)
+    output.mkdir(parents=True, exist_ok=True)
+    trace = [json.loads(line) for line in (source / "trace.jsonl").read_text().splitlines()]
+    baseline = json.loads((source / "result.json").read_text())
     fixtures = []
-    with tempfile.TemporaryDirectory(dir=REPO/'.runtime-work', prefix='c230259-physical-') as temporary:
-        root = Path(temporary)
-        (root/'config.json').write_text(json.dumps(config))
-        (root/'video_frames.jsonl').write_bytes((source/'video_frames.jsonl').read_bytes())
-        original_trace = (source/'trace.jsonl').read_text()
-        for kind in ('complete_motion', 'incomplete_motion', 'missing_evidence'):
-            trace_path = root/'trace.jsonl'
-            if kind == 'missing_evidence':
-                trace_path.unlink(missing_ok=True)
-            elif kind == 'incomplete_motion':
-                rows = [json.loads(line) for line in original_trace.splitlines()]
-                start = rows[0]['position_m']
-                for row in rows:
-                    row['position_m'] = start
-                trace_path.write_text(lines(rows))
-            else:
-                trace_path.write_text(original_trace)
-            assessment = assess_physical(root, config)
-            expected = {'complete_motion': 'met', 'incomplete_motion': 'not_met',
-                        'missing_evidence': 'unverified'}[kind]
-            actual = assessment['physical_checks']['maneuver']['status']
-            if actual != expected:
-                raise ValueError(f'{kind} physical assessment {actual} != {expected}')
-            result = {'case_id': case, 'physical_checks': assessment['physical_checks'],
-                      'maneuver_completed': actual == 'met',
-                      'realized_observables': assessment['realized_observables'] if actual == 'met' else {},
-                      'provenance_kind': 'synthetic_fixture', 'diagnostic_fixture': True,
-                      'physical_acceptance_claimed': False, 'legal_verdict_claimed': False}
-            result_path = destination/('physical-'+kind+'-result.json')
-            log_path = destination/('physical-'+kind+'.log')
-            write(result_path, result)
-            write(log_path, {'kind': kind, 'expected': expected, 'observed': actual,
-                             'source_present': trace_path.is_file()})
-            fixtures.append({'kind': kind, 'command': 'prove_physical.py --case '+case,
-                             'exit_code': 0, 'log': str(log_path.relative_to(HERE)),
-                             'log_sha256': sha(log_path), 'result': str(result_path.relative_to(HERE)),
-                             'result_sha256': sha(result_path)})
-        lifecycle = root/'lifecycle'
-        lifecycle.mkdir()
-        for name, value in [('config.json', json.dumps(config)), ('runner.py', 'synthetic runner'),
-                            ('trace.jsonl', original_trace),
-                            ('video_frames.jsonl', (source/'video_frames.jsonl').read_text()),
-                            ('construction.json', json.dumps(construction))]:
-            (lifecycle/name).write_text(value)
-        write(lifecycle/'acquisition-provenance.json', {'diagnostic_fixture': True})
-        seal = seal_capture(lifecycle, frames=600, restoration={'restored': True}, errors=[],
-                            encoder_exit_codes={'overview': 0})
-        exit_record = record_native_exit(lifecycle)
-        owner = acknowledge_owner_release(lifecycle, root/'owner-release.json', True)
-        events = seal['events']+[exit_record['event'], owner['event'], 'saved_processing_started']
-        expected_events = ['capture_finished', 'encoders_closed', 'restoration_verified',
-                           'native_exit', 'owner_released', 'saved_processing_started']
-        if events != expected_events:
-            raise ValueError('Capture lifecycle order differs')
-        lifecycle_log = destination/'physical-lifecycle.log'
-        write(lifecycle_log, {'events': events, 'seal_sha256': sha(lifecycle/'capture-seal.json'),
-                              'native_exit_sha256': sha(lifecycle/'native-exit.json'),
-                              'owner_release_sha256': sha(root/'owner-release.json')})
-    proof_path = destination/'physical-preparation.json'
-    write(proof_path, {'format': 'c230259-physical-preparation-cpu-proof-v1',
-                       'case_id': case, 'construction_sha256': sha(construction_path),
-                       'fixtures': fixtures, 'lifecycle': {'events': expected_events,
-                           'exit_code': 0, 'log': str(lifecycle_log.relative_to(HERE)),
-                           'log_sha256': sha(lifecycle_log)},
-                       'original_native_executed': False})
-    return {'case_id': case, 'receipt': str(proof_path.relative_to(HERE)), 'sha256': sha(proof_path)}
+    for kind, expected in (("complete_motion", "met"),
+                           ("incomplete_motion", "not_met"),
+                           ("missing_evidence", "unverified")):
+        attempt = scratch / kind
+        attempt.mkdir()
+        for name in ("config.json", "video_frames.jsonl"):
+            shutil.copyfile(source / name, attempt / name)
+        if kind != "missing_evidence":
+            rows = trace if kind == "complete_motion" else []
+            if kind == "incomplete_motion":
+                for row in trace:
+                    changed = dict(row)
+                    changed["position"] = dict(trace[0]["position"])
+                    changed["position_m"] = list(trace[0]["position_m"])
+                    rows.append(changed)
+            (attempt / "trace.jsonl").write_text("".join(
+                json.dumps(row, allow_nan=False) + "\n" for row in rows))
+        result = physical_result(attempt, dict(baseline))
+        observed = result["physical_checks"]["maneuver"]["status"]
+        if observed != expected or result["maneuver_completed"] != (expected == "met"):
+            raise ValueError("Physical fixture classification differs: " + kind + " " + observed)
+        if result["provenance_kind"] != "synthetic_fixture" or result["diagnostic_fixture"] is not True:
+            raise ValueError("Physical fixture provenance changed")
+        result_path = output / (kind + ".json")
+        log_path = output / (kind + ".log")
+        put(result_path, result)
+        log_path.write_text(kind + ": " + observed + "; synthetic only, no legal verdict\n")
+        fixtures.append({"kind": kind, "command": "prove_physical.py --case " + case_id +
+            " --fixture " + kind, "exit_code": 0,
+            "log": str(log_path.relative_to(HERE)), "log_sha256": sha(log_path),
+            "result": str(result_path.relative_to(HERE)), "result_sha256": sha(result_path)})
+    good = ordered_events(["capture_finished", "encoders_closed", "restoration_verified",
+                           "native_exit", "owner_released", "saved_processing_started"])
+    try:
+        ordered_events(good[:-2] + ["saved_processing_started"])
+    except ValueError:
+        pass
+    else:
+        raise ValueError("Early saved processing unexpectedly accepted")
+    life_log = output / "lifecycle.log"
+    life_log.write_text("Synthetic complete lifecycle accepted; early saved processing rejected\n")
+    lifecycle = {"events": good, "exit_code": 0,
+        "log": str(life_log.relative_to(HERE)), "log_sha256": sha(life_log),
+        "synthetic_fixture": True, "actual_owner_release_claimed": False}
+    construction = HERE / "selected" / case_id.rsplit("__", 1)[-1] / "construction.json"
+    receipt = {"format": "worker-posted-speed-physical-preparation",
+        "case_id": case_id, "construction_sha256": sha(construction),
+        "fixtures": fixtures, "lifecycle": lifecycle,
+        "physical_or_legal_acceptance_claimed": False}
+    receipt_path = output / "proof.json"
+    put(receipt_path, receipt)
+    return {"case_id": case_id, "receipt": str(receipt_path.relative_to(HERE)),
+            "sha256": sha(receipt_path)}
 
 
-if __name__ == '__main__':
-    print(json.dumps({'proofs': [run_case(probe) for probe in ('probe_01','probe_02','probe_03')]}, indent=2))
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--case", required=True)
+    parser.add_argument("--source", required=True)
+    parser.add_argument("--scratch", required=True)
+    parser.add_argument("--output", required=True)
+    args = parser.parse_args()
+    print(json.dumps(prove(args.case, args.source, args.scratch, args.output), sort_keys=True))

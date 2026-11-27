@@ -1,0 +1,27 @@
+{
+  "format": "c179819-selected-comparison-cpu-proof-v1",
+  "comparison_id": "training__C179819__NRS-484B-600-1c__motor_vehicle_driver__comparison",
+  "case_ids": [
+    "training__C179819__NRS-484B-600-1c__motor_vehicle_driver__below_posted",
+    "training__C179819__NRS-484B-600-1c__motor_vehicle_driver__at_posted",
+    "training__C179819__NRS-484B-600-1c__motor_vehicle_driver__above_posted"
+  ],
+  "script": "audit_speed_comparison.py",
+  "script_sha256": "2066d6f4bbd8042c5becddaebfc6c020d1eaec582aeb16d5a3b7fb855a593034",
+  "spec": "comparison-proof/spec.json",
+  "spec_sha256": "7d50922c08b47a09be28706e973978fdb37c8a2e0c551553180daf1b9c3526b8",
+  "positive": {
+    "command": ".venv-cpu/bin/python -B work/training__C179819__NRS-484B-600-1c__motor_vehicle_driver/audit_speed_comparison.py work/training__C179819__NRS-484B-600-1c__motor_vehicle_driver/comparison-proof/spec.json",
+    "exit_code": 0,
+    "log": "comparison-proof/positive.json",
+    "log_sha256": "8306adfbafc504e37442a0dd08e3caa49dbebe830450d6387bb3e3076de2ba4f"
+  },
+  "negative": {
+    "command": ".venv-cpu/bin/python -B work/training__C179819__NRS-484B-600-1c__motor_vehicle_driver/audit_speed_comparison.py work/training__C179819__NRS-484B-600-1c__motor_vehicle_driver/comparison-proof/spec.json --min-frames 601",
+    "exit_code": 1,
+    "expected_error": "insufficient source frames",
+    "log": "comparison-proof/negative.log",
+    "log_sha256": "55f1d9a86d7578f3f17fde794527c4d2e5c08aa392f7057017a9d3f2bf4f667f"
+  },
+  "scope": "Current selected 600-frame synthetic source comparison; production original-source spec and physical/legal judgment pending"
+}

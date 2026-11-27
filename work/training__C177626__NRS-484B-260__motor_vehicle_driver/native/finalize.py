@@ -174,7 +174,9 @@ def finalize(attempt, output):
               'video_references': [view + '.mkv' for view in VIEWS],
               'video_frame_map_reference': 'video_frames.jsonl',
               'recording_description': construction['recording_description'],
-              'recording_evidence': channels,
+              'recording_evidence': channels + [
+                  {'name': 'private_way_and_highway', 'unit': 'source context',
+                   'reference': 'private-entry-context.json'}],
               'realized_observables': {},
               'provenance_kind': 'synthetic_local_diagnostic' if
               json.loads((attempt / 'private-entry-context.json').read_text())['source_kind'].startswith('synthetic')

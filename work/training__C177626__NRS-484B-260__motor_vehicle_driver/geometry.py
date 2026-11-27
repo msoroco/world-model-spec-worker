@@ -13,9 +13,9 @@ def open_drive():
     root = ET.Element('OpenDRIVE')
     ET.SubElement(root, 'header', revMajor='1', revMinor='4', name='C177626-private-entry',
                   version='1', date='2026-11-26', north='40', south='-40',
-                  east='110', west='-110', vendor='full-train-worker')
+                  east='260', west='-110', vendor='full-train-worker')
     for road_id, x, y, heading, length, width, two_way in (
-        (HIGHWAY_ROAD, -100, 0, 0, 200, 4.0, True),
+        (HIGHWAY_ROAD, -100, 0, 0, 350, 4.0, True),
         (PRIVATE_ROAD, 0, -40, math.pi / 2, 36, 4.0, False),
     ):
         road = ET.SubElement(root, 'road', id=str(road_id), name=f'C177626_{road_id}',

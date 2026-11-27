@@ -1,21 +1,11 @@
-# training__C179819__NRS-484B-600-1c__motor_vehicle_driver
+# C179819 posted-speed delivery handoff
 
-Status: partial. No new selected delivery case, current-runtime accepted recording or legal verdict is claimed.
+Status: ready for first Native GPU delivery. The assignment-scoped strict CPU gate passed on the selected package; no original CARLA run, accepted recording, physical acceptance or legal verdict is claimed.
 
-## Source and scope
+NRS 484B.600(1)(c) addresses a vehicle driven faster than a public-authority posting for the particular highway portion traversed. The frozen C179819 paved-road travel cell and motor-vehicle driver actor are held fixed. Three selected requests ask for 25, 30 and 35 mph against an authored 30 mph sign. Requested speed and rendered sign do not establish measured speed, original posting authority or the highway extent. The equal request is a controller target, not legal equality.
 
-NRS 484B.600(1)(c): It is unlawful for any person to drive or operate a vehicle of any kind or character at: A rate of speed greater than that posted by a public authority for the particular portion of highway being traversed.
+`execution-manifest.json` binds three exact Native constructions and four synchronized cameras for 600 frames at 20 Hz. Each passed exact offline, public positive and missing-road_context negative, recorded-only saved processing, physical/lifecycle synthetic classification, and independent original-source delivery predicate self-tests. `proposals/semantic-index.json` validates the original-law semantic chain. `comparison-proof/proof.json` binds an independent comparison of the selected 600-frame synthetic source traces and a rejected insufficient-frame negative. All diagnostics are source-bound software tests, not original recordings.
 
-Cell: paved_road / travel / speed_limit_sign; actor: motor_vehicle_driver. Frozen witness count: 3. Membership rows: {'demo-train': 9, 'full-train': 9}. Membership alone does not prove coverage or reuse. Exact source and topic hashes are in `case-plan.json`.
+First delivery: use `result.json:first_gpu_delivery_command` for the below-posted case, then the other two exact case IDs from the manifest. Original Native readback must identify the public authority and posting, sign direction and governed portion, ego identity and velocity, sign passage, four-camera pixels, and physical completion. The independent delivery and comparison audits must run against those original sources before acceptance. Historical accepted-v3 membership has no local evidence inventory and was not reused.
 
-## Proposed comparison
-
-same authority-posted limit and governed road portion; speed profile only varies Vary only `measured_speed_vs_posted_limit` (mph) across ['below_posted', 'at_posted', 'above_posted']. Record sign, authority and governed extent, actual speed time series and sign passage. The definitions are not selected recordings, and requested settings are not measured results.
-
-## Blockers and resumption
-
-The frozen review context describes three accepted v3 speed recordings in both demo-train and full-train, with one independent three-pair comparison receipt. V1 and v2 are failed or superseded. `evidence-review.json` records each frozen membership row and source hash. These are historical records, not a current-runtime proof. This export has no `inputs/<assignment>/evidence.json`, so the no-new-capture ready path cannot pass its source-inventory contract.
-
-The new `audit_speed_comparison.py` checks saved trace and context hashes, full-frame and duration minima, governed-zone occupancy, measured speed conversion, three distinct traces, and fixed posting/authority/extent context across the planned comparison. The five synthetic CPU tests passed; `speed-comparison-cpu-proof.json` binds the code, log and frozen review hashes. This is diagnostic software proof only. It does not audit the original recordings, source-camera pixels, physical authority, or legal compliance.
-
-Executable Native construction and four candidate offline/compatibility proofs remain absent; saved-only processing and source-bound original comparison proof remain absent. Numeric posted value is world setup, not a judgment standard; the near-at point is intentionally below 30 mph and is not legal equality. Resolve exact statutory branches and authority from frozen sources. Build semantic stages, Native construction, primary plus three truly distinct fallbacks per selected case, synchronized four-camera capture and Core mapping; run exact offline, positive/negative compatibility, saved-only and independent comparison audits. Recheck physical cause and camera evidence in CARLA later. Set `ready` / `delivery_prepared` only after worker CPU proofs and assignment-scoped strict check pass.
+Scratch, decoder and diagnostic videos are under `.runtime-work/`; only portable source, contracts and CPU receipts are returned here. No legal result is inferred from the 30 mph authored value or synthetic data.
