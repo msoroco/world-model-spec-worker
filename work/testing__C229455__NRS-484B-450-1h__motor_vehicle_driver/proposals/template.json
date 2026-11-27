@@ -1,0 +1,93 @@
+{
+  "template_id": "NRS-484B-450-1h@motor_vehicle_driver",
+  "law_id": "NRS-484B-450-1h",
+  "actor": "motor_vehicle_driver",
+  "quote": "A person shall not stop, stand or park a vehicle, except when necessary to avoid conflict with other traffic or in compliance with law or the directions of a police officer or official traffic-control device, in any of the following places: Between a safety zone and the adjacent curb or within 30 feet of points on the curb immediately opposite the ends of a safety zone.",
+  "structure": {
+    "law_id": "NRS-484B-450-1h",
+    "activation": {
+      "condition": "Vehicle on a highway with a source-established safety zone and adjacent curb.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "A person shall not stop, stand or park a vehicle, except when necessary to avoid conflict with other traffic or in compliance with law or the directions of a police officer or official traffic-control device, in any of the following places: Between a safety zone and the adjacent curb or within 30 feet of points on the curb immediately opposite the ends of a safety zone.",
+      "type": "must_not",
+      "numeric_conditions": [
+        {
+          "variable": "signed_end_station_m",
+          "operator": "<=",
+          "value": 30,
+          "unit": "ft",
+          "source_clause": "within 30 feet of points on the curb immediately opposite the ends of a safety zone"
+        }
+      ]
+    },
+    "exceptions": [
+      {
+        "trigger": "necessary to avoid conflict with other traffic",
+        "effect": "exception to prohibition",
+        "replacement_obligation": null,
+        "source_clause": "necessary to avoid conflict with other traffic"
+      },
+      {
+        "trigger": "in compliance with law",
+        "effect": "exception to prohibition",
+        "replacement_obligation": null,
+        "source_clause": "in compliance with law"
+      },
+      {
+        "trigger": "the directions of a police officer",
+        "effect": "exception to prohibition",
+        "replacement_obligation": null,
+        "source_clause": "the directions of a police officer"
+      },
+      {
+        "trigger": "official traffic-control device",
+        "effect": "exception to prohibition",
+        "replacement_obligation": null,
+        "source_clause": "official traffic-control device"
+      }
+    ],
+    "timing": {
+      "description": "Observe approach, terminal halt, original body and curb reference, traffic and authority context.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "necessary to avoid conflict with other traffic",
+        "note": ""
+      },
+      {
+        "phrase": "safety zone",
+        "note": ""
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "placement",
+      "kind": "world_setup",
+      "range_or_domain": "between zone and adjacent curb, outside corridor, or opposite end band"
+    },
+    {
+      "name": "selected_end",
+      "kind": "world_setup",
+      "range_or_domain": "west or east end of official safety zone"
+    },
+    {
+      "name": "signed_end_station_m",
+      "kind": "subject_behavior",
+      "range_or_domain": "measured original body centre station from curb point opposite selected end"
+    },
+    {
+      "name": "halt_activity",
+      "kind": "world_setup",
+      "range_or_domain": "stop, stand or park"
+    },
+    {
+      "name": "exception_context",
+      "kind": "world_setup",
+      "range_or_domain": "none, traffic conflict, law, officer or official device"
+    }
+  ]
+}

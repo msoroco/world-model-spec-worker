@@ -1,0 +1,88 @@
+{
+  "template_id": "NRS-484B-450-1g@motor_vehicle_driver",
+  "law_id": "NRS-484B-450-1g",
+  "actor": "motor_vehicle_driver",
+  "quote": "A person shall not stop, stand or park a vehicle, except when necessary to avoid conflict with other traffic or in compliance with law or the directions of a police officer or official traffic-control device, in any of the following places: Within 30 feet upon the approach to any official traffic-control signal located at the side of a highway.",
+  "structure": {
+    "law_id": "NRS-484B-450-1g",
+    "activation": {
+      "condition": "A person stops, stands or parks a vehicle within 30 feet upon the approach to an official traffic-control signal at the side of a highway.",
+      "numeric_conditions": [
+        {
+          "operator": "<",
+          "unit": "m",
+          "value": 9.144,
+          "variable": "vehicle_to_signal_approach_distance_m"
+        }
+      ]
+    },
+    "obligation": {
+      "description": "A person shall not stop, stand or park a vehicle, except when necessary to avoid conflict with other traffic or in compliance with law or the directions of a police officer or official traffic-control device, in any of the following places: Within 30 feet upon the approach to any official traffic-control signal located at the side of a highway.",
+      "type": "must_not",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "trigger": "necessary to avoid conflict with other traffic",
+        "effect": "exception to prohibition",
+        "replacement_obligation": null,
+        "source_clause": "necessary to avoid conflict with other traffic"
+      },
+      {
+        "trigger": "in compliance with law",
+        "effect": "exception to prohibition",
+        "replacement_obligation": null,
+        "source_clause": "in compliance with law"
+      },
+      {
+        "trigger": "the directions of a police officer",
+        "effect": "exception to prohibition",
+        "replacement_obligation": null,
+        "source_clause": "the directions of a police officer"
+      },
+      {
+        "trigger": "official traffic-control device",
+        "effect": "exception to prohibition",
+        "replacement_obligation": null,
+        "source_clause": "official traffic-control device"
+      }
+    ],
+    "timing": {
+      "description": "Observe full approach, actual indication sequence, terminal halt and original context.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "necessary to avoid conflict with other traffic",
+        "note": ""
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "approach_relation",
+      "kind": "world_setup",
+      "range_or_domain": "upstream or downstream of reviewed signal"
+    },
+    {
+      "name": "vehicle_to_signal_approach_distance_m",
+      "kind": "world_setup",
+      "range_or_domain": "0 to 12 m route station; legal body datum unresolved"
+    },
+    {
+      "name": "halt_activity",
+      "kind": "world_setup",
+      "range_or_domain": "stop, stand or park"
+    },
+    {
+      "name": "exception_context",
+      "kind": "world_setup",
+      "range_or_domain": "none, conflict, law, officer or device"
+    },
+    {
+      "name": "signal_status",
+      "kind": "world_setup",
+      "range_or_domain": "official or unofficial with independent original authority source"
+    }
+  ]
+}

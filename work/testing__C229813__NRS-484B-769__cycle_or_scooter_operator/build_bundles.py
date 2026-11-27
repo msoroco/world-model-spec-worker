@@ -44,6 +44,8 @@ def sha(path):
 
 def build():
     ids = [case["case_id"] for case in PLAN["cases"]]
+    (ROOT / "tests").mkdir(exist_ok=True)
+    (ROOT / "tests/test_offline.py").write_text(TEST, encoding="utf-8")
     source_names = ("runner.py", "signal_scene.py", "signal_measurements.py",
                     "analysis.py", "native_adapter.py")
     source_files = [{"path": name, "source": str((ROOT / name).relative_to(ROOT.parents[1])),
