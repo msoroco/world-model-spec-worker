@@ -1,0 +1,27 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator__below_30",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "LVMC-11-52-300 duration within night window",
+      "source": "LVMC 11.52.300",
+      "method": "finalize",
+      "output_key": "night_parking_duration",
+      "value_type": "number",
+      "kind": "measured",
+      "inputs": [
+        "native-actor-frames.jsonl",
+        "review-source.json",
+        "street-geometry.json",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "street-geometry.json"
+    ],
+    "error_contains": "Missing required source: street-geometry.json"
+  }
+}

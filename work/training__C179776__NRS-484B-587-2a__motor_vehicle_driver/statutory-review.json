@@ -1,0 +1,40 @@
+{
+  "format": "c179776-source-branch-review-v1",
+  "source": "inputs/training__C179776__NRS-484B-587-2a__motor_vehicle_driver/assignment.json",
+  "source_sha256": "1c98ddb04121ac5ee430df5add5c6a5a2a326cbe242685331887deb3546e9243",
+  "selected_scope": "motor_vehicle_driver, C179776 paved_road/travel/lane_marking",
+  "source_topics": ["text-0", "text-1", "text-2", "text-3", "text-4", "text-5", "text-6", "text-7", "text-8", "text-9", "reviewed-scope-0"],
+  "branches": [
+    {
+      "id": "marked-traffic-or-entrance-exit-lane",
+      "source_topics": ["text-0", "text-1", "reviewed-scope-0"],
+      "comparison": "full body in marked travel lane versus outside all marked traffic and entrance/exit lanes",
+      "needed_original_sources": ["controlled-access designation and public-highway authority", "native map lane marking and entrance/exit topology", "frame-joined full body footprint", "driver and vehicle identity"],
+      "current_proof": "synthetic marked-lane and shoulder footprint meter only"
+    },
+    {
+      "id": "emergency-required-duration",
+      "source_topics": ["text-0", "text-1"],
+      "comparison": "same outside-lane footprint with source-observed emergency required during the excursion versus after its end",
+      "needed_original_sources": ["specific emergency event and necessity record", "event start/end joined to all outside-lane frames", "native body and lane boundaries"],
+      "current_proof": "synthetic per-frame source-shape meter; event necessity remains for independent review"
+    },
+    {
+      "id": "signed-class-paved-shoulder",
+      "source_topics": ["text-0", "text-1", "text-2", "text-4", "text-5", "text-6", "text-7", "text-8", "text-9"],
+      "comparison": "same listed vehicle and paved-shoulder path with lawful class-specific shoulder sign permitted versus absent",
+      "needed_original_sources": ["vehicle class/permit record", "paved shoulder full-body geometry", "sign physical pixels and posted message", "sign placement authority and permitted manner"],
+      "current_proof": "synthetic signed/unsigned tow context only; no original class or sign proof"
+    },
+    {
+      "id": "subsection-3-reference",
+      "source_topics": ["text-0", "text-3", "text-4", "text-5", "text-6", "text-7", "text-8", "text-9"],
+      "comparison": "retain source-backed subsection-3 class and authorization context without extending its separate subsection-1(c)(1) exemption automatically to 2(a)",
+      "needed_original_sources": ["exact applicable authority and statutory cross-reference review", "vehicle class/permit", "paved-shoulder/sign conditions when claimed"],
+      "current_proof": "unresolved; synthetic checker rejects automatic subsection-3 exemption claim"
+    }
+  ],
+  "unresolved_source_limit": "The exported appended text of subsection 3 names subsection 1(c)(1), whereas 2(a) also refers to authorization by subsection 3. Do not infer that every subsection-3 class is exempt from 2(a); retain the exact text and separately review scope.",
+  "physical_original_verified": false,
+  "legal_verdict": null
+}

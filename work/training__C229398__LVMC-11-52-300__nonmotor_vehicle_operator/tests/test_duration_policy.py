@@ -5,7 +5,7 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "native"))
-from duration_policy import RATE_HZ, TARGETS, TOTAL_FRAMES, comparison_invariants, request, stop_frame
+from duration_policy import APPROACH_DISTANCE_M, RATE_HZ, TARGETS, TOTAL_FRAMES, comparison_invariants, request, stop_frame
 
 
 ASSIGNMENT = "training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator"
@@ -38,6 +38,8 @@ class DurationPolicyTest(unittest.TestCase):
                              "approach")
             self.assertEqual(request(case_id, stop_frame(case_id))["phase"],
                              "parking_request")
+            self.assertAlmostEqual(request(case_id, 0)["target_speed_mps"] *
+                                   stop_frame(case_id) / RATE_HZ, APPROACH_DISTANCE_M)
 
     def test_comparison_tamper_rejected(self):
         configs = self.configs()

@@ -26,18 +26,20 @@ def build():
     runner = (ROOT / "duration_runner.py").read_text()
     duration = (ROOT / "duration_policy.py").read_text()
     gate = (ROOT / "source_gate.py").read_text()
+    measurement = (ROOT / "selected_measurement.py").read_text()
+    finalizer = (ROOT / "finalize.py").read_text()
     cameras = [
         {"name": "overview", "width": 1920, "height": 1080,
-         "fov_deg": 85, "location_xyz_m": [-8, -4, 18], "pitch_deg": -55,
+         "fov_deg": 85, "location_xyz_m": [35, -8, 18], "pitch_deg": -55,
          "pose_strategy": "same fixed whole curb and approach"},
         {"name": "approach", "width": 1280, "height": 720,
-         "fov_deg": 90, "location_xyz_m": [3, 0, 2], "pitch_deg": -5,
+         "fov_deg": 90, "location_xyz_m": [30, -3, 2.5], "pitch_deg": -5,
          "pose_strategy": "same near curb approach"},
         {"name": "reference_corner", "width": 1280, "height": 720,
-         "fov_deg": 75, "location_xyz_m": [0, -4, 3], "pitch_deg": -25,
+         "fov_deg": 75, "location_xyz_m": [40, -6, 3], "pitch_deg": -25,
          "pose_strategy": "same curb reference"},
         {"name": "driver_reference", "width": 1280, "height": 720,
-         "fov_deg": 90, "location_xyz_m": [0, 0, 2], "pitch_deg": -10,
+         "fov_deg": 90, "location_xyz_m": [42, -3, 2.5], "pitch_deg": -10,
          "pose_strategy": "same subject and operator view"},
     ]
     common = {
@@ -48,9 +50,11 @@ def build():
         "device_classification": "unresolved", "road_sha256": hashlib.sha256(road.encode()).hexdigest(),
         "rate_hz": RATE_HZ, "capture_frames": TOTAL_FRAMES,
         "duration_s": TOTAL_FRAMES / RATE_HZ, "cameras": cameras,
-        "weather": "fixed default night clear", "parking_target_xy_m": [40.0, -1.75],
+        "weather": "sun altitude -20 degrees, clear precipitation and fog",
+        "parking_target_xy_m": [40.0, -3.0],
         "source_context_policy": "original hash-bound nonmotor and street review before Native",
         "required_atoms": [], "source_packets": [],
+        "supported_case_ids": [ASSIGNMENT + "__" + suffix for suffix in TARGETS],
         "original_native_observed": False, "physical_or_legal_acceptance": False,
     }
     configs = {}
@@ -67,7 +71,6 @@ def build():
         case_id = config["case_id"]
         target_dir = ASSIGNMENT_DIR if suffix == "below_30" else ASSIGNMENT_DIR / "cases" / suffix
         target_dir.mkdir(parents=True, exist_ok=True)
-        config_text = encoded(config)
         tests = ("import json\nimport sys\nimport unittest\nfrom pathlib import Path\n"
                  "sys.path.insert(0, str(Path(__file__).resolve().parents[1]))\n"
                  "from runner import check, request\n\n"
@@ -78,13 +81,6 @@ def build():
                  "        self.assertEqual(request(cfg['parking_stop_frame'] - 1, cfg)['phase'], 'approach')\n"
                  "        self.assertEqual(request(cfg['parking_stop_frame'], cfg)['phase'], 'parking_request')\n"
                  "        self.assertEqual(request(cfg['capture_frames'] - 1, cfg)['requested_stationary_duration_s'], cfg['requested_stationary_duration_s'])\n")
-        files = [("runner.py", runner), ("duration_policy.py", duration),
-                 ("source_gate.py", gate), ("parking-road.xodr", road),
-                 ("config.json", config_text), ("tests/test_duration.py", tests)]
-        for relative, content in files:
-            path = target_dir / relative
-            path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_text(content)
         recording = {
             "channels": [
                 {"name": name, "unit": "structured", "sampling_rate_hz": RATE_HZ,
@@ -99,13 +95,25 @@ def build():
             "camera_views": [camera["name"] for camera in cameras],
             "limitations": ["Bicycle blueprint alone does not certify a qualifying legal vehicle",
                             "No Native execution or real source media captured"]}
+        config["recording_description"] = recording
+        config["case"]["recording_description"] = recording
+        config_text = encoded(config)
+        files = [("runner.py", runner), ("duration_policy.py", duration),
+                 ("source_gate.py", gate), ("selected_measurement.py", measurement),
+                 ("finalize.py", finalizer), ("parking-road.xodr", road),
+                 ("config.json", config_text), ("tests/test_duration.py", tests)]
+        for relative, content in files:
+            path = target_dir / relative
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(content)
         construction = {
             "case_id": case_id, "law_id": LAW, "cell_id": "C229398",
             "actor": "nonmotor_vehicle_operator", "entrypoint": "runner.py",
             "files": [{"path": relative, "content": content} for relative, content in files],
-            "measurement_plan": {"entrypoint": "night_parking.py", "required_sources": [
-                "native-actor-frames.jsonl", "qualifying-source-review.json",
-                "video_frames.jsonl"], "source_review_required": True},
+            "measurement_plan": {"entrypoint": "finalize.py", "required_sources": [
+                "native-actor-frames.jsonl", "review-source.json",
+                "street-geometry.json", "video_frames.jsonl"],
+                "source_review_required": True},
             "recording_description": recording,
             "static_checks": ["exact 20 Hz duration bracket", "identical road and four cameras",
                               "original source review required before Native"],

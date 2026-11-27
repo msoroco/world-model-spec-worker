@@ -29,7 +29,7 @@ class SourceGateTest(unittest.TestCase):
             "street_public_access": True,
             "city_limits": True,
             "civil_clock": {"iana_timezone": "America/Los_Angeles",
-                            "utc_start_ms": 1795444200000},
+                            "utc_start_ms": 1795425000000},
         }
         sources = {}
         for field in FIELDS:

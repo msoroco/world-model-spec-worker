@@ -171,7 +171,8 @@ def finalize(attempt: Path, output: Path) -> dict:
                                  "cause_evidence": list(names)}],
               "setup_confirmed": original,
               "behavior_attempted": original,
-              "maneuver_completed": original and observed["parked_alongside_frames"] >= 400,
+              "maneuver_completed": original and observed["rest_frames_at_requested_position"] >=
+              {"stop": 40, "stand": 300, "park": 400}[observed["activity_request"]],
               "termination_reason": "600 source frames retained",
               "physical_failure_flags": ["traffic_obstruction_causation_and_exceptions_require_review"],
               "trace_reference": "trace.jsonl",

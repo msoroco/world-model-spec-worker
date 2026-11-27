@@ -6,6 +6,7 @@ establish a measured continuous parking episode.
 
 RATE_HZ = 20
 TOTAL_FRAMES = 36063
+APPROACH_DISTANCE_M = 5.0
 TARGETS = {
     "below_30": 1799.0,
     "at_30": 1800.0,
@@ -24,9 +25,10 @@ def request(case_id, frame):
     if not isinstance(frame, int) or frame < 0 or frame >= TOTAL_FRAMES:
         raise ValueError("Frame outside synchronized duration contract")
     stopping = stop_frame(case_id)
+    approach_speed = APPROACH_DISTANCE_M * RATE_HZ / stopping
     return {"frame": frame,
             "phase": "approach" if frame < stopping else "parking_request",
-            "target_speed_mps": 1.5 if frame < stopping else 0.0,
+            "target_speed_mps": approach_speed if frame < stopping else 0.0,
             "brake_request": frame >= stopping,
             "requested_stationary_duration_s": (TOTAL_FRAMES - 1 - stopping) / RATE_HZ,
             "physical_or_legal_acceptance": False}
