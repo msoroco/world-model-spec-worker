@@ -11,7 +11,7 @@ import sys
 from author_semantic import AID,HERE
 
 ROOT=HERE.parents[1]
-SCRATCH=ROOT/'.runtime-work/c147331-owner-nov26/physical-v1'
+SCRATCH=ROOT/'.runtime-work/c3997-owner-nov27/physical-v1'
 PROOFS=HERE/'proofs/physical'
 
 
@@ -71,7 +71,7 @@ def outcome(config,suffix,kind,construction_sha):
     log=PROOFS/suffix/(kind+'.log')
     log.write_text('case '+config['selected_case_id']+'\nkind '+kind+'\nstatus '+status+
                    '\nsource-shaped synthetic fixture; construction '+construction_sha+'\n')
-    return {'kind':kind,'command':'SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c147331-owner-nov26 .venv-cpu/bin/python work/'+AID+'/prove_physical.py --all',
+    return {'kind':kind,'command':'SCENARIO_PIPELINE_OUTPUT_ROOT=.runtime-work/c3997-owner-nov27 .venv-cpu/bin/python work/'+AID+'/prove_physical.py --all',
             'exit_code':0,'log':str(log.relative_to(HERE)),'log_sha256':digest(log),
             'result':str(path.relative_to(HERE)),'result_sha256':digest(path)}
 

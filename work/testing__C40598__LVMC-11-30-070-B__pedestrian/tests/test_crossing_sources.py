@@ -7,12 +7,15 @@ import os
 from pathlib import Path
 import sys
 import tempfile
+import types
 import unittest
+from unittest.mock import patch
 
 HERE = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(HERE))
 from crosswalk_site import ASSIGNMENT, classify_body, load_review, polygons_intersect
 from crossing_measure import measure
+from crossing_adapter import sample as sample_walker, validate_review
 
 ROAD = [[0, 0], [8, 0], [8, 8], [0, 8]]
 MARKED = [[1, 0], [4, 0], [4, 8], [1, 8]]
@@ -35,6 +38,8 @@ class SourceAndCrossingTests(unittest.TestCase):
             'opendrive': '<OpenDRIVE/>',
             'roadway': {'roadway_id': 'r1', 'roadway_polygon_xy_m': ROAD,
                         'intersection_polygons_xy_m': [ROAD],
+                        'start_curb_zone_polygon_xy_m': [[-3, 0], [0, 0], [0, 8], [-3, 8]],
+                        'opposite_curb_zone_polygon_xy_m': [[8, 0], [11, 0], [11, 8], [8, 8]],
                         'public_access_source': 'reviewed dedication record',
                         'jurisdiction_source': 'reviewed municipal map'},
             'crosswalk_inventory': {'roadway_id': 'r1',
@@ -44,7 +49,8 @@ class SourceAndCrossingTests(unittest.TestCase):
             'pedestrian_route': {'roadway_id': 'r1', 'pedestrian_actor_id': 'p1',
                                  'approach_xy_m': [-1, 3], 'exit_xy_m': [9, 3],
                                  'crossing_point_xy_m': [2, 3],
-                                 'route_xy_m': [[-1, 3], [2, 3], [9, 3]]},
+                                 'route_xy_m': [[-1, 3], [2, 3], [9, 3]],
+                                 'spawn_z_m': 0.5},
             'district_frontage': {'roadway_id': 'r1', 'district_type': 'business',
                                   'highway_span_ft': 600,
                                   'reading_assumption': 'review both statutory frontage alternatives; no worker legal classification',
@@ -101,7 +107,7 @@ class SourceAndCrossingTests(unittest.TestCase):
         frames = []
         for i, (body, side) in enumerate(((box(-2), 'start'),
                                           (middle, 'roadway'),
-                                          (box(9), exit_side))):
+                                          (box(-2) if exit_side == 'start' else box(9), exit_side))):
             frames.append({'frame': 100 + i, 'time_s': i * .05,
                            'actor_id': 'p1', 'body_polygon_xy_m': body,
                            'curb_side': side, 'pedestrian_on_roadway': side == 'roadway',
@@ -110,6 +116,8 @@ class SourceAndCrossingTests(unittest.TestCase):
                   'original_trace_id': 'synthetic-test-trace', 'diagnostic_fixture': True,
                   'pedestrian_actor_id': 'p1',
                   'site': {'roadway_id': 'r1', 'roadway_polygon_xy_m': ROAD,
+                           'start_curb_zone_polygon_xy_m': self.docs['roadway']['start_curb_zone_polygon_xy_m'],
+                           'opposite_curb_zone_polygon_xy_m': self.docs['roadway']['opposite_curb_zone_polygon_xy_m'],
                            'crosswalk_inventory': self.docs['crosswalk_inventory'],
                            'district_type': 'business', 'highway_span_ft': 600,
                            'district_source_sha256': 'synthetic-district-hash',
@@ -134,10 +142,43 @@ class SourceAndCrossingTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'complete start-to-opposite'):
             measure(path)
         packet['frames'][2]['curb_side'] = 'opposite'
+        packet['frames'][2]['body_polygon_xy_m'] = box(9)
         packet['frames'][1]['pedestrian_on_roadway'] = False
         path.write_text(json.dumps(packet))
         with self.assertRaisesRegex(ValueError, 'occupancy differs'):
             measure(path)
+
+    def test_native_walker_request_uses_original_pose_and_body(self):
+        reviewed = {'review': {'case_id': self.case},
+                    'sources': {'pedestrian_route': self.docs['pedestrian_route'],
+                                'roadway': self.docs['roadway']}}
+        validate_review(reviewed, self.case)
+        commands = []
+
+        class Actor:
+            bounding_box = types.SimpleNamespace(
+                get_world_vertices=lambda transform: [
+                    types.SimpleNamespace(x=x, y=y)
+                    for x, y in box(2)])
+
+            def get_transform(self):
+                return types.SimpleNamespace(location=types.SimpleNamespace(x=2., y=3., z=.5))
+
+            def apply_control(self, command):
+                commands.append(command)
+
+        carla = types.SimpleNamespace(
+            Vector3D=lambda **kw: types.SimpleNamespace(**kw),
+            WalkerControl=lambda **kw: types.SimpleNamespace(**kw))
+        handle = {'walker': Actor(), 'route': self.docs['pedestrian_route']['route_xy_m'],
+                  'speed': 1.2, 'target_index': 1, 'reviewed': reviewed}
+        with patch.dict(sys.modules, {'carla': carla}):
+            observed = sample_walker(None, handle, 101, .05)
+        self.assertEqual(observed['curb_side'], 'roadway')
+        self.assertTrue(observed['pedestrian_on_roadway'])
+        self.assertEqual(handle['target_index'], 2)
+        self.assertEqual(commands[0].speed, 1.2)
+        self.assertGreater(commands[0].direction.x, 0)
 
 
 if __name__ == '__main__':

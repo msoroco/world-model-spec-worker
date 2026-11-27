@@ -16,8 +16,9 @@ ROLES = {
     'public_highway_boundary': 'public_highway_boundary_source_sha256',
     'lane_markings': 'lane_marking_source_sha256',
     'travel_direction': 'direction_source_sha256',
-    'paved_shoulder': 'shoulder_paved_source_sha256',
-    'lawful_sign_inventory': 'sign_source_sha256',
+    'lane_function': 'lane_function_source_sha256',
+    'paved_shoulder': 'paved_shoulder_source_sha256',
+    'lawful_shoulder_sign': 'lawful_shoulder_sign_source_sha256',
     'vehicle_class': 'vehicle_class_source_sha256',
     'emergency_necessity': 'emergency_record_source_sha256',
     'subsection3_authorization': 'subsection3_authorization_source_sha256',
@@ -52,11 +53,10 @@ def load(path: Path) -> dict:
         raise ValueError('reviewed Native spawn missing')
     if len(site['native_spawn'].get('pose_xyz_ypr', ())) != 6:
         raise ValueError('reviewed Native spawn pose missing')
-    if not all(type(site.get(name)) in (int,float) for name in (
-            'left_marking_lateral_m','right_marking_lateral_m','shoulder_outer_lateral_m')):
-        raise ValueError('reviewed lane boundary coordinates missing')
-    for name, lane in site.get('lanes', {}).items():
-        if lane.get('source_sha256') not in (site['map_sha256'], site['lane_marking_source_sha256']):
-            raise ValueError('reviewed lane source not bound: ' + name)
+    if site.get('lane_change_control') != 'solid_white_line':
+        raise ValueError('reviewed solid-white fixed control missing')
+    for name, route in site.get('routes', {}).items():
+        if route.get('source_sha256') not in (site['map_sha256'], site['lane_marking_source_sha256']):
+            raise ValueError('reviewed route source not bound: ' + name)
     site['reviewed_site_sha256'] = sha256(path.read_bytes()).hexdigest()
     return site

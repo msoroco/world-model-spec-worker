@@ -12,12 +12,16 @@ from pathlib import Path
 from saved_audit import audit_history
 
 
-VARIABLES = {'approach', 'route_class', 'vehicle_class', 'sign_permits_shoulder',
-             'emergency_required', 'subsection3_authorized'}
+VARIABLES = {'approach', 'origin', 'destination', 'vehicle_class', 'emergency_required',
+             'subsection3_shoulder_authorized', 'shoulder_paved',
+             'lawful_sign_permits_shoulder'}
 FIXED_SOURCES = ('map_sha256', 'lane_marking_source_sha256',
+                 'lane_function_source_sha256',
+                 'paved_shoulder_source_sha256',
+                 'lawful_shoulder_sign_source_sha256',
                  'legal_controlled_access_source_sha256',
                  'public_highway_boundary_source_sha256', 'camera_plan_sha256',
-                 'direction_source_sha256', 'sign_source_sha256',
+                 'direction_source_sha256',
                  'emergency_record_source_sha256',
                  'subsection3_authorization_source_sha256')
 
@@ -51,7 +55,8 @@ def audit(plan_path: Path, comparison_id: str, history_paths: list[Path],
         rrow = json.loads(source.readline())
     for key in VARIABLES:
         lval, rval = left['fixed'].get(key), right['fixed'].get(key)
-        if key in ('sign_permits_shoulder', 'emergency_required', 'subsection3_authorized'):
+        if key in ('emergency_required', 'subsection3_shoulder_authorized',
+                   'shoulder_paved', 'lawful_sign_permits_shoulder'):
             # These are original frame records outside the source identity fields.
             lval, rval = lrow[key], rrow[key]
         if key in declared and lval == rval:

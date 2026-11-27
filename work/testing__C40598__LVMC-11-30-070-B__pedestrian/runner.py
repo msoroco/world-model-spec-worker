@@ -61,9 +61,11 @@ def main() -> None:
         return
     packet = args.packet or os.environ.get('C40598_CROSSING_REVIEW_PACKET')
     source_root = args.source_root or os.environ.get('C40598_CROSSING_SOURCE_ROOT')
-    adapter_module = args.adapter_module or os.environ.get('C40598_CROSSING_ADAPTER_MODULE')
-    if not packet or not source_root or not adapter_module:
-        raise ValueError('original business-district review packet, source root and adapter required')
+    adapter_module = (args.adapter_module or
+                      os.environ.get('C40598_CROSSING_ADAPTER_MODULE') or
+                      'crossing_adapter')
+    if not packet or not source_root:
+        raise ValueError('original business-district review packet and source root required')
     from native_entry import run_native
     print(json.dumps(run_native(packet, source_root, adapter_module,
         selected['case_id'], args.output_dir, selected['speed'],

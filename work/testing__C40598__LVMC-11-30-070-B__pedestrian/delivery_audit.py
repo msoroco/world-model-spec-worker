@@ -76,7 +76,18 @@ def audit(attempt: Path, case_id: str, diagnostic: bool = False) -> dict:
             document = required(attempt, 'reviewed-sources/' + item['path'])
             if sha(document) != item['sha256']:
                 raise ValueError('original reviewed source document changed: ' + name)
-        required(attempt, 'original-pixel-review.json')
+        pixel_review = json.loads(required(attempt, 'original-pixel-review.json').read_text())
+        if (pixel_review.get('format') != 'worker-original-pixel-review' or
+                pixel_review.get('case_id') != case_id or
+                not pixel_review.get('reviewer') or
+                pixel_review.get('frame_count') != 900 or
+                set(pixel_review.get('camera_sha256', {})) != set(CAMERAS) or
+                not isinstance(pixel_review.get('visible_pedestrian_frames'), list) or
+                not pixel_review['visible_pedestrian_frames']):
+            raise ValueError('independent original-pixel review incomplete')
+        for frame_number in pixel_review['visible_pedestrian_frames']:
+            if type(frame_number) is not int or not 0 <= frame_number < 900:
+                raise ValueError('original-pixel review frame index invalid')
     media = {}
     for camera in CAMERAS:
         path = required(attempt, camera + '.mkv')
@@ -102,6 +113,8 @@ def audit(attempt: Path, case_id: str, diagnostic: bool = False) -> dict:
         media[camera] = {'sha256': sha(path), 'frames': len(frames),
             'codec': stream.get('codec_name'), 'width': stream.get('width'),
             'height': stream.get('height')}
+        if not diagnostic and pixel_review['camera_sha256'][camera] != media[camera]['sha256']:
+            raise ValueError('original-pixel review video hash differs: ' + camera)
     return {'format': 'worker-independent-crossing-delivery', 'case_id': case_id,
         'passed': True, 'diagnostic_only': diagnostic, 'physical_acceptance': False,
         'legal_acceptance': False, 'frame_count': len(frames),

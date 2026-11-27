@@ -51,6 +51,8 @@ def build() -> None:
                 'observation_source': 'synthetic_diagnostic'})
         site = {'roadway_id': 'synthetic-business-roadway',
             'roadway_polygon_xy_m': ROAD,
+            'start_curb_zone_polygon_xy_m': [[0, -3], [10, -3], [10, 0], [0, 0]],
+            'opposite_curb_zone_polygon_xy_m': [[0, 8], [10, 8], [10, 11], [0, 11]],
             'crosswalk_inventory': {'roadway_id': 'synthetic-business-roadway',
                 'marked_crosswalk_polygons_xy_m': [MARKED],
                 'unmarked_intersection_crosswalk_polygons_xy_m': [UNMARKED],

@@ -1,22 +1,11 @@
-# testing__C40598__LVMC-11-30-070-B__pedestrian
+# C40598 LVMC 11.30.070(B) pedestrian crossing
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: ready for original-site GPU delivery after exact assignment CPU gate. This package covers the assigned pedestrian entering the roadway to cross in a business district.
 
-Exact law: LVMC 11.30.070(B) — No pedestrian shall cross a roadway other than in a marked crosswalk or within an unmarked crosswalk in any business district.
-Assigned branch(es): Pedestrian entering the roadway to cross in a business district..
-Cell: C40598 (business_district, enter_road, crosswalk); actor: pedestrian.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+Exact source: “No pedestrian shall cross a roadway other than in a marked crosswalk or within an unmarked crosswalk in any business district.” The four selected cases distinguish marked, unmarked, outside both, and the second district-frontage alternative. Three controlled comparisons isolate crosswalk category and district-frontage alternative. No legal numeric district or crosswalk cutoff is invented.
 
-## Next CPU actions
+CPU package: `execution-manifest.json` contains four source-gated Native constructions, a bundled CARLA pedestrian adapter, 20 Hz / 45 s four-view capture, saved-only crossing measurement, and an independent original-source and video-pixel audit. The site review packet must bind original source hashes and separately review the 600-foot district span, occupied building uses and frontage on both alternatives, roadway/shoulder and public jurisdiction, all applicable crosswalk geometry, controls, curb zones, and complete afoot route. The original delivery audit requires a separate pixel-review receipt.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C40598__LVMC-11-30-070-B__pedestrian --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+CPU evidence: eight offline executions, eight current-runtime positive/negative compatibility candidates, four saved-only finalizers, four independent delivery positive/missing-source pairs, three comparison audits with negative controls, four physical/lifecycle fixtures, a pinned physical criterion test, six source/measurement and offline unit tests and the selected runtime-validator sweep all pass. See `cpu-*-proofs.json`, `cpu-final-tests.log` and `cpu-current-validators.log` for receipts. Diagnostic sources and attempts are synthetic and make no physical or legal claim.
 
-## Proven checks and dependency boundary
-
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
-
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+The GPU operator should use `gpu-queue-proposal.json` for the canonical prepare, execute and acceptance sequence and retain failed original attempts. Actual CARLA motion, camera visibility and original pixel/source audits remain to be performed there. Result status records CPU readiness only.

@@ -12,7 +12,7 @@ import sys
 from author_semantic import AID, HERE
 
 ROOT=HERE.parents[1]
-SCRATCH=ROOT/'.runtime-work/c147331-owner-nov26/proofs-v2'
+SCRATCH=ROOT/'.runtime-work/c3997-owner-nov27/proofs-v6'
 VALIDATOR=ROOT/'.runtime-work/c110969-decoder/.lake/build/bin/adapterCheck'
 MANIFEST=HERE/'execution-manifest.draft.json'
 
@@ -76,10 +76,9 @@ def run():
                                             'method':'PipelineCapture original tick plus source-sealed reviewed site and original-history.jsonl',
                                             'evidence':'original Native actor, map, source packet and four-view frame join'}
                                       for name in ['controlled_access_authority','public_highway_boundary',
-                                                   'marked_lane_geometry','outside_lane_body_occupancy',
-                                                   'shoulder_geometry_and_paving','lawful_shoulder_signage',
-                                                   'vehicle_class_and_driver','emergency_necessity',
-                                                   'subsection3_authorization']}
+                                                   'lane_function','solid_white_separator',
+                                                   'vehicle_body_line_relation','vehicle_class_and_driver',
+                                                   'emergency_necessity','subsection3_shoulder_scope']}
             print('proved',tag,flush=True)
     (HERE/'execution-manifest.proof-draft.json').write_text(json.dumps(manifest,indent=2)+'\n')
 

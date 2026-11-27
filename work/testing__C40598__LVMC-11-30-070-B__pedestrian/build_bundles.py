@@ -7,7 +7,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-MODULES = ('runner.py', 'native_entry.py', 'crosswalk_site.py',
+MODULES = ('runner.py', 'native_entry.py', 'crossing_adapter.py', 'crosswalk_site.py',
            'crossing_measure.py', 'analysis.py')
 OFFLINE_TEST = '''import json
 import unittest
@@ -138,6 +138,8 @@ def build() -> list[dict]:
     first = HERE / 'cases' / plan['cases'][0]['case_id'].split('__')[-1]
     (HERE / 'construction.json').write_bytes((first / 'construction.json').read_bytes())
     (HERE / 'config.json').write_bytes((first / 'config.json').read_bytes())
+    (HERE / 'case-spec.json').write_bytes((first / 'case-spec.json').read_bytes())
+    (HERE / 'controller.json').write_bytes((first / 'controller-primary.json').read_bytes())
     return entries
 
 

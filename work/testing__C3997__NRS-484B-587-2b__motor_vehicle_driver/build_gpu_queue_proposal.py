@@ -24,7 +24,7 @@ def build() -> dict:
     plan = json.loads((HERE / 'case-plan.json').read_text())
     comparison_proposal = json.loads((HERE / 'comparison-proposal.json').read_text())
     expected_cases = {row['case_id'] for row in plan['cases']}
-    if len(manifest['cases']) != 11 or {row['case_id'] for row in manifest['cases']} != expected_cases:
+    if len(manifest['cases']) != 10 or {row['case_id'] for row in manifest['cases']} != expected_cases:
         raise ValueError('Exact C3997 case coverage changed')
     if len(plan['comparisons']) != 9 or {row['comparison_id'] for row in plan['comparisons']} != {
             row['comparison_id'] for row in comparison_proposal['comparisons']}:
@@ -40,7 +40,7 @@ def build() -> dict:
                    ' --python "$CARLA_PYTHON" --host "$CARLA_HOST" --port "$CARLA_PORT"')
         accept = (PREFIX + ' accept-delivery ' + common +
                   ' --run "$RUN" --job "$JOB_ID" --attempt "$ATTEMPT"' +
-                  ' --audit "$AUDIT" --review-archive "$REVIEW_ARCHIVE"')
+                  ' --audit "$AUDIT" --review-archive /external/archive')
         owner = (f'CASE_ID={case} .venv-cpu/bin/python runtime.py owner-released' +
                  ' --attempt "$ATTEMPT" --receipt "$OWNER_RELEASE_RECEIPT"' +
                  ' --acknowledge-owner-released')
@@ -48,9 +48,9 @@ def build() -> dict:
                  f' --case {case} --attempt "$ATTEMPT" --output "$PROCESSED"' +
                  ' --library runtime/library --validator "$LEAN_VALIDATOR"' +
                  ' --owner-release-receipt "$OWNER_RELEASE_RECEIPT"')
-        audit = (f'mkdir -p "$PWD/.runtime-work/c147331-local-audit" && ' +
-                 'SCENARIO_PIPELINE_OUTPUT_ROOT="$PWD/.runtime-work/c147331-local-audit" ' +
-                 'TMPDIR="$PWD/.runtime-work/c147331-local-audit" ' +
+        audit = (f'mkdir -p "$PWD/.runtime-work/c3997-local-audit" && ' +
+                 'SCENARIO_PIPELINE_OUTPUT_ROOT="$PWD/.runtime-work/c3997-local-audit" ' +
+                 'TMPDIR="$PWD/.runtime-work/c3997-local-audit" ' +
                  f'.venv-cpu/bin/python work/{AID}/delivery_audit.py --case {case}' +
                  ' --attempt "$ATTEMPT" --review "$PIXEL_REVIEW"' +
                  ' --physical "$PHYSICAL_RESULT" > "$AUDIT"')

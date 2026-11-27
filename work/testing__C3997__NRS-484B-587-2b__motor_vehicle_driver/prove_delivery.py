@@ -12,7 +12,7 @@ from author_semantic import AID,HERE
 from delivery_audit import CAMERAS,CHECKS
 
 ROOT=HERE.parents[1]
-SCRATCH=ROOT/'.runtime-work/c147331-owner-nov26/delivery-v1'
+SCRATCH=ROOT/'.runtime-work/c3997-owner-nov27/delivery-v1'
 SCRIPT=HERE/'delivery_audit.py'
 
 
@@ -39,7 +39,8 @@ def run():
         put(root/'diagnostic-capture-audit.json',capture)
         views={name:{'video_sha256':bindings[name+'.mkv'],'reviewer':'CPU protocol fixture',
                      'samples':[{'frame':100,'vehicle_visible':True,'lane_boundary_visible':True,
-                                 'shoulder_visible':True,
+                                 'solid_white_separator_visible':True,
+                                 'lawful_shoulder_sign_visible':True,
                                  'decoded_rgb_sha256':sha256((name+case).encode()).hexdigest()}]}
                for name in CAMERAS}
         review={'case_id':case,'capture_receipt_sha256':capture['receipt_sha256'],

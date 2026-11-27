@@ -12,7 +12,7 @@ import sys
 from author_semantic import AID,HERE
 
 ROOT=HERE.parents[1]
-SCRATCH=ROOT/'.runtime-work/c147331-owner-nov26/saved-v2'
+SCRATCH=ROOT/'.runtime-work/c3997-owner-nov27/saved-v2'
 MANIFEST=HERE/'execution-manifest.proof-draft.json'
 VALIDATOR=ROOT/'.runtime-work/c110969-decoder/.lake/build/bin/adapterCheck'
 
@@ -34,7 +34,7 @@ def run():
     manifest=json.loads(MANIFEST.read_text())
     for entry in manifest['cases']:
         case=entry['case_id'];suffix=case.removeprefix(AID+'__')
-        source=ROOT/'.runtime-work/c147331-owner-nov26/proofs-v2'/('compatible-'+suffix+'-primary')
+        source=ROOT/'.runtime-work/c3997-owner-nov27/proofs-v6'/('compatible-'+suffix+'-primary')
         attempt=SCRATCH/('attempt-'+suffix)
         destination=SCRATCH/('processed-'+suffix)
         if attempt.exists() or destination.exists():raise ValueError('retain prior saved proof: '+suffix)

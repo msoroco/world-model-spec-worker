@@ -19,7 +19,7 @@ def check_binding(path: Path, expected: str) -> None:
 
 def main() -> None:
     manifest = json.loads((HERE / "execution-manifest.delivery-draft.json").read_text())
-    if manifest["assignment_id"] != AID or len(manifest["cases"]) != 11:
+    if manifest["assignment_id"] != AID or len(manifest["cases"]) != 10:
         raise ValueError("Exact case inventory changed")
     for entry in manifest["cases"]:
         check_binding(HERE / entry["construction"], entry["construction_sha256"])

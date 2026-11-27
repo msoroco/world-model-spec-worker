@@ -23,6 +23,8 @@ def measure(path: str | Path) -> dict:
     inventory = site.get('crosswalk_inventory')
     roadway = site.get('roadway_polygon_xy_m')
     if (not isinstance(inventory, dict) or not roadway or
+            not site.get('start_curb_zone_polygon_xy_m') or
+            not site.get('opposite_curb_zone_polygon_xy_m') or
             site.get('district_type') != 'business' or
             site.get('highway_span_ft') != 600 or
             not site.get('district_source_sha256') or
@@ -57,6 +59,12 @@ def measure(path: str | Path) -> dict:
             raise ValueError('roadway occupancy differs from original body polygon')
         if frame.get('curb_side') not in ('start', 'roadway', 'opposite'):
             raise ValueError('original curb-side history required')
+        center = [sum(float(vertex[axis]) for vertex in body) / len(body)
+                  for axis in (0, 1)]
+        if frame['curb_side'] in ('start', 'opposite'):
+            zone = site[frame['curb_side'] + '_curb_zone_polygon_xy_m']
+            if not point_in_polygon(center, zone):
+                raise ValueError('original pedestrian curb-side state differs from body position')
         states.append(frame['curb_side'])
         body_categories.append(classify_body(body, inventory))
     if (states[0] != 'start' or states[-1] != 'opposite' or

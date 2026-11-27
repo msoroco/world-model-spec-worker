@@ -1,4 +1,4 @@
-"""Materialize eleven exact primary and controller fallback construction drafts."""
+"""Materialize ten exact primary and controller fallback construction drafts."""
 from __future__ import annotations
 
 from hashlib import sha256
@@ -39,7 +39,7 @@ def run():
                     'rate_hz':20,'duration_s':45,'frame_count':900,'required_atoms':[],
                     'source_packets':[],
                     'cameras':[{'name':name,'width':width,'height':height,'fov_deg':75,
-                                'pose_strategy':'reviewed four-view body, lane, shoulder and sign coverage'}
+                                'pose_strategy':'reviewed four-view body, lane function and solid-white separator coverage'}
                                for name,width,height in CAMERAS],
                     'supported_case_ids':[x['case_id'] for x in plan['cases']],
                     'recording_description':RECORDING,'case':canonical}
@@ -50,11 +50,11 @@ def run():
             construction={'law_id':LAW,'cell_id':CELL,'actor':ACTOR,'case_id':case_id,
                           'status':'draft','entrypoint':'runner.py','files':files,
                           'recording_description':RECORDING,
-                          'measurement_plan':{'purpose':'Source-bound original 20 Hz lane/body, exception and sign history',
+                          'measurement_plan':{'purpose':'Source-bound original 20 Hz body, separator, lane-function and exception history',
                                               'case_ids':[case_id],
                                               'unresolved_legal_judgment':True},
                           'mechanisms':{'status':'source_gated_native_construction',
-                                        'reviewed_site':'separate source-hashed authority, map, lanes, driver, sign and exception records',
+                                        'reviewed_site':'separate source-hashed authority, map, lane functions, solid-white line, driver and exception records',
                                         'controller':'finite route steering and speed target; requested setup not accepted outcome'},
                           'static_checks':['runner.py --check','reviewed source hashes and every route direction','offline bundle tests'],
                           'termination_rules':['900 original 20 Hz frames','fail closed on source or frame mismatch'],

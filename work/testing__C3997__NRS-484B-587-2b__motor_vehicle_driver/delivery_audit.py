@@ -88,6 +88,7 @@ def assess(case,capture,review,physical,*,diagnostic=False,attempt=None):
     need(isinstance(views,dict) and set(views)==set(CAMERAS),
          'independent pixel review missing four views')
     need(review.get('legal_judgment') is None,'delivery audit cannot assert legal judgment')
+    sign_visible=False
     for name in CAMERAS:
         item=views[name]
         need(item.get('video_sha256')==bindings[name+'.mkv'] and
@@ -99,12 +100,15 @@ def assess(case,capture,review,physical,*,diagnostic=False,attempt=None):
         for sample in samples:
             frame=sample.get('frame')
             need(type(frame) is int and 0<=frame<900 and sample.get('vehicle_visible') is True and
-                 sample.get('lane_boundary_visible') is True and sample.get('shoulder_visible') is True and
+                 sample.get('lane_boundary_visible') is True and sample.get('solid_white_separator_visible') is True and
                  isinstance(sample.get('decoded_rgb_sha256'),str) and len(sample['decoded_rgb_sha256'])==64,
                  'independent participant and lane pixels incomplete: '+name)
+            sign_visible=sign_visible or sample.get('lawful_shoulder_sign_visible') is True
             if not diagnostic:
                 need(decoded_frame_sha(Path(attempt)/(name+'.mkv'),frame)==sample['decoded_rgb_sha256'],
                      'independent pixel source changed: '+name)
+    if case.endswith('__north_traffic_to_exit_shoulder_authorized'):
+        need(sign_visible, 'independent lawful shoulder sign pixels missing')
     maneuver=physical.get('physical_checks',{}).get('maneuver',{})
     need(physical.get('case_id')==case and physical.get('maneuver_completed') is True and
          maneuver.get('status')=='met' and maneuver.get('sources') and physical.get('realized_observables'),

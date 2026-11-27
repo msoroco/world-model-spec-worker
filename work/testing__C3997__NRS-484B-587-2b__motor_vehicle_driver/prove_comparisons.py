@@ -12,7 +12,7 @@ from author_semantic import AID,HERE
 from outside_lane import CASES
 
 ROOT=HERE.parents[1]
-SCRATCH=ROOT/'.runtime-work/c147331-owner-nov26/comparison-v1'
+SCRATCH=ROOT/'.runtime-work/c3997-owner-nov27/comparison-v3'
 SCRIPT=HERE/'comparison_audit.py'
 
 
@@ -29,20 +29,33 @@ def run():
     for case in CASES:
         fixed={'case':case.name,'ego_id':'synthetic-ego','map_sha256':map_hash,
                'lane_marking_source_sha256':'synthetic-markings',
+               'lane_function_source_sha256':'synthetic-lane-function',
+               'paved_shoulder_source_sha256':'synthetic-paving',
+               'lawful_shoulder_sign_source_sha256':'synthetic-sign',
                'legal_controlled_access_source_sha256':'synthetic-designation',
                'public_highway_boundary_source_sha256':'synthetic-boundary',
                'direction_source_sha256':'synthetic-direction',
                'camera_plan_sha256':'synthetic-camera',
-               'sign_source_sha256':'synthetic-sign',
+               'vehicle_class_source_sha256':'synthetic-vehicle',
                'emergency_record_source_sha256':'synthetic-emergency',
                'subsection3_authorization_source_sha256':'synthetic-authorization',
-               'vehicle_class':case.vehicle_class,'approach':case.approach,
-               'route_class':case.route_class,
-               'sign_permits_shoulder':case.sign_permits_shoulder,
+               'approach':case.approach,'origin':case.origin,
+               'vehicle_class':case.vehicle_class,
+               'destination':case.destination,'route_id':'synthetic-'+case.name,
+               'separator_kind':'solid_white',
+               'separator_source_sha256':'synthetic-markings',
                'emergency_required':case.emergency_required,
-               'subsection3_authorized':case.subsection3_authorized,
+               'subsection3_shoulder_authorized':case.subsection3_shoulder_authorized,
+               'shoulder_paved':case.subsection3_shoulder_authorized,
+               'lawful_sign_permits_shoulder':case.subsection3_shoulder_authorized,
                'source_sha256':'synthetic-frame-source',
-               'capture_packet_sha256':'synthetic-packet'}
+               'capture_packet_sha256':'synthetic-packet',
+               'ego_speed_mps':8.0,
+               'center_signed_m':-2.0,'body_min_signed_m':-2.6,
+               'body_max_signed_m':-1.4,
+               'center_segment_fraction':0.5,
+               'body_min_segment_fraction':0.48,
+               'body_max_segment_fraction':0.52}
         path=SCRATCH/(case.name+'.jsonl')
         path.write_text(''.join(json.dumps(dict(fixed,original_frame=100+i))+'\n' for i in range(900)))
         sources[AID+'__'+case.name]=(path,digest(path))

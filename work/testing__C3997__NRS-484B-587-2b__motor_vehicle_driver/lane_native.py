@@ -10,7 +10,7 @@ from queue import Queue
 import shutil
 import subprocess
 
-from outside_lane import build_case, route_key
+from outside_lane import build_case, signed_distance, segment_fraction
 
 CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 
@@ -80,7 +80,9 @@ class Adapter:
             self.queues[name] = queue
 
     def set_capture_metadata(self, actor, metadata):
-        if actor != self.ego or metadata.get('map_sha256') != self.site['map_sha256']:
+        if (actor != self.ego or
+                metadata.get('lane_marking_source_sha256') != self.site['lane_marking_source_sha256'] or
+                metadata.get('route_id') != self.site['routes'][metadata.get('case', '')]['id']):
             raise ValueError('Native capture metadata differs')
 
     def destroy(self, actor):
@@ -112,24 +114,41 @@ class Adapter:
         loc = self.ego.get_location()
         vel = self.ego.get_velocity()
         speed = math.sqrt(vel.x**2+vel.y**2+vel.z**2)
-        vector = self.site['approach_vector']
-        lateral = -vector[1]*loc.x+vector[0]*loc.y
+        selected_route = self.site['routes'][case.name]
+        separator = selected_route['separator']
+        vertices = self.ego.bounding_box.get_world_vertices(self.ego.get_transform())
+        if len(vertices) != 8:
+            raise ValueError('original vehicle body vertices missing')
+        distances = [signed_distance((p.x, p.y), separator) for p in vertices]
+        fractions = [segment_fraction((p.x, p.y), separator) for p in vertices]
+        center_signed = signed_distance((loc.x, loc.y), separator)
+        center_fraction = segment_fraction((loc.x, loc.y), separator)
         fields = ('map_sha256','lane_marking_source_sha256',
                   'legal_controlled_access_source_sha256','public_highway_boundary_source_sha256',
-                  'direction_source_sha256','sign_source_sha256','emergency_record_source_sha256',
+                  'direction_source_sha256','lane_function_source_sha256',
+                  'vehicle_class_source_sha256','paved_shoulder_source_sha256',
+                  'lawful_shoulder_sign_source_sha256',
+                  'emergency_record_source_sha256',
                   'subsection3_authorization_source_sha256')
         row = {field: self.site[field] for field in fields}
         row.update(case=case.name, ego_id=str(self.ego.id), camera_plan_sha256=self.site['camera_plan_sha256'],
-                   vehicle_class=case.vehicle_class, approach=case.approach,
-                   route_class=case.route_class, sign_permits_shoulder=case.sign_permits_shoulder,
+                   approach=case.approach, origin=case.origin,
+                   destination=case.destination, route_id=selected_route['id'],
+                   vehicle_class=case.vehicle_class,
+                   separator_kind='solid_white',
+                   separator_source_sha256=separator['source_sha256'],
                    emergency_required=case.emergency_required,
-                   subsection3_authorized=case.subsection3_authorized,
+                   subsection3_shoulder_authorized=case.subsection3_shoulder_authorized,
+                   shoulder_paved=bool(self.site.get('shoulder_paved')),
+                   lawful_sign_permits_shoulder=bool(self.site.get('lawful_sign_permits_shoulder')),
                    original_frame=frame, source_sha256=self.site['reviewed_site_sha256'],
                    capture_packet_sha256=self.site['reviewed_site_sha256'],
-                   ego_lateral_m=lateral, ego_speed_mps=speed,
-                   left_marking_lateral_m=self.site['left_marking_lateral_m'],
-                   right_marking_lateral_m=self.site['right_marking_lateral_m'],
-                   shoulder_outer_lateral_m=self.site['shoulder_outer_lateral_m'])
+                   ego_speed_mps=speed, center_signed_m=center_signed,
+                   body_min_signed_m=min(distances),
+                   body_max_signed_m=max(distances),
+                   center_segment_fraction=center_fraction,
+                   body_min_segment_fraction=min(fractions),
+                   body_max_segment_fraction=max(fractions))
         return row, [loc.x,loc.y,loc.z], self.ego.get_transform().rotation.yaw
 
     def pixels(self, frame):
@@ -209,7 +228,7 @@ def capture(host, port, destination, site, case, bundle):
             'history_sha256':digest(destination/'original-history.jsonl'),
             'trace_sha256':digest(destination/'trace.jsonl'),
             'frame_map_sha256':digest(destination/'video_frames.jsonl'),
-            'shoulder_paved_source_sha256':site['shoulder_paved_source_sha256']},sort_keys=True)+'\n')
+            'lane_function_source_sha256':site['lane_function_source_sha256']},sort_keys=True)+'\n')
         finished = True
     finally:
         if pipeline is not None:
@@ -227,4 +246,5 @@ def capture(host, port, destination, site, case, bundle):
         seal_capture(destination,frames=900,restoration=restoration,errors=[],
                      encoder_exit_codes={name:0 for name in CAMERAS},
                      context={'reviewed_site_sha256':site['reviewed_site_sha256'],
-                              'route_class':case.route_class,'approach':case.approach})
+                              'origin':case.origin,'destination':case.destination,
+                              'separator':'solid_white','approach':case.approach})

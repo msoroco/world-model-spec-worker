@@ -10,7 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
 MANIFEST = ROOT / "execution-manifest.draft.json"
-OUTPUT = REPO / ".runtime-work/c40598-owner/offline-selected-v5"
+OUTPUT = REPO / ".runtime-work/c40598-owner/offline-selected-v6"
 
 
 def sha(path):

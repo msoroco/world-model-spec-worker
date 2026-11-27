@@ -58,20 +58,37 @@ def analyze(attempt: Path) -> dict:
             raise ValueError('original speed source differs')
     measured = measure_original(rows, exact)
     values = {
-        'controlled_access_authority': {'source_sha256': measured['fixed']['legal_controlled_access_source_sha256'],
-                                        'public_boundary_sha256': measured['fixed']['public_highway_boundary_source_sha256']},
-        'marked_lane_geometry': {'source_sha256': measured['fixed']['lane_marking_source_sha256'],
-                                 'approach': measured['approach']},
-        'outside_lane_body_occupancy': {'route_class': measured['route_class'],
-                                        'samples': measured['samples'], 'frame_count': measured['frame_count']},
-        'shoulder_geometry_and_paving': {'source_sha256': receipt['shoulder_paved_source_sha256'],
-                                         'sign_permits_shoulder': measured['sign_permits_shoulder']},
-        'vehicle_class_and_driver': {'vehicle_class': measured['vehicle_class'],
-                                     'ego_id': measured['fixed']['ego_id']},
-        'emergency_necessity': {'required': measured['emergency_required'],
-                                'source_sha256': measured['fixed']['emergency_record_source_sha256'],
-                                'subsection3_authorized': measured['subsection3_authorized'],
-                                'authorization_source_sha256': measured['fixed']['subsection3_authorization_source_sha256']},
+        'controlled_access_authority': {
+            'source_sha256': measured['fixed']['legal_controlled_access_source_sha256'],
+            'public_boundary_sha256': measured['fixed']['public_highway_boundary_source_sha256']},
+        'public_highway_boundary': {
+            'source_sha256': measured['fixed']['public_highway_boundary_source_sha256']},
+        'lane_function': {'source_sha256': measured['fixed']['lane_function_source_sha256'],
+                          'origin': measured['fixed']['origin'],
+                          'destination': measured['fixed']['destination']},
+        'solid_white_separator': {
+            'source_sha256': measured['fixed']['separator_source_sha256'],
+            'kind': measured['fixed']['separator_kind'],
+            'route_id': measured['fixed']['route_id']},
+        'vehicle_body_line_relation': {
+            'samples': measured['samples'], 'frame_count': measured['frame_count'],
+            'center_crossing_observed': measured['center_crossing_observed'],
+            'body_line_contact_observed': measured['body_line_contact_observed']},
+        'vehicle_class_and_driver': {
+            'source_sha256': measured['fixed']['vehicle_class_source_sha256'],
+            'vehicle_class': measured['fixed']['vehicle_class'],
+            'ego_id': measured['fixed']['ego_id']},
+        'emergency_necessity': {
+            'required': measured['emergency_required'],
+            'source_sha256': measured['fixed']['emergency_record_source_sha256']},
+        'subsection3_shoulder_scope': {
+            'authorized': measured['subsection3_shoulder_authorized'],
+            'source_sha256': measured['fixed']['subsection3_authorization_source_sha256'],
+            'paved_shoulder_source_sha256': measured['fixed']['paved_shoulder_source_sha256'],
+            'lawful_sign_source_sha256': measured['fixed']['lawful_shoulder_sign_source_sha256'],
+            'shoulder_paved': measured['shoulder_paved'],
+            'lawful_sign_permits_shoulder': measured['lawful_sign_permits_shoulder'],
+            'crossing_permission_inferred': False},
     }
     hashes = {name: digest(source(root, name)) for name in inputs}
     measurements = {name: {'method': 'source_sealed_lane_measurement',
@@ -105,10 +122,12 @@ def analyze(attempt: Path) -> dict:
                      'reference': context.name})
     from worker_exchange.native_output import physical_result, write_result
     result = {'case_id': case_id, 'measured_values': values,
-              'target_checks': [{'target': 'source-specified lane route',
-                                 'requested': exact.route_class, 'measured': measured['route_class'],
-                                 'method': 'original frame route classification and sourced markings',
-                                 'tolerance': 0, 'matched': measured['route_class'] == exact.route_class,
+              'target_checks': [{'target': 'source-specified separator crossing route',
+                                 'requested': exact.origin != exact.destination,
+                                 'measured': measured['center_crossing_observed'],
+                                 'method': 'original vehicle center and body vertices relative to sourced solid-white separator',
+                                 'tolerance': 0,
+                                 'matched': measured['center_crossing_observed'] == (exact.origin != exact.destination),
                                  'physical_cause_confirmed': False, 'cause_evidence': hashes}],
               'setup_confirmed': False, 'behavior_attempted': False,
               'maneuver_completed': False, 'termination_reason': 'independent physical review pending',

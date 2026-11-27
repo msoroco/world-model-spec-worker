@@ -1,319 +1,1484 @@
 {
   "format": "worker-execution-manifest",
   "assignment_id": "testing__C386226__NRS-484B-507-1__motor_vehicle_driver",
-  "status": "source_gated_cpu_construction_partial",
+  "status": "selected_compatibility_bound_pending_proofs",
   "cases": [
     {
       "case_id": "testing__C386226__NRS-484B-507-1__motor_vehicle_driver__stop_no_material",
       "kind": "delivery",
-      "construction": "construction.json",
-      "construction_sha256": "29be4a235b3a5e803d0b40711bff32bec61b47adc9de382a80ad3841015db182",
+      "construction": "construction-compatibility-stop_no_material.json",
+      "construction_sha256": "4bb797c2c757ad6ff4ca1b7854dd47f4ac966fc293f75627899fd0ee6e37c918",
       "source_gate": "Original marked freight zone, applicable provision, civil clock, actual material/passenger activity and freight entry require local source review.",
       "measurement_procedure": {
-        "entrypoint": "finalize_saved.py"
+        "entrypoint": "analysis.py"
       },
       "candidate_risk": {
-        "status": "physical",
-        "reason": "Curb zone, material transfer and a waiting freight vehicle may not remain visible together; original geometry and sight lines need review."
+        "status": "none",
+        "reason": "No case-specific Native camera or motion failure has been identified from reviewed original site geometry, which is required at capture; the four-view primary and source-gated original capture have a measurable physical visibility audit."
       },
       "candidates": [],
       "offline": {
-        "construction_sha256": "29be4a235b3a5e803d0b40711bff32bec61b47adc9de382a80ad3841015db182",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__stop_no_material --output .runtime-work/c386226-5071-offline-stop_no_material-v3",
+        "construction_sha256": "4bb797c2c757ad6ff4ca1b7854dd47f4ac966fc293f75627899fd0ee6e37c918",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__stop_no_material --output .runtime-work/c386226-5071-selected-offline-stop_no_material",
         "exit_code": 0,
-        "log": "proof-offline-stop_no_material.log",
-        "log_sha256": "64e1209da2a4ec4ed3b1e282fb61f71ce9569857045c81b744551cf0270144be"
+        "log": "proof-selected-offline-stop_no_material.log",
+        "log_sha256": "bccf554e07f8fd57e88fd9e7d002cac44852c67af335a07cf0dfd91ac193d199"
+      },
+      "fixture_recipe": "work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/diagnostics/stop_no_material-recipe.json",
+      "measurement_contract": "diagnostics/stop_no_material-measurement-contract.json",
+      "acquisition": {
+        "marked_freight_zone": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-marked_freight_zone.jsonl"
+        },
+        "effective_hours": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-effective_hours.jsonl"
+        },
+        "ego_halt_and_conduct": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-ego_halt_and_conduct.jsonl"
+        },
+        "materials_activity": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-materials_activity.jsonl"
+        },
+        "passenger_activity": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-passenger_activity.jsonl"
+        },
+        "freight_vehicle_entry": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-freight_vehicle_entry.jsonl"
+        },
+        "traffic_and_official_directions": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-traffic_and_official_directions.jsonl"
+        },
+        "expeditiousness": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-expeditiousness.jsonl"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-camera_frame_identity.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "proofs/selected-stop_no_material/receipt.json",
+        "sha256": "f86f9bff4138e0ec32d08bf9409bea424c1ff67a82818996a5f56ea484dfb67b",
+        "log": "proofs/selected-stop_no_material/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/selected-stop_no_material/negative.log"
       },
       "physical_preparation": {
         "receipt": "physical-stop_no_material-receipt.json",
-        "sha256": "748d18954fa414e6b85cca6fa512e2657d414a52f51b4086bb0a04cf3332c501"
+        "sha256": "c13510eeb714fc35559402856481b8902e0d10f1f31009349091c1adbada3265"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__stop_no_material --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__stop_no_material --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "proof-saved-stop_no_material.log",
+        "test_log_sha256": "b113203282df5ca86afc4e047a821653b9b4cb3df9c6a5c3b4226d8e764181b0",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only compatibility replay; original freight marking, material activity and legal acceptance require local review"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C386226__NRS-484B-507-1__motor_vehicle_driver__stop_no_material",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/delivery_audit.py case --attempt $ORIGINAL_ATTEMPT --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__stop_no_material --output $AUDIT_OUTPUT",
+        "negative_command": ".venv-cpu/bin/python work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/delivery_audit.py case --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c386226-5071-delivery-negative/missing-original-stop_no_material --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__stop_no_material --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c386226-5071-delivery-negative/rejected-stop_no_material.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "d87b1d6a00b57d6cb495e7c2f2731324a89116bc1c264dc0d05009c7959397ee",
+        "test_exit_code": 0,
+        "test_log": "cpu-focused-freight.log",
+        "test_log_sha256": "78e856353182bc3459d5c9ed65e89ee926debed170605560548fe36b5adee8e5",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "proof-original-negative-stop_no_material.log",
+        "negative_log_sha256": "454be24093fd4d8cdc3829428dd9c11a7329eefdbff97594d3be3ae86a637b09",
+        "scope": "CPU source-audit implementation tests; original capture and pixel review pending"
       }
     },
     {
       "case_id": "testing__C386226__NRS-484B-507-1__motor_vehicle_driver__stand_no_material",
       "kind": "delivery",
-      "construction": "construction-stand_no_material.json",
-      "construction_sha256": "2e175b9322d93ba5ca928aed8afe438436539e4d6c86215351d2f920245401de",
+      "construction": "construction-compatibility-stand_no_material.json",
+      "construction_sha256": "88b50e35645ef9f87d85fdc8f80d37d13da74e38028f100821d819d1a7afcff4",
       "source_gate": "Original marked freight zone, applicable provision, civil clock, actual material/passenger activity and freight entry require local source review.",
       "measurement_procedure": {
-        "entrypoint": "finalize_saved.py"
+        "entrypoint": "analysis.py"
       },
       "candidate_risk": {
-        "status": "physical",
-        "reason": "Curb zone, material transfer and a waiting freight vehicle may not remain visible together; original geometry and sight lines need review."
+        "status": "none",
+        "reason": "No case-specific Native camera or motion failure has been identified from reviewed original site geometry, which is required at capture; the four-view primary and source-gated original capture have a measurable physical visibility audit."
       },
       "candidates": [],
       "offline": {
-        "construction_sha256": "2e175b9322d93ba5ca928aed8afe438436539e4d6c86215351d2f920245401de",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__stand_no_material --output .runtime-work/c386226-5071-offline-stand_no_material-v3",
+        "construction_sha256": "88b50e35645ef9f87d85fdc8f80d37d13da74e38028f100821d819d1a7afcff4",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__stand_no_material --output .runtime-work/c386226-5071-selected-offline-stand_no_material",
         "exit_code": 0,
-        "log": "proof-offline-stand_no_material.log",
-        "log_sha256": "691138085bf07064f0c9535c3bf4d3ecf33ae9ecc7c5a3b621cbc4d620427a97"
+        "log": "proof-selected-offline-stand_no_material.log",
+        "log_sha256": "2580d0c4b97a5bfbe0cd368730863074723b0f5109a353543262d85652286f19"
+      },
+      "fixture_recipe": "work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/diagnostics/stand_no_material-recipe.json",
+      "measurement_contract": "diagnostics/stand_no_material-measurement-contract.json",
+      "acquisition": {
+        "marked_freight_zone": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-marked_freight_zone.jsonl"
+        },
+        "effective_hours": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-effective_hours.jsonl"
+        },
+        "ego_halt_and_conduct": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-ego_halt_and_conduct.jsonl"
+        },
+        "materials_activity": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-materials_activity.jsonl"
+        },
+        "passenger_activity": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-passenger_activity.jsonl"
+        },
+        "freight_vehicle_entry": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-freight_vehicle_entry.jsonl"
+        },
+        "traffic_and_official_directions": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-traffic_and_official_directions.jsonl"
+        },
+        "expeditiousness": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-expeditiousness.jsonl"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-camera_frame_identity.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "proofs/selected-stand_no_material/receipt.json",
+        "sha256": "3115458d2a5e404bc246f1aeef06a1ea0b18ef9c88b2478b01cfde34b611279b",
+        "log": "proofs/selected-stand_no_material/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/selected-stand_no_material/negative.log"
       },
       "physical_preparation": {
         "receipt": "physical-stand_no_material-receipt.json",
-        "sha256": "8db06d49a0912d40ef4df91a6c4e6e0de561dbb2cc89f639bdaf42ae37c196ae"
+        "sha256": "7f0d5ee839715bb4b5c139588452a225728289007702a96e8212ccf792b0524d"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__stand_no_material --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__stand_no_material --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "proof-saved-stand_no_material.log",
+        "test_log_sha256": "810a504789b978af6e68412f59c51457c174f3485be93fd177632610ce4a47ce",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only compatibility replay; original freight marking, material activity and legal acceptance require local review"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C386226__NRS-484B-507-1__motor_vehicle_driver__stand_no_material",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/delivery_audit.py case --attempt $ORIGINAL_ATTEMPT --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__stand_no_material --output $AUDIT_OUTPUT",
+        "negative_command": ".venv-cpu/bin/python work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/delivery_audit.py case --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c386226-5071-delivery-negative/missing-original-stand_no_material --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__stand_no_material --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c386226-5071-delivery-negative/rejected-stand_no_material.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "d87b1d6a00b57d6cb495e7c2f2731324a89116bc1c264dc0d05009c7959397ee",
+        "test_exit_code": 0,
+        "test_log": "cpu-focused-freight.log",
+        "test_log_sha256": "78e856353182bc3459d5c9ed65e89ee926debed170605560548fe36b5adee8e5",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "proof-original-negative-stand_no_material.log",
+        "negative_log_sha256": "454be24093fd4d8cdc3829428dd9c11a7329eefdbff97594d3be3ae86a637b09",
+        "scope": "CPU source-audit implementation tests; original capture and pixel review pending"
       }
     },
     {
       "case_id": "testing__C386226__NRS-484B-507-1__motor_vehicle_driver__park_no_material",
       "kind": "delivery",
-      "construction": "construction-park_no_material.json",
-      "construction_sha256": "54ff32c7183e012eaab6cb003640da11378a51c7dc2f42eb79dd45f73b8f603f",
+      "construction": "construction-compatibility-park_no_material.json",
+      "construction_sha256": "4765661ed3f5f962effe68e62e33e5bef562c58f76de14eb7f79902d4907a4e3",
       "source_gate": "Original marked freight zone, applicable provision, civil clock, actual material/passenger activity and freight entry require local source review.",
       "measurement_procedure": {
-        "entrypoint": "finalize_saved.py"
+        "entrypoint": "analysis.py"
       },
       "candidate_risk": {
-        "status": "physical",
-        "reason": "Curb zone, material transfer and a waiting freight vehicle may not remain visible together; original geometry and sight lines need review."
+        "status": "none",
+        "reason": "No case-specific Native camera or motion failure has been identified from reviewed original site geometry, which is required at capture; the four-view primary and source-gated original capture have a measurable physical visibility audit."
       },
       "candidates": [],
       "offline": {
-        "construction_sha256": "54ff32c7183e012eaab6cb003640da11378a51c7dc2f42eb79dd45f73b8f603f",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__park_no_material --output .runtime-work/c386226-5071-offline-park_no_material-v3",
+        "construction_sha256": "4765661ed3f5f962effe68e62e33e5bef562c58f76de14eb7f79902d4907a4e3",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__park_no_material --output .runtime-work/c386226-5071-selected-offline-park_no_material",
         "exit_code": 0,
-        "log": "proof-offline-park_no_material.log",
-        "log_sha256": "9293fb46b4f59706f236a8a2739a0588efdd9e7d93bab40a20d1a203a8315a73"
+        "log": "proof-selected-offline-park_no_material.log",
+        "log_sha256": "a088410819884b4d06e89c8458e51a631458fa92638fce37c2a93b352c1e60e9"
+      },
+      "fixture_recipe": "work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/diagnostics/park_no_material-recipe.json",
+      "measurement_contract": "diagnostics/park_no_material-measurement-contract.json",
+      "acquisition": {
+        "marked_freight_zone": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-marked_freight_zone.jsonl"
+        },
+        "effective_hours": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-effective_hours.jsonl"
+        },
+        "ego_halt_and_conduct": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-ego_halt_and_conduct.jsonl"
+        },
+        "materials_activity": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-materials_activity.jsonl"
+        },
+        "passenger_activity": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-passenger_activity.jsonl"
+        },
+        "freight_vehicle_entry": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-freight_vehicle_entry.jsonl"
+        },
+        "traffic_and_official_directions": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-traffic_and_official_directions.jsonl"
+        },
+        "expeditiousness": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-expeditiousness.jsonl"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-camera_frame_identity.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "proofs/selected-park_no_material/receipt.json",
+        "sha256": "55ef36d70cb0600247474393474a14b53ceb8c5122a850f134d6b67b118659b7",
+        "log": "proofs/selected-park_no_material/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/selected-park_no_material/negative.log"
       },
       "physical_preparation": {
         "receipt": "physical-park_no_material-receipt.json",
-        "sha256": "7e04cb9c39e052f3197b76c29ad3a864600d0822bcf34a4468982926cb15c577"
+        "sha256": "97341c5d324cc947bbbab3db0edf635e1552423e8b61c52d7531d45499d8fadb"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__park_no_material --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__park_no_material --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "proof-saved-park_no_material.log",
+        "test_log_sha256": "b402bd11da2ee0715245a5042c16b428025a236644e99a092b8323405bd08630",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only compatibility replay; original freight marking, material activity and legal acceptance require local review"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C386226__NRS-484B-507-1__motor_vehicle_driver__park_no_material",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/delivery_audit.py case --attempt $ORIGINAL_ATTEMPT --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__park_no_material --output $AUDIT_OUTPUT",
+        "negative_command": ".venv-cpu/bin/python work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/delivery_audit.py case --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c386226-5071-delivery-negative/missing-original-park_no_material --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__park_no_material --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c386226-5071-delivery-negative/rejected-park_no_material.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "d87b1d6a00b57d6cb495e7c2f2731324a89116bc1c264dc0d05009c7959397ee",
+        "test_exit_code": 0,
+        "test_log": "cpu-focused-freight.log",
+        "test_log_sha256": "78e856353182bc3459d5c9ed65e89ee926debed170605560548fe36b5adee8e5",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "proof-original-negative-park_no_material.log",
+        "negative_log_sha256": "454be24093fd4d8cdc3829428dd9c11a7329eefdbff97594d3be3ae86a637b09",
+        "scope": "CPU source-audit implementation tests; original capture and pixel review pending"
       }
     },
     {
       "case_id": "testing__C386226__NRS-484B-507-1__motor_vehicle_driver__pickup_load_prompt",
       "kind": "delivery",
-      "construction": "construction-pickup_load_prompt.json",
-      "construction_sha256": "63aa9379375993be0246e243ca1e51ec55871faacf2d81f1f2706e9eb728a9bd",
+      "construction": "construction-compatibility-pickup_load_prompt.json",
+      "construction_sha256": "8265b220c60bdd5d121f734815627e5af28c28aa217f7faa733f00466b83a86f",
       "source_gate": "Original marked freight zone, applicable provision, civil clock, actual material/passenger activity and freight entry require local source review.",
       "measurement_procedure": {
-        "entrypoint": "finalize_saved.py"
+        "entrypoint": "analysis.py"
       },
       "candidate_risk": {
-        "status": "physical",
-        "reason": "Curb zone, material transfer and a waiting freight vehicle may not remain visible together; original geometry and sight lines need review."
+        "status": "none",
+        "reason": "No case-specific Native camera or motion failure has been identified from reviewed original site geometry, which is required at capture; the four-view primary and source-gated original capture have a measurable physical visibility audit."
       },
       "candidates": [],
       "offline": {
-        "construction_sha256": "63aa9379375993be0246e243ca1e51ec55871faacf2d81f1f2706e9eb728a9bd",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__pickup_load_prompt --output .runtime-work/c386226-5071-offline-pickup_load_prompt-v3",
+        "construction_sha256": "8265b220c60bdd5d121f734815627e5af28c28aa217f7faa733f00466b83a86f",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__pickup_load_prompt --output .runtime-work/c386226-5071-selected-offline-pickup_load_prompt",
         "exit_code": 0,
-        "log": "proof-offline-pickup_load_prompt.log",
-        "log_sha256": "79ed7d5ad61e1e8dc64627cbebaf189f26059b7fefbca43354261a62b474cd4c"
+        "log": "proof-selected-offline-pickup_load_prompt.log",
+        "log_sha256": "3751f0fd7aaf51916a0fef9b69b1e4e2abb53bbcbf54e6ced07184fb6a8c6302"
+      },
+      "fixture_recipe": "work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/diagnostics/pickup_load_prompt-recipe.json",
+      "measurement_contract": "diagnostics/pickup_load_prompt-measurement-contract.json",
+      "acquisition": {
+        "marked_freight_zone": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-marked_freight_zone.jsonl"
+        },
+        "effective_hours": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-effective_hours.jsonl"
+        },
+        "ego_halt_and_conduct": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-ego_halt_and_conduct.jsonl"
+        },
+        "materials_activity": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-materials_activity.jsonl"
+        },
+        "passenger_activity": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-passenger_activity.jsonl"
+        },
+        "freight_vehicle_entry": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-freight_vehicle_entry.jsonl"
+        },
+        "traffic_and_official_directions": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-traffic_and_official_directions.jsonl"
+        },
+        "expeditiousness": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-expeditiousness.jsonl"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-camera_frame_identity.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "proofs/selected-pickup_load_prompt/receipt.json",
+        "sha256": "c8c318c4b240e1fbc3cdf0f1e7ec45e05154447424208ae5020a2044ecb16362",
+        "log": "proofs/selected-pickup_load_prompt/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/selected-pickup_load_prompt/negative.log"
       },
       "physical_preparation": {
         "receipt": "physical-pickup_load_prompt-receipt.json",
-        "sha256": "c17afcdc7b7452f71482930c50b419fba1eb3eee9dd8c4056ffec901bd752965"
+        "sha256": "6472b529b8f82c77fcdf048c97722d3c0230991d73e4cb99dba9012c2ff469a9"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__pickup_load_prompt --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__pickup_load_prompt --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "proof-saved-pickup_load_prompt.log",
+        "test_log_sha256": "89acab2c57118ef8a84117ed0bc1d2a927717c0d21381009f13772677c052ba7",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only compatibility replay; original freight marking, material activity and legal acceptance require local review"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C386226__NRS-484B-507-1__motor_vehicle_driver__pickup_load_prompt",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/delivery_audit.py case --attempt $ORIGINAL_ATTEMPT --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__pickup_load_prompt --output $AUDIT_OUTPUT",
+        "negative_command": ".venv-cpu/bin/python work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/delivery_audit.py case --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c386226-5071-delivery-negative/missing-original-pickup_load_prompt --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__pickup_load_prompt --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c386226-5071-delivery-negative/rejected-pickup_load_prompt.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "d87b1d6a00b57d6cb495e7c2f2731324a89116bc1c264dc0d05009c7959397ee",
+        "test_exit_code": 0,
+        "test_log": "cpu-focused-freight.log",
+        "test_log_sha256": "78e856353182bc3459d5c9ed65e89ee926debed170605560548fe36b5adee8e5",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "proof-original-negative-pickup_load_prompt.log",
+        "negative_log_sha256": "454be24093fd4d8cdc3829428dd9c11a7329eefdbff97594d3be3ae86a637b09",
+        "scope": "CPU source-audit implementation tests; original capture and pixel review pending"
       }
     },
     {
       "case_id": "testing__C386226__NRS-484B-507-1__motor_vehicle_driver__unload_deliver_prompt",
       "kind": "delivery",
-      "construction": "construction-unload_deliver_prompt.json",
-      "construction_sha256": "fc63c183c5444a44df6af11fdefe549d082601ebaab16495e690918342cc49cb",
+      "construction": "construction-compatibility-unload_deliver_prompt.json",
+      "construction_sha256": "86e7e42371af52353198f17a1702f407bd17594c16f5b6f078892ee7f6b14614",
       "source_gate": "Original marked freight zone, applicable provision, civil clock, actual material/passenger activity and freight entry require local source review.",
       "measurement_procedure": {
-        "entrypoint": "finalize_saved.py"
+        "entrypoint": "analysis.py"
       },
       "candidate_risk": {
-        "status": "physical",
-        "reason": "Curb zone, material transfer and a waiting freight vehicle may not remain visible together; original geometry and sight lines need review."
+        "status": "none",
+        "reason": "No case-specific Native camera or motion failure has been identified from reviewed original site geometry, which is required at capture; the four-view primary and source-gated original capture have a measurable physical visibility audit."
       },
       "candidates": [],
       "offline": {
-        "construction_sha256": "fc63c183c5444a44df6af11fdefe549d082601ebaab16495e690918342cc49cb",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__unload_deliver_prompt --output .runtime-work/c386226-5071-offline-unload_deliver_prompt-v3",
+        "construction_sha256": "86e7e42371af52353198f17a1702f407bd17594c16f5b6f078892ee7f6b14614",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__unload_deliver_prompt --output .runtime-work/c386226-5071-selected-offline-unload_deliver_prompt",
         "exit_code": 0,
-        "log": "proof-offline-unload_deliver_prompt.log",
-        "log_sha256": "6b05f154a8f8360c81c881cdba52ed71a3b9532162ac5fe346da41238fcf7f57"
+        "log": "proof-selected-offline-unload_deliver_prompt.log",
+        "log_sha256": "b9b4373ad3ff46877606c8d57e97e246c2010b827d60c92b84feb0b505a88c44"
+      },
+      "fixture_recipe": "work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/diagnostics/unload_deliver_prompt-recipe.json",
+      "measurement_contract": "diagnostics/unload_deliver_prompt-measurement-contract.json",
+      "acquisition": {
+        "marked_freight_zone": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-marked_freight_zone.jsonl"
+        },
+        "effective_hours": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-effective_hours.jsonl"
+        },
+        "ego_halt_and_conduct": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-ego_halt_and_conduct.jsonl"
+        },
+        "materials_activity": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-materials_activity.jsonl"
+        },
+        "passenger_activity": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-passenger_activity.jsonl"
+        },
+        "freight_vehicle_entry": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-freight_vehicle_entry.jsonl"
+        },
+        "traffic_and_official_directions": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-traffic_and_official_directions.jsonl"
+        },
+        "expeditiousness": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-expeditiousness.jsonl"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-camera_frame_identity.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "proofs/selected-unload_deliver_prompt/receipt.json",
+        "sha256": "60ce28a993f8246866f2f0696063c66706c486761b336c5e263b4db32921adae",
+        "log": "proofs/selected-unload_deliver_prompt/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/selected-unload_deliver_prompt/negative.log"
       },
       "physical_preparation": {
         "receipt": "physical-unload_deliver_prompt-receipt.json",
-        "sha256": "3da0d358caf6740e4f88001dbdf478f73dc98871702591b4229a3db533c71cfb"
+        "sha256": "182c60eaebf795e5d5257b6588971ba36e9e27bcc11d4c245dd9fb052b915f8d"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__unload_deliver_prompt --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__unload_deliver_prompt --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "proof-saved-unload_deliver_prompt.log",
+        "test_log_sha256": "7102d2dee4ffaf31428b682ed6e5af318c3e89cb8f6bbfa3db0c9a5f9b69fb87",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only compatibility replay; original freight marking, material activity and legal acceptance require local review"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C386226__NRS-484B-507-1__motor_vehicle_driver__unload_deliver_prompt",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/delivery_audit.py case --attempt $ORIGINAL_ATTEMPT --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__unload_deliver_prompt --output $AUDIT_OUTPUT",
+        "negative_command": ".venv-cpu/bin/python work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/delivery_audit.py case --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c386226-5071-delivery-negative/missing-original-unload_deliver_prompt --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__unload_deliver_prompt --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c386226-5071-delivery-negative/rejected-unload_deliver_prompt.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "d87b1d6a00b57d6cb495e7c2f2731324a89116bc1c264dc0d05009c7959397ee",
+        "test_exit_code": 0,
+        "test_log": "cpu-focused-freight.log",
+        "test_log_sha256": "78e856353182bc3459d5c9ed65e89ee926debed170605560548fe36b5adee8e5",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "proof-original-negative-unload_deliver_prompt.log",
+        "negative_log_sha256": "454be24093fd4d8cdc3829428dd9c11a7329eefdbff97594d3be3ae86a637b09",
+        "scope": "CPU source-audit implementation tests; original capture and pixel review pending"
       }
     },
     {
       "case_id": "testing__C386226__NRS-484B-507-1__motor_vehicle_driver__pickup_load_delayed",
       "kind": "delivery",
-      "construction": "construction-pickup_load_delayed.json",
-      "construction_sha256": "cac7cbbed42e7b510f1050425bdcb5b6b3763808fd9c0d9ef95b9c55b742c708",
+      "construction": "construction-compatibility-pickup_load_delayed.json",
+      "construction_sha256": "2ca4b73e569bcc4b5418b8ddcb61128d74f07e8d4aaaa35360452e1db03c5ef3",
       "source_gate": "Original marked freight zone, applicable provision, civil clock, actual material/passenger activity and freight entry require local source review.",
       "measurement_procedure": {
-        "entrypoint": "finalize_saved.py"
+        "entrypoint": "analysis.py"
       },
       "candidate_risk": {
-        "status": "physical",
-        "reason": "Curb zone, material transfer and a waiting freight vehicle may not remain visible together; original geometry and sight lines need review."
+        "status": "none",
+        "reason": "No case-specific Native camera or motion failure has been identified from reviewed original site geometry, which is required at capture; the four-view primary and source-gated original capture have a measurable physical visibility audit."
       },
       "candidates": [],
       "offline": {
-        "construction_sha256": "cac7cbbed42e7b510f1050425bdcb5b6b3763808fd9c0d9ef95b9c55b742c708",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__pickup_load_delayed --output .runtime-work/c386226-5071-offline-pickup_load_delayed-v3",
+        "construction_sha256": "2ca4b73e569bcc4b5418b8ddcb61128d74f07e8d4aaaa35360452e1db03c5ef3",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__pickup_load_delayed --output .runtime-work/c386226-5071-selected-offline-pickup_load_delayed",
         "exit_code": 0,
-        "log": "proof-offline-pickup_load_delayed.log",
-        "log_sha256": "2322598932c7ef16c1d0127c809fb735a11037ac9143f5a8a0ca2bb681cd996b"
+        "log": "proof-selected-offline-pickup_load_delayed.log",
+        "log_sha256": "155c4cec507924fc452aa34e0cfaa0a47f24a2f8adb40eb587f4d0f3b28f9373"
+      },
+      "fixture_recipe": "work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/diagnostics/pickup_load_delayed-recipe.json",
+      "measurement_contract": "diagnostics/pickup_load_delayed-measurement-contract.json",
+      "acquisition": {
+        "marked_freight_zone": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-marked_freight_zone.jsonl"
+        },
+        "effective_hours": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-effective_hours.jsonl"
+        },
+        "ego_halt_and_conduct": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-ego_halt_and_conduct.jsonl"
+        },
+        "materials_activity": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-materials_activity.jsonl"
+        },
+        "passenger_activity": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-passenger_activity.jsonl"
+        },
+        "freight_vehicle_entry": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-freight_vehicle_entry.jsonl"
+        },
+        "traffic_and_official_directions": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-traffic_and_official_directions.jsonl"
+        },
+        "expeditiousness": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-expeditiousness.jsonl"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-camera_frame_identity.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "proofs/selected-pickup_load_delayed/receipt.json",
+        "sha256": "cfc28f97fc6fff3108dab88c61b64189ed3a46cf90747bb7b9406bc8b9c69776",
+        "log": "proofs/selected-pickup_load_delayed/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/selected-pickup_load_delayed/negative.log"
       },
       "physical_preparation": {
         "receipt": "physical-pickup_load_delayed-receipt.json",
-        "sha256": "9d41d5dde474bb0a15067b327138e30a2ac1e06fe3057102158bbfdc548806e3"
+        "sha256": "b0b63929a30bfa0685a42676c812618cdc4a1b688bf0927d198c415bdff308c1"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__pickup_load_delayed --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__pickup_load_delayed --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "proof-saved-pickup_load_delayed.log",
+        "test_log_sha256": "a59ba333f5bd16fda073234e8586370894df771a51c735fa69fc6debb8b036c4",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only compatibility replay; original freight marking, material activity and legal acceptance require local review"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C386226__NRS-484B-507-1__motor_vehicle_driver__pickup_load_delayed",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/delivery_audit.py case --attempt $ORIGINAL_ATTEMPT --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__pickup_load_delayed --output $AUDIT_OUTPUT",
+        "negative_command": ".venv-cpu/bin/python work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/delivery_audit.py case --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c386226-5071-delivery-negative/missing-original-pickup_load_delayed --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__pickup_load_delayed --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c386226-5071-delivery-negative/rejected-pickup_load_delayed.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "d87b1d6a00b57d6cb495e7c2f2731324a89116bc1c264dc0d05009c7959397ee",
+        "test_exit_code": 0,
+        "test_log": "cpu-focused-freight.log",
+        "test_log_sha256": "78e856353182bc3459d5c9ed65e89ee926debed170605560548fe36b5adee8e5",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "proof-original-negative-pickup_load_delayed.log",
+        "negative_log_sha256": "454be24093fd4d8cdc3829428dd9c11a7329eefdbff97594d3be3ae86a637b09",
+        "scope": "CPU source-audit implementation tests; original capture and pixel review pending"
       }
     },
     {
       "case_id": "testing__C386226__NRS-484B-507-1__motor_vehicle_driver__park_outside_hours",
       "kind": "delivery",
-      "construction": "construction-park_outside_hours.json",
-      "construction_sha256": "48ffd370f197f325ebc7b1dc283d9dda31365d2485132d4abacb898a434d6576",
+      "construction": "construction-compatibility-park_outside_hours.json",
+      "construction_sha256": "172fc1bb9f03d3285a4661f6bbdeff5d89273e9a042d0c64e68bd9c735037306",
       "source_gate": "Original marked freight zone, applicable provision, civil clock, actual material/passenger activity and freight entry require local source review.",
       "measurement_procedure": {
-        "entrypoint": "finalize_saved.py"
+        "entrypoint": "analysis.py"
       },
       "candidate_risk": {
-        "status": "physical",
-        "reason": "Curb zone, material transfer and a waiting freight vehicle may not remain visible together; original geometry and sight lines need review."
+        "status": "none",
+        "reason": "No case-specific Native camera or motion failure has been identified from reviewed original site geometry, which is required at capture; the four-view primary and source-gated original capture have a measurable physical visibility audit."
       },
       "candidates": [],
       "offline": {
-        "construction_sha256": "48ffd370f197f325ebc7b1dc283d9dda31365d2485132d4abacb898a434d6576",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__park_outside_hours --output .runtime-work/c386226-5071-offline-park_outside_hours-v3",
+        "construction_sha256": "172fc1bb9f03d3285a4661f6bbdeff5d89273e9a042d0c64e68bd9c735037306",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__park_outside_hours --output .runtime-work/c386226-5071-selected-offline-park_outside_hours",
         "exit_code": 0,
-        "log": "proof-offline-park_outside_hours.log",
-        "log_sha256": "a2a9746228b7c7f959ddf99b8705e3a44e9c137ba2495a1ebcf11431730e83d3"
+        "log": "proof-selected-offline-park_outside_hours.log",
+        "log_sha256": "d2804e5491fc31e0a13019345d89fa64279db7f51ab1dbd0ae64a7dfef6e1908"
+      },
+      "fixture_recipe": "work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/diagnostics/park_outside_hours-recipe.json",
+      "measurement_contract": "diagnostics/park_outside_hours-measurement-contract.json",
+      "acquisition": {
+        "marked_freight_zone": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-marked_freight_zone.jsonl"
+        },
+        "effective_hours": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-effective_hours.jsonl"
+        },
+        "ego_halt_and_conduct": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-ego_halt_and_conduct.jsonl"
+        },
+        "materials_activity": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-materials_activity.jsonl"
+        },
+        "passenger_activity": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-passenger_activity.jsonl"
+        },
+        "freight_vehicle_entry": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-freight_vehicle_entry.jsonl"
+        },
+        "traffic_and_official_directions": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-traffic_and_official_directions.jsonl"
+        },
+        "expeditiousness": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-expeditiousness.jsonl"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-camera_frame_identity.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "proofs/selected-park_outside_hours/receipt.json",
+        "sha256": "df4581058a4fdaebf985296672502ee2de76b538c51f4712ee41e0be44fc79a2",
+        "log": "proofs/selected-park_outside_hours/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/selected-park_outside_hours/negative.log"
       },
       "physical_preparation": {
         "receipt": "physical-park_outside_hours-receipt.json",
-        "sha256": "3dc8c162eb3fb30b7b1da7bd74a051a79e5d06adfca50fb5b1e03805f0ee345c"
+        "sha256": "5f1c383f8db0de0f5c8c9d605c3c6a89b2a6c8c5e7d249f45e4e661d4beeda51"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__park_outside_hours --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__park_outside_hours --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "proof-saved-park_outside_hours.log",
+        "test_log_sha256": "c0cffcd7b2ef7ea4e76ba14cffb1ea97e3a7cf45a06ba953f7f9baa0455858b1",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only compatibility replay; original freight marking, material activity and legal acceptance require local review"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C386226__NRS-484B-507-1__motor_vehicle_driver__park_outside_hours",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/delivery_audit.py case --attempt $ORIGINAL_ATTEMPT --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__park_outside_hours --output $AUDIT_OUTPUT",
+        "negative_command": ".venv-cpu/bin/python work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/delivery_audit.py case --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c386226-5071-delivery-negative/missing-original-park_outside_hours --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__park_outside_hours --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c386226-5071-delivery-negative/rejected-park_outside_hours.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "d87b1d6a00b57d6cb495e7c2f2731324a89116bc1c264dc0d05009c7959397ee",
+        "test_exit_code": 0,
+        "test_log": "cpu-focused-freight.log",
+        "test_log_sha256": "78e856353182bc3459d5c9ed65e89ee926debed170605560548fe36b5adee8e5",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "proof-original-negative-park_outside_hours.log",
+        "negative_log_sha256": "454be24093fd4d8cdc3829428dd9c11a7329eefdbff97594d3be3ae86a637b09",
+        "scope": "CPU source-audit implementation tests; original capture and pixel review pending"
       }
     },
     {
       "case_id": "testing__C386226__NRS-484B-507-1__motor_vehicle_driver__passenger_board_clear",
       "kind": "delivery",
-      "construction": "construction-passenger_board_clear.json",
-      "construction_sha256": "a70dde85921c2380243d340445fd00dcd3b27b08e41fcfad28bd33d9b598b935",
+      "construction": "construction-compatibility-passenger_board_clear.json",
+      "construction_sha256": "41a4bfd9a83e5e4c3566d1600fda4f290a4197d7ae177d7bd44b99e17b119533",
       "source_gate": "Original marked freight zone, applicable provision, civil clock, actual material/passenger activity and freight entry require local source review.",
       "measurement_procedure": {
-        "entrypoint": "finalize_saved.py"
+        "entrypoint": "analysis.py"
       },
       "candidate_risk": {
-        "status": "physical",
-        "reason": "Curb zone, material transfer and a waiting freight vehicle may not remain visible together; original geometry and sight lines need review."
+        "status": "none",
+        "reason": "No case-specific Native camera or motion failure has been identified from reviewed original site geometry, which is required at capture; the four-view primary and source-gated original capture have a measurable physical visibility audit."
       },
       "candidates": [],
       "offline": {
-        "construction_sha256": "a70dde85921c2380243d340445fd00dcd3b27b08e41fcfad28bd33d9b598b935",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__passenger_board_clear --output .runtime-work/c386226-5071-offline-passenger_board_clear-v3",
+        "construction_sha256": "41a4bfd9a83e5e4c3566d1600fda4f290a4197d7ae177d7bd44b99e17b119533",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__passenger_board_clear --output .runtime-work/c386226-5071-selected-offline-passenger_board_clear",
         "exit_code": 0,
-        "log": "proof-offline-passenger_board_clear.log",
-        "log_sha256": "ba4942f8d57920435fae8210dfd7134a3e8264d3de6b892907b0bceabfb80def"
+        "log": "proof-selected-offline-passenger_board_clear.log",
+        "log_sha256": "4b881e72fd365a08962b9edf6dd3e917eb6cef899ae9b7e686053df0a67fcd4c"
+      },
+      "fixture_recipe": "work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/diagnostics/passenger_board_clear-recipe.json",
+      "measurement_contract": "diagnostics/passenger_board_clear-measurement-contract.json",
+      "acquisition": {
+        "marked_freight_zone": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-marked_freight_zone.jsonl"
+        },
+        "effective_hours": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-effective_hours.jsonl"
+        },
+        "ego_halt_and_conduct": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-ego_halt_and_conduct.jsonl"
+        },
+        "materials_activity": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-materials_activity.jsonl"
+        },
+        "passenger_activity": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-passenger_activity.jsonl"
+        },
+        "freight_vehicle_entry": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-freight_vehicle_entry.jsonl"
+        },
+        "traffic_and_official_directions": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-traffic_and_official_directions.jsonl"
+        },
+        "expeditiousness": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-expeditiousness.jsonl"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-camera_frame_identity.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "proofs/selected-passenger_board_clear/receipt.json",
+        "sha256": "b63d7f5f2a7cfa75cf9fd78e957f37dcf21f83cc37dd18abcc687d9b96dccc72",
+        "log": "proofs/selected-passenger_board_clear/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/selected-passenger_board_clear/negative.log"
       },
       "physical_preparation": {
         "receipt": "physical-passenger_board_clear-receipt.json",
-        "sha256": "c59a76eb1086b4b71589b24448fc5aefea1b2b92930ac89cbb63ad7b54df13cf"
+        "sha256": "8ddf1f821db0334a210272ec7209678f22b74f09360ab1379b13ae46d32a4683"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__passenger_board_clear --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__passenger_board_clear --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "proof-saved-passenger_board_clear.log",
+        "test_log_sha256": "81da2d018e7dee1021f52a635df465e485427acd3a55e3a3d8a45337f777e288",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only compatibility replay; original freight marking, material activity and legal acceptance require local review"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C386226__NRS-484B-507-1__motor_vehicle_driver__passenger_board_clear",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/delivery_audit.py case --attempt $ORIGINAL_ATTEMPT --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__passenger_board_clear --output $AUDIT_OUTPUT",
+        "negative_command": ".venv-cpu/bin/python work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/delivery_audit.py case --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c386226-5071-delivery-negative/missing-original-passenger_board_clear --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__passenger_board_clear --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c386226-5071-delivery-negative/rejected-passenger_board_clear.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "d87b1d6a00b57d6cb495e7c2f2731324a89116bc1c264dc0d05009c7959397ee",
+        "test_exit_code": 0,
+        "test_log": "cpu-focused-freight.log",
+        "test_log_sha256": "78e856353182bc3459d5c9ed65e89ee926debed170605560548fe36b5adee8e5",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "proof-original-negative-passenger_board_clear.log",
+        "negative_log_sha256": "454be24093fd4d8cdc3829428dd9c11a7329eefdbff97594d3be3ae86a637b09",
+        "scope": "CPU source-audit implementation tests; original capture and pixel review pending"
       }
     },
     {
       "case_id": "testing__C386226__NRS-484B-507-1__motor_vehicle_driver__passenger_alight_clear",
       "kind": "delivery",
-      "construction": "construction-passenger_alight_clear.json",
-      "construction_sha256": "bc38d18c3f6a3ca876d4278ac3b7755d0fbf77603ec90a6f3fcf536ad7328452",
+      "construction": "construction-compatibility-passenger_alight_clear.json",
+      "construction_sha256": "d62951884bc02f4462fb86fa0dd883a7dfa953d22f078c3617a857c193e68a49",
       "source_gate": "Original marked freight zone, applicable provision, civil clock, actual material/passenger activity and freight entry require local source review.",
       "measurement_procedure": {
-        "entrypoint": "finalize_saved.py"
+        "entrypoint": "analysis.py"
       },
       "candidate_risk": {
-        "status": "physical",
-        "reason": "Curb zone, material transfer and a waiting freight vehicle may not remain visible together; original geometry and sight lines need review."
+        "status": "none",
+        "reason": "No case-specific Native camera or motion failure has been identified from reviewed original site geometry, which is required at capture; the four-view primary and source-gated original capture have a measurable physical visibility audit."
       },
       "candidates": [],
       "offline": {
-        "construction_sha256": "bc38d18c3f6a3ca876d4278ac3b7755d0fbf77603ec90a6f3fcf536ad7328452",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__passenger_alight_clear --output .runtime-work/c386226-5071-offline-passenger_alight_clear-v3",
+        "construction_sha256": "d62951884bc02f4462fb86fa0dd883a7dfa953d22f078c3617a857c193e68a49",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__passenger_alight_clear --output .runtime-work/c386226-5071-selected-offline-passenger_alight_clear",
         "exit_code": 0,
-        "log": "proof-offline-passenger_alight_clear.log",
-        "log_sha256": "4e02ccd5ec24f8ce13db80a173796527839dbafa6092b9796a9c2a68905a0673"
+        "log": "proof-selected-offline-passenger_alight_clear.log",
+        "log_sha256": "4beea4afd1f161567be52a792ccab65b2ae9d7b263c2fd64b31238f2df165637"
+      },
+      "fixture_recipe": "work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/diagnostics/passenger_alight_clear-recipe.json",
+      "measurement_contract": "diagnostics/passenger_alight_clear-measurement-contract.json",
+      "acquisition": {
+        "marked_freight_zone": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-marked_freight_zone.jsonl"
+        },
+        "effective_hours": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-effective_hours.jsonl"
+        },
+        "ego_halt_and_conduct": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-ego_halt_and_conduct.jsonl"
+        },
+        "materials_activity": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-materials_activity.jsonl"
+        },
+        "passenger_activity": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-passenger_activity.jsonl"
+        },
+        "freight_vehicle_entry": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-freight_vehicle_entry.jsonl"
+        },
+        "traffic_and_official_directions": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-traffic_and_official_directions.jsonl"
+        },
+        "expeditiousness": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-expeditiousness.jsonl"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-camera_frame_identity.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "proofs/selected-passenger_alight_clear/receipt.json",
+        "sha256": "f1fed210a89e8eb58520bb860974b9c18bd49ef28a8c7554a81c3cffedd15f55",
+        "log": "proofs/selected-passenger_alight_clear/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/selected-passenger_alight_clear/negative.log"
       },
       "physical_preparation": {
         "receipt": "physical-passenger_alight_clear-receipt.json",
-        "sha256": "622a61a2a036d7b36093f3c307ff747f042eeeee771702c0688cd682d129c861"
+        "sha256": "29bf8ddadfeb72c2ec5f207bdcf10b15ba22752321d0e57adb805d16cb8fdc30"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__passenger_alight_clear --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__passenger_alight_clear --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "proof-saved-passenger_alight_clear.log",
+        "test_log_sha256": "1576aa90029235fb495926d39f858a39d586e7be21f9a56320e6c94e5e45218e",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only compatibility replay; original freight marking, material activity and legal acceptance require local review"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C386226__NRS-484B-507-1__motor_vehicle_driver__passenger_alight_clear",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/delivery_audit.py case --attempt $ORIGINAL_ATTEMPT --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__passenger_alight_clear --output $AUDIT_OUTPUT",
+        "negative_command": ".venv-cpu/bin/python work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/delivery_audit.py case --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c386226-5071-delivery-negative/missing-original-passenger_alight_clear --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__passenger_alight_clear --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c386226-5071-delivery-negative/rejected-passenger_alight_clear.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "d87b1d6a00b57d6cb495e7c2f2731324a89116bc1c264dc0d05009c7959397ee",
+        "test_exit_code": 0,
+        "test_log": "cpu-focused-freight.log",
+        "test_log_sha256": "78e856353182bc3459d5c9ed65e89ee926debed170605560548fe36b5adee8e5",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "proof-original-negative-passenger_alight_clear.log",
+        "negative_log_sha256": "454be24093fd4d8cdc3829428dd9c11a7329eefdbff97594d3be3ae86a637b09",
+        "scope": "CPU source-audit implementation tests; original capture and pixel review pending"
       }
     },
     {
       "case_id": "testing__C386226__NRS-484B-507-1__motor_vehicle_driver__passenger_board_waiting_freight",
       "kind": "delivery",
-      "construction": "construction-passenger_board_waiting_freight.json",
-      "construction_sha256": "55492f7b04962d158518cac4b95012175550a6ed11e5018afe19fd2cfb930a13",
+      "construction": "construction-compatibility-passenger_board_waiting_freight.json",
+      "construction_sha256": "096a06c4eb99edab3cf6b0d374c28359ea2e6f89b52c92ffcc0c388182b3ff30",
       "source_gate": "Original marked freight zone, applicable provision, civil clock, actual material/passenger activity and freight entry require local source review.",
       "measurement_procedure": {
-        "entrypoint": "finalize_saved.py"
+        "entrypoint": "analysis.py"
       },
       "candidate_risk": {
-        "status": "physical",
-        "reason": "Curb zone, material transfer and a waiting freight vehicle may not remain visible together; original geometry and sight lines need review."
+        "status": "none",
+        "reason": "No case-specific Native camera or motion failure has been identified from reviewed original site geometry, which is required at capture; the four-view primary and source-gated original capture have a measurable physical visibility audit."
       },
       "candidates": [],
       "offline": {
-        "construction_sha256": "55492f7b04962d158518cac4b95012175550a6ed11e5018afe19fd2cfb930a13",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__passenger_board_waiting_freight --output .runtime-work/c386226-5071-offline-passenger_board_waiting_freight-v3",
+        "construction_sha256": "096a06c4eb99edab3cf6b0d374c28359ea2e6f89b52c92ffcc0c388182b3ff30",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__passenger_board_waiting_freight --output .runtime-work/c386226-5071-selected-offline-passenger_board_waiting_freight",
         "exit_code": 0,
-        "log": "proof-offline-passenger_board_waiting_freight.log",
-        "log_sha256": "1e4c4c3e5090781ea7c0f8628e7ca775f7b021d1024e0cbb16af1ebc5e2f8c32"
+        "log": "proof-selected-offline-passenger_board_waiting_freight.log",
+        "log_sha256": "fa1eda05706bc551a793e52f2555883c89eb1106694a170f2c632c31c248c02e"
+      },
+      "fixture_recipe": "work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/diagnostics/passenger_board_waiting_freight-recipe.json",
+      "measurement_contract": "diagnostics/passenger_board_waiting_freight-measurement-contract.json",
+      "acquisition": {
+        "marked_freight_zone": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-marked_freight_zone.jsonl"
+        },
+        "effective_hours": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-effective_hours.jsonl"
+        },
+        "ego_halt_and_conduct": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-ego_halt_and_conduct.jsonl"
+        },
+        "materials_activity": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-materials_activity.jsonl"
+        },
+        "passenger_activity": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-passenger_activity.jsonl"
+        },
+        "freight_vehicle_entry": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-freight_vehicle_entry.jsonl"
+        },
+        "traffic_and_official_directions": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-traffic_and_official_directions.jsonl"
+        },
+        "expeditiousness": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-expeditiousness.jsonl"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-camera_frame_identity.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "proofs/selected-passenger_board_waiting_freight/receipt.json",
+        "sha256": "5d37c0e9540220136ae20bae648908a2b18683125cb744a6de3ce6639e6edb75",
+        "log": "proofs/selected-passenger_board_waiting_freight/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/selected-passenger_board_waiting_freight/negative.log"
       },
       "physical_preparation": {
         "receipt": "physical-passenger_board_waiting_freight-receipt.json",
-        "sha256": "c09853fc39d2361b9b123bd856ecbd8eecd4775cc73cc5627ece0bd4e4492442"
+        "sha256": "8c442d70f56e672f0d64875a20da77756b28aefb9169dca8a5cb52ba5ca6ec7e"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__passenger_board_waiting_freight --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__passenger_board_waiting_freight --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "proof-saved-passenger_board_waiting_freight.log",
+        "test_log_sha256": "83775e0ceb7160ecc36a397acf99eeb30319e036d23b841dec098c3eae545341",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only compatibility replay; original freight marking, material activity and legal acceptance require local review"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C386226__NRS-484B-507-1__motor_vehicle_driver__passenger_board_waiting_freight",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/delivery_audit.py case --attempt $ORIGINAL_ATTEMPT --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__passenger_board_waiting_freight --output $AUDIT_OUTPUT",
+        "negative_command": ".venv-cpu/bin/python work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/delivery_audit.py case --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c386226-5071-delivery-negative/missing-original-passenger_board_waiting_freight --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__passenger_board_waiting_freight --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c386226-5071-delivery-negative/rejected-passenger_board_waiting_freight.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "d87b1d6a00b57d6cb495e7c2f2731324a89116bc1c264dc0d05009c7959397ee",
+        "test_exit_code": 0,
+        "test_log": "cpu-focused-freight.log",
+        "test_log_sha256": "78e856353182bc3459d5c9ed65e89ee926debed170605560548fe36b5adee8e5",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "proof-original-negative-passenger_board_waiting_freight.log",
+        "negative_log_sha256": "454be24093fd4d8cdc3829428dd9c11a7329eefdbff97594d3be3ae86a637b09",
+        "scope": "CPU source-audit implementation tests; original capture and pixel review pending"
       }
     },
     {
       "case_id": "testing__C386226__NRS-484B-507-1__motor_vehicle_driver__passenger_board_about_to_enter",
       "kind": "delivery",
-      "construction": "construction-passenger_board_about_to_enter.json",
-      "construction_sha256": "d93b9697a51968da114e9aa3ee23b4e0b201c4c7be105b3795d07aead587c879",
+      "construction": "construction-compatibility-passenger_board_about_to_enter.json",
+      "construction_sha256": "8c5d9a99e47c8a8a7e361d3343ed0efad0211edf5082324d20f7eea875fcd3a2",
       "source_gate": "Original marked freight zone, applicable provision, civil clock, actual material/passenger activity and freight entry require local source review.",
       "measurement_procedure": {
-        "entrypoint": "finalize_saved.py"
+        "entrypoint": "analysis.py"
       },
       "candidate_risk": {
-        "status": "physical",
-        "reason": "Curb zone, material transfer and a waiting freight vehicle may not remain visible together; original geometry and sight lines need review."
+        "status": "none",
+        "reason": "No case-specific Native camera or motion failure has been identified from reviewed original site geometry, which is required at capture; the four-view primary and source-gated original capture have a measurable physical visibility audit."
       },
       "candidates": [],
       "offline": {
-        "construction_sha256": "d93b9697a51968da114e9aa3ee23b4e0b201c4c7be105b3795d07aead587c879",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__passenger_board_about_to_enter --output .runtime-work/c386226-5071-offline-passenger_board_about_to_enter-v3",
+        "construction_sha256": "8c5d9a99e47c8a8a7e361d3343ed0efad0211edf5082324d20f7eea875fcd3a2",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__passenger_board_about_to_enter --output .runtime-work/c386226-5071-selected-offline-passenger_board_about_to_enter",
         "exit_code": 0,
-        "log": "proof-offline-passenger_board_about_to_enter.log",
-        "log_sha256": "7c28db0304709076b4e5cd5f7a3b894245b3008a9889d88ae43fed36d0a3a5f8"
+        "log": "proof-selected-offline-passenger_board_about_to_enter.log",
+        "log_sha256": "485c1b28efcc7f4366139569a3dd33290fbe8c66f196e2f923b3bdd09b479ba0"
+      },
+      "fixture_recipe": "work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/diagnostics/passenger_board_about_to_enter-recipe.json",
+      "measurement_contract": "diagnostics/passenger_board_about_to_enter-measurement-contract.json",
+      "acquisition": {
+        "marked_freight_zone": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-marked_freight_zone.jsonl"
+        },
+        "effective_hours": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-effective_hours.jsonl"
+        },
+        "ego_halt_and_conduct": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-ego_halt_and_conduct.jsonl"
+        },
+        "materials_activity": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-materials_activity.jsonl"
+        },
+        "passenger_activity": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-passenger_activity.jsonl"
+        },
+        "freight_vehicle_entry": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-freight_vehicle_entry.jsonl"
+        },
+        "traffic_and_official_directions": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-traffic_and_official_directions.jsonl"
+        },
+        "expeditiousness": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-expeditiousness.jsonl"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-camera_frame_identity.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "proofs/selected-passenger_board_about_to_enter/receipt.json",
+        "sha256": "0dbdd66240cbe0af8175da5a95274a8b6a6668012d3653d2c2e0991d028ba526",
+        "log": "proofs/selected-passenger_board_about_to_enter/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/selected-passenger_board_about_to_enter/negative.log"
       },
       "physical_preparation": {
         "receipt": "physical-passenger_board_about_to_enter-receipt.json",
-        "sha256": "cfbb47c50fe11b9f7f0994f346ba24ed62bbfafae20aa2eb4b07fd911522bbd5"
+        "sha256": "5b4b1ffe2343a4872924f3de87e29a4f32d5c112a07a2cfaeddc0198f9522267"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__passenger_board_about_to_enter --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__passenger_board_about_to_enter --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "proof-saved-passenger_board_about_to_enter.log",
+        "test_log_sha256": "5e12ecf72184ba1131f106d61861985ee9f82dc4abd15936de483539ebecf5d0",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only compatibility replay; original freight marking, material activity and legal acceptance require local review"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C386226__NRS-484B-507-1__motor_vehicle_driver__passenger_board_about_to_enter",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/delivery_audit.py case --attempt $ORIGINAL_ATTEMPT --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__passenger_board_about_to_enter --output $AUDIT_OUTPUT",
+        "negative_command": ".venv-cpu/bin/python work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/delivery_audit.py case --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c386226-5071-delivery-negative/missing-original-passenger_board_about_to_enter --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__passenger_board_about_to_enter --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c386226-5071-delivery-negative/rejected-passenger_board_about_to_enter.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "d87b1d6a00b57d6cb495e7c2f2731324a89116bc1c264dc0d05009c7959397ee",
+        "test_exit_code": 0,
+        "test_log": "cpu-focused-freight.log",
+        "test_log_sha256": "78e856353182bc3459d5c9ed65e89ee926debed170605560548fe36b5adee8e5",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "proof-original-negative-passenger_board_about_to_enter.log",
+        "negative_log_sha256": "454be24093fd4d8cdc3829428dd9c11a7329eefdbff97594d3be3ae86a637b09",
+        "scope": "CPU source-audit implementation tests; original capture and pixel review pending"
       }
     },
     {
       "case_id": "testing__C386226__NRS-484B-507-1__motor_vehicle_driver__passenger_stop_no_activity",
       "kind": "delivery",
-      "construction": "construction-passenger_stop_no_activity.json",
-      "construction_sha256": "ed160ec0cc141a9a84a0b42f4ab2acb7712ca28b71d0ace3dd2d99d205edbef3",
+      "construction": "construction-compatibility-passenger_stop_no_activity.json",
+      "construction_sha256": "452183e206fa07ecfadb5261f3de23f761b07b72f86c1d01a7f946d40c6c63e7",
       "source_gate": "Original marked freight zone, applicable provision, civil clock, actual material/passenger activity and freight entry require local source review.",
       "measurement_procedure": {
-        "entrypoint": "finalize_saved.py"
+        "entrypoint": "analysis.py"
       },
       "candidate_risk": {
-        "status": "physical",
-        "reason": "Curb zone, material transfer and a waiting freight vehicle may not remain visible together; original geometry and sight lines need review."
+        "status": "none",
+        "reason": "No case-specific Native camera or motion failure has been identified from reviewed original site geometry, which is required at capture; the four-view primary and source-gated original capture have a measurable physical visibility audit."
       },
       "candidates": [],
       "offline": {
-        "construction_sha256": "ed160ec0cc141a9a84a0b42f4ab2acb7712ca28b71d0ace3dd2d99d205edbef3",
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__passenger_stop_no_activity --output .runtime-work/c386226-5071-offline-passenger_stop_no_activity-v3",
+        "construction_sha256": "452183e206fa07ecfadb5261f3de23f761b07b72f86c1d01a7f946d40c6c63e7",
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__passenger_stop_no_activity --output .runtime-work/c386226-5071-selected-offline-passenger_stop_no_activity",
         "exit_code": 0,
-        "log": "proof-offline-passenger_stop_no_activity.log",
-        "log_sha256": "01e5921e47a320fcef2b36e49035e63a67595631dd5ae6ea3859cbe4886cecd1"
+        "log": "proof-selected-offline-passenger_stop_no_activity.log",
+        "log_sha256": "a88fd940746d62b8ee7be009d7986b2e94f660f2a345d55b4ef24ff538583d83"
+      },
+      "fixture_recipe": "work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/diagnostics/passenger_stop_no_activity-recipe.json",
+      "measurement_contract": "diagnostics/passenger_stop_no_activity-measurement-contract.json",
+      "acquisition": {
+        "marked_freight_zone": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-marked_freight_zone.jsonl"
+        },
+        "effective_hours": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-effective_hours.jsonl"
+        },
+        "ego_halt_and_conduct": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-ego_halt_and_conduct.jsonl"
+        },
+        "materials_activity": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-materials_activity.jsonl"
+        },
+        "passenger_activity": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-passenger_activity.jsonl"
+        },
+        "freight_vehicle_entry": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-freight_vehicle_entry.jsonl"
+        },
+        "traffic_and_official_directions": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-traffic_and_official_directions.jsonl"
+        },
+        "expeditiousness": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-expeditiousness.jsonl"
+        },
+        "camera_frame_identity": {
+          "entrypoint": "analysis.py",
+          "method": "original source-joined Native frame and reviewed site",
+          "evidence": "channel-camera_frame_identity.jsonl"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "compatibility": {
+        "receipt": "proofs/selected-passenger_stop_no_activity/receipt.json",
+        "sha256": "9b9cc0d03741477fdb0b8a9cb153728ccb80335f04ce8b32d4972828a0834d1f",
+        "log": "proofs/selected-passenger_stop_no_activity/analysis.log"
+      },
+      "negative": {
+        "log": "proofs/selected-passenger_stop_no_activity/negative.log"
       },
       "physical_preparation": {
         "receipt": "physical-passenger_stop_no_activity-receipt.json",
-        "sha256": "3ac9bc8aa72ebddbdb34648ec89f7b5cc6f4b33f48b376c4e9e7b547178d2ad6"
+        "sha256": "d0bdbfb60497c996d3bc4dac610ee080db9b957145b9ff8eb01075b7efae954a"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__passenger_stop_no_activity --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/execution-manifest.json --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__passenger_stop_no_activity --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $VALIDATOR",
+        "test_log": "proof-saved-passenger_stop_no_activity.log",
+        "test_log_sha256": "89c09c7a9a534ec468ee43d768b1a9d8e8b68fad341b17d6a6db4ffae9215e1b",
+        "test_exit_code": 0,
+        "scope": "synthetic recorded-only compatibility replay; original freight marking, material activity and legal acceptance require local review"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C386226__NRS-484B-507-1__motor_vehicle_driver__passenger_stop_no_activity",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "command": ".venv-cpu/bin/python work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/delivery_audit.py case --attempt $ORIGINAL_ATTEMPT --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__passenger_stop_no_activity --output $AUDIT_OUTPUT",
+        "negative_command": ".venv-cpu/bin/python work/testing__C386226__NRS-484B-507-1__motor_vehicle_driver/delivery_audit.py case --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c386226-5071-delivery-negative/missing-original-passenger_stop_no_activity --case testing__C386226__NRS-484B-507-1__motor_vehicle_driver__passenger_stop_no_activity --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c386226-5071-delivery-negative/rejected-passenger_stop_no_activity.json",
+        "script": "delivery_audit.py",
+        "script_sha256": "d87b1d6a00b57d6cb495e7c2f2731324a89116bc1c264dc0d05009c7959397ee",
+        "test_exit_code": 0,
+        "test_log": "cpu-focused-freight.log",
+        "test_log_sha256": "78e856353182bc3459d5c9ed65e89ee926debed170605560548fe36b5adee8e5",
+        "negative_exit_code": 1,
+        "negative_expected_error": "original attempt missing",
+        "negative_log": "proof-original-negative-passenger_stop_no_activity.log",
+        "negative_log_sha256": "454be24093fd4d8cdc3829428dd9c11a7329eefdbff97594d3be3ae86a637b09",
+        "scope": "CPU source-audit implementation tests; original capture and pixel review pending"
       }
     }
-  ]
+  ],
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3"
 }

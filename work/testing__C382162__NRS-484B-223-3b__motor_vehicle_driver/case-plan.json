@@ -1,32 +1,230 @@
 {
-  "assignment_id": "testing__C382162__NRS-484B-223-3b__motor_vehicle_driver",
   "actor": "motor_vehicle_driver",
-  "cell_id": "C382162",
-  "law_id": "NRS-484B-223-3b",
-  "selected_branches": [
+  "assignment_id": "testing__C382162__NRS-484B-223-3b__motor_vehicle_driver",
+  "camera_plan": {
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "interval": "full 45 s",
+        "subject": "single shared center turn lane, both highway directions and left-turn junction",
+        "view": "overview"
+      },
+      {
+        "interval": "approach through entry",
+        "subject": "ego before and at center-lane entry",
+        "view": "approach"
+      },
+      {
+        "interval": "lane occupancy through departure",
+        "subject": "lane extent and actual left-turn departure",
+        "view": "reference_corner"
+      },
+      {
+        "interval": "full route",
+        "subject": "ego body and route throughout continuous occupancy",
+        "view": "driver_reference"
+      }
+    ],
+    "duration_s": 45,
+    "profile": "overview1080-capability"
+  },
+  "cases": [
     {
-      "law_id": "NRS-484B-223-3b",
-      "cell_id": "C382162",
-      "actor": "motor_vehicle_driver",
-      "requirement": "NRS-484B-223-3b",
-      "branch": "Intersection departure from the center lane",
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 351,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
-      "coverage_status": "pending_review",
-      "recording_ids": [],
-      "law_partition": "training",
-      "scenario_partition": "testing"
+      "branch": "Intersection departure from a single bidirectional center turn lane before left turn from the highway.",
+      "candidate_risk": {
+        "reason": "The reviewed center-lane extent and connected turn geometry may not support a 190-foot continuous occupancy.",
+        "status": "physical"
+      },
+      "case_id": "testing__C382162__NRS-484B-223-3b__motor_vehicle_driver__short_travel",
+      "construction_probe": "center_lane_distance_probe.py",
+      "engineering_target_center_lane_feet": 190,
+      "engineering_target_role": "below the 200-foot statutory boundary, allowing measurement tolerance",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "kind": "delivery"
+    },
+    {
+      "branch": "Intersection departure from a single bidirectional center turn lane before left turn from the highway.",
+      "candidate_risk": {
+        "reason": "The reviewed center-lane extent and connected turn geometry may not support a 200-foot continuous occupancy.",
+        "status": "physical"
+      },
+      "case_id": "testing__C382162__NRS-484B-223-3b__motor_vehicle_driver__boundary_travel",
+      "construction_probe": "center_lane_distance_probe.py",
+      "engineering_target_center_lane_feet": 200,
+      "engineering_target_role": "at the 200-foot boundary; retain measurement uncertainty for review",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "kind": "delivery"
+    },
+    {
+      "branch": "Intersection departure from a single bidirectional center turn lane before left turn from the highway.",
+      "candidate_risk": {
+        "reason": "The reviewed center-lane extent and connected turn geometry may not support a 210-foot continuous occupancy.",
+        "status": "physical"
+      },
+      "case_id": "testing__C382162__NRS-484B-223-3b__motor_vehicle_driver__long_travel",
+      "construction_probe": "center_lane_distance_probe.py",
+      "engineering_target_center_lane_feet": 210,
+      "engineering_target_role": "above the 200-foot statutory boundary, allowing measurement tolerance",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "kind": "delivery"
+    },
+    {
+      "branch": "Applicability contrast: left turn onto the highway from the center lane.",
+      "candidate_risk": {
+        "reason": "The reviewed center-lane extent and connected turn geometry may not support a 210-foot continuous occupancy.",
+        "status": "physical"
+      },
+      "case_id": "testing__C382162__NRS-484B-223-3b__motor_vehicle_driver__onto_highway_contrast",
+      "construction_probe": "center_lane_distance_probe.py",
+      "engineering_target_center_lane_feet": 210,
+      "engineering_target_role": "left turn onto rather than from the highway, an applicability contrast",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "kind": "delivery"
     }
   ],
-  "law_text": "If a highway has been designed to provide a single center lane to be used only for turning by traffic moving in both directions, the following rules apply: A vehicle must not travel more than 200 feet in a center turn lane before making a left-hand turn from the highway.",
-  "law_source": "NRS 484B.223(3)(b)",
-  "topic_inventory": {
-    "exact-text": "If a highway has been designed to provide a single center lane to be used only for turning by traffic moving in both directions, the following rules apply: A vehicle must not travel more than 200 feet in a center turn lane before making a left-hand turn from the highway."
+  "cell_id": "C382162",
+  "comparisons": [
+    {
+      "case_ids": [
+        "testing__C382162__NRS-484B-223-3b__motor_vehicle_driver__short_travel",
+        "testing__C382162__NRS-484B-223-3b__motor_vehicle_driver__boundary_travel",
+        "testing__C382162__NRS-484B-223-3b__motor_vehicle_driver__long_travel"
+      ],
+      "comparison_id": "below_at_above_200_feet",
+      "deliberate_differences": [
+        "original-frame measured continuous center-lane path length before departure, with nominal engineering targets of 190, 200 and 210 feet"
+      ],
+      "fixed_conditions": [
+        "same reviewed public highway and one exclusive center lane designed for turns by both directions",
+        "same motor vehicle and left-turn-from-highway route",
+        "same original-frame distance measurement rule, camera plan and duration"
+      ]
+    },
+    {
+      "case_ids": [
+        "testing__C382162__NRS-484B-223-3b__motor_vehicle_driver__long_travel",
+        "testing__C382162__NRS-484B-223-3b__motor_vehicle_driver__onto_highway_contrast"
+      ],
+      "comparison_id": "from_versus_onto_highway",
+      "deliberate_differences": [
+        "left turn from versus onto the highway; only the former is the exact text distance restriction"
+      ],
+      "fixed_conditions": [
+        "same reviewed shared center-lane design and nominal travel target",
+        "same vehicle and original-frame distance measurement rule, camera plan and duration"
+      ]
+    }
+  ],
+  "evidence_review": {
+    "facts": [],
+    "gaps": [
+      {
+        "id": "no-accepted-recording",
+        "requirement": "Original continuous center-lane distance and left-turn-from-highway departure on the reviewed C382162 highway site.",
+        "source": "inputs/testing__C382162__NRS-484B-223-3b__motor_vehicle_driver/evidence.json",
+        "why_existing_insufficient": "Frozen evidence inventory contains no accepted recording for this exact assignment."
+      }
+    ],
+    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
+    "reviewer": "CPU worker"
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "existing_evidence": [],
+  "judgment_range_inventory": [],
+  "law_id": "NRS-484B-223-3b",
+  "law_source": "NRS 484B.223(3)(b)",
+  "law_text": "If a highway has been designed to provide a single center lane to be used only for turning by traffic moving in both directions, the following rules apply: A vehicle must not travel more than 200 feet in a center turn lane before making a left-hand turn from the highway.",
+  "observations": [
+    {
+      "description": "Source packet establishes public-highway status, exactly one center turn lane reserved for turns by both traffic directions, lane extent and lane IDs.",
+      "mandatory": true,
+      "name": "reviewed_highway_and_center_lane_design"
+    },
+    {
+      "description": "Original Native frame/map lane identity and complete ego body footprint for continuous center-lane entry, traversal and exit, with source hashes and frame/time joins.",
+      "mandatory": true,
+      "name": "original_center_lane_body_occupancy"
+    },
+    {
+      "description": "Integrate original-frame ego path length while the body occupies the designated center turn lane, convert source-map meters to feet, and retain boundary/tolerance uncertainty.",
+      "mandatory": true,
+      "name": "original_path_distance_feet"
+    },
+    {
+      "description": "Original route and trajectory prove a connected left turn from the highway, distinguish a turn onto it, and retain actual departure time and body clearance.",
+      "mandatory": true,
+      "name": "left_turn_from_highway_departure"
+    },
+    {
+      "description": "Four synchronized original RGB views show design context, entry, lane occupancy and left-turn departure for the full episode.",
+      "mandatory": true,
+      "name": "original_camera_coverage"
+    }
+  ],
+  "planning_status": "source_bound_case_plan_in_progress",
+  "requirement_dispositions": [
+    {
+      "case_ids": [
+        "testing__C382162__NRS-484B-223-3b__motor_vehicle_driver__short_travel",
+        "testing__C382162__NRS-484B-223-3b__motor_vehicle_driver__boundary_travel",
+        "testing__C382162__NRS-484B-223-3b__motor_vehicle_driver__long_travel",
+        "testing__C382162__NRS-484B-223-3b__motor_vehicle_driver__onto_highway_contrast"
+      ],
+      "evidence_or_gap": "No accepted original source; reviewed site packet and Native lane readback required.",
+      "requirement": "Single center lane designed exclusively for turns by traffic in both directions",
+      "source": "NRS 484B.223(3)(b)",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C382162__NRS-484B-223-3b__motor_vehicle_driver__short_travel",
+        "testing__C382162__NRS-484B-223-3b__motor_vehicle_driver__boundary_travel",
+        "testing__C382162__NRS-484B-223-3b__motor_vehicle_driver__long_travel"
+      ],
+      "evidence_or_gap": "Original-frame continuous path length and departure must be measured; engineering targets alone are not legal outcomes.",
+      "requirement": "Measured travel in the center lane before left turn from the highway, with 200-foot statutory boundary",
+      "source": "NRS 484B.223(3)(b)",
+      "status": "selected_required"
+    },
+    {
+      "case_ids": [
+        "testing__C382162__NRS-484B-223-3b__motor_vehicle_driver__onto_highway_contrast"
+      ],
+      "evidence_or_gap": "Original route and departure direction must establish the distinction.",
+      "requirement": "Turn onto the highway is outside this exact distance restriction",
+      "source": "NRS 484B.223(3)(b)",
+      "status": "selected_required"
+    }
+  ],
+  "runtime_uncertainties": [
+    "Reviewed original highway and shared center-turn-lane site packet must be supplied at local run.",
+    "Continuous body-occupancy entry and exit conventions, turn boundary and measurement uncertainty need original-frame review.",
+    "Offline/compatibility/saved-only/physical/lifecycle/delivery/comparison proofs remain CPU work."
+  ],
+  "selected_branch": "Intersection departure from single bidirectional center turn lane before left turn from highway",
+  "selected_branches": [
+    {
+      "actor": "motor_vehicle_driver",
+      "branch": "Intersection departure from the center lane",
+      "cell_id": "C382162",
+      "coverage_status": "pending_review",
+      "law_id": "NRS-484B-223-3b",
+      "law_partition": "training",
+      "recording_ids": [],
+      "requirement": "NRS-484B-223-3b",
+      "scenario_partition": "testing",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 351,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C382162__NRS-484B-223-3b__motor_vehicle_driver/assignment.json",
@@ -49,27 +247,15 @@
       "sha256": "e3619f996ff4b84f754ee3877d1acfb0ac0ee529284c414771c4a53ae8a0abad"
     }
   ],
-  "existing_evidence": [],
-  "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
-  ],
-  "evidence_review": {
-    "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
-    "facts": [],
-    "gaps": []
+  "topic_inventory": {
+    "exact-text": "If a highway has been designed to provide a single center lane to be used only for turning by traffic moving in both directions, the following rules apply: A vehicle must not travel more than 200 feet in a center turn lane before making a left-hand turn from the highway."
   },
-  "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
   "witness_review": [
     {
-      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
-      "source_index": 351,
-      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460",
       "branch": "Intersection departure from the center lane",
-      "decision": "conditional",
       "confidence": "low",
+      "decision": "conditional",
+      "reason": "An intersection departure can activate the distance restriction when approached through the specified center lane.",
       "required_context": [
         "Ego uses that lane before its left turn from the highway.",
         "Establish highway status, the lane's exclusive bidirectional turning design, its extent and a connected left-turn departure.",
@@ -78,7 +264,9 @@
         "Public-highway status and a single center lane reserved exclusively for turns by both directions.",
         "Retain vehicle classification, lane occupancy, traveled distance in feet and the full departure trajectory."
       ],
-      "reason": "An intersection departure can activate the distance restriction when approached through the specified center lane."
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "source_index": 351,
+      "source_sha256": "bacfe29a902c4a93bc62c516d083f96f0f7af0229c472ff328aebcccfccc5460"
     }
   ]
 }
