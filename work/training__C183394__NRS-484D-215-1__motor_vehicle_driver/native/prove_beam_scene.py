@@ -15,7 +15,8 @@ def reject(action, phrase):
 
 
 assert beam_request("dim_within_500", 152.4) == "low_beam"
-assert beam_request("dim_within_500", 152.401) == "high_beam"
+assert beam_request("dim_within_500", 160.0) == "low_beam"
+assert beam_request("dim_within_500", 160.001) == "high_beam"
 assert beam_request("retain_high", 152.4) == "high_beam"
 reject(lambda: beam_request("retain_high", float("nan")), "measured")
 for case in MODES:

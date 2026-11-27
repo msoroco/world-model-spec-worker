@@ -32,6 +32,8 @@ config.update({"law_id": "NRS-484D-215-1", "cell_id": "C183394",
     {"provenance_kind": "synthetic_fixture", "diagnostic_fixture": True}) + "\n")
 report = finalize(attempt, attempt / "analysis-report.json")
 assert report["legal_compliance"] == "unassessed"
+assert report["measurements"]["oncoming_beam_interaction"]["value"]["within_500_feet_frames"] > 0
+assert report["measurements"]["activation_beam_context"]["value"]["civil_time_condition_verified"] is False
 result = json.loads((attempt / "result.json").read_text())
 assert result["diagnostic_fixture"] is True
 assert result["physical_acceptance_claimed"] is False

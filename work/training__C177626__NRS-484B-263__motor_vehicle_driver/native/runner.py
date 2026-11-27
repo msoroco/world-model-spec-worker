@@ -110,7 +110,9 @@ def _steer_to_route(actor, points: list[list[float]]) -> float:
 def execute(case_id: str, candidate_id: str, output: Path, host: str, port: int) -> None:
     proposal = check(case_id, candidate_id)
     output = output.resolve()
-    scratch = Path(".runtime-work").resolve()
+    scratch = next((parent for parent in output.parents if parent.name == ".runtime-work"), None)
+    if scratch is None:
+        raise ValueError("materialized output directory must be under .runtime-work")
     if output == scratch or scratch not in output.parents or not output.is_dir():
         raise ValueError("materialized output directory must be under .runtime-work")
     pipeline_root = os.environ.get("SCENARIO_PIPELINE_OUTPUT_ROOT")
@@ -119,8 +121,8 @@ def execute(case_id: str, candidate_id: str, output: Path, host: str, port: int)
     import carla
     import numpy as np
     from pipeline_capture import PipelineCapture
-    from scenario_pipeline.worker_exchange.native_output import FrameMap
-    from scenario_pipeline.worker_exchange.world_restore import snapshot, restore
+    from worker_exchange.native_output import FrameMap, seal_capture
+    from worker_exchange.world_restore import snapshot, restore
     client = carla.Client(host, port)
     client.set_timeout(180)
     prior = client.get_world()
@@ -134,6 +136,7 @@ def execute(case_id: str, candidate_id: str, output: Path, host: str, port: int)
     camera_queues: dict[str, queue.Queue] = {}
     encoders: dict[str, subprocess.Popen] = {}
     encoder_logs = {}
+    encoder_exit_codes = {}
     capture = None
     changed = False
     error = None
@@ -260,7 +263,8 @@ def execute(case_id: str, candidate_id: str, output: Path, host: str, port: int)
         for name, encoder in encoders.items():
             try:
                 encoder.stdin.close()
-                if encoder.wait(timeout=180) != 0:
+                encoder_exit_codes[name] = encoder.wait(timeout=180)
+                if encoder_exit_codes[name] != 0:
                     raise RuntimeError("lossless camera encoder failed: " + name)
             except BaseException as exc:
                 error = error or {"encoder_error": str(exc)}
@@ -282,6 +286,17 @@ def execute(case_id: str, candidate_id: str, output: Path, host: str, port: int)
             "observed_frames": len(rows), "expected_frames": FRAME_COUNT,
             "world_restoration": restored, "error": error,
             "selected_delivery": False, "physical_success_claimed": False})
+        if error is None and len(rows) == FRAME_COUNT:
+            try:
+                seal_capture(output, frames=FRAME_COUNT, restoration=restored,
+                             errors=[], encoder_exit_codes=encoder_exit_codes,
+                             context={"case_id": case_id, "candidate_id": candidate_id,
+                                      "controlled_access_designation_verified": False})
+            except BaseException as exc:
+                error = {"capture_seal_error": str(exc)}
+        if error is not None:
+            _write_new(output / "native-run-status.json", {"errors": [error],
+                       "case_id": case_id, "candidate_id": candidate_id})
     if error:
         raise RuntimeError("Native draft failed; inspect native-draft-report.json")
 

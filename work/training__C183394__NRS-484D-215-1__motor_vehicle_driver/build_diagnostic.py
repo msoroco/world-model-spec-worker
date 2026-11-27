@@ -50,7 +50,7 @@ def build(case):
             "NRS_484D_100_review_required": True, "civil_time_condition_verified": False},
         "oncoming-driver-source.json": {"oncoming_actor_source": "synthetic opposed actor",
             "driver_eye_identity_review_required": True},
-        "eye-region-source.json": {"oncoming_eye_camera": "oncoming_eye",
+        "eye-region-source.json": {"driver_reference_camera": "driver_reference",
             "pixel_review_required": True, "original_driver_eye_region_verified": False},
         "acquisition-provenance.json": {"provenance_kind": "synthetic_fixture",
             "diagnostic_fixture": True, "original_native_observed": False},
@@ -114,6 +114,14 @@ def build(case):
     write(dest / "capture/recorder_info.txt",
           "synthetic CPU diagnostic; no CARLA recorder\n"
           "Create 107: vehicle.carlamotors.carlacola (0)\n")
+    dump(dest / "capture/manifest.json", {
+        "status": "draft", "acquisition": "original_live_run",
+        "case_id": case_id, "frames": 600, "required_observations": [],
+        "extraction_confirmed": True,
+        "sources": {"road.xodr": sha(dest / "road.xodr"),
+                    "trace.jsonl": sha(dest / "trace.jsonl")},
+        "observation_contract_version": 1,
+        "synthetic_diagnostic": True})
     sources = ("road.xodr", "beam-rows.jsonl", "video_frames.jsonl",
                "road-position-source.json", "lighting-trigger-source.json",
                "oncoming-driver-source.json", "eye-region-source.json")

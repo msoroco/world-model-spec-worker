@@ -12,7 +12,7 @@ from pathlib import Path
 from oncoming_beam import measure_trace
 
 
-CAMERAS = ("overview", "ego_forward", "oncoming_eye", "beam_reference")
+CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 SOURCES = ("road.xodr", "beam-rows.jsonl", "video_frames.jsonl",
            "road-position-source.json", "lighting-trigger-source.json",
            "oncoming-driver-source.json", "eye-region-source.json")
@@ -60,7 +60,7 @@ def measure_saved(attempt):
     timing = json.loads(source(root, "lighting-trigger-source.json").read_text())
     other = json.loads(source(root, "oncoming-driver-source.json").read_text())
     eyes = json.loads(source(root, "eye-region-source.json").read_text())
-    if not eyes.get("oncoming_eye_camera") in CAMERAS or not eyes.get("pixel_review_required"):
+    if not eyes.get("driver_reference_camera") in CAMERAS or not eyes.get("pixel_review_required"):
         raise ValueError("original oncoming eye-region source required")
     if not other.get("oncoming_actor_source"):
         raise ValueError("original oncoming vehicle source required")
@@ -71,7 +71,7 @@ def measure_saved(attempt):
              "lighting_trigger": timing.get("lighting_trigger"),
              "trigger_source": timing.get("original_trigger_source"),
              "oncoming_driver_source": other.get("oncoming_actor_source"),
-             "eye_region_source": eyes.get("oncoming_eye_camera")}
+             "eye_region_source": eyes.get("driver_reference_camera")}
     measurement = measure_trace(rows, scene)
     return {"case_id": context["case_id"], "measurement": measurement,
             "source_sha256": dict(context["source_sha256"]),

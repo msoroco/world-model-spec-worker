@@ -12,6 +12,26 @@ CHANNELS = ("sig.headlamp", "rel.oncoming", "rel.centre_distance",
             "st.roadway", "st.shoulder", "env.visibility")
 
 
+def activation_beam_context(measured, root):
+    """Return observed position and the requested, still unverified lighting trigger."""
+    road = json.loads(source(root, "road-position-source.json").read_text())
+    trigger = json.loads(source(root, "lighting-trigger-source.json").read_text())
+    return {"road_position": road["road_position"],
+            "lighting_trigger": trigger["lighting_trigger"],
+            "civil_time_condition_verified": trigger.get("civil_time_condition_verified", False),
+            "sufficient_illumination_review_required": True}
+
+
+def oncoming_beam_interaction(measured, root):
+    """Return original measured approach/lamp counts without a glare conclusion."""
+    return {"minimum_centre_distance_m": measured["minimum_centre_distance_m"],
+            "within_500_feet_frames": measured["within_500_feet_frames"],
+            "preentry_low_beam_request_frames": measured["preentry_low_beam_request_frames"],
+            "low_beam_request_within_500_feet_frames": measured["low_beam_request_within_500_feet_frames"],
+            "high_beam_request_within_500_feet_frames": measured["high_beam_request_within_500_feet_frames"],
+            "glare_at_eyes_conclusion": None}
+
+
 def finalize(attempt, output):
     root, destination = Path(attempt).resolve(), Path(output)
     if destination.exists():
@@ -74,8 +94,16 @@ def finalize(attempt, output):
     write_result(root, result)
     report = {"format": "worker-oncoming-beam-measurement",
         "case_id": config["selected_case_id"],
-        "measurements": {"oncoming_beam": {"method": "measure_saved",
-            "value": values, "sources": measured["source_sha256"]}},
+        "measurements": {
+            "activation_beam_context": {"method": "activation_beam_context",
+                "value": activation_beam_context(values, root),
+                "sources": {name: measured["source_sha256"][name] for name in
+                            ("road-position-source.json", "lighting-trigger-source.json")}},
+            "oncoming_beam_interaction": {"method": "oncoming_beam_interaction",
+                "value": oncoming_beam_interaction(values, root),
+                "sources": {name: measured["source_sha256"][name] for name in
+                            ("beam-rows.jsonl", "oncoming-driver-source.json",
+                             "eye-region-source.json", "video_frames.jsonl")}}},
         "legal_compliance": "unassessed", "physical_acceptance_claimed": False}
     destination.write_text(json.dumps(report, indent=2, allow_nan=False) + "\n")
     return report

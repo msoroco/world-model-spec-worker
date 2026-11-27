@@ -69,7 +69,9 @@ def command_tick(scene, carla):
                                                  brake=.18 if speed > 3 else 0,
                                                  steer=0))
     observed_bits = int(ego.get_light_state())
-    if observed_bits & int(light.LowBeam if state == "low_beam" else light.HighBeam) == 0:
+    desired = int(light.LowBeam if state == "low_beam" else light.HighBeam)
+    forbidden = int(light.HighBeam if state == "low_beam" else light.LowBeam)
+    if observed_bits & desired == 0 or observed_bits & forbidden:
         raise RuntimeError("original headlamp state readback differs")
     return {"separation_m": separation, "requested_beam_state": state,
             "observed_light_state_bits": observed_bits,

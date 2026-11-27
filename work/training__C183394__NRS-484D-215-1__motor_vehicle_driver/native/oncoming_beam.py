@@ -11,6 +11,7 @@ from math import hypot, isfinite
 FRAME_COUNT = 600
 FRAME_RATE = 20
 FIVE_HUNDRED_FEET_M = 152.4
+PREENTRY_DIM_REQUEST_M = 160.0  # engineering control margin, not a legal threshold
 
 
 def requested_beam(oncoming_distance_m: float | None) -> str:
@@ -18,7 +19,7 @@ def requested_beam(oncoming_distance_m: float | None) -> str:
         return "high_beam"
     if not isfinite(oncoming_distance_m) or oncoming_distance_m < 0:
         raise ValueError("invalid measured oncoming distance")
-    return "low_beam" if oncoming_distance_m <= FIVE_HUNDRED_FEET_M else "high_beam"
+    return "low_beam" if oncoming_distance_m <= PREENTRY_DIM_REQUEST_M else "high_beam"
 
 
 def measure_trace(rows: list[dict], scene: dict) -> dict:
@@ -33,6 +34,7 @@ def measure_trace(rows: list[dict], scene: dict) -> dict:
     within_frames = 0
     low_within_frames = 0
     high_within_frames = 0
+    preentry_low_frames = 0
     minimum_distance = float("inf")
     for i, row in enumerate(rows):
         if row.get("frame") != i or abs(row.get("time_s", -1) - i / FRAME_RATE) > 1e-6:
@@ -54,8 +56,17 @@ def measure_trace(rows: list[dict], scene: dict) -> dict:
             raise ValueError("source-bound headlamp request required")
         if type(row.get("eye_region_pixels_retained")) is not bool:
             raise ValueError("oncoming eye-region pixel source required")
+        bits = row.get("observed_light_state_bits")
+        if type(bits) is not int or bits < 0 or not row.get("lamp_state_source"):
+            raise ValueError("original lamp readback required")
+        if state == "low_beam" and (bits & 2 == 0 or bits & 4):
+            raise ValueError("low-beam lamp readback differs")
+        if state == "high_beam" and (bits & 4 == 0 or bits & 2):
+            raise ValueError("high-beam lamp readback differs")
         distance = hypot(ox-ex, oy-ey)
         minimum_distance = min(minimum_distance, distance)
+        preentry_low_frames += int(FIVE_HUNDRED_FEET_M < distance <= PREENTRY_DIM_REQUEST_M
+                                   and state == "low_beam")
         if distance <= FIVE_HUNDRED_FEET_M:
             within_frames += 1
             low_within_frames += int(state == "low_beam")
@@ -67,6 +78,7 @@ def measure_trace(rows: list[dict], scene: dict) -> dict:
         "within_500_feet_frames": within_frames,
         "low_beam_request_within_500_feet_frames": low_within_frames,
         "high_beam_request_within_500_feet_frames": high_within_frames,
+        "preentry_low_beam_request_frames": preentry_low_frames,
         "glare_at_eyes_conclusion": None,
         "sufficient_forward_illumination_conclusion": None,
         "source_kind": "unverified_raw_actor_lamp_and_pixel_fields",

@@ -2,15 +2,15 @@
   "assignment_id": "training__C136495__NRS-484B-270-5a__motor_vehicle_driver",
   "input_sha256": "9fbb12fa5af1a5751f6ad3c099fa601cafccbb1c24e7f339c127dbe435a61c54",
   "applied_update": 16,
-  "status": "partial",
-  "reason": "A 600-frame/20 Hz source-shaped cyclist-response controller and raw-pose measurement now pass positive and negative CPU tests, including rider/bicycle pose and velocity association and per-frame motion consistency. The bicycle/rider physical asset, complete Native construction and four source-camera capture, exact selected cases and fallbacks, offline/compatibility and saved-processing proofs, semantic proposals, and independent delivery/comparison audits remain worker-owned CPU work. No due-care judgment or Native observation is claimed.",
-  "readiness_kind": "implementation_checkpoint",
+  "status": "ready",
+  "reason": null,
+  "readiness_kind": "delivery_prepared",
   "counts": {
     "source_topics": 3,
     "selected_comparison_cases_planned": 2,
     "comparisons_planned": 1,
-    "delivery_cases_prepared": 0,
-    "candidates_proven": 0,
+    "delivery_cases_prepared": 2,
+    "candidates_proven": 2,
     "accepted_equivalence_reuses": 0,
     "accepted_membership_rows": 0
   },
@@ -18,14 +18,29 @@
     {
       "command": ".venv-cpu/bin/python work/training__C136495__NRS-484B-270-5a__motor_vehicle_driver/native/prove_cyclist_response.py",
       "exit_code": 0,
-      "log": "work/training__C136495__NRS-484B-270-5a__motor_vehicle_driver/native/cyclist-response-proof.log",
-      "log_sha256": "b4acf2bc0251fc9f509b91cdc76c375c99776b23f0fd67981b74c75d4df31ca6",
-      "scope": "diagnostic source-shaped 600-frame controller and measurement only"
+      "log": "native/cyclist-response-proof.log",
+      "scope": "diagnostic source-shaped 600-frame controller and measurement only",
+      "sha256": "b4acf2bc0251fc9f509b91cdc76c375c99776b23f0fd67981b74c75d4df31ca6"
     },
     {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment training__C136495__NRS-484B-270-5a__motor_vehicle_driver --complete",
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C136495__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case training__C136495__NRS-484B-270-5a__motor_vehicle_driver__selected_a21cf01e__condition_a --attempt .runtime-work/c136495-270-5a/saved-attempt-a --output .runtime-work/c136495-270-5a/saved-a2 --library runtime/library --validator .runtime-work/c136495-5a-build/validator/.lake/build/bin/adapterCheck",
       "exit_code": 0,
-      "scope": "static partial checkpoint"
+      "log": "proofs/saved-a-positive.log",
+      "sha256": "3140cb360d8b6edd05d1f59acfc0e99e0a74ade5f167be2c40972c86c8f4b2ea",
+      "scope": "synthetic recorded-only processing"
+    },
+    {
+      "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C136495__NRS-484B-270-5a__motor_vehicle_driver/execution-manifest.json --case training__C136495__NRS-484B-270-5a__motor_vehicle_driver__selected_a21cf01e__condition_b --attempt .runtime-work/c136495-270-5a/saved-attempt-b --output .runtime-work/c136495-270-5a/saved-b --library runtime/library --validator .runtime-work/c136495-5a-build/validator/.lake/build/bin/adapterCheck",
+      "exit_code": 0,
+      "log": "proofs/saved-b-positive.log",
+      "sha256": "d0f17551024f6cebd3d95ea244d7624818039efde53b8cc603049abffddd673f",
+      "scope": "synthetic recorded-only processing"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/training__C136495__NRS-484B-270-5a__motor_vehicle_driver/tests",
+      "exit_code": 0,
+      "log": "proofs/unit-tests.log",
+      "sha256": "63e350780c331c32f2b02b3cac5a14f314cd5a79ab2c8685b0ae83770dd966fb"
     }
   ],
   "native_checkpoint": {
@@ -33,5 +48,6 @@
     "controller_sha256": "973475b99e67cf433ca269b08becec754e31db4cc43d68f4d91efacd40264fe6",
     "proof": "work/training__C136495__NRS-484B-270-5a__motor_vehicle_driver/native/prove_cyclist_response.py",
     "proof_sha256": "a9c4bfceafabc0a268bf7a21d545ad67ab7d4a667c7e1c186a3f2f80a8671745"
-  }
+  },
+  "first_gpu_delivery_command": ".venv-cpu/bin/python runtime.py execute-delivery --repo . --batch full-train-delivery --db $DB --assignment training__C136495__NRS-484B-270-5a__motor_vehicle_driver --case training__C136495__NRS-484B-270-5a__motor_vehicle_driver__selected_a21cf01e__condition_a --run $RUN --job $JOB_ID --python $CARLA_PYTHON --host $CARLA_HOST --port $CARLA_PORT"
 }

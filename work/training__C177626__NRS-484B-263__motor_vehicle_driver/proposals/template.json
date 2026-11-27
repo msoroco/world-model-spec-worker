@@ -1,0 +1,54 @@
+{
+  "template_id": "NRS-484B-263@motor_vehicle_driver",
+  "law_id": "NRS-484B-263",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "quote": "The driver of a vehicle about to enter or exit a controlled-access highway shall yield the right-of-way to all vehicles approaching on the highway whose proximity constitutes an immediate hazard and shall continue to yield the right-of-way to that traffic until the driver may proceed with reasonable safety.",
+  "structure": {
+    "law_id": "NRS-484B-263",
+    "activation": {
+      "condition": "Driver is about to enter or exit a controlled-access highway; an approaching highway vehicle has proximity constituting an immediate hazard.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "Yield right-of-way to all such approaching highway vehicles and continue to yield until the driver may proceed with reasonable safety.",
+      "type": "must",
+      "numeric_conditions": []
+    },
+    "exceptions": [],
+    "timing": {
+      "ordering": "Continue yielding until reasonable safety permits proceeding; do not presume all traffic must pass first."
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "controlled-access highway",
+        "note": "Public authority and permitted-access status require source review."
+      },
+      {
+        "phrase": "immediate hazard",
+        "note": "Proximity needs independent contextual judgment; projected gap is a diagnostic."
+      },
+      {
+        "phrase": "reasonable safety",
+        "note": "Continuing yield endpoint needs independent contextual judgment."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "engineering_yield_request_gap_s",
+      "kind": "controller",
+      "range_or_domain": "2.5 s or 5.0 s diagnostic yield request"
+    },
+    {
+      "name": "observed_approach_and_gap",
+      "kind": "subject_behavior",
+      "range_or_domain": "original observed trace or unknown"
+    },
+    {
+      "name": "controlled_access_authority",
+      "kind": "world_setup",
+      "range_or_domain": "hash-bound authority source or unresolved"
+    }
+  ]
+}

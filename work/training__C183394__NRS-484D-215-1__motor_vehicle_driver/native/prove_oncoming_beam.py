@@ -28,17 +28,20 @@ for i in range(FRAME_COUNT):
         "oncoming_x_m": 300.0-5*t, "oncoming_y_m": 2.0,
         "oncoming_heading_x": -1.0, "oncoming_heading_y": 0.0,
         "requested_beam_state": requested_beam(distance),
+        "observed_light_state_bits": 3 if requested_beam(distance) == "low_beam" else 5,
         "lamp_state_source": "synthetic_native_sample",
         "eye_region_pixels_retained": True,
     })
 assert FIVE_HUNDRED_FEET_M == 152.4
 assert requested_beam(152.4) == "low_beam"
-assert requested_beam(152.401) == "high_beam"
+assert requested_beam(160.0) == "low_beam"
+assert requested_beam(160.001) == "high_beam"
 reject(lambda: requested_beam(-1.0), "invalid measured")
 m = measure_trace(rows, scene)
 assert m["frames"] == 600 and m["duration_s"] == 30.0
 assert m["within_500_feet_frames"] > 0
 assert m["high_beam_request_within_500_feet_frames"] == 0
+assert m["preentry_low_beam_request_frames"] > 0
 assert m["glare_at_eyes_conclusion"] is None
 reject(lambda: measure_trace(rows[:-1], scene), "600 frames")
 bad = [dict(row) for row in rows]
@@ -50,6 +53,9 @@ reject(lambda: measure_trace(bad, scene), "opposed headings")
 bad = [dict(row) for row in rows]
 bad[30]["lamp_state_source"] = ""
 reject(lambda: measure_trace(bad, scene), "headlamp request")
+bad = [dict(row) for row in rows]
+bad[30]["observed_light_state_bits"] = 3
+reject(lambda: measure_trace(bad, scene), "lamp readback differs")
 bad_scene = dict(scene, trigger_source="")
 reject(lambda: measure_trace(rows, bad_scene), "lighting-trigger source")
 print("PASS: 600-frame oncoming-beam distance and request positive/negative CPU proof")

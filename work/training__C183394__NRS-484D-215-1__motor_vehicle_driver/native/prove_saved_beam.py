@@ -34,7 +34,7 @@ put("road-position-source.json", {"road_position": "adjacent_shoulder",
 put("lighting-trigger-source.json", {"lighting_trigger": "night_interval",
     "original_trigger_source": "synthetic clock", "NRS_484D_100_review_required": True})
 put("oncoming-driver-source.json", {"oncoming_actor_source": "synthetic opposed actor"})
-put("eye-region-source.json", {"oncoming_eye_camera": "oncoming_eye",
+put("eye-region-source.json", {"driver_reference_camera": "driver_reference",
                                     "pixel_review_required": True})
 rows, frames = [], []
 for i in range(600):
@@ -45,6 +45,7 @@ for i in range(600):
         "oncoming_x_m": 300 - 5*t, "oncoming_y_m": 1.75,
         "oncoming_heading_x": -1, "oncoming_heading_y": 0,
         "requested_beam_state": beam_request("dim_within_500", distance),
+        "observed_light_state_bits": 3 if beam_request("dim_within_500", distance) == "low_beam" else 5,
         "lamp_state_source": "synthetic readback",
         "eye_region_pixels_retained": True})
     frames.append({"video_frame": i, "native_frame": 1000 + i, "time_s": t})
@@ -61,12 +62,12 @@ result = measure_saved(root)
 assert result["measurement"]["within_500_feet_frames"] > 0
 assert result["original_pixels_reviewed"] is False
 eye = root / "eye-region-source.json"
-eye.write_text(json.dumps({"oncoming_eye_camera": "oncoming_eye", "pixel_review_required": False}) + "\n")
+eye.write_text(json.dumps({"driver_reference_camera": "driver_reference", "pixel_review_required": False}) + "\n")
 reject(lambda: measure_saved(root), "source hash differs")
 put("beam-context.json", dict(context, source_sha256={
     **context["source_sha256"], "eye-region-source.json": sha(eye)}))
 reject(lambda: measure_saved(root), "eye-region source required")
-put("eye-region-source.json", {"oncoming_eye_camera": "oncoming_eye", "pixel_review_required": True})
+put("eye-region-source.json", {"driver_reference_camera": "driver_reference", "pixel_review_required": True})
 frames[10]["native_frame"] = 9999
 put("video_frames.jsonl", "".join(json.dumps(row) + "\n" for row in frames))
 put("beam-context.json", dict(context, source_sha256={

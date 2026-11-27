@@ -8,7 +8,7 @@ from __future__ import annotations
 import math
 import xml.etree.ElementTree as ET
 
-from oncoming_beam import FIVE_HUNDRED_FEET_M
+from oncoming_beam import PREENTRY_DIM_REQUEST_M
 
 
 ROAD_ID = 183394
@@ -19,7 +19,7 @@ SHOULDER_WIDTH_M = 3.0
 EGO_Y_M = -(LANE_WIDTH_M + SHOULDER_WIDTH_M / 2)
 ONCOMING_Y_M = LANE_WIDTH_M / 2
 MODES = {"condition_a": "dim_within_500", "condition_b": "retain_high"}
-CAMERAS = ("overview", "ego_forward", "oncoming_eye", "beam_reference")
+CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 
 
 def road_opendrive():
@@ -63,7 +63,7 @@ def beam_request(mode, separation_m):
         raise ValueError("measured oncoming separation required")
     if mode == "retain_high":
         return "high_beam"
-    return "low_beam" if separation_m <= FIVE_HUNDRED_FEET_M else "high_beam"
+    return "low_beam" if separation_m <= PREENTRY_DIM_REQUEST_M else "high_beam"
 
 
 def request(case):
@@ -86,11 +86,11 @@ def request(case):
         "cameras": [
             {"name": "overview", "xyz_m": [0, -18, 25], "yaw_deg": 0, "pitch_deg": -55,
              "size": [1920, 1080], "mount": "world"},
-            {"name": "ego_forward", "xyz_m": [1, 0, 2], "yaw_deg": 0, "pitch_deg": -8,
+            {"name": "approach", "xyz_m": [1, 0, 2], "yaw_deg": 0, "pitch_deg": -8,
              "size": [1280, 720], "mount": "ego"},
-            {"name": "oncoming_eye", "xyz_m": [0.4, 0, 1.4], "yaw_deg": 0,
+            {"name": "driver_reference", "xyz_m": [0.4, 0, 1.4], "yaw_deg": 0,
              "pitch_deg": 0, "size": [1280, 720], "mount": "oncoming"},
-            {"name": "beam_reference", "xyz_m": [0, -9, 5], "yaw_deg": 0,
+            {"name": "reference_corner", "xyz_m": [0, -9, 5], "yaw_deg": 0,
              "pitch_deg": -12, "size": [1280, 720], "mount": "world"},
         ],
         "rate_hz": 20, "duration_s": 30, "planned_frames": 600,

@@ -27,6 +27,17 @@ def _digest(path: Path) -> str:
     return sha256(path.read_bytes()).hexdigest()
 
 
+def measure_entry_source(bound: dict) -> dict:
+    """Return the full source-bound actor, camera and gap diagnostic."""
+    return bound
+
+
+def measure_access_context(context: dict) -> dict:
+    """Preserve authored road identity while leaving designation unresolved."""
+    return {"route_kind": context["route_kind"], "map_sha256": context["map_sha256"],
+            "controlled_access_designation_verified": False}
+
+
 def finalize(attempt: Path, output: Path) -> dict:
     root = Path(attempt)
     config = json.loads(_required(root, "config.json").read_text())
@@ -73,12 +84,24 @@ def finalize(attempt: Path, output: Path) -> dict:
     recording = []
     for channel in description["channels"]:
         term = channel["name"]
-        target = channel_dir / (term.replace(".", "_") + ".json")
-        target.write_text(json.dumps({"source_sha256": bound["original_source_sha256"],
-                                      "term": term, "measurements": bound["measurements"]},
-                                     allow_nan=False, separators=(",", ":")) + "\n")
+        target = channel_dir / (term.replace(".", "_") + ".jsonl")
+        with target.open("x", encoding="utf-8") as stream:
+            for row in native:
+                stream.write(json.dumps({"time_s": row["time_s"],
+                                         "value": {"term": term, "ego": row["ego"],
+                                                   "traffic": row["traffic"],
+                                                   "ego_yielding": row["ego_yielding"],
+                                                   "map_source_sha256": context["map_sha256"]}},
+                                        allow_nan=False, separators=(",", ":")) + "\n")
         recording.append({"name": term, "unit": channel["unit"],
                           "reference": "channels/" + target.name})
+    authority = channel_dir / "controlled_access_authority.json"
+    authority.write_text(json.dumps({"controlled_access_authority": {
+        "map_source_sha256": context["map_sha256"],
+        "authority_source": None, "designation_verified": False}},
+        allow_nan=False, separators=(",", ":")) + "\n")
+    recording.append({"name": "controlled_access_authority", "unit": "structured",
+                      "reference": "channels/controlled_access_authority.json"})
     target = {"target": "original_entry_source_join", "requested": 600,
               "measured": bound["frames"],
               "method": "sealed original actors, two inventoried highway vehicles and four camera frames",
@@ -108,9 +131,14 @@ def finalize(attempt: Path, output: Path) -> dict:
     write_result(root, result)
     report = {
         "format": "worker-c177626-saved-analysis-v1", "case_id": case_id,
-        "measurements": {"entry_source": {
-            "method": "bind_original", "value": bound,
-            "sources": {name: _digest(root / name) for name in names}}},
+        "measurements": {
+            "entry_source": {
+                "method": "measure_entry_source", "value": measure_entry_source(bound),
+                "sources": {name: _digest(root / name) for name in names}},
+            "access_context": {
+                "method": "measure_access_context", "value": measure_access_context(context),
+                "sources": {name: _digest(root / name) for name in
+                            ("authored-context.json", "capture-seal.json")}}},
         "original_native_source": not diagnostic,
         "controlled_access_designation_verified": False,
         "legal_conclusion": None,

@@ -119,7 +119,7 @@ def run(bundle, output, host, port):
             "actor_id": scene["oncoming"].id,
             "driver_eye_identity_review_required": True})
         put(output / "eye-region-source.json", {
-            "oncoming_eye_camera": "oncoming_eye", "pixel_review_required": True,
+            "driver_reference_camera": "driver_reference", "pixel_review_required": True,
             "original_driver_eye_region_verified": False})
         start = world.get_snapshot().timestamp.elapsed_seconds + .05
         with (output / "beam-rows.jsonl").open("x") as rows, \

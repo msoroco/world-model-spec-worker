@@ -11,6 +11,12 @@ from pathlib import Path
 
 ASSIGNMENT = 'training__C405647__NRS-484B-267-2c__motor_vehicle_driver'
 CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
+CAMERA_DIMENSIONS = {
+    'overview': (1920, 1080),
+    'approach': (1280, 720),
+    'reference_corner': (1280, 720),
+    'driver_reference': (1280, 720),
+}
 FRAMES = 600
 
 
@@ -65,8 +71,8 @@ def measure(root):
                                     str(root / (camera + '.mkv'))],
                                    capture_output=True, text=True, check=True)
             dim = json.loads(probe.stdout)['streams'][0]
-            if (dim['width'], dim['height']) != (1920, 1080):
-                raise ValueError('Original source camera must be full resolution: ' + camera)
+            if (dim['width'], dim['height']) != CAMERA_DIMENSIONS[camera]:
+                raise ValueError('Original source camera differs from exact capture profile: ' + camera)
     for key in ('reviewer', 'vehicle_class_source', 'flashing_light_source',
                 'visible_motion_source', 'officer_direction_source'):
         if not review.get(key):

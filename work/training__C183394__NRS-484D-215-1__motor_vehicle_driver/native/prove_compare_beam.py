@@ -35,14 +35,35 @@ shutil.copytree(a, b)
 rows = load_rows(b / "beam-rows.jsonl")
 for row in rows:
     row["requested_beam_state"] = "high_beam"
+    row["observed_light_state_bits"] = 5
+    row["native_frame"] += 10000
 (b / "beam-rows.jsonl").write_text("".join(json.dumps(row) + "\n" for row in rows))
+new_frames = load_rows(b / "video_frames.jsonl")
+for frame in new_frames:
+    frame["native_frame"] += 10000
+(b / "video_frames.jsonl").write_text("".join(json.dumps(row) + "\n" for row in new_frames))
+driver = json.loads((b / "oncoming-driver-source.json").read_text())
+driver["actor_id"] = 9876
+(b / "oncoming-driver-source.json").write_text(json.dumps(driver) + "\n")
 context["case_id"] = context["case_id"].replace("__condition_a", "__condition_b")
 context["source_sha256"]["beam-rows.jsonl"] = sha(b / "beam-rows.jsonl")
+context["source_sha256"]["video_frames.jsonl"] = sha(b / "video_frames.jsonl")
+context["source_sha256"]["oncoming-driver-source.json"] = sha(b / "oncoming-driver-source.json")
 (b / "config.json").write_text(json.dumps({"selected_case_id": context["case_id"]}) + "\n")
 (b / "beam-context.json").write_text(json.dumps(context) + "\n")
 result = compare(a, b)
 assert result["contrasting_within_500_feet_frames"] > 0
 assert result["physical_glare_conclusion"] is None
+assert result["trajectory_tolerance_m"] == .5
+rows[0]["oncoming_x_m"] += 1
+(b / "beam-rows.jsonl").write_text("".join(json.dumps(row) + "\n" for row in rows))
+context["source_sha256"]["beam-rows.jsonl"] = sha(b / "beam-rows.jsonl")
+(b / "beam-context.json").write_text(json.dumps(context) + "\n")
+reject(lambda: compare(a, b), "trajectory differs")
+rows[0]["oncoming_x_m"] -= 1
+(b / "beam-rows.jsonl").write_text("".join(json.dumps(row) + "\n" for row in rows))
+context["source_sha256"]["beam-rows.jsonl"] = sha(b / "beam-rows.jsonl")
+(b / "beam-context.json").write_text(json.dumps(context) + "\n")
 road = b / "road.xodr"
 road.write_text(road.read_text().replace('183394', '999999'))
 context["source_sha256"]["road.xodr"] = sha(road)

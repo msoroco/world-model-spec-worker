@@ -1,6 +1,10 @@
 """CPU check of exact Native entry cases and four candidate designs."""
 
-from runner import CANDIDATES, CASE_PREFIX, check
+from runner import CANDIDATES, CASE_PREFIX, cameras, check
+
+assert [(view["width"], view["height"]) for view in cameras()] == [
+    (1920, 1080), (1280, 720), (1280, 720), (1280, 720)
+]
 
 
 def reject(case_id, candidate_id, phrase):

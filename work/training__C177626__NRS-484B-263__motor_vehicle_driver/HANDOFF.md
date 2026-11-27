@@ -41,3 +41,11 @@ Resume: validate source alternatives and exceptions against the exact law; imple
 Physical prerequisites: Build genuine controlled-access entry and exit paths with approaching highway traffic, conflict timing, yielding and safe-gap continuation.
 
 Legal limit: Immediate hazard and reasonable safety remain judgments; one merge does not cover the exit alternative.
+
+## 2026-11-27 saved-source and comparison checkpoint
+
+Status remains partial. `native/runner.py` now configures the 1920×1080 overview and three 1280×720 detail views required by the pinned capture profile; `native/prove_runner.py` asserts those dimensions and passes. `prove_finalize.py` executes `finalize.py` on a 600-frame original-shaped synthetic source bundle and rejects a missing view and an altered entry-history frame join. Its log is `finalize-proof.log` (SHA-256 `fa399fd409589f17e3dd02cc4cacedc5afa5b6b1fec2ea0fc0520ab8c882e6ec`). This checks saved-only measurement, not video decoding, actual pixels, or physical completion.
+
+`audit_comparison.py` independently recomputes both conditions from their saved actor and camera rows, requires complete original-shaped frame joins, and checks the map, participant inventory, initial traffic placement, camera views, duration, exact case identities, and intended controller-policy difference. `prove_comparison.py` passes a synthetic positive and rejects a changed map, traffic placement, policy, missing camera frame, changed measurement, and missing result. Log `comparison-proof.log` SHA-256 `6c1ba232494341bde7dbfd9e31e345c0b2762c3fe250f44c3d556f7e9b4efed6`. The comparison audit implementation SHA-256 is `d7815d2b5875b3b5a4553ab709aadbbc4b7656c4d176b72223c231be812aed44`.
+
+The exact scoped partial check `.venv-cpu/bin/python worker_check.py --assignment training__C177626__NRS-484B-263__motor_vehicle_driver --complete` passes static checks. The strict delivery-ready check fails because result status is partial. Next CPU steps are materialized selected A/B construction and config bundles, exact offline and positive/negative compatibility and process-saved receipts, semantic proposals, physical/lifecycle checker and independent delivery audit. The current runner has not run on CARLA; controlled-access legal designation remains unresolved and cannot be inferred from the authored OpenDRIVE geometry.
