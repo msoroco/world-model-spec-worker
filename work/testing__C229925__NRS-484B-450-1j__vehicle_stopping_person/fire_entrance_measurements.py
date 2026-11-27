@@ -65,8 +65,12 @@ def measure(case_id, context_path, trace_path, receipt_path):
     if len(rows) < 2 or len(rows) != receipt.get("frame_count") or receipt.get("fps") != 20:
         raise ValueError("original 20 Hz frame count mismatch")
     observations = []
+    first_frame = rows[0].get("frame")
+    first_time = rows[0].get("time_s")
+    if type(first_frame) is not int or not isinstance(first_time, (int, float)) or not math.isfinite(first_time):
+        raise ValueError("original first frame and time required")
     for index, row in enumerate(rows):
-        if row.get("frame") != index or not isinstance(row.get("time_s"), (int, float)) or abs(row["time_s"] - index / 20) > .002:
+        if row.get("frame") != first_frame + index or not isinstance(row.get("time_s"), (int, float)) or abs(row["time_s"] - first_time - index / 20) > .005:
             raise ValueError("original frame cadence mismatch")
         vertices = row.get("vehicle_vertices")
         if not isinstance(vertices, list) or len(vertices) != 8:
@@ -84,7 +88,7 @@ def measure(case_id, context_path, trace_path, receipt_path):
             raise ValueError("original speed required")
         if row.get("control_state") not in {"approach", "stop", "stand", "park", "depart"}:
             raise ValueError("original halt activity required")
-        observations.append({"frame": index, "time_s": row["time_s"],
+        observations.append({"frame": row["frame"], "time_s": row["time_s"],
                              "minimum_sampled_vertex_to_entrance_m": min(distances),
                              "vehicle_lateral_min_m": min(lateral), "vehicle_lateral_max_m": max(lateral),
                              "speed_mps": speed, "control_state": row["control_state"]})

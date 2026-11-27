@@ -11,7 +11,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
 MANIFEST = ROOT / "execution-manifest.json"
-SCRATCH = REPO / ".runtime-work" / "c147339-offline-proofs"
+SCRATCH = REPO / ".runtime-work" / "c147339-offline-proofs-v2"
 
 
 def sha(path):

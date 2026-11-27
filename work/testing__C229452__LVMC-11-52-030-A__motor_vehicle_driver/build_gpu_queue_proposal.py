@@ -5,7 +5,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 ASSIGNMENT = ROOT.name
-DISPATCH = '.venv-cpu/bin/python work/_shared/queue_dispatch.py'
+BASE = 'PYTHONPATH="$PWD/runtime" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root "$LOCAL_ROOT"'
+ORIGINAL = f'.venv-cpu/bin/python work/{ASSIGNMENT}/queue_original.py'
 
 
 def main():
@@ -14,23 +15,35 @@ def main():
     cases = []
     for entry in manifest['cases']:
         case = entry['case_id']
-        def command(verb):
-            return f'{DISPATCH} {case} {verb}'
+        identity = (f'--repo "$PWD" --batch full-test-delivery --db "$DB" '
+                    f'--assignment {ASSIGNMENT} --case {case} --run "$RUN" --job "$JOB_ID"')
+        prepare = f'{BASE} prepare-delivery {identity}'
+        execute = (f'{BASE} execute-delivery {identity} --python "$CARLA_PYTHON" '
+                   '--host "$CARLA_HOST" --port "$CARLA_PORT"')
         cases.append({
             'assignment_id': ASSIGNMENT, 'case_id': case,
-            'prepare_command': command('prepare-delivery'),
-            'execute_command': command('execute-delivery'),
-            'accept_command': command('accept-delivery'),
-            'capture_command': command('capture_command'),
-            'postprocessing_command': command('postprocessing_command'),
-            'owner_release_command': command('owner_release_command'),
-            'additional_source_audit_command': command('additional_source_audit_command'),
-            'candidate_commands': {candidate['id']: command('prepare-delivery') + ' --candidate ' + candidate['id']
+            'prepare_command': prepare,
+            'execute_command': execute,
+            'accept_command': (f'{BASE} accept-delivery {identity} --attempt "$ATTEMPT" '
+                               '--audit "$AUDIT" --review-archive /external/archive'),
+            'capture_command': execute,
+            'postprocessing_command': (f'.venv-cpu/bin/python runtime.py process-saved '
+                                       f'--manifest work/{ASSIGNMENT}/execution-manifest.json '
+                                       f'--case {case} --attempt "$ATTEMPT" --output "$PROCESSED" '
+                                       '--library runtime/library --validator "$LEAN_VALIDATOR" '
+                                       '--owner-release-receipt "$OWNER_RELEASE_RECEIPT"'),
+            'owner_release_command': (f'CASE_ID={case} .venv-cpu/bin/python runtime.py owner-released '
+                                      '--attempt "$ATTEMPT" --receipt "$OWNER_RELEASE_RECEIPT" '
+                                      '--acknowledge-owner-released'),
+            'additional_source_audit_command': (f'{ORIGINAL} source --attempt "$ATTEMPT" '
+                                                f'--case {case} --output "$SOURCE_AUDIT_OUTPUT"'),
+            'candidate_commands': {candidate['id']: prepare + ' --candidate ' + candidate['id']
                                    for candidate in entry['candidates']}})
     comparisons = [{
         'assignment_id': ASSIGNMENT, 'comparison_id': item['comparison_id'],
         'case_ids': item['case_ids'],
-        'command': f'.venv-cpu/bin/python work/{ASSIGNMENT}/comparison_audit.py --comparison {item["comparison_id"]}'}
+        'command': (f'{ORIGINAL} comparison --comparison {item["comparison_id"]} '
+                    '--left "$LEFT_ATTEMPT" --right "$RIGHT_ATTEMPT" --output "$OUTPUT"')}
         for item in plan['comparisons']]
     proposal = {'format': 'worker-gpu-queue-proposal', 'assignment_id': ASSIGNMENT,
                 'cases': cases, 'comparison_audit_commands': comparisons,

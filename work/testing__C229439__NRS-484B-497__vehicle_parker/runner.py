@@ -41,6 +41,14 @@ def main(argv=None):
         raise ValueError("C229439_ONEWAY_SITE_ROOT reviewed source directory required")
     site_path = Path(source_root) / (cfg["selected_case_id"].split("__")[-1] + ".json")
     site, records = load_site(site_path, cfg["selected_case_id"])
+    case = cfg["case"]
+    if (site.get("requested_activity") != case["requested_activity"] or
+            site.get("requested_side") != case["requested_side"] or
+            records["device_inventory"]["kind"] != case["requested_device"] or
+            records["restriction"]["one_way"] !=
+            (case["requested_road_direction"] == "one_way") or
+            len(records["roadway"]["marked_lanes"]) != case["requested_marked_lane_count"]):
+        raise ValueError("reviewed site differs from exact statutory contrast")
     from native_oneway import run_native
     run_native(cfg, site, records, site_path, Path(args.output_dir), args.host, args.port)
     return 0

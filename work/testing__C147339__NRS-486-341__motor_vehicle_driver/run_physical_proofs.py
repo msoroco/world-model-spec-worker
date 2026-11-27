@@ -10,7 +10,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
-SCRATCH = REPO / ".runtime-work/c147339-physical"
+SCRATCH = REPO / ".runtime-work/c147339-physical-v2"
 KINDS = ("complete_motion", "incomplete_motion", "missing_evidence")
 
 

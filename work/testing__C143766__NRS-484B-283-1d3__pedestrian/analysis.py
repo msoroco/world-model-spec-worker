@@ -26,6 +26,28 @@ def rows(path: Path) -> list[dict]:
     return [json.loads(line) for line in path.read_text().splitlines() if line]
 
 
+def measure_entry_phase(source: Path) -> dict:
+    measured = measure(source)
+    return {'entry_original_frame': measured['entry_original_frame'],
+            'phase': measured['entry_phase'],
+            'lawful_entry': 'unresolved'}
+
+
+def measure_continuation(source: Path) -> dict:
+    measured = measure(source)
+    return {'entry_original_frame': measured['entry_original_frame'],
+            'arrival_original_frame': measured['arrival_original_frame'],
+            'steady_original_frame': measured['steady_original_frame'],
+            'destination': measured['destination'],
+            'prior_entry_lawfulness': 'unresolved'}
+
+
+def measure_countdown_context(source: Path) -> dict:
+    measured = measure(source)
+    return {'countdown_during_flashing': measured['countdown_during_flashing'],
+            'exception_applicability': 'unresolved'}
+
+
 def analyze(attempt: Path, output: Path) -> dict:
     attempt, output = Path(attempt).resolve(), Path(output).resolve()
     config = json.loads(required(attempt, 'config.json').read_text())
@@ -55,7 +77,9 @@ def analyze(attempt: Path, output: Path) -> dict:
         if (mapped.get('video_frame') != index or mapped.get('carla_frame') != frame['frame'] or
                 mapped.get('native_frame') != frame['frame'] or native.get('frame') != frame['frame'] or
                 abs(mapped.get('time_s', -1) - frame['time_s']) > 1e-4 or
-                abs(native.get('time_s', -1) - frame['time_s']) > 1e-4):
+                abs(native.get('time_s', -1) - frame['time_s']) > 1e-4 or
+                any(abs(a - b) > .001 for a, b in zip(native.get('position_m', []), frame.get('position_m', []))) or
+                len(native.get('position_m', [])) != 3 or len(frame.get('position_m', [])) != 3):
             raise ValueError('original crossing frame/time join differs')
     for camera in CAMERAS:
         required(attempt, camera + '.mkv')
@@ -79,10 +103,11 @@ def analyze(attempt: Path, output: Path) -> dict:
                 stream.write(json.dumps({'time_s': frame['time_s'], 'value': functions[name](frame)}, separators=(',', ':')) + '\n')
         evidence.append({'name': name, 'unit': channel['unit'], 'reference': reference})
     context = 'channels/reviewed_crossing_site.json'
-    (attempt / context).write_text(json.dumps({'site_source_sha256': packet['site_source_sha256'],
+    (attempt / context).write_text(json.dumps({'reviewed_crossing_site': {
+        'site_source_sha256': packet['site_source_sha256'],
         'signal_source_sha256': packet['signal_source_sha256'],
         'destination_source_sha256': packet['destination_source_sha256'],
-        'legal_review': 'pending'}) + '\n')
+        'legal_review': 'pending'}}) + '\n')
     evidence.append({'name': 'reviewed_crossing_site', 'unit': 'source', 'reference': context})
     native = {'case_id': case_id, 'measured_values': {'crossing_timing': measured},
         'target_checks': [{'target': 'original signal and pedestrian route timing',
@@ -97,14 +122,18 @@ def analyze(attempt: Path, output: Path) -> dict:
         'recording_description': description, 'recording_evidence': evidence,
         'realized_observables': {}}
     (attempt / 'result.json').write_text(json.dumps(native, indent=2, allow_nan=False) + '\n')
+    sources = {'original-crossing-observations.json': sha(source),
+        'original-crossing-receipt.json': sha(attempt / 'original-crossing-receipt.json')}
     report = {'format': 'worker-analysis-report', 'case_id': case_id,
-        'measurements': {'crossing_timing': {'method': 'measure_original_crossing',
-            'sources': {'original-crossing-observations.json': sha(source),
-                'original-crossing-receipt.json': sha(attempt / 'original-crossing-receipt.json')},
-            'value': measured}},
+        'measurements': {
+            'entry_phase': {'method': 'measure_entry_phase', 'sources': sources,
+                'value': measure_entry_phase(source)},
+            'continuation_timing': {'method': 'measure_continuation', 'sources': sources,
+                'value': measure_continuation(source)},
+            'countdown_context': {'method': 'measure_countdown_context', 'sources': sources,
+                'value': measure_countdown_context(source)}},
         'limitations': ['Physical destination quality, actual camera pixels, prior lawful entry and statutory exceptions remain independent review.']}
-    output.mkdir(parents=True, exist_ok=True)
-    (output / 'analysis.json').write_text(json.dumps(report, indent=2, sort_keys=True) + '\n')
+    output.write_text(json.dumps(report, indent=2, sort_keys=True) + '\n')
     return report
 
 

@@ -47,7 +47,7 @@ def main():
         if negative.exists():
             shutil.rmtree(negative)
         shutil.copytree(attempt, negative, copy_function=os.link)
-        (negative / "original-walk-observations.json").unlink()
+        (negative / "original-crossing-observations.json").unlink()
         negative_output = REPO / ".runtime-work/c143766-1d3-owner-nov26/proof" / (
             "independent-negative-" + short + ".json")
         negative_command = [str(REPO / ".venv-cpu/bin/python"), str(script),
@@ -61,7 +61,7 @@ def main():
             "negative_command": " ".join(negative_command),
             "negative_log": str(negative_log.relative_to(ROOT)),
             "negative_log_sha256": _sha(negative_log),
-            "negative_expected_error": "Missing required source: original-walk-observations.json"})
+            "negative_expected_error": "Missing required source: original-crossing-observations.json"})
         results.append(row)
         print(short, completed.returncode, failed.returncode, flush=True)
     (ROOT / "cpu-independent-proofs.json").write_text(

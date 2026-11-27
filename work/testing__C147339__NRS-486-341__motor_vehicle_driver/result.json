@@ -2,36 +2,27 @@
   "assignment_id": "testing__C147339__NRS-486-341__motor_vehicle_driver",
   "input_sha256": "600d7736c7744e863546986d4f19329b77f7400d290856ae32cf1e64895f8949",
   "status": "partial",
-  "readiness_kind": "partial_exact_lane_use_cases_and_original_measurement",
+  "readiness_kind": "partial_strict_failure",
   "applied_update": 0,
   "tests": [
     {
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C147339__NRS-486-341__motor_vehicle_driver/tests -v",
       "exit_code": 0,
       "log": "cpu-tests.log",
-      "sha256": "63995df12684c66a855925a351bd6fb1c909e50a8eb8cd5213f7edc952b5cf23"
+      "sha256": "08d2916395442beda2d4463d9c8a7bd5581436b298f5bc6319a9bbac048fc783"
     },
     {
       "command": ".venv-cpu/bin/python runtime.py preflight",
       "exit_code": 0,
       "log": "cpu-preflight.log",
-      "sha256": "0526a0fdcc270ba264a823dd2aba036667c73281d4768ea9854323fa79af16e0"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C147339__NRS-486-341__motor_vehicle_driver --complete",
-      "exit_code": 0,
-      "log": "cpu-static-check.log",
-      "sha256": "53f08c99fc6b2c3c3693b5cd44b9deb23d14e20ab4b3767827699d2edbc47f32"
-    },
-    {
-      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C147339__NRS-486-341__motor_vehicle_driver --complete --require-delivery-ready",
-      "exit_code": 1,
-      "log": "cpu-strict-check.log",
-      "sha256": "3dbf09ddc86f7b16bc918693f7addafe40dc0e1599312455aaf56edb7f7a180a"
+      "sha256": "89066ce54f08c84cf44c4d0d31aa730fdb6f58793154fdf53d1cc4e8f4465aea"
     }
   ],
   "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+    "Independently review actual one-way multilane highway, source map and original chapter vehicle classification before Native capture.",
+    "Record and inspect actual two-actor motion, protected occupied lane and 900 synchronized frames from all four cameras for every exact case.",
+    "Independently review original pixels, physical completion and qualitative full-lane-use judgment; diagnostic CPU receipts claim no legal verdict."
   ],
-  "reason": "Five exact driven motorcycle/moped, adjacent/edge/deep ego path, and stationary activation probes with four controlled comparisons are planned. Source-gated one-way-lane two-vehicle construction and 900-frame original intrusion/motion measurement pass four focused CPU tests; pinned preflight and scoped static pass. Scoped strict remains partial. Actual source-byte binding, Native capture/runner, exact offline/positive-negative compatibility, semantic proposals, selected-requirement finalizer, saved delivery and independent comparison audits remain CPU work. Physical clearance and legal full-use judgment are unverified."
+  "first_gpu_delivery_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c147339-local-capture\" PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C147339__NRS-486-341__motor_vehicle_driver --case testing__C147339__NRS-486-341__motor_vehicle_driver__motorcycle_adjacent_clear --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
+  "reason": "Exact scoped strict gate failed; see cpu-strict-check.log"
 }

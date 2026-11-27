@@ -1,4 +1,4 @@
-"""Exercise source-bound WALK physical outcomes and Native ownership lifecycle."""
+"""Exercise crossing source outcomes and Native ownership lifecycle."""
 from __future__ import annotations
 
 import hashlib
@@ -13,7 +13,7 @@ REPO = ROOT.parents[1]
 sys.path.insert(0, str(REPO / 'runtime/scenario_pipeline'))
 from worker_exchange.native_output import seal_capture
 from worker_exchange.saved_processing import _closure, acknowledge_owner_release, record_native_exit
-from walk_signal_measurement import measure
+from crossing_measurement import measure
 
 
 def sha(path: Path) -> str:
@@ -25,25 +25,25 @@ def write(path: Path, value: dict) -> None:
 
 
 def assess(source: Path, case_id: str, kind: str) -> dict:
-    packet = source / 'original-walk-observations.json'
-    hashes = {'original-walk-observations.json': sha(packet),
-        'original-walk-receipt.json': sha(source / 'original-walk-receipt.json')}
+    packet = source / 'original-crossing-observations.json'
+    hashes = {'original-crossing-observations.json': sha(packet),
+        'original-crossing-receipt.json': sha(source / 'original-crossing-receipt.json')}
     observation = {}
     if kind == 'missing_evidence':
         status = 'unverified'
     elif kind == 'incomplete_motion':
         data = json.loads(packet.read_text())
         data['frames'] = data['frames'][:2]
-        status = 'not_met' if not any(row['pedestrian_in_crosswalk'] for row in data['frames']) else 'met'
+        status = 'not_met' if not any(row['in_highway'] for row in data['frames']) else 'met'
     else:
         observation = measure(packet)
-        status = 'met' if observation['entry_bracket_indices'] == [1, 2] else 'not_met'
+        status = 'met' if observation['entry_original_frame'] < observation['arrival_original_frame'] else 'not_met'
     return {'case_id': case_id, 'provenance_kind': 'synthetic_fixture',
         'diagnostic_fixture': True, 'maneuver_completed': status == 'met',
         'physical_checks': {'maneuver': {'status': status,
-            'method': 'source-bound first original-frame crosswalk entry',
+            'method': 'source-bound first original-frame highway entry and destination arrival',
             'sources': hashes, 'details': {'fixture_kind': kind}}},
-        'realized_observables': {'walk_entry': observation} if status == 'met' else {},
+        'realized_observables': {'crossing_timing': observation} if status == 'met' else {},
         'physical_acceptance': False, 'legal_acceptance': False}
 
 
@@ -89,7 +89,7 @@ def main() -> None:
             write(result, value)
             log.write_text('CPU synthetic ' + kind + ': ' +
                 value['physical_checks']['maneuver']['status'] + '\n')
-            fixtures.append({'kind': kind, 'command': 'CPU source-bound WALK assessment ' + case_id,
+            fixtures.append({'kind': kind, 'command': 'CPU source-bound crossing assessment ' + case_id,
                 'exit_code': 0, 'log': str(log.relative_to(ROOT)),
                 'log_sha256': sha(log), 'result': str(result.relative_to(ROOT)),
                 'result_sha256': sha(result)})

@@ -39,7 +39,7 @@ Status: ready for exact CPU package delivery. The scoped strict gate passed on 2
 
 ## Local delivery handoff
 
-The lead can integrate `gpu-queue-proposal.json` into the shared queue. Every exact case has prepare, execute, accept, capture, saved-processing, owner-release and source-audit commands; the fallback command names its exact case and candidate. The queue proposal also lists all 17 comparison audits.
+The lead integrated `gpu-queue-proposal.json` into `work/_shared/gpu-queue.json` after independent scoped strict checks before and after publication. Every exact case has direct prepare, execute, accept, capture, saved-processing, owner-release and source-audit commands; the fallback command names its exact case and candidate. The proposal lists all 17 original-attempt comparison audits. `queue_original.py` checks reviewed original source custody, trace/camera joins, four video dimensions and full decodes, and exact pair fields. It rejects synthetic saved attempts; a scratch-only source-shape pair exercised its comparison path without claiming original evidence. The original source audit's physical result remains unverified until local review supplies original curb occupancy evidence. Queue proposal SHA-256 is `b3b0c3d5440f7962c6945052a3ef0a274d8064040142c45de59dca7724b3c2b7`; shared queue SHA-256 after this integration was `9976c1e5394f8a5ad4027ccb4064beb0b13bbf6f7a68b2ad51f8d00d2327d86a`. Independent post-publication strict log is `.runtime-work/c229452-lead-nov26/strict-after-queue.log` (SHA-256 `e6c4b636ea169282984d9a421a87b9cfc75ced7f2b59036f16021bd821a5c80b`).
 
 First Native command:
 

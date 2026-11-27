@@ -30,7 +30,7 @@ def main():
                 str(ROOT / "run_compat_deterministic.py"), "--manifest", str(manifest),
                 "--case", entry["case_id"], "--candidate", candidate,
                 "--output", str(dest), "--library", str(REPO / "runtime/library"),
-                "--validator", str(REPO / ".runtime-work/c143766-1d3-decoder/.lake/build/bin/adapterCheck")]
+                "--validator", str(REPO / ".runtime-work/c150911-decoder/.lake/build/bin/adapterCheck")]
             completed = subprocess.run(command, capture_output=True, text=True,
                                        env=os.environ)
             row = {"case_id": entry["case_id"], "candidate": candidate,

@@ -31,8 +31,8 @@ def main():
                        "--candidate", candidate, "--output", str(output),
                        "--python", sys.executable]
             env = dict(os.environ)
-            env["SCENARIO_PIPELINE_OUTPUT_ROOT"] = str(REPO / ".runtime-work/c150911-output")
-            env["TMPDIR"] = str(REPO / ".runtime-work/c150911-tmp")
+            env["SCENARIO_PIPELINE_OUTPUT_ROOT"] = str(REPO / ".runtime-work/c143766-1d3-owner-nov26/output")
+            env["TMPDIR"] = str(REPO / ".runtime-work/c143766-1d3-owner-nov26/tmp")
             env["PYTHONDONTWRITEBYTECODE"] = "1"
             Path(env["TMPDIR"]).mkdir(parents=True, exist_ok=True)
             completed = subprocess.run(command, cwd=REPO, env=env,
@@ -52,7 +52,7 @@ def main():
             break
     (ROOT / "cpu-offline-proofs.json").write_text(
         json.dumps(rows, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    if len(rows) != 8 or any(row["exit_code"] for row in rows):
+    if len(rows) != 14 or any(row["exit_code"] for row in rows):
         raise SystemExit(1)
 
 

@@ -44,12 +44,12 @@ def main() -> None:
         if negative.exists():
             shutil.rmtree(negative)
         shutil.copytree(attempts[1], negative, copy_function=os.link)
-        (negative / 'original-walk-observations.json').unlink()
+        (negative / 'original-crossing-observations.json').unlink()
         try:
             compare(cid, attempts[0], negative, diagnostic=True)
         except ValueError as error:
             source_error = str(error)
-            if 'Missing required source: original-walk-observations.json' not in source_error:
+            if 'Missing required source: original-crossing-observations.json' not in source_error:
                 raise
         else:
             raise ValueError('missing original WALK source accepted')

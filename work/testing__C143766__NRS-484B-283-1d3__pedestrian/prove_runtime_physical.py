@@ -23,7 +23,7 @@ def run() -> None:
     if scratch.exists():
         shutil.rmtree(scratch)
     scratch.mkdir(parents=True)
-    cfg = json.loads((ROOT / 'cases/walk_facing_yield/config.json').read_text())
+    cfg = json.loads((ROOT / 'cases/walk_entry_sidewalk_before/config.json').read_text())
     write(scratch / 'config.json', cfg)
     mapping = [{'video_frame': i, 'carla_frame': i + 1, 'time_s': .05 * (i + 1)}
                for i in range(3)]
@@ -46,7 +46,7 @@ def run() -> None:
     if observed['missing'] != 'unverified':
         raise ValueError('Missing original motion was not unverified')
     receipt = {'runtime_criterion': cfg['physical_completion']['criterion'],
-               'config_sha256': hashlib.sha256((ROOT / 'cases/walk_facing_yield/config.json').read_bytes()).hexdigest(),
+               'config_sha256': hashlib.sha256((ROOT / 'cases/walk_entry_sidewalk_before/config.json').read_bytes()).hexdigest(),
                'status_by_fixture': observed,
                'scope': 'synthetic current-runtime protocol; original CARLA motion pending'}
     write(ROOT / 'cpu-runtime-physical-proof.json', receipt)

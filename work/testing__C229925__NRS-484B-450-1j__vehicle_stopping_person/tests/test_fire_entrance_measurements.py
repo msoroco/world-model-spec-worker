@@ -4,6 +4,7 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
+import os
 
 
 MODULE = Path(__file__).resolve().parents[1] / "fire_entrance_measurements.py"
@@ -15,7 +16,9 @@ spec.loader.exec_module(measurements)
 
 class FireEntranceTests(unittest.TestCase):
     def setUp(self):
-        self.tmp = tempfile.TemporaryDirectory()
+        scratch = Path(os.environ.get("TMPDIR", ".runtime-work/c229925-tests"))
+        scratch.mkdir(parents=True, exist_ok=True)
+        self.tmp = tempfile.TemporaryDirectory(dir=scratch)
         self.addCleanup(self.tmp.cleanup)
         self.root = Path(self.tmp.name)
         self.case_id = measurements.ASSIGNMENT_ID + "__opposite_stop_74ft"
@@ -77,6 +80,14 @@ class FireEntranceTests(unittest.TestCase):
         self.write_sources()
         with self.assertRaises(ValueError):
             self.run_measure()
+
+    def test_original_frame_offset_supported(self):
+        for row in self.rows:
+            row["frame"] += 100
+            row["time_s"] += 230.0
+        self.write_sources()
+        result = self.run_measure()
+        self.assertEqual(result["observations"][0]["frame"], 100)
 
     def test_missing_station_identity_rejected(self):
         del self.context["station_identity_source"]

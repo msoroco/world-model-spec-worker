@@ -1,0 +1,1303 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C229439__NRS-484B-497__vehicle_parker",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "case_id": "testing__C229439__NRS-484B-497__vehicle_parker__left_park_no_device",
+      "kind": "delivery",
+      "construction": "construction.json",
+      "construction_sha256": "0713b9190afe034c48bb3eb93da8a598e9390aa794ce6119c1c45e1a5faa6b32",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Approach may overshoot selected roadway side or place the device outside a legible camera view."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback-left_park_no_device-construction.json",
+          "construction_sha256": "6311f15cf37c48436e0227e86d5c2950f1e567e57011d170257075e91af61ad8",
+          "trigger": {
+            "source": "original body trajectory and four-camera review",
+            "metric": "distance from requested target and visible side/device",
+            "failure_condition": "primary overshoots, misses target side or camera lacks required device/body view"
+          },
+          "changed_knobs": [
+            "engineering_brake_gain: 0.68 to 0.86"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229439__NRS-484B-497__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-497__vehicle_parker__left_park_no_device --output .runtime-work/c229439-497-owner-nov26/core-proof-batch-v1/off-fallback1-left_park_no_device --candidate fallback1",
+            "exit_code": 0,
+            "log": "proof-offline-fallback1-left_park_no_device.log",
+            "log_sha256": "0345bbb8eb39318a2575875f481ab6f485ae0871b0f8c9499ec7da62f2fd338f",
+            "construction_sha256": "6311f15cf37c48436e0227e86d5c2950f1e567e57011d170257075e91af61ad8"
+          },
+          "compatibility": {
+            "receipt": "compat-fallback1-left_park_no_device-receipt.json",
+            "sha256": "ff462806b6b04c181828a9bc714ec91143e6cfb4b8f61f705494e274441aabe3",
+            "log": "compat-fallback1-left_park_no_device-analysis.log",
+            "negative_log": "compat-fallback1-left_park_no_device-negative.log"
+          }
+        }
+      ],
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "fixture_recipe": "work/testing__C229439__NRS-484B-497__vehicle_parker/diagnostic-left_park_no_device-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229439__NRS-484B-497__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-497__vehicle_parker__left_park_no_device --output .runtime-work/c229439-497-owner-nov26/core-proof-batch-v1/off-left_park_no_device",
+        "exit_code": 0,
+        "log": "proof-offline-left_park_no_device.log",
+        "log_sha256": "0345bbb8eb39318a2575875f481ab6f485ae0871b0f8c9499ec7da62f2fd338f",
+        "construction_sha256": "0713b9190afe034c48bb3eb93da8a598e9390aa794ce6119c1c45e1a5faa6b32"
+      },
+      "compatibility": {
+        "receipt": "compat-left_park_no_device-receipt.json",
+        "sha256": "2fa15d088b51fd88743665079b0ade6f2d94a92e8724061d1be9d8dd0e6f0181",
+        "log": "compat-left_park_no_device-analysis.log",
+        "negative_log": "compat-left_park_no_device-negative.log"
+      },
+      "negative": {
+        "log": "compat-left_park_no_device-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-left_park_no_device-proof.json",
+        "sha256": "2657f4398505243ed157bd212f170cebd2c89c044a279af511a673f000852a23"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229439__NRS-484B-497__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-497__vehicle_parker__left_park_no_device --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$OUTPUT/feedback.json\"",
+        "test_log": "saved-left_park_no_device.log",
+        "test_log_sha256": "13e59b0fec2d3ccb2c805ccd4efc98b55791aaac773bbab1347c92e9a1ec5d84",
+        "test_exit_code": 0
+      },
+      "acquisition": {
+        "vehicle_body_side_history": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "vehicle_speed_and_control_history": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "roadway_direction_context": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "device_permission_context": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "parking_person_and_purpose_context": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C229439__NRS-484B-497__vehicle_parker__left_park_official_permit",
+      "kind": "delivery",
+      "construction": "cases/left_park_official_permit/construction.json",
+      "construction_sha256": "9eab20ac981535fe9347592d6cbec77bfbfeabe23c00b8b2bb1bc9bf7ff8dcc8",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Approach may overshoot selected roadway side or place the device outside a legible camera view."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback-left_park_official_permit-construction.json",
+          "construction_sha256": "3e9952f3c8f133105439fe97a8d9a8c1feae7e856b38f492d3f176e3182a49f0",
+          "trigger": {
+            "source": "original body trajectory and four-camera review",
+            "metric": "distance from requested target and visible side/device",
+            "failure_condition": "primary overshoots, misses target side or camera lacks required device/body view"
+          },
+          "changed_knobs": [
+            "engineering_brake_gain: 0.68 to 0.86"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229439__NRS-484B-497__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-497__vehicle_parker__left_park_official_permit --output .runtime-work/c229439-497-owner-nov26/core-proof-batch-v1/off-fallback1-left_park_official_permit --candidate fallback1",
+            "exit_code": 0,
+            "log": "proof-offline-fallback1-left_park_official_permit.log",
+            "log_sha256": "bc259d0296e6f89e71f914506f056b3e88a27f321902fe7fefbe4aed8b5805bb",
+            "construction_sha256": "3e9952f3c8f133105439fe97a8d9a8c1feae7e856b38f492d3f176e3182a49f0"
+          },
+          "compatibility": {
+            "receipt": "compat-fallback1-left_park_official_permit-receipt.json",
+            "sha256": "f539e0625430d1084e0b345582b82a5c23e35d91bcc8bc068a17d5cda30d2fcb",
+            "log": "compat-fallback1-left_park_official_permit-analysis.log",
+            "negative_log": "compat-fallback1-left_park_official_permit-negative.log"
+          }
+        }
+      ],
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "fixture_recipe": "work/testing__C229439__NRS-484B-497__vehicle_parker/diagnostic-left_park_official_permit-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229439__NRS-484B-497__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-497__vehicle_parker__left_park_official_permit --output .runtime-work/c229439-497-owner-nov26/core-proof-batch-v1/off-left_park_official_permit",
+        "exit_code": 0,
+        "log": "proof-offline-left_park_official_permit.log",
+        "log_sha256": "bc259d0296e6f89e71f914506f056b3e88a27f321902fe7fefbe4aed8b5805bb",
+        "construction_sha256": "9eab20ac981535fe9347592d6cbec77bfbfeabe23c00b8b2bb1bc9bf7ff8dcc8"
+      },
+      "compatibility": {
+        "receipt": "compat-left_park_official_permit-receipt.json",
+        "sha256": "f1925c073ed0aa8b2a355ed974b0ea50c149aa7de10f3d008292f187942d438c",
+        "log": "compat-left_park_official_permit-analysis.log",
+        "negative_log": "compat-left_park_official_permit-negative.log"
+      },
+      "negative": {
+        "log": "compat-left_park_official_permit-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-left_park_official_permit-proof.json",
+        "sha256": "ce501955c0f0fb8c560382cac8f08688b065986d5ab4f1b1b79ef30347cc97aa"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229439__NRS-484B-497__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-497__vehicle_parker__left_park_official_permit --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$OUTPUT/feedback.json\"",
+        "test_log": "saved-left_park_official_permit.log",
+        "test_log_sha256": "5effe01e8031f581e7fb91671915f14a8d7968f5d2650590ebabacdb3990d21c",
+        "test_exit_code": 0
+      },
+      "acquisition": {
+        "vehicle_body_side_history": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "vehicle_speed_and_control_history": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "roadway_direction_context": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "device_permission_context": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "parking_person_and_purpose_context": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C229439__NRS-484B-497__vehicle_parker__left_park_official_restrict",
+      "kind": "delivery",
+      "construction": "cases/left_park_official_restrict/construction.json",
+      "construction_sha256": "c8df6c62dc9531d2aea041ce95801b3d88d4302f6cb2a2b2e9813f214b58e308",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Approach may overshoot selected roadway side or place the device outside a legible camera view."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback-left_park_official_restrict-construction.json",
+          "construction_sha256": "a11c3d06f2043f05f837cc570cf082d92288c3f90a60ef47538f80141a8baeb8",
+          "trigger": {
+            "source": "original body trajectory and four-camera review",
+            "metric": "distance from requested target and visible side/device",
+            "failure_condition": "primary overshoots, misses target side or camera lacks required device/body view"
+          },
+          "changed_knobs": [
+            "engineering_brake_gain: 0.68 to 0.86"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229439__NRS-484B-497__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-497__vehicle_parker__left_park_official_restrict --output .runtime-work/c229439-497-owner-nov26/core-proof-batch-v1/off-fallback1-left_park_official_restrict --candidate fallback1",
+            "exit_code": 0,
+            "log": "proof-offline-fallback1-left_park_official_restrict.log",
+            "log_sha256": "10200c6cef6fb8ea3d4f42a9366979e1efff703237a35fe4fbf05a88c24cb874",
+            "construction_sha256": "a11c3d06f2043f05f837cc570cf082d92288c3f90a60ef47538f80141a8baeb8"
+          },
+          "compatibility": {
+            "receipt": "compat-fallback1-left_park_official_restrict-receipt.json",
+            "sha256": "d1f4354ccada5542a580fb57bf8177ee398b4e6171d96fff4a9bd2bd14a53d09",
+            "log": "compat-fallback1-left_park_official_restrict-analysis.log",
+            "negative_log": "compat-fallback1-left_park_official_restrict-negative.log"
+          }
+        }
+      ],
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "fixture_recipe": "work/testing__C229439__NRS-484B-497__vehicle_parker/diagnostic-left_park_official_restrict-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229439__NRS-484B-497__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-497__vehicle_parker__left_park_official_restrict --output .runtime-work/c229439-497-owner-nov26/core-proof-batch-v1/off-left_park_official_restrict",
+        "exit_code": 0,
+        "log": "proof-offline-left_park_official_restrict.log",
+        "log_sha256": "10200c6cef6fb8ea3d4f42a9366979e1efff703237a35fe4fbf05a88c24cb874",
+        "construction_sha256": "c8df6c62dc9531d2aea041ce95801b3d88d4302f6cb2a2b2e9813f214b58e308"
+      },
+      "compatibility": {
+        "receipt": "compat-left_park_official_restrict-receipt.json",
+        "sha256": "fed623dabf3ce5cdce75b153073702c8389306a29e5b2f62640450af3fdf28cf",
+        "log": "compat-left_park_official_restrict-analysis.log",
+        "negative_log": "compat-left_park_official_restrict-negative.log"
+      },
+      "negative": {
+        "log": "compat-left_park_official_restrict-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-left_park_official_restrict-proof.json",
+        "sha256": "f9f1577f3d946276ccada9ced6487e058f0ce51f4ad778d6409d8c54a4973881"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229439__NRS-484B-497__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-497__vehicle_parker__left_park_official_restrict --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$OUTPUT/feedback.json\"",
+        "test_log": "saved-left_park_official_restrict.log",
+        "test_log_sha256": "0b336b9dd29cc53b19dd8a8f3b40bae958b07802b2ba49cec1878f3c6ec24431",
+        "test_exit_code": 0
+      },
+      "acquisition": {
+        "vehicle_body_side_history": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "vehicle_speed_and_control_history": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "roadway_direction_context": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "device_permission_context": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "parking_person_and_purpose_context": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C229439__NRS-484B-497__vehicle_parker__left_park_unofficial_permit",
+      "kind": "delivery",
+      "construction": "cases/left_park_unofficial_permit/construction.json",
+      "construction_sha256": "37c8cec07d44b6e97a3c2b120aa5a60a9c90384e4038825c4e61e94d96aec13d",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Approach may overshoot selected roadway side or place the device outside a legible camera view."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback-left_park_unofficial_permit-construction.json",
+          "construction_sha256": "17b7786a2bed70d2c2a7be38519ec1bbe27135b88b18480e3811496626e05937",
+          "trigger": {
+            "source": "original body trajectory and four-camera review",
+            "metric": "distance from requested target and visible side/device",
+            "failure_condition": "primary overshoots, misses target side or camera lacks required device/body view"
+          },
+          "changed_knobs": [
+            "engineering_brake_gain: 0.68 to 0.86"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229439__NRS-484B-497__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-497__vehicle_parker__left_park_unofficial_permit --output .runtime-work/c229439-497-owner-nov26/core-proof-batch-v1/off-fallback1-left_park_unofficial_permit --candidate fallback1",
+            "exit_code": 0,
+            "log": "proof-offline-fallback1-left_park_unofficial_permit.log",
+            "log_sha256": "ebde907257d26253c1cd8adb7b753dd8e635ec0c810dd69a839743223c5c6565",
+            "construction_sha256": "17b7786a2bed70d2c2a7be38519ec1bbe27135b88b18480e3811496626e05937"
+          },
+          "compatibility": {
+            "receipt": "compat-fallback1-left_park_unofficial_permit-receipt.json",
+            "sha256": "7968476d54b4dd580868adc091b6dbeba7bc212dbb57983c142fbf00ee325e90",
+            "log": "compat-fallback1-left_park_unofficial_permit-analysis.log",
+            "negative_log": "compat-fallback1-left_park_unofficial_permit-negative.log"
+          }
+        }
+      ],
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "fixture_recipe": "work/testing__C229439__NRS-484B-497__vehicle_parker/diagnostic-left_park_unofficial_permit-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229439__NRS-484B-497__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-497__vehicle_parker__left_park_unofficial_permit --output .runtime-work/c229439-497-owner-nov26/core-proof-batch-v1/off-left_park_unofficial_permit",
+        "exit_code": 0,
+        "log": "proof-offline-left_park_unofficial_permit.log",
+        "log_sha256": "ebde907257d26253c1cd8adb7b753dd8e635ec0c810dd69a839743223c5c6565",
+        "construction_sha256": "37c8cec07d44b6e97a3c2b120aa5a60a9c90384e4038825c4e61e94d96aec13d"
+      },
+      "compatibility": {
+        "receipt": "compat-left_park_unofficial_permit-receipt.json",
+        "sha256": "924cd62063d4317b7de7c8889a7b74b1279f1af32dedd32d608033347f20eaa7",
+        "log": "compat-left_park_unofficial_permit-analysis.log",
+        "negative_log": "compat-left_park_unofficial_permit-negative.log"
+      },
+      "negative": {
+        "log": "compat-left_park_unofficial_permit-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-left_park_unofficial_permit-proof.json",
+        "sha256": "9e1a33b6799425a0711d1af38c7d4b32e326dd67d68161cafc9cefd52c1c22fc"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229439__NRS-484B-497__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-497__vehicle_parker__left_park_unofficial_permit --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$OUTPUT/feedback.json\"",
+        "test_log": "saved-left_park_unofficial_permit.log",
+        "test_log_sha256": "4877502200585b9bf49d6843547530d71ce21591710094417d78dc98f53634a0",
+        "test_exit_code": 0
+      },
+      "acquisition": {
+        "vehicle_body_side_history": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "vehicle_speed_and_control_history": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "roadway_direction_context": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "device_permission_context": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "parking_person_and_purpose_context": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C229439__NRS-484B-497__vehicle_parker__left_park_stand_only_permit",
+      "kind": "delivery",
+      "construction": "cases/left_park_stand_only_permit/construction.json",
+      "construction_sha256": "1d8a894b65a183854faf0383ee083c23b00d29e3841227cc94f1f6c88c706b17",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Approach may overshoot selected roadway side or place the device outside a legible camera view."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback-left_park_stand_only_permit-construction.json",
+          "construction_sha256": "c23f09fc41c8dee4508d22b56b3d2d0c655672583cd9d3c7c4e7dcddb575dcd9",
+          "trigger": {
+            "source": "original body trajectory and four-camera review",
+            "metric": "distance from requested target and visible side/device",
+            "failure_condition": "primary overshoots, misses target side or camera lacks required device/body view"
+          },
+          "changed_knobs": [
+            "engineering_brake_gain: 0.68 to 0.86"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229439__NRS-484B-497__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-497__vehicle_parker__left_park_stand_only_permit --output .runtime-work/c229439-497-owner-nov26/core-proof-batch-v1/off-fallback1-left_park_stand_only_permit --candidate fallback1",
+            "exit_code": 0,
+            "log": "proof-offline-fallback1-left_park_stand_only_permit.log",
+            "log_sha256": "6bde7e11f62732a074cd7cfd56b9d9ac356d22b45e7911f4a16719fe47f97a2b",
+            "construction_sha256": "c23f09fc41c8dee4508d22b56b3d2d0c655672583cd9d3c7c4e7dcddb575dcd9"
+          },
+          "compatibility": {
+            "receipt": "compat-fallback1-left_park_stand_only_permit-receipt.json",
+            "sha256": "779af90b42a3632378ed1f43ecf0a3c98eb7ecf31f3508917dcb36d730455b48",
+            "log": "compat-fallback1-left_park_stand_only_permit-analysis.log",
+            "negative_log": "compat-fallback1-left_park_stand_only_permit-negative.log"
+          }
+        }
+      ],
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "fixture_recipe": "work/testing__C229439__NRS-484B-497__vehicle_parker/diagnostic-left_park_stand_only_permit-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229439__NRS-484B-497__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-497__vehicle_parker__left_park_stand_only_permit --output .runtime-work/c229439-497-owner-nov26/core-proof-batch-v1/off-left_park_stand_only_permit",
+        "exit_code": 0,
+        "log": "proof-offline-left_park_stand_only_permit.log",
+        "log_sha256": "6bde7e11f62732a074cd7cfd56b9d9ac356d22b45e7911f4a16719fe47f97a2b",
+        "construction_sha256": "1d8a894b65a183854faf0383ee083c23b00d29e3841227cc94f1f6c88c706b17"
+      },
+      "compatibility": {
+        "receipt": "compat-left_park_stand_only_permit-receipt.json",
+        "sha256": "b4d61334447b7da6619faafc8b7a3a20cc9b561f68ad645454314d3c71bdfa84",
+        "log": "compat-left_park_stand_only_permit-analysis.log",
+        "negative_log": "compat-left_park_stand_only_permit-negative.log"
+      },
+      "negative": {
+        "log": "compat-left_park_stand_only_permit-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-left_park_stand_only_permit-proof.json",
+        "sha256": "7c52449081b7cc7c8228de719b3aa4b887a98d2a3b964b8c443bea730f8cc654"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229439__NRS-484B-497__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-497__vehicle_parker__left_park_stand_only_permit --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$OUTPUT/feedback.json\"",
+        "test_log": "saved-left_park_stand_only_permit.log",
+        "test_log_sha256": "7a7249f22a81c4c00158690eb9453f268db0e9c884e8fbf06332bf1814502f93",
+        "test_exit_code": 0
+      },
+      "acquisition": {
+        "vehicle_body_side_history": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "vehicle_speed_and_control_history": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "roadway_direction_context": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "device_permission_context": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "parking_person_and_purpose_context": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C229439__NRS-484B-497__vehicle_parker__left_stand_no_device",
+      "kind": "delivery",
+      "construction": "cases/left_stand_no_device/construction.json",
+      "construction_sha256": "bfafb96178d7835be213ef391ee5592ce696e89be58bff7aa379fdec9ca90a5b",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Approach may overshoot selected roadway side or place the device outside a legible camera view."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback-left_stand_no_device-construction.json",
+          "construction_sha256": "6b08a03d148ca09984665e8938260786ae5f4752ab9ab62247ed590aa95ccf2e",
+          "trigger": {
+            "source": "original body trajectory and four-camera review",
+            "metric": "distance from requested target and visible side/device",
+            "failure_condition": "primary overshoots, misses target side or camera lacks required device/body view"
+          },
+          "changed_knobs": [
+            "engineering_brake_gain: 0.68 to 0.86"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229439__NRS-484B-497__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-497__vehicle_parker__left_stand_no_device --output .runtime-work/c229439-497-owner-nov26/core-proof-batch-v1/off-fallback1-left_stand_no_device --candidate fallback1",
+            "exit_code": 0,
+            "log": "proof-offline-fallback1-left_stand_no_device.log",
+            "log_sha256": "dd940fe7744da4b04ea1efddf2d3ef9f208afc7f2451077814fca344f911a01e",
+            "construction_sha256": "6b08a03d148ca09984665e8938260786ae5f4752ab9ab62247ed590aa95ccf2e"
+          },
+          "compatibility": {
+            "receipt": "compat-fallback1-left_stand_no_device-receipt.json",
+            "sha256": "808ad23a3c26653cf413bd37441e38099db68fe1f192eca8b66684fe3506f146",
+            "log": "compat-fallback1-left_stand_no_device-analysis.log",
+            "negative_log": "compat-fallback1-left_stand_no_device-negative.log"
+          }
+        }
+      ],
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "fixture_recipe": "work/testing__C229439__NRS-484B-497__vehicle_parker/diagnostic-left_stand_no_device-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229439__NRS-484B-497__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-497__vehicle_parker__left_stand_no_device --output .runtime-work/c229439-497-owner-nov26/core-proof-batch-v1/off-left_stand_no_device",
+        "exit_code": 0,
+        "log": "proof-offline-left_stand_no_device.log",
+        "log_sha256": "bad5f6e0ecd8b53066b6cb0f2cb43a00989e8359a281e519aada60b3d91e46fd",
+        "construction_sha256": "bfafb96178d7835be213ef391ee5592ce696e89be58bff7aa379fdec9ca90a5b"
+      },
+      "compatibility": {
+        "receipt": "compat-left_stand_no_device-receipt.json",
+        "sha256": "14b34cfd99b13730351621dbe80a12281beaf49aa40390a9d5f9b6fe652bf4b0",
+        "log": "compat-left_stand_no_device-analysis.log",
+        "negative_log": "compat-left_stand_no_device-negative.log"
+      },
+      "negative": {
+        "log": "compat-left_stand_no_device-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-left_stand_no_device-proof.json",
+        "sha256": "9e224263e3d434278f62be928e2e2e29290bf92a6166f3ab7529474dade374d9"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229439__NRS-484B-497__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-497__vehicle_parker__left_stand_no_device --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$OUTPUT/feedback.json\"",
+        "test_log": "saved-left_stand_no_device.log",
+        "test_log_sha256": "3e21cfa01db859f926688407077bdd10016cc0b8dc34d5a7d33ac1953c4eced7",
+        "test_exit_code": 0
+      },
+      "acquisition": {
+        "vehicle_body_side_history": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "vehicle_speed_and_control_history": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "roadway_direction_context": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "device_permission_context": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "parking_person_and_purpose_context": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C229439__NRS-484B-497__vehicle_parker__left_stand_official_permit",
+      "kind": "delivery",
+      "construction": "cases/left_stand_official_permit/construction.json",
+      "construction_sha256": "bbee4b02e1b893d4afb24a5c592584e9d92b714ec6639f74d5f76bb08b584340",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Approach may overshoot selected roadway side or place the device outside a legible camera view."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback-left_stand_official_permit-construction.json",
+          "construction_sha256": "06df11b03f46e1948fdfd325d8686ba35639eddba6183a4ad9b172712b30c196",
+          "trigger": {
+            "source": "original body trajectory and four-camera review",
+            "metric": "distance from requested target and visible side/device",
+            "failure_condition": "primary overshoots, misses target side or camera lacks required device/body view"
+          },
+          "changed_knobs": [
+            "engineering_brake_gain: 0.68 to 0.86"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229439__NRS-484B-497__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-497__vehicle_parker__left_stand_official_permit --output .runtime-work/c229439-497-owner-nov26/core-proof-batch-v1/off-fallback1-left_stand_official_permit --candidate fallback1",
+            "exit_code": 0,
+            "log": "proof-offline-fallback1-left_stand_official_permit.log",
+            "log_sha256": "7b9a51a087d1057a3b095dc9ba8abe497fa732036ed72bcb7721c20c56bfd3ab",
+            "construction_sha256": "06df11b03f46e1948fdfd325d8686ba35639eddba6183a4ad9b172712b30c196"
+          },
+          "compatibility": {
+            "receipt": "compat-fallback1-left_stand_official_permit-receipt.json",
+            "sha256": "661b6a2a0564c131f7ca64411b8c5194f7c3d1c897519e70c6a48df765983fda",
+            "log": "compat-fallback1-left_stand_official_permit-analysis.log",
+            "negative_log": "compat-fallback1-left_stand_official_permit-negative.log"
+          }
+        }
+      ],
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "fixture_recipe": "work/testing__C229439__NRS-484B-497__vehicle_parker/diagnostic-left_stand_official_permit-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229439__NRS-484B-497__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-497__vehicle_parker__left_stand_official_permit --output .runtime-work/c229439-497-owner-nov26/core-proof-batch-v1/off-left_stand_official_permit",
+        "exit_code": 0,
+        "log": "proof-offline-left_stand_official_permit.log",
+        "log_sha256": "7b9a51a087d1057a3b095dc9ba8abe497fa732036ed72bcb7721c20c56bfd3ab",
+        "construction_sha256": "bbee4b02e1b893d4afb24a5c592584e9d92b714ec6639f74d5f76bb08b584340"
+      },
+      "compatibility": {
+        "receipt": "compat-left_stand_official_permit-receipt.json",
+        "sha256": "d783cbd79cee48475d218c1f09476613271d504f519f7e3b5db41bff357a9c44",
+        "log": "compat-left_stand_official_permit-analysis.log",
+        "negative_log": "compat-left_stand_official_permit-negative.log"
+      },
+      "negative": {
+        "log": "compat-left_stand_official_permit-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-left_stand_official_permit-proof.json",
+        "sha256": "2f13a985e040011cd7cfdc1352f6325d93880f0c72a2aaf7aa9dc305967f4ba8"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229439__NRS-484B-497__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-497__vehicle_parker__left_stand_official_permit --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$OUTPUT/feedback.json\"",
+        "test_log": "saved-left_stand_official_permit.log",
+        "test_log_sha256": "47c70fda55ba3ca0f01c743fa699c87a85fd9c8ec29a1485e48087d6f6cb77ea",
+        "test_exit_code": 0
+      },
+      "acquisition": {
+        "vehicle_body_side_history": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "vehicle_speed_and_control_history": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "roadway_direction_context": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "device_permission_context": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "parking_person_and_purpose_context": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C229439__NRS-484B-497__vehicle_parker__left_stand_park_only_permit",
+      "kind": "delivery",
+      "construction": "cases/left_stand_park_only_permit/construction.json",
+      "construction_sha256": "fa13dab5df51f0ad3bb3d23d51ee04647ec572762e07ea7560d08b09320c0e52",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Approach may overshoot selected roadway side or place the device outside a legible camera view."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback-left_stand_park_only_permit-construction.json",
+          "construction_sha256": "67370687557034dac3726bd3c119f8bd5b2393d3728e386b173f81fa3b8556b2",
+          "trigger": {
+            "source": "original body trajectory and four-camera review",
+            "metric": "distance from requested target and visible side/device",
+            "failure_condition": "primary overshoots, misses target side or camera lacks required device/body view"
+          },
+          "changed_knobs": [
+            "engineering_brake_gain: 0.68 to 0.86"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229439__NRS-484B-497__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-497__vehicle_parker__left_stand_park_only_permit --output .runtime-work/c229439-497-owner-nov26/core-proof-batch-v1/off-fallback1-left_stand_park_only_permit --candidate fallback1",
+            "exit_code": 0,
+            "log": "proof-offline-fallback1-left_stand_park_only_permit.log",
+            "log_sha256": "fb2f499cfab5a604071c64e6b32058ee5f7c0747fc0711dd26614f4bc61d2005",
+            "construction_sha256": "67370687557034dac3726bd3c119f8bd5b2393d3728e386b173f81fa3b8556b2"
+          },
+          "compatibility": {
+            "receipt": "compat-fallback1-left_stand_park_only_permit-receipt.json",
+            "sha256": "2c5bd251d18a06342accc530376f75715a9bcc5714c6ac4a2cf16af3bcc49cb0",
+            "log": "compat-fallback1-left_stand_park_only_permit-analysis.log",
+            "negative_log": "compat-fallback1-left_stand_park_only_permit-negative.log"
+          }
+        }
+      ],
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "fixture_recipe": "work/testing__C229439__NRS-484B-497__vehicle_parker/diagnostic-left_stand_park_only_permit-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229439__NRS-484B-497__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-497__vehicle_parker__left_stand_park_only_permit --output .runtime-work/c229439-497-owner-nov26/core-proof-batch-v1/off-left_stand_park_only_permit",
+        "exit_code": 0,
+        "log": "proof-offline-left_stand_park_only_permit.log",
+        "log_sha256": "689ffe1b622aded855a57bb87e06cdc866e6a46cb874e8a27d72e378cdee88e6",
+        "construction_sha256": "fa13dab5df51f0ad3bb3d23d51ee04647ec572762e07ea7560d08b09320c0e52"
+      },
+      "compatibility": {
+        "receipt": "compat-left_stand_park_only_permit-receipt.json",
+        "sha256": "475146cf5d83044e1ea787605454dbbdfb1a3922c3d5a145d219f6e276d2dcd9",
+        "log": "compat-left_stand_park_only_permit-analysis.log",
+        "negative_log": "compat-left_stand_park_only_permit-negative.log"
+      },
+      "negative": {
+        "log": "compat-left_stand_park_only_permit-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-left_stand_park_only_permit-proof.json",
+        "sha256": "e2ee7b52421d596299d243b71acc595756756bff94b3022aad3c1ecac1e75eba"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229439__NRS-484B-497__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-497__vehicle_parker__left_stand_park_only_permit --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$OUTPUT/feedback.json\"",
+        "test_log": "saved-left_stand_park_only_permit.log",
+        "test_log_sha256": "68fd434d6d2fb16a85f6fe9a76349171b12c75bc1cf874518ad041a5ea8b3874",
+        "test_exit_code": 0
+      },
+      "acquisition": {
+        "vehicle_body_side_history": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "vehicle_speed_and_control_history": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "roadway_direction_context": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "device_permission_context": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "parking_person_and_purpose_context": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C229439__NRS-484B-497__vehicle_parker__right_park_no_device",
+      "kind": "delivery",
+      "construction": "cases/right_park_no_device/construction.json",
+      "construction_sha256": "0e8df949b86746db1ce94bca5196e29b04e4fba5000135478e35ae081dc06ecf",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Approach may overshoot selected roadway side or place the device outside a legible camera view."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback-right_park_no_device-construction.json",
+          "construction_sha256": "8f9f55d7af7388545b6aaa3719f56baa6eeb6395281945624eb8a3e5aed229d7",
+          "trigger": {
+            "source": "original body trajectory and four-camera review",
+            "metric": "distance from requested target and visible side/device",
+            "failure_condition": "primary overshoots, misses target side or camera lacks required device/body view"
+          },
+          "changed_knobs": [
+            "engineering_brake_gain: 0.68 to 0.86"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229439__NRS-484B-497__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-497__vehicle_parker__right_park_no_device --output .runtime-work/c229439-497-owner-nov26/core-proof-batch-v1/off-fallback1-right_park_no_device --candidate fallback1",
+            "exit_code": 0,
+            "log": "proof-offline-fallback1-right_park_no_device.log",
+            "log_sha256": "5877e46dc3e0968b65ec133ad0c8d3e3b47ef06715c93b907455502485f2b395",
+            "construction_sha256": "8f9f55d7af7388545b6aaa3719f56baa6eeb6395281945624eb8a3e5aed229d7"
+          },
+          "compatibility": {
+            "receipt": "compat-fallback1-right_park_no_device-receipt.json",
+            "sha256": "52480301f2730aaa8e68e4aa17a5de7fd8b44bcc7459585551f8aed798d34c8e",
+            "log": "compat-fallback1-right_park_no_device-analysis.log",
+            "negative_log": "compat-fallback1-right_park_no_device-negative.log"
+          }
+        }
+      ],
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "fixture_recipe": "work/testing__C229439__NRS-484B-497__vehicle_parker/diagnostic-right_park_no_device-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229439__NRS-484B-497__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-497__vehicle_parker__right_park_no_device --output .runtime-work/c229439-497-owner-nov26/core-proof-batch-v1/off-right_park_no_device",
+        "exit_code": 0,
+        "log": "proof-offline-right_park_no_device.log",
+        "log_sha256": "d9c47e5cb4eea53e1c38569761326386550586a313d92cf6b2127050aa6fc8f8",
+        "construction_sha256": "0e8df949b86746db1ce94bca5196e29b04e4fba5000135478e35ae081dc06ecf"
+      },
+      "compatibility": {
+        "receipt": "compat-right_park_no_device-receipt.json",
+        "sha256": "34bb057633c8e87b42682370f2e2ce033af4f3fbbb939d9ca09e894c7cd35f7d",
+        "log": "compat-right_park_no_device-analysis.log",
+        "negative_log": "compat-right_park_no_device-negative.log"
+      },
+      "negative": {
+        "log": "compat-right_park_no_device-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-right_park_no_device-proof.json",
+        "sha256": "e479da7eeb344062ea65ab28f2e19bc8825182eaecfb10e81f966a845b365655"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229439__NRS-484B-497__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-497__vehicle_parker__right_park_no_device --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$OUTPUT/feedback.json\"",
+        "test_log": "saved-right_park_no_device.log",
+        "test_log_sha256": "eff132eafb8f153a17d17d31556fd23356f3fd68bdd982f9afbc59a184f60f7c",
+        "test_exit_code": 0
+      },
+      "acquisition": {
+        "vehicle_body_side_history": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "vehicle_speed_and_control_history": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "roadway_direction_context": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "device_permission_context": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "parking_person_and_purpose_context": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C229439__NRS-484B-497__vehicle_parker__left_stop_no_device",
+      "kind": "delivery",
+      "construction": "cases/left_stop_no_device/construction.json",
+      "construction_sha256": "85f7e80ed01e4ddd360e8b88c4397e4e0c8ec89c357e3a6a9ccd3c2741d98480",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Approach may overshoot selected roadway side or place the device outside a legible camera view."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback-left_stop_no_device-construction.json",
+          "construction_sha256": "ea507f12841224b4dbfbf8e481a70c0a7a2ee3dfc66d00d6dc2b156da547e615",
+          "trigger": {
+            "source": "original body trajectory and four-camera review",
+            "metric": "distance from requested target and visible side/device",
+            "failure_condition": "primary overshoots, misses target side or camera lacks required device/body view"
+          },
+          "changed_knobs": [
+            "engineering_brake_gain: 0.68 to 0.86"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229439__NRS-484B-497__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-497__vehicle_parker__left_stop_no_device --output .runtime-work/c229439-497-owner-nov26/core-proof-batch-v1/off-fallback1-left_stop_no_device --candidate fallback1",
+            "exit_code": 0,
+            "log": "proof-offline-fallback1-left_stop_no_device.log",
+            "log_sha256": "762fa823b613942641f972b44a19f237a1680d72af5759be06f20cc50ee3b006",
+            "construction_sha256": "ea507f12841224b4dbfbf8e481a70c0a7a2ee3dfc66d00d6dc2b156da547e615"
+          },
+          "compatibility": {
+            "receipt": "compat-fallback1-left_stop_no_device-receipt.json",
+            "sha256": "e46d466424313bfd4b75cda9222f2d85d0bd84cd58a3605385bcf0ee55860d39",
+            "log": "compat-fallback1-left_stop_no_device-analysis.log",
+            "negative_log": "compat-fallback1-left_stop_no_device-negative.log"
+          }
+        }
+      ],
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "fixture_recipe": "work/testing__C229439__NRS-484B-497__vehicle_parker/diagnostic-left_stop_no_device-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229439__NRS-484B-497__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-497__vehicle_parker__left_stop_no_device --output .runtime-work/c229439-497-owner-nov26/core-proof-batch-v1/off-left_stop_no_device",
+        "exit_code": 0,
+        "log": "proof-offline-left_stop_no_device.log",
+        "log_sha256": "762fa823b613942641f972b44a19f237a1680d72af5759be06f20cc50ee3b006",
+        "construction_sha256": "85f7e80ed01e4ddd360e8b88c4397e4e0c8ec89c357e3a6a9ccd3c2741d98480"
+      },
+      "compatibility": {
+        "receipt": "compat-left_stop_no_device-receipt.json",
+        "sha256": "85496f149040b4b5ad85eb688dc0553937f721d8b2a84429b36f51058104d6bc",
+        "log": "compat-left_stop_no_device-analysis.log",
+        "negative_log": "compat-left_stop_no_device-negative.log"
+      },
+      "negative": {
+        "log": "compat-left_stop_no_device-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-left_stop_no_device-proof.json",
+        "sha256": "fa5e78051394c8a24385f66a4d35d320f37a04709434548d0a85c3ec3a4c86fd"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229439__NRS-484B-497__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-497__vehicle_parker__left_stop_no_device --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$OUTPUT/feedback.json\"",
+        "test_log": "saved-left_stop_no_device.log",
+        "test_log_sha256": "f4e639262da842c6a14575d50e8951e90fddce91d4be4c15e6524e1fe1ee8033",
+        "test_exit_code": 0
+      },
+      "acquisition": {
+        "vehicle_body_side_history": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "vehicle_speed_and_control_history": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "roadway_direction_context": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "device_permission_context": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "parking_person_and_purpose_context": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C229439__NRS-484B-497__vehicle_parker__two_way_left_park",
+      "kind": "delivery",
+      "construction": "cases/two_way_left_park/construction.json",
+      "construction_sha256": "81736c064d0cf3baacb2f1656f85cc27f41614055f64a1604a51d049705ec9b8",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Approach may overshoot selected roadway side or place the device outside a legible camera view."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback-two_way_left_park-construction.json",
+          "construction_sha256": "bd3e76a7e1c65381724fef2c64bff6af6c024dc0d53f149b607bd68699b0fb05",
+          "trigger": {
+            "source": "original body trajectory and four-camera review",
+            "metric": "distance from requested target and visible side/device",
+            "failure_condition": "primary overshoots, misses target side or camera lacks required device/body view"
+          },
+          "changed_knobs": [
+            "engineering_brake_gain: 0.68 to 0.86"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229439__NRS-484B-497__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-497__vehicle_parker__two_way_left_park --output .runtime-work/c229439-497-owner-nov26/core-proof-batch-v1/off-fallback1-two_way_left_park --candidate fallback1",
+            "exit_code": 0,
+            "log": "proof-offline-fallback1-two_way_left_park.log",
+            "log_sha256": "c305c4932844b686fdedfb5db5c6db54db4317f068dddd6288c8cf20fac3096e",
+            "construction_sha256": "bd3e76a7e1c65381724fef2c64bff6af6c024dc0d53f149b607bd68699b0fb05"
+          },
+          "compatibility": {
+            "receipt": "compat-fallback1-two_way_left_park-receipt.json",
+            "sha256": "f62396b87fc2117a7c8a42c31d09be0c63c2a78cd491faa51a2421c0407dc92e",
+            "log": "compat-fallback1-two_way_left_park-analysis.log",
+            "negative_log": "compat-fallback1-two_way_left_park-negative.log"
+          }
+        }
+      ],
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "fixture_recipe": "work/testing__C229439__NRS-484B-497__vehicle_parker/diagnostic-two_way_left_park-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229439__NRS-484B-497__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-497__vehicle_parker__two_way_left_park --output .runtime-work/c229439-497-owner-nov26/core-proof-batch-v1/off-two_way_left_park",
+        "exit_code": 0,
+        "log": "proof-offline-two_way_left_park.log",
+        "log_sha256": "c305c4932844b686fdedfb5db5c6db54db4317f068dddd6288c8cf20fac3096e",
+        "construction_sha256": "81736c064d0cf3baacb2f1656f85cc27f41614055f64a1604a51d049705ec9b8"
+      },
+      "compatibility": {
+        "receipt": "compat-two_way_left_park-receipt.json",
+        "sha256": "e964abae54a56c407151583aa744d581a65425d0967f1d71f2927302c8652d10",
+        "log": "compat-two_way_left_park-analysis.log",
+        "negative_log": "compat-two_way_left_park-negative.log"
+      },
+      "negative": {
+        "log": "compat-two_way_left_park-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-two_way_left_park-proof.json",
+        "sha256": "4b354de0371f7fa207051bcba6fd7b18df1f7ea70f45b20e6504463555a592c2"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229439__NRS-484B-497__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-497__vehicle_parker__two_way_left_park --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$OUTPUT/feedback.json\"",
+        "test_log": "saved-two_way_left_park.log",
+        "test_log_sha256": "5971c91b1bc628950bce4fe53d36acb9abae243671122dfe7e04da1326c1cab6",
+        "test_exit_code": 0
+      },
+      "acquisition": {
+        "vehicle_body_side_history": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "vehicle_speed_and_control_history": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "roadway_direction_context": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "device_permission_context": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "parking_person_and_purpose_context": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        }
+      }
+    },
+    {
+      "case_id": "testing__C229439__NRS-484B-497__vehicle_parker__one_lane_left_park",
+      "kind": "delivery",
+      "construction": "cases/one_lane_left_park/construction.json",
+      "construction_sha256": "e78b54c1892c4e8c677955b9544995c80d172bd20b5b5cd9ece5bca62a865758",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Approach may overshoot selected roadway side or place the device outside a legible camera view."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback-one_lane_left_park-construction.json",
+          "construction_sha256": "3f7b0838315f633724398087062826a4ff75adb3b153179d74d899920bb441e5",
+          "trigger": {
+            "source": "original body trajectory and four-camera review",
+            "metric": "distance from requested target and visible side/device",
+            "failure_condition": "primary overshoots, misses target side or camera lacks required device/body view"
+          },
+          "changed_knobs": [
+            "engineering_brake_gain: 0.68 to 0.86"
+          ],
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229439__NRS-484B-497__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-497__vehicle_parker__one_lane_left_park --output .runtime-work/c229439-497-owner-nov26/core-proof-batch-v1/off-fallback1-one_lane_left_park --candidate fallback1",
+            "exit_code": 0,
+            "log": "proof-offline-fallback1-one_lane_left_park.log",
+            "log_sha256": "5f083668decfa78a64f5db5cd1ac3f900dfab7052e455a0f70ab844dbe954787",
+            "construction_sha256": "3f7b0838315f633724398087062826a4ff75adb3b153179d74d899920bb441e5"
+          },
+          "compatibility": {
+            "receipt": "compat-fallback1-one_lane_left_park-receipt.json",
+            "sha256": "fbd280423f7bf602057cdba3eccf2c7ef7f46ad8da51407baa3125f5a009ea40",
+            "log": "compat-fallback1-one_lane_left_park-analysis.log",
+            "negative_log": "compat-fallback1-one_lane_left_park-negative.log"
+          }
+        }
+      ],
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "fixture_recipe": "work/testing__C229439__NRS-484B-497__vehicle_parker/diagnostic-one_lane_left_park-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C229439__NRS-484B-497__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-497__vehicle_parker__one_lane_left_park --output .runtime-work/c229439-497-owner-nov26/core-proof-batch-v1/off-one_lane_left_park",
+        "exit_code": 0,
+        "log": "proof-offline-one_lane_left_park.log",
+        "log_sha256": "5f083668decfa78a64f5db5cd1ac3f900dfab7052e455a0f70ab844dbe954787",
+        "construction_sha256": "e78b54c1892c4e8c677955b9544995c80d172bd20b5b5cd9ece5bca62a865758"
+      },
+      "compatibility": {
+        "receipt": "compat-one_lane_left_park-receipt.json",
+        "sha256": "855c63c4b7535023134b39e2a8abfd183a8f41bd4182e06ee750f5f42b9455bd",
+        "log": "compat-one_lane_left_park-analysis.log",
+        "negative_log": "compat-one_lane_left_park-negative.log"
+      },
+      "negative": {
+        "log": "compat-one_lane_left_park-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-one_lane_left_park-proof.json",
+        "sha256": "afb46be6c43f5335a08359cb983aa661b8fa04f01922bc0534f1bea01c0bae4f"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/testing__C229439__NRS-484B-497__vehicle_parker/execution-manifest.json --case testing__C229439__NRS-484B-497__vehicle_parker__one_lane_left_park --attempt \"$ATTEMPT\" --output \"$OUTPUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": "cat \"$OUTPUT/feedback.json\"",
+        "test_log": "saved-one_lane_left_park.log",
+        "test_log_sha256": "b7d22fed54e4db9f8f3ef5eb2a3de677835bb008410b515149c863f61c6056b3",
+        "test_exit_code": 0
+      },
+      "acquisition": {
+        "vehicle_body_side_history": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "vehicle_speed_and_control_history": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "roadway_direction_context": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "device_permission_context": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "parking_person_and_purpose_context": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "saved original Native acquisition and frame-joined extraction",
+          "evidence": "parking-history.jsonl, parking-context.json and video_frames.jsonl"
+        }
+      }
+    }
+  ]
+}

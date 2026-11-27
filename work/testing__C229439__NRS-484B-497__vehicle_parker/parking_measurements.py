@@ -23,14 +23,18 @@ def vector(value):
     return value
 
 
-def measure(case_id, context_path, trace_path, receipt_path):
+def measure(case_id, context_path, trace_path, receipt_path, allow_diagnostic=False):
     if not case_id.startswith(ASSIGNMENT_ID + "__"):
         raise ValueError("exact assignment case required")
     receipt = json.loads(Path(receipt_path).read_text(encoding="utf-8"))
     if (receipt.get("assignment_id"), receipt.get("case_id")) != (ASSIGNMENT_ID, case_id):
         raise ValueError("original source receipt identity mismatch")
-    if receipt.get("diagnostic_fixture") or receipt.get("source_kind") != "original_native_capture":
+    if (receipt.get("diagnostic_fixture") and not allow_diagnostic) or receipt.get("source_kind") not in (
+            "original_native_capture", "diagnostic_native_shape"):
         raise ValueError("original Native capture required")
+    if receipt.get("source_kind") == "diagnostic_native_shape" and not (
+            allow_diagnostic and receipt.get("diagnostic_fixture")):
+        raise ValueError("diagnostic source must remain labeled fixture")
     if receipt.get("context_sha256") != sha(context_path) or receipt.get("trace_sha256") != sha(trace_path):
         raise ValueError("original source bytes changed")
     context = json.loads(Path(context_path).read_text(encoding="utf-8"))
@@ -94,7 +98,8 @@ def measure(case_id, context_path, trace_path, receipt_path):
             "marked_lane_count": lane_count, "one_way_restriction": context["one_way_restriction"],
             "device_kind_source_label": context["device_kind"], "observations": observations,
             "roadway_side_judgment": "unresolved", "device_permission_judgment": "unresolved",
-            "activity_judgment": "unresolved", "physical_acceptance": "unverified"}
+            "activity_judgment": "unresolved", "physical_acceptance": "unverified",
+            "diagnostic_fixture": bool(receipt.get("diagnostic_fixture"))}
 
 
 def main():

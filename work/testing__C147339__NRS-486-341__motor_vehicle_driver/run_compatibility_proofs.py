@@ -22,9 +22,7 @@ def sha(path):
 
 def run_one(entry, candidate):
     suffix = entry["case_id"].split("__")[-1]
-    directory = (SCRATCH / "c147339-compat-third" if suffix == "motorcycle_adjacent_clear"
-                 and candidate == "primary" else
-                 SCRATCH / ("c147339-compat-batch-" + suffix + "-" + candidate))
+    directory = SCRATCH / ("c147339-compat-v2-" + suffix + "-" + candidate)
     if not (directory / "compatibility.json").is_file():
         if directory.exists():
             raise ValueError("Retain prior failed attempt: " + str(directory))
@@ -35,7 +33,7 @@ def run_one(entry, candidate):
                    "--validator", str(VALIDATOR)]
         env = dict(os.environ, SCENARIO_PIPELINE_OUTPUT_ROOT=str(SCRATCH / "c147339-runtime"),
                    PYTHONDONTWRITEBYTECODE="1", TMPDIR=str(SCRATCH / "c147339-tmp"))
-        cli_log = SCRATCH / ("c147339-cli-" + suffix + "-" + candidate + ".log")
+        cli_log = SCRATCH / ("c147339-cli-v2-" + suffix + "-" + candidate + ".log")
         with cli_log.open("w") as log:
             completed = subprocess.run(command, cwd=REPO, env=env, stdout=log,
                                        stderr=subprocess.STDOUT)

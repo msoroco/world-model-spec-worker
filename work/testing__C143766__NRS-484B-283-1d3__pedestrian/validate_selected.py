@@ -31,7 +31,7 @@ def main() -> None:
     independent = read('cpu-independent-proofs.json')
     comparisons = read('cpu-comparison-proofs.json')
     if (len(manifest['cases']), len(offline), len(compatibility), len(saved),
-            len(independent), len(comparisons)) != (4, 8, 8, 4, 4, 3):
+            len(independent), len(comparisons)) != (7, 14, 14, 7, 7, 6):
         raise ValueError('selected proof counts differ')
     if any(row['exit_code'] for row in offline + compatibility + saved):
         raise ValueError('offline, compatibility or saved-only proof failed')
@@ -40,9 +40,9 @@ def main() -> None:
         raise ValueError('independent source audit positive/negative differs')
     if any(row['exit_code'] for row in comparisons):
         raise ValueError('saved comparison proof failed')
-    print(json.dumps({'selected_cases': 4, 'offline_candidates': 8,
-        'compatibility_candidates': 8, 'saved_only_cases': 4,
-        'independent_delivery_pairs': 4, 'comparisons': 3,
+    print(json.dumps({'selected_cases': 7, 'offline_candidates': 14,
+        'compatibility_candidates': 14, 'saved_only_cases': 7,
+        'independent_delivery_pairs': 7, 'comparisons': 6,
         'semantic_stages': semantic['stage_count'], 'runtime_validators': 'passed'},
         sort_keys=True))
 

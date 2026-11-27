@@ -34,9 +34,7 @@ def run(command, log, expected_code, expected_text):
 
 
 def attempt_for(suffix):
-    if suffix == "motorcycle_adjacent_clear":
-        return REPO / ".runtime-work/c147339-compat-third"
-    return REPO / (".runtime-work/c147339-compat-batch-" + suffix + "-primary")
+    return REPO / (".runtime-work/c147339-compat-v2-" + suffix + "-primary")
 
 
 def main():

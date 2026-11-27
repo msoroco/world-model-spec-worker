@@ -12,7 +12,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 REPO = ROOT.parents[1]
-SCRATCH = REPO / ".runtime-work/c147339-saved-processing"
+SCRATCH = REPO / ".runtime-work/c147339-saved-processing-v2"
 VALIDATOR = REPO / ".runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck"
 SKIP = {"result.json", "analysis-report.json", "channels", "traffic_spec", "converted",
         "compatibility.json", "processing.json", "feedback.json", "candidate-selection.json"}
@@ -27,9 +27,7 @@ def write(path, value):
 
 
 def source_for(suffix):
-    if suffix == "motorcycle_adjacent_clear":
-        return REPO / ".runtime-work/c147339-compat-third"
-    return REPO / (".runtime-work/c147339-compat-batch-" + suffix + "-primary")
+    return REPO / (".runtime-work/c147339-compat-v2-" + suffix + "-primary")
 
 
 def one(entry):

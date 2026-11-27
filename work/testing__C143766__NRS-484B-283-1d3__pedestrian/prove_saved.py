@@ -30,7 +30,7 @@ def main():
             "--manifest", str(manifest), "--case", cid,
             "--attempt", str(source), "--output", str(output),
             "--library", str(REPO / "runtime/library"),
-            "--validator", str(REPO / ".runtime-work/c143766-1d3-decoder/.lake/build/bin/adapterCheck")]
+            "--validator", str(REPO / ".runtime-work/c150911-decoder/.lake/build/bin/adapterCheck")]
         completed = subprocess.run(command, cwd=REPO, env=os.environ,
             stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
         log = ROOT / "cases" / short / "proof-saved-only.log"
