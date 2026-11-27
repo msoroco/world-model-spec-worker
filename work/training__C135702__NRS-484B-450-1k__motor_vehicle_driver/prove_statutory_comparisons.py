@@ -12,10 +12,11 @@ sys.path.insert(0, str(ROOT / "native"))
 from statutory_comparison import audit
 
 NAMES = ("stop_activity", "stand_activity", "alongside_placement",
-         "traffic_conflict", "law_direction", "traffic_device")
+         "traffic_conflict", "law_direction", "traffic_device", "excavation_kind")
 AXIS = {"stop_activity": "activity_request", "stand_activity": "activity_request",
         "alongside_placement": "placement_request", "traffic_conflict": "exception_request",
-        "law_direction": "exception_request", "traffic_device": "exception_request"}
+        "law_direction": "exception_request", "traffic_device": "exception_request",
+        "excavation_kind": "obstruction_kind_request"}
 
 
 def sha(path):
@@ -26,8 +27,9 @@ def request(name):
     recipe = ROOT / ("selected-recipe-statutory-" + name + ".json")
     plan = json.loads((ROOT / "statutory-branch-draft.json").read_text())
     row = next(item for item in plan["cases"] if item["case_id"].endswith("selected_statutory_" + name))
+    construction_name = "excavation-construction.json" if name == "excavation_kind" else "statutory-construction.json"
     cfg = json.loads(next(item["content"] for item in json.loads(
-        (ROOT / "cases" / name / "statutory-construction.json").read_text())["files"]
+        (ROOT / "cases" / name / construction_name).read_text())["files"]
         if item["path"] == "config.json"))
     if cfg["case_id"] != row["case_id"]:
         raise ValueError("Construction case differs from statutory request")
@@ -48,6 +50,9 @@ def prove(name):
     if name not in NAMES:
         raise ValueError("Unknown statutory comparison")
     left, right = request("baseline"), request(name)
+    if name == "excavation_kind":
+        left["surface_profile_sha256"] = sha(ROOT / "native/geometry.py")
+        right["surface_profile_sha256"] = sha(ROOT / "native/excavation_geometry.py")
     with tempfile.TemporaryDirectory(dir=REPO / ".runtime-work", prefix="c135702-stat-compare-") as temp:
         a, b = Path(temp) / "a.json", Path(temp) / "b.json"
         a.write_text(json.dumps(left) + "\n")

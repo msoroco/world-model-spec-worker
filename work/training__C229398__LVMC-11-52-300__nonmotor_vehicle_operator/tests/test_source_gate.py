@@ -60,6 +60,10 @@ class SourceGateTest(unittest.TestCase):
             audit(self.packet, require_original=True)
 
     def test_device_motor_and_loading_negatives(self):
+        self.data["findings"]["excluded_device"] = True
+        self.save()
+        self.assertFalse(audit(self.packet)["qualifying_context_supported"])
+        self.data["findings"]["excluded_device"] = False
         self.data["findings"]["self_propulsion"] = True
         self.save()
         self.assertFalse(audit(self.packet)["qualifying_context_supported"])

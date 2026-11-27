@@ -10,13 +10,41 @@ from duration_policy import TARGETS, TOTAL_FRAMES, comparison_invariants
 
 HERE = Path(__file__).resolve().parent.parent
 AID = HERE.name
+ASSIGNMENT = AID
+HELD = ("road_sha256", "device_review_sha256", "parking_review_sha256",
+        "street_review_sha256", "civil_clock_review_sha256",
+        "camera_policy_sha256", "weather", "parking_target_xy_m")
 
 
 def digest(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
 
-def audit(negative=False):
+def audit_reports(paths):
+    if set(paths) != set(TARGETS):
+        raise ValueError("Exact duration triple required")
+    reports = {suffix: json.loads(Path(path).read_text()) for suffix, path in paths.items()}
+    held = {key: reports["below_30"].get(key) for key in HELD}
+    for suffix, target in TARGETS.items():
+        report = reports[suffix]
+        if report.get("case_id") != AID + "__" + suffix or report.get("requested_duration_s") != target:
+            raise ValueError("Duration target changed")
+        if report.get("capture_frames") != TOTAL_FRAMES or report.get("rate_hz") != 20:
+            raise ValueError("Incomplete duration capture")
+        if any(report.get(key) != value for key, value in held.items()):
+            raise ValueError("Duration comparison changed held condition")
+        if report.get("stationary_duration_ms") != target * 1000:
+            raise ValueError("Measured duration differs")
+        for source in report.get("sources", {}).values():
+            path = Path(paths[suffix]).parent / source["path"]
+            if not path.is_file():
+                raise ValueError("Comparison source missing")
+            if digest(path) != source["sha256"]:
+                raise ValueError("Comparison source hash differs")
+    return {"held_conditions": list(HELD), "physical_or_legal_acceptance": False}
+
+
+def audit_selected(negative=False):
     configs = {}
     measured = {}
     construction_hashes = {}
@@ -50,11 +78,15 @@ def audit(negative=False):
             "physical_or_legal_acceptance": False}
 
 
+def audit(paths=None):
+    return audit_reports(paths) if paths is not None else audit_selected()
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--negative-selftest", action="store_true")
     args = parser.parse_args()
-    print(json.dumps(audit(args.negative_selftest), sort_keys=True))
+    print(json.dumps(audit_selected(args.negative_selftest), sort_keys=True))
 
 
 if __name__ == "__main__":

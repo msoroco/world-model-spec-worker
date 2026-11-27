@@ -171,6 +171,7 @@ def execute(case_id, output_dir, authority_packet, host='127.0.0.1', port=2000,
                     first_elapsed = snap.timestamp.elapsed_seconds
                 elapsed = snap.timestamp.elapsed_seconds - first_elapsed
                 pose = ego.get_transform()
+                velocity = ego.get_velocity()
                 extent = ego.bounding_box.extent
                 observed = {'role': 'ego', 'actor_id': ego.id,
                             'blueprint_id': ego.type_id, 'x_m': pose.location.x,
@@ -200,9 +201,15 @@ def execute(case_id, output_dir, authority_packet, host='127.0.0.1', port=2000,
                                            'steer': command.steer}) + '\n')
                 trace.write(json.dumps({'frame': native, 'time_s': elapsed,
                                         'position': {'x': observed['x_m'],
-                                                     'y': observed['y_m'], 'z': 0},
+                                                     'y': observed['y_m'], 'z': pose.location.z},
+                                        'position_m': [observed['x_m'], observed['y_m'], pose.location.z],
+                                        'velocity_mps': [velocity.x, velocity.y, velocity.z],
                                         'heading_deg': observed['yaw_deg'],
-                                        'speed_mps': observed['speed_mps']}) + '\n')
+                                        'speed_mps': observed['speed_mps'],
+                                        'speed_mph': observed['speed_mps'] / .44704,
+                                        'control': {'throttle': command.throttle,
+                                                    'brake': command.brake,
+                                                    'hand_brake': command.hand_brake}}) + '\n')
                 completed += 1
         for name, process in encoders.items():
             process.stdin.close()

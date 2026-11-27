@@ -5,6 +5,7 @@ import json
 import sys
 import tempfile
 import unittest
+from datetime import datetime
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "native"))
@@ -12,7 +13,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "runtime" /
                        "scenario_pipeline"))
 from duration_policy import TOTAL_FRAMES, stop_frame
 from finalize import finalize
-from selected_measurement import measure
+from selected_measurement import in_night_window, measure
 from source_gate import FIELDS
 
 
@@ -20,6 +21,12 @@ ASSIGNMENT = "training__C229398__LVMC-11-52-300__nonmotor_vehicle_operator"
 
 
 class SelectedMeasurementTest(unittest.TestCase):
+    def test_civil_window_endpoints(self):
+        self.assertFalse(in_night_window(datetime(2026, 11, 27, 0, 59, 59)))
+        self.assertTrue(in_night_window(datetime(2026, 11, 27, 1, 0, 0)))
+        self.assertTrue(in_night_window(datetime(2026, 11, 27, 5, 59, 59)))
+        self.assertFalse(in_night_window(datetime(2026, 11, 27, 6, 0, 0)))
+
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory(dir=Path(__file__).resolve().parents[3] /
                                                 ".runtime-work")

@@ -20,7 +20,8 @@ def sha(path):
 
 
 def run(name, kind):
-    construction = json.loads((ROOT / "cases" / name / "statutory-construction.json").read_text())
+    construction_name = "excavation-construction.json" if name == "excavation_kind" else "statutory-construction.json"
+    construction = json.loads((ROOT / "cases" / name / construction_name).read_text())
     cfg = json.loads(next(item["content"] for item in construction["files"]
                           if item["path"] == "config.json"))
     recipe = json.loads((ROOT / ("selected-recipe-statutory-" + name + ".json")).read_text())

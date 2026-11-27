@@ -1749,6 +1749,159 @@
         "comparison_or_standard": "same highway, physical obstruction, passing controller, cameras and duration with one source request varied",
         "target_value_or_branch": "traffic_device"
       }
+    },
+    {
+      "case_id": "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_excavation_kind",
+      "target_law_id": "NRS-484B-450-1k",
+      "target_type": "boundary_probe",
+      "cell_id": "C135702",
+      "actor": "motor_vehicle_driver",
+      "rationale": "Source-gated distinct excavated highway surface, with original Native terrain readback and source review required; applicability unverified.",
+      "variable_assignments": {
+        "obstruction_kind": {
+          "kind": "world_setup",
+          "value": "excavation",
+          "unit": "category"
+        },
+        "park_y_m": {
+          "kind": "controller",
+          "value": -1.1,
+          "unit": "m"
+        },
+        "observed_open_width_m": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "m"
+        },
+        "observed_passing_response": {
+          "kind": "subject_behavior",
+          "value": null,
+          "unit": "structured"
+        },
+        "activity_request": {
+          "kind": "controller",
+          "value": "park",
+          "unit": "categorical"
+        },
+        "placement_request": {
+          "kind": "controller",
+          "value": "opposite",
+          "unit": "categorical"
+        },
+        "obstruction_kind_request": {
+          "kind": "world_setup",
+          "value": "excavation",
+          "unit": "categorical"
+        },
+        "exception_request": {
+          "kind": "world_setup",
+          "value": "none",
+          "unit": "categorical"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame ego rest and operator activity source",
+            "time_window": "600 original frames",
+            "reference_frame": "Native world and reviewed source context",
+            "uncertainty": "Original realization and legal applicability require review"
+          },
+          {
+            "name": "st.obstruction",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original depressed surface and road XY",
+            "time_window": "600 original frames",
+            "reference_frame": "Native world and reviewed source context",
+            "uncertainty": "Original realization and legal applicability require review"
+          },
+          {
+            "name": "rel.bearing",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "ego to excavation center bearing",
+            "time_window": "600 original frames",
+            "reference_frame": "Native world and reviewed source context",
+            "uncertainty": "Original realization and legal applicability require review"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "ego to excavation center distance",
+            "time_window": "600 original frames",
+            "reference_frame": "Native world and reviewed source context",
+            "uncertainty": "Original realization and legal applicability require review"
+          },
+          {
+            "name": "st.lane_width",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original highway width and sampled free opening",
+            "time_window": "600 original frames",
+            "reference_frame": "Native world and reviewed source context",
+            "uncertainty": "Original realization and legal applicability require review"
+          },
+          {
+            "name": "drv.hard_deceleration",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "passing vehicle speed difference, engineering only",
+            "time_window": "600 original frames",
+            "reference_frame": "Native world and reviewed source context",
+            "uncertainty": "Original realization and legal applicability require review"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "same-frame ego and passing vehicle velocity",
+            "time_window": "600 original frames",
+            "reference_frame": "Native world and reviewed source context",
+            "uncertainty": "Original realization and legal applicability require review"
+          },
+          {
+            "name": "drv.forced_halt",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "original traffic-conflict source review",
+            "time_window": "600 original frames",
+            "reference_frame": "Native world and reviewed source context",
+            "uncertainty": "Original realization and legal applicability require review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "exception_authority",
+            "unit": "structured",
+            "method": "original source records and copied SHA256 bindings"
+          }
+        ],
+        "limitations": [
+          "Authored depressed lane needs original Native surface and pixel confirmation.",
+          "Fixtures do not establish actual traffic response or legal obstruction."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "when stopping, standing or parking would obstruct traffic",
+        "except when necessary to avoid conflict with other traffic",
+        "in compliance with law",
+        "the directions of a police officer",
+        "official traffic-control device"
+      ],
+      "paired_probe_id": "statutory_excavation_kind",
+      "deliberate_differences": [
+        "obstruction_kind_request"
+      ],
+      "probe": {
+        "primary_variable": "obstruction_kind_request",
+        "comparison_or_standard": "same base highway, actor, passing controller, cameras and duration with obstruction mechanism varied",
+        "target_value_or_branch": "excavation"
+      }
     }
   ],
   "sweep_specs": [

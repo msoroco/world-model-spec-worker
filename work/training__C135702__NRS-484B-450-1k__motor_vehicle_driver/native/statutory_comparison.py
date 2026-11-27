@@ -21,6 +21,11 @@ def audit(left_path: Path, right_path: Path, axis: str) -> dict:
     for key in FIXED:
         if left.get(key) is None or left[key] != right.get(key):
             raise ValueError("Fixed comparison condition changed: " + key)
+    if axis == "obstruction_kind_request":
+        if not left.get("surface_profile_sha256") or not right.get("surface_profile_sha256") or left["surface_profile_sha256"] == right["surface_profile_sha256"]:
+            raise ValueError("Excavation comparison lacks distinct surface source")
+    elif left.get("surface_profile_sha256") != right.get("surface_profile_sha256"):
+        raise ValueError("Fixed comparison surface changed")
     domains = {"activity_request": ACTIVITIES,
                "placement_request": set(POSITIONS),
                "obstruction_kind_request": KINDS,
@@ -40,6 +45,7 @@ def audit(left_path: Path, right_path: Path, axis: str) -> dict:
     return {"format": "c135702-statutory-comparison-draft",
             "case_ids": [left["case_id"], right["case_id"]],
             "axis": axis, "fixed_conditions": list(FIXED),
+            "surface_profile_sha256": [left.get("surface_profile_sha256"), right.get("surface_profile_sha256")],
             "source_gates": [left["source_gate_sha256"], right["source_gate_sha256"]],
             "source_gate_kinds": [left["source_gate_kind"], right["source_gate_kind"]],
             "original_capture_attested": all(item["source_gate_kind"] == "original_native"

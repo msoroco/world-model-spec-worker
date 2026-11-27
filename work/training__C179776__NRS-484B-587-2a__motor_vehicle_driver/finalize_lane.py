@@ -153,12 +153,12 @@ def finalize(attempt, output):
                 'st.lane': {'road_id': 1, 'lane_id': lane_id, 'marked_travel_bounds_y_m': [0, 4]},
                 'st.lane_marking': {'lane_edge_y_m': 4, 'pixel_verified': False},
                 'rel.occupies': {'footprint_y_min_m': row['footprint_y_min_m'], 'footprint_y_max_m': row['footprint_y_max_m'], 'outside_marked_lane': row['outside_marked_lane']},
-                'st.shoulder': {'paved': True, 'bounds_y_m': [4, 6]},
-                'dev.regulatory_sign': {'source': designation['sign_source'], 'shoulder_use_permitted': False, 'pixel_verified': False},
-                'ru.emergency_vehicle': {'source': designation['vehicle_class_source'], 'is_emergency_vehicle': False},
-                'ru.official_vehicle': {'source': designation['vehicle_class_source'], 'is_official_vehicle': False},
-                'ru.transit_bus': {'source': designation['vehicle_class_source'], 'is_transit_bus': False},
-                'drv.responding_emergency': {'source': designation['emergency_event_source'], 'emergency_required': False}}
+                'st.shoulder': {'paved': None, 'bounds_y_m': [4, 6], 'surface_pixel_verified': False},
+                'dev.regulatory_sign': {'source': designation['sign_source'], 'shoulder_use_permitted': None, 'pixel_verified': False},
+                'ru.emergency_vehicle': {'source': designation['vehicle_class_source'], 'is_emergency_vehicle': None},
+                'ru.official_vehicle': {'source': designation['vehicle_class_source'], 'is_official_vehicle': None},
+                'ru.transit_bus': {'source': designation['vehicle_class_source'], 'is_transit_bus': None},
+                'drv.responding_emergency': {'source': designation['emergency_event_source'], 'emergency_required': None}}
             for name in stream_values:
                 stream_values[name].append({'time_s': t, 'value': values[name]})
         for name, rows in stream_values.items():

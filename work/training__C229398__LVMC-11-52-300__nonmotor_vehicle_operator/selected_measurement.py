@@ -16,6 +16,11 @@ from duration_policy import TOTAL_FRAMES, TARGETS
 from source_gate import audit as audit_source
 
 
+def in_night_window(local):
+    """Use the source's civil day: 01:00 is included, 06:00 is excluded."""
+    return 1 <= local.hour < 6
+
+
 def digest(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
@@ -75,7 +80,7 @@ def measure(attempt, *, require_original=False):
                 raise ValueError("Original actor position or velocity missing")
             ms = utc_start + count * 50
             local = datetime.fromtimestamp(ms / 1000, timezone.utc).astimezone(zone)
-            in_window = 1 <= local.hour < 6
+            in_window = in_night_window(local)
             on_street = bounds[0] <= center[0] <= bounds[1] and bounds[2] <= center[1] <= bounds[3]
             at_rest = math.hypot(*velocity[:2]) <= .05
             qualifying = (context["qualifying_context_supported"] and in_window

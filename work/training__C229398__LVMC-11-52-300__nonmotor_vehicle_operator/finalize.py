@@ -138,7 +138,17 @@ def finalize(attempt, output):
                   "method": "finalize", "value": measured_ms,
                   "sources": {name: episode["sources"][name] for name in
                               ("native-actor-frames.jsonl", "review-source.json",
-                               "street-geometry.json", "video_frames.jsonl")}}},
+                               "street-geometry.json", "video_frames.jsonl")}},
+                  "night_window_exception_context": {
+                      "method": "finalize",
+                      "value": {"source_review_supported": episode["review_supported"],
+                                "first_utc_epoch_ms": episode["first_utc_epoch_ms"],
+                                "last_utc_epoch_ms": episode["last_utc_epoch_ms"],
+                                "classification_and_clock_require_original_review": synthetic,
+                                "window_rule": "01:00 inclusive to 06:00 exclusive, local civil time"},
+                      "sources": {name: episode["sources"][name] for name in
+                                  ("review-source.json", "native-actor-frames.jsonl",
+                                   "video_frames.jsonl")}}},
               "episode": episode, "source_hashes": sources,
               "provenance_kind": result["provenance_kind"],
               "diagnostic_excerpt": episode["diagnostic_excerpt"],

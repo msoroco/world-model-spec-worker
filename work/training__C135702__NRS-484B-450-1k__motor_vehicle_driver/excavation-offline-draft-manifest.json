@@ -8,7 +8,7 @@
       "case_id": "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_excavation_kind",
       "kind": "delivery",
       "construction": "cases/excavation_kind/excavation-construction.json",
-      "construction_sha256": "95d0eb6146c0bb07092eb857f77b255423344e57fddf0792d6a18ba7265f52fd",
+      "construction_sha256": "29c02a58b5b80df0af937037d281a6db527dae7e5f9ee4110a4948e76c96208f",
       "candidate_risk": {
         "status": "physical",
         "reason": "Original passing vehicle may not sustain a stable pre-excavation halt with the primary braking station."
@@ -17,7 +17,7 @@
         {
           "id": "fallback1",
           "construction": "cases/excavation_kind/excavation-fallback1-construction.json",
-          "construction_sha256": "5d8108f8f5e037c29e28500a92f8a132cbd93e44e7a732ac97f3225e15427883",
+          "construction_sha256": "b7bbde9dea625c0570a995ac8f3e8ac17ae867509a19dd724e5e618edf59d430",
           "trigger": {
             "source": "original native_samples.jsonl",
             "metric": "minimum_passing_speed_m_s and passing_halt_frames",
@@ -26,13 +26,129 @@
           "changed_knobs": [
             "passing_throttle .25 to .35",
             "brake_station_x_m -11 to -15"
-          ]
+          ],
+          "compatibility": {
+            "receipt": "cases/excavation_kind/proofs/fallback1-compatibility.json",
+            "sha256": "cab087bc33ce551daf6be3b0c34f94a6d0bce4f770b012ec12453e1617187a6f",
+            "log": "cases/excavation_kind/proofs/fallback1-analysis.log",
+            "negative_log": "cases/excavation_kind/proofs/fallback1-negative.log"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/excavation-offline-draft-manifest.json --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_excavation_kind --candidate fallback1 --output .runtime-work/c135702-statutory-temp/offline-excavation-final-fallback1 --python \"$PWD/.venv-cpu/bin/python\"",
+            "exit_code": 0,
+            "construction_sha256": "b7bbde9dea625c0570a995ac8f3e8ac17ae867509a19dd724e5e618edf59d430",
+            "log": "cases/excavation_kind/proofs/fallback1-offline.log",
+            "log_sha256": "a3a23155d8bab6f5f11f7ba4d21948653cb0b8fe168aa19f79e3688c7864fa9c"
+          }
         }
       ],
       "fixture_recipe": "work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/selected-recipe-statutory-excavation_kind.json",
       "measurement_contract": "measurement-statutory-excavation_kind.json",
       "measurement_procedure": {
         "entrypoint": "finalize.py"
+      },
+      "compatibility": {
+        "receipt": "cases/excavation_kind/proofs/primary-compatibility.json",
+        "sha256": "6e08573690687a829e372ec7a0cec4a6d3d5fc1d9b7f9e44100fd87a02111fa5",
+        "log": "cases/excavation_kind/proofs/primary-analysis.log",
+        "negative_log": "cases/excavation_kind/proofs/primary-negative.log"
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/excavation-offline-draft-manifest.json --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_excavation_kind --candidate primary --output .runtime-work/c135702-statutory-temp/offline-excavation-final-primary --python \"$PWD/.venv-cpu/bin/python\"",
+        "exit_code": 0,
+        "construction_sha256": "29c02a58b5b80df0af937037d281a6db527dae7e5f9ee4110a4948e76c96208f",
+        "log": "cases/excavation_kind/proofs/primary-offline.log",
+        "log_sha256": "a3a23155d8bab6f5f11f7ba4d21948653cb0b8fe168aa19f79e3688c7864fa9c"
+      },
+      "negative": {
+        "log": "cases/excavation_kind/proofs/primary-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "cases/excavation_kind/proofs/physical-receipt.json",
+        "sha256": "c69f02ce182d8210d9a4fe75508d9a593f37ec8302c961197f29629142449bef"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/execution-manifest.json --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_excavation_kind --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/execution-manifest.json --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_excavation_kind --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "cases/excavation_kind/proofs/saved-processing.log",
+        "test_log_sha256": "55b0135d7b767f1761dde804bcb9b43ea7a50eda02dfdc1674c8a4f653a7d0c7",
+        "processing_receipt": "cases/excavation_kind/proofs/saved-processing.json",
+        "processing_receipt_sha256": "55b0135d7b767f1761dde804bcb9b43ea7a50eda02dfdc1674c8a4f653a7d0c7"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_excavation_kind",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "excavation_delivery_audit.py",
+        "script_sha256": "fcb09a21b4bb230ec6581db308dc8dacebe66e29bf3547e3fd34acfbc53dd17f",
+        "command": ".venv-cpu/bin/python work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/excavation_delivery_audit.py --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_excavation_kind --self-test",
+        "test_exit_code": 0,
+        "test_log": "cases/excavation_kind/proofs/delivery-positive.log",
+        "test_log_sha256": "51073d961bc06c085c48195cbfee4f549d89214c5e5a50399503ba7d930a19c4",
+        "negative_command": ".venv-cpu/bin/python work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/excavation_delivery_audit.py --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_excavation_kind --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing exact original Native result",
+        "negative_log": "cases/excavation_kind/proofs/delivery-negative.log",
+        "negative_log_sha256": "36f334d65964595cb0d9249e00f7a45af19cf5963bbe18f4fe37b9145aaa9754",
+        "scope": "CPU source protocol only; original excavated surface and legal applicability pending"
+      },
+      "acquisition": {
+        "drv.standing_or_parked": {
+          "entrypoint": "runner.py",
+          "method": "same-frame original Native body, velocity and reviewed context capture; recorded-only channel derived in finalize.py",
+          "evidence": "native_samples.jsonl and exception-context.json"
+        },
+        "st.obstruction": {
+          "entrypoint": "runner.py",
+          "method": "same-frame original Native body, velocity and reviewed context capture; recorded-only channel derived in finalize.py",
+          "evidence": "native_samples.jsonl and exception-context.json"
+        },
+        "rel.bearing": {
+          "entrypoint": "runner.py",
+          "method": "same-frame original Native body, velocity and reviewed context capture; recorded-only channel derived in finalize.py",
+          "evidence": "native_samples.jsonl and exception-context.json"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "method": "same-frame original Native body, velocity and reviewed context capture; recorded-only channel derived in finalize.py",
+          "evidence": "native_samples.jsonl and exception-context.json"
+        },
+        "st.lane_width": {
+          "entrypoint": "runner.py",
+          "method": "same-frame original Native body, velocity and reviewed context capture; recorded-only channel derived in finalize.py",
+          "evidence": "native_samples.jsonl and exception-context.json"
+        },
+        "drv.hard_deceleration": {
+          "entrypoint": "runner.py",
+          "method": "same-frame original Native body, velocity and reviewed context capture; recorded-only channel derived in finalize.py",
+          "evidence": "native_samples.jsonl and exception-context.json"
+        },
+        "kin.velocity": {
+          "entrypoint": "runner.py",
+          "method": "same-frame original Native body, velocity and reviewed context capture; recorded-only channel derived in finalize.py",
+          "evidence": "native_samples.jsonl and exception-context.json"
+        },
+        "drv.forced_halt": {
+          "entrypoint": "runner.py",
+          "method": "same-frame original Native body, velocity and reviewed context capture; recorded-only channel derived in finalize.py",
+          "evidence": "native_samples.jsonl and exception-context.json"
+        }
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
       }
     }
   ]

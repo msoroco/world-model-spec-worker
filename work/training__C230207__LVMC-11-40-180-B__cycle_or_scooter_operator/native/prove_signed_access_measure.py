@@ -19,12 +19,12 @@ def write_case(folder, enters):
     setup = {'source_kind': 'synthetic_native_sample',
              'actor_kind': 'electric_scooter', 'surface_kind': 'roadway',
              'prohibition_sign_erected': True, 'sign_prohibits_actor': True,
-             'governed_x_interval_m': [0, 20],
+             'governed_x_interval_m': [40, 60],
              'sign_text': 'NO BICYCLES, E-BICYCLES OR E-SCOOTERS',
              'director_consultation_source': 'unverified'}
     frames = [{'frame': i, 'elapsed_s': i / 20,
                'camera_ids': list(CAMERAS),
-               'actor_x_m': -10 + i * 0.05 if enters else -30 + i * 0.02,
+               'actor_x_m': 30 + i * 0.05 if enters else 10 + i * 0.02,
                'actor_speed_mps': 1.0 if enters else 0.4,
                'riding_machine': True} for i in range(FRAME_COUNT)]
     (folder / 'setup.json').write_text(json.dumps(setup, sort_keys=True) + '\n')
@@ -61,6 +61,13 @@ def main():
             raise AssertionError('Outside route entered prohibited segment')
         if yes['inside_governed_segment_frames'] != 400 or yes['first_inside_frame'] != 200:
             raise AssertionError('Inside route failed segment entry')
+        try:
+            derive(inside, require_original=True)
+        except ValueError as error:
+            if 'Original Native sign review required' not in str(error):
+                raise
+        else:
+            raise AssertionError('Synthetic sign source accepted as original')
         reject(inside, 'setup.json',
                lambda x: x.update(prohibition_sign_erected=False),
                'Erected prohibition sign source missing')
@@ -86,7 +93,7 @@ def main():
                           'witness_2': {'measurement': yes,
                                         'setup_sha256': sha(inside / 'setup.json'),
                                         'raw_sha256': sha(inside / 'raw-frames.json')}},
-                'missing_source_negatives': 6, 'native_or_legal_claim': False}
+                'missing_source_negatives': 7, 'native_or_legal_claim': False}
 
 
 if __name__ == '__main__':

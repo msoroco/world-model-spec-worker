@@ -39,7 +39,16 @@ class StatutoryComparisonTest(unittest.TestCase):
             with self.subTest(axis=axis):
                 self.right = dict(self.left, case_id="right", source_gate_sha256="right-source",
                                   **{axis: value})
+                if axis == "obstruction_kind_request":
+                    self.left["surface_profile_sha256"] = "flat-source"
+                    self.right["surface_profile_sha256"] = "depressed-source"
                 self.assertEqual(audit(*self.paths(), axis)["axis"], axis)
+                self.left.pop("surface_profile_sha256", None)
+
+    def test_excavation_surface_source_required(self):
+        self.right["obstruction_kind_request"] = "excavation"
+        with self.assertRaisesRegex(ValueError, "surface source"):
+            audit(*self.paths(), "obstruction_kind_request")
 
     def test_wrong_axis_or_second_difference_rejected(self):
         self.right["activity_request"] = "stand"

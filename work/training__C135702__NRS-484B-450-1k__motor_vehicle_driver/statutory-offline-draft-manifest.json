@@ -8,7 +8,7 @@
       "case_id": "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_baseline",
       "kind": "delivery",
       "construction": "cases/baseline/statutory-construction.json",
-      "construction_sha256": "fd495e5da4197fa9cba20e2823db3e161ad560149cdccd8ee78d4022487aeb15",
+      "construction_sha256": "14cfb2a6364d4fd4b213a98500f5d6893f3d7bc1b445f8b605ee301d9aede8cb",
       "candidate_risk": {
         "status": "physical",
         "reason": "Original passing vehicle may not sustain a stable pre-obstruction halt with the primary braking station."
@@ -17,7 +17,7 @@
         {
           "id": "fallback1",
           "construction": "cases/baseline/statutory-fallback1-construction.json",
-          "construction_sha256": "e6c456bdf9ef74d0b90703ef904e5d22dce8b9bde3ea8fdd2ba41dd1e0085f7b",
+          "construction_sha256": "88e4cf9c04d3550cc8c5b15d18267087e3276bf96cac5e9ad933b1e90f91091a",
           "trigger": {
             "source": "original native_samples.jsonl",
             "metric": "minimum_passing_speed_m_s and passing_halt_frames",
@@ -26,82 +26,13 @@
           "changed_knobs": [
             "passing_throttle .25 to .35",
             "brake_station_x_m -11 to -15"
-          ],
-          "compatibility": {
-            "receipt": "cases/baseline/proofs/fallback1-compatibility.json",
-            "sha256": "5c6793ca844b3f680afc77d2cca1c0e99b53e449caca7c785dba0f96ad47fb2b",
-            "log": "cases/baseline/proofs/fallback1-analysis.log",
-            "negative_log": "cases/baseline/proofs/fallback1-negative.log"
-          },
-          "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/statutory-offline-draft-manifest.json --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_baseline --candidate fallback1 --output .runtime-work/c135702-statutory-temp/offline-v3-baseline-fallback1 --python \"$PWD/.venv-cpu/bin/python\"",
-            "exit_code": 0,
-            "construction_sha256": "e6c456bdf9ef74d0b90703ef904e5d22dce8b9bde3ea8fdd2ba41dd1e0085f7b",
-            "log": "statutory-offline-logs/baseline-fallback1.log",
-            "log_sha256": "7ba68f821a07ae89ff1aba12eb51dc8a919b1bcd01d4e86539db7ddef38e0b50"
-          }
+          ]
         }
       ],
       "fixture_recipe": "work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/selected-recipe-statutory-baseline.json",
       "measurement_contract": "measurement-statutory-baseline.json",
       "measurement_procedure": {
         "entrypoint": "finalize.py"
-      },
-      "compatibility": {
-        "receipt": "cases/baseline/proofs/primary-compatibility.json",
-        "sha256": "1471383d4836a7615aa52a6269cbf50ed9a7c043653702ba2f5dd6b45edda83d",
-        "log": "cases/baseline/proofs/primary-analysis.log",
-        "negative_log": "cases/baseline/proofs/primary-negative.log"
-      },
-      "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/statutory-offline-draft-manifest.json --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_baseline --candidate primary --output .runtime-work/c135702-statutory-temp/offline-v3-baseline-primary --python \"$PWD/.venv-cpu/bin/python\"",
-        "exit_code": 0,
-        "construction_sha256": "fd495e5da4197fa9cba20e2823db3e161ad560149cdccd8ee78d4022487aeb15",
-        "log": "statutory-offline-logs/baseline-primary.log",
-        "log_sha256": "649f5b425a58cd31b774e4140775a1c4a637d306e7b0b3982aa4189f58f78622"
-      },
-      "negative": {
-        "log": "cases/baseline/proofs/primary-negative.log"
-      },
-      "physical_preparation": {
-        "receipt": "cases/baseline/proofs/physical-receipt.json",
-        "sha256": "525076a1183a156c9028f06311f8b101740f5704f219d980d89a6fbb6070e7c7"
-      },
-      "post_capture": {
-        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/execution-manifest.json --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_baseline --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
-        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/execution-manifest.json --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_baseline --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
-        "recorded_only": true,
-        "test_exit_code": 0,
-        "test_log": "cases/baseline/proofs/saved-processing.log",
-        "test_log_sha256": "927cb90e005150ec9ca7d21640a7caaa97e4bda4a4cca3024e231ae98b6d09f8",
-        "processing_receipt": "cases/baseline/proofs/saved-processing.json",
-        "processing_receipt_sha256": "927cb90e005150ec9ca7d21640a7caaa97e4bda4a4cca3024e231ae98b6d09f8"
-      },
-      "delivery_acceptance": {
-        "case_id": "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_baseline",
-        "sets": [
-          "full-train"
-        ],
-        "checks": [
-          "native_source",
-          "all_participants",
-          "time_join",
-          "full_video_decode",
-          "actual_pixels",
-          "physical_completion"
-        ],
-        "script": "statutory_delivery_audit.py",
-        "script_sha256": "56075c9bb073794bddcbad770c6ff2e6a59dedaf18fc9d2cdc74323c02a7e442",
-        "command": ".venv-cpu/bin/python work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/statutory_delivery_audit.py --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_baseline --self-test",
-        "test_exit_code": 0,
-        "test_log": "cases/baseline/proofs/delivery-positive.log",
-        "test_log_sha256": "4169c6e0da07b733e7bb59c244101fea6605dd85b3785f5b39e9983f08ca856a",
-        "negative_command": ".venv-cpu/bin/python work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/statutory_delivery_audit.py --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_baseline --self-test --negative",
-        "negative_exit_code": 1,
-        "negative_expected_error": "Missing exact original Native result",
-        "negative_log": "cases/baseline/proofs/delivery-negative.log",
-        "negative_log_sha256": "13e503a9e3314223c2eae0fd0f095aa86046198278980560b6741faa85b7345d",
-        "scope": "CPU source protocol only; original physical source and legal applicability pending"
       },
       "acquisition": {
         "drv.standing_or_parked": {
@@ -155,7 +86,7 @@
       "case_id": "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_stop_activity",
       "kind": "delivery",
       "construction": "cases/stop_activity/statutory-construction.json",
-      "construction_sha256": "5f8e2a5b6d8f8f3f3bd5474efa82abb7994d644d53d1f6e6d3fcaa1c7ad8ab52",
+      "construction_sha256": "52491d5f387410cb193dcd9e3a700adac3d66df6bd95d0d1fd84dc74ce765df9",
       "candidate_risk": {
         "status": "physical",
         "reason": "Original passing vehicle may not sustain a stable pre-obstruction halt with the primary braking station."
@@ -164,7 +95,7 @@
         {
           "id": "fallback1",
           "construction": "cases/stop_activity/statutory-fallback1-construction.json",
-          "construction_sha256": "f366c9b1e2a43e6ba281f3e290ed02769793afa9882fd2a9f6f72c21f1545d70",
+          "construction_sha256": "6e881827490ab7176be22d8d5d82cac2b5ddd01acebab5813ad96496de3b4d96",
           "trigger": {
             "source": "original native_samples.jsonl",
             "metric": "minimum_passing_speed_m_s and passing_halt_frames",
@@ -173,82 +104,13 @@
           "changed_knobs": [
             "passing_throttle .25 to .35",
             "brake_station_x_m -11 to -15"
-          ],
-          "compatibility": {
-            "receipt": "cases/stop_activity/proofs/fallback1-compatibility.json",
-            "sha256": "35e9196ef772192110d05743d04a0da3e812903e0eb9bbb4f7883133f196a537",
-            "log": "cases/stop_activity/proofs/fallback1-analysis.log",
-            "negative_log": "cases/stop_activity/proofs/fallback1-negative.log"
-          },
-          "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/statutory-offline-draft-manifest.json --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_stop_activity --candidate fallback1 --output .runtime-work/c135702-statutory-temp/offline-v3-stop_activity-fallback1 --python \"$PWD/.venv-cpu/bin/python\"",
-            "exit_code": 0,
-            "construction_sha256": "f366c9b1e2a43e6ba281f3e290ed02769793afa9882fd2a9f6f72c21f1545d70",
-            "log": "statutory-offline-logs/stop_activity-fallback1.log",
-            "log_sha256": "1b366482bfce6c872695cfa6256e400f7b235b19186e481e2c6cbcd6f1bb5e91"
-          }
+          ]
         }
       ],
       "fixture_recipe": "work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/selected-recipe-statutory-stop_activity.json",
       "measurement_contract": "measurement-statutory-stop_activity.json",
       "measurement_procedure": {
         "entrypoint": "finalize.py"
-      },
-      "compatibility": {
-        "receipt": "cases/stop_activity/proofs/primary-compatibility.json",
-        "sha256": "5f0afcf2704055f4f48960652345d26f47c439aa8ac2c9a5530848ab3e2838a5",
-        "log": "cases/stop_activity/proofs/primary-analysis.log",
-        "negative_log": "cases/stop_activity/proofs/primary-negative.log"
-      },
-      "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/statutory-offline-draft-manifest.json --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_stop_activity --candidate primary --output .runtime-work/c135702-statutory-temp/offline-v3-stop_activity-primary --python \"$PWD/.venv-cpu/bin/python\"",
-        "exit_code": 0,
-        "construction_sha256": "5f8e2a5b6d8f8f3f3bd5474efa82abb7994d644d53d1f6e6d3fcaa1c7ad8ab52",
-        "log": "statutory-offline-logs/stop_activity-primary.log",
-        "log_sha256": "de5dc96bb528ac462b1a92171af1b5014b53067501a9f9b01b3406acbe7a6ee2"
-      },
-      "negative": {
-        "log": "cases/stop_activity/proofs/primary-negative.log"
-      },
-      "physical_preparation": {
-        "receipt": "cases/stop_activity/proofs/physical-receipt.json",
-        "sha256": "d6138ce0eb0288f90f587fe471f1c46250e0442e04178933c5e3f318f25f1cb8"
-      },
-      "post_capture": {
-        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/execution-manifest.json --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_stop_activity --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
-        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/execution-manifest.json --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_stop_activity --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
-        "recorded_only": true,
-        "test_exit_code": 0,
-        "test_log": "cases/stop_activity/proofs/saved-processing.log",
-        "test_log_sha256": "5dfb2161af9224088229d3806f712e603605a81bb400b202a833f32fe90f07bd",
-        "processing_receipt": "cases/stop_activity/proofs/saved-processing.json",
-        "processing_receipt_sha256": "5dfb2161af9224088229d3806f712e603605a81bb400b202a833f32fe90f07bd"
-      },
-      "delivery_acceptance": {
-        "case_id": "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_stop_activity",
-        "sets": [
-          "full-train"
-        ],
-        "checks": [
-          "native_source",
-          "all_participants",
-          "time_join",
-          "full_video_decode",
-          "actual_pixels",
-          "physical_completion"
-        ],
-        "script": "statutory_delivery_audit.py",
-        "script_sha256": "56075c9bb073794bddcbad770c6ff2e6a59dedaf18fc9d2cdc74323c02a7e442",
-        "command": ".venv-cpu/bin/python work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/statutory_delivery_audit.py --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_stop_activity --self-test",
-        "test_exit_code": 0,
-        "test_log": "cases/stop_activity/proofs/delivery-positive.log",
-        "test_log_sha256": "cbc5ddc5d4a8e043f3d30b88b793959669d140a2cad6650e2dc1a2312bed4010",
-        "negative_command": ".venv-cpu/bin/python work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/statutory_delivery_audit.py --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_stop_activity --self-test --negative",
-        "negative_exit_code": 1,
-        "negative_expected_error": "Missing exact original Native result",
-        "negative_log": "cases/stop_activity/proofs/delivery-negative.log",
-        "negative_log_sha256": "13e503a9e3314223c2eae0fd0f095aa86046198278980560b6741faa85b7345d",
-        "scope": "CPU source protocol only; original physical source and legal applicability pending"
       },
       "acquisition": {
         "drv.standing_or_parked": {
@@ -302,7 +164,7 @@
       "case_id": "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_stand_activity",
       "kind": "delivery",
       "construction": "cases/stand_activity/statutory-construction.json",
-      "construction_sha256": "e59c9db14a0d6224751965d57b7868df2d375d3b0a9812ab876ee931df5a1a26",
+      "construction_sha256": "6adc5aea02ee2d38f6608724e1b9c0add7c47788a52712cda41a6b5172a12030",
       "candidate_risk": {
         "status": "physical",
         "reason": "Original passing vehicle may not sustain a stable pre-obstruction halt with the primary braking station."
@@ -311,7 +173,7 @@
         {
           "id": "fallback1",
           "construction": "cases/stand_activity/statutory-fallback1-construction.json",
-          "construction_sha256": "34f3b785a4112b9951b0307603411264a4d1759dc75e1501d90a9c40bcc5c767",
+          "construction_sha256": "b2d1bd1073e8afb6d6a4e6f630adf6c3c64752cf1743d9ea4a268b6d102a8104",
           "trigger": {
             "source": "original native_samples.jsonl",
             "metric": "minimum_passing_speed_m_s and passing_halt_frames",
@@ -320,82 +182,13 @@
           "changed_knobs": [
             "passing_throttle .25 to .35",
             "brake_station_x_m -11 to -15"
-          ],
-          "compatibility": {
-            "receipt": "cases/stand_activity/proofs/fallback1-compatibility.json",
-            "sha256": "2be72941b534417bc17d9cba7426a600b30b62d22aaf85616e7ca67756309342",
-            "log": "cases/stand_activity/proofs/fallback1-analysis.log",
-            "negative_log": "cases/stand_activity/proofs/fallback1-negative.log"
-          },
-          "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/statutory-offline-draft-manifest.json --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_stand_activity --candidate fallback1 --output .runtime-work/c135702-statutory-temp/offline-v3-stand_activity-fallback1 --python \"$PWD/.venv-cpu/bin/python\"",
-            "exit_code": 0,
-            "construction_sha256": "34f3b785a4112b9951b0307603411264a4d1759dc75e1501d90a9c40bcc5c767",
-            "log": "statutory-offline-logs/stand_activity-fallback1.log",
-            "log_sha256": "bc8ae73c64d1ab75e8cceee00c43c3a72fded1255e7a6ac14cd783704c21a247"
-          }
+          ]
         }
       ],
       "fixture_recipe": "work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/selected-recipe-statutory-stand_activity.json",
       "measurement_contract": "measurement-statutory-stand_activity.json",
       "measurement_procedure": {
         "entrypoint": "finalize.py"
-      },
-      "compatibility": {
-        "receipt": "cases/stand_activity/proofs/primary-compatibility.json",
-        "sha256": "2477077e3b5d813304bd81abe7cc5f8412e4448ff258e979d31def5d737d84fb",
-        "log": "cases/stand_activity/proofs/primary-analysis.log",
-        "negative_log": "cases/stand_activity/proofs/primary-negative.log"
-      },
-      "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/statutory-offline-draft-manifest.json --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_stand_activity --candidate primary --output .runtime-work/c135702-statutory-temp/offline-v3-stand_activity-primary --python \"$PWD/.venv-cpu/bin/python\"",
-        "exit_code": 0,
-        "construction_sha256": "e59c9db14a0d6224751965d57b7868df2d375d3b0a9812ab876ee931df5a1a26",
-        "log": "statutory-offline-logs/stand_activity-primary.log",
-        "log_sha256": "e54ec088b442403e0c8832d51eb797b0870751e1ea79af6cfb9a9caaddc61409"
-      },
-      "negative": {
-        "log": "cases/stand_activity/proofs/primary-negative.log"
-      },
-      "physical_preparation": {
-        "receipt": "cases/stand_activity/proofs/physical-receipt.json",
-        "sha256": "b7a9693060a96cd0c393ede802595ca0892ef101bce8f30ec7faf8ebcb8cd181"
-      },
-      "post_capture": {
-        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/execution-manifest.json --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_stand_activity --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
-        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/execution-manifest.json --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_stand_activity --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
-        "recorded_only": true,
-        "test_exit_code": 0,
-        "test_log": "cases/stand_activity/proofs/saved-processing.log",
-        "test_log_sha256": "dd712a51b8c959efd5adb4d2f414ad569531ca2cd20c44fffc6fefb9b48f63fc",
-        "processing_receipt": "cases/stand_activity/proofs/saved-processing.json",
-        "processing_receipt_sha256": "dd712a51b8c959efd5adb4d2f414ad569531ca2cd20c44fffc6fefb9b48f63fc"
-      },
-      "delivery_acceptance": {
-        "case_id": "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_stand_activity",
-        "sets": [
-          "full-train"
-        ],
-        "checks": [
-          "native_source",
-          "all_participants",
-          "time_join",
-          "full_video_decode",
-          "actual_pixels",
-          "physical_completion"
-        ],
-        "script": "statutory_delivery_audit.py",
-        "script_sha256": "56075c9bb073794bddcbad770c6ff2e6a59dedaf18fc9d2cdc74323c02a7e442",
-        "command": ".venv-cpu/bin/python work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/statutory_delivery_audit.py --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_stand_activity --self-test",
-        "test_exit_code": 0,
-        "test_log": "cases/stand_activity/proofs/delivery-positive.log",
-        "test_log_sha256": "27e30eef7936e0d85129a7882d121bdd01b9ab4b6eca469787c6f54b4eae245d",
-        "negative_command": ".venv-cpu/bin/python work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/statutory_delivery_audit.py --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_stand_activity --self-test --negative",
-        "negative_exit_code": 1,
-        "negative_expected_error": "Missing exact original Native result",
-        "negative_log": "cases/stand_activity/proofs/delivery-negative.log",
-        "negative_log_sha256": "13e503a9e3314223c2eae0fd0f095aa86046198278980560b6741faa85b7345d",
-        "scope": "CPU source protocol only; original physical source and legal applicability pending"
       },
       "acquisition": {
         "drv.standing_or_parked": {
@@ -449,7 +242,7 @@
       "case_id": "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_alongside_placement",
       "kind": "delivery",
       "construction": "cases/alongside_placement/statutory-construction.json",
-      "construction_sha256": "4afb3c104c2f300ce37d2f23bc88ba08353030138b9758c27dac37e28ed76fc8",
+      "construction_sha256": "a62b3ff98f1eb74afbfc3cc1783c51a23d64ee0a374459ee46b8daafcfa29be3",
       "candidate_risk": {
         "status": "physical",
         "reason": "Original passing vehicle may not sustain a stable pre-obstruction halt with the primary braking station."
@@ -458,7 +251,7 @@
         {
           "id": "fallback1",
           "construction": "cases/alongside_placement/statutory-fallback1-construction.json",
-          "construction_sha256": "7e5bd540a5d078ae70adfd3fddb7e51d5501b663caf4d5dae370a59ebec62f85",
+          "construction_sha256": "5748d64179cf86ffd8c52768af2acac44cf5eeced1f4e9fe903011356b16e0b6",
           "trigger": {
             "source": "original native_samples.jsonl",
             "metric": "minimum_passing_speed_m_s and passing_halt_frames",
@@ -467,82 +260,13 @@
           "changed_knobs": [
             "passing_throttle .25 to .35",
             "brake_station_x_m -11 to -15"
-          ],
-          "compatibility": {
-            "receipt": "cases/alongside_placement/proofs/fallback1-compatibility.json",
-            "sha256": "ada99ce0dd224cdbf852be224351e01cfa0475970b79ef6efa3913eb9e72ab14",
-            "log": "cases/alongside_placement/proofs/fallback1-analysis.log",
-            "negative_log": "cases/alongside_placement/proofs/fallback1-negative.log"
-          },
-          "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/statutory-offline-draft-manifest.json --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_alongside_placement --candidate fallback1 --output .runtime-work/c135702-statutory-temp/offline-v3-alongside_placement-fallback1 --python \"$PWD/.venv-cpu/bin/python\"",
-            "exit_code": 0,
-            "construction_sha256": "7e5bd540a5d078ae70adfd3fddb7e51d5501b663caf4d5dae370a59ebec62f85",
-            "log": "statutory-offline-logs/alongside_placement-fallback1.log",
-            "log_sha256": "b1b358e6f7d782c08f12b035f6e774f8960e603ca1fa47172603977404ce729c"
-          }
+          ]
         }
       ],
       "fixture_recipe": "work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/selected-recipe-statutory-alongside_placement.json",
       "measurement_contract": "measurement-statutory-alongside_placement.json",
       "measurement_procedure": {
         "entrypoint": "finalize.py"
-      },
-      "compatibility": {
-        "receipt": "cases/alongside_placement/proofs/primary-compatibility.json",
-        "sha256": "569c4164d51aba472236105640611f78fe2a6466e8ee05522d3907a82988ca78",
-        "log": "cases/alongside_placement/proofs/primary-analysis.log",
-        "negative_log": "cases/alongside_placement/proofs/primary-negative.log"
-      },
-      "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/statutory-offline-draft-manifest.json --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_alongside_placement --candidate primary --output .runtime-work/c135702-statutory-temp/offline-v3-alongside_placement-primary --python \"$PWD/.venv-cpu/bin/python\"",
-        "exit_code": 0,
-        "construction_sha256": "4afb3c104c2f300ce37d2f23bc88ba08353030138b9758c27dac37e28ed76fc8",
-        "log": "statutory-offline-logs/alongside_placement-primary.log",
-        "log_sha256": "a994abac7041e879c4c10bf2eaa38e4e65f1ecbb63fcd01c729085e80c9e1a5a"
-      },
-      "negative": {
-        "log": "cases/alongside_placement/proofs/primary-negative.log"
-      },
-      "physical_preparation": {
-        "receipt": "cases/alongside_placement/proofs/physical-receipt.json",
-        "sha256": "fbe9995cb9eb91d3c00a6e81e851b17a68e4929e50ff257d5ad57d43bd16a9ab"
-      },
-      "post_capture": {
-        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/execution-manifest.json --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_alongside_placement --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
-        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/execution-manifest.json --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_alongside_placement --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
-        "recorded_only": true,
-        "test_exit_code": 0,
-        "test_log": "cases/alongside_placement/proofs/saved-processing.log",
-        "test_log_sha256": "dae28a2bc6e71e24bb7e0fe43fc407a5866a0cd8c7128b1c8c7deaa817f4139c",
-        "processing_receipt": "cases/alongside_placement/proofs/saved-processing.json",
-        "processing_receipt_sha256": "dae28a2bc6e71e24bb7e0fe43fc407a5866a0cd8c7128b1c8c7deaa817f4139c"
-      },
-      "delivery_acceptance": {
-        "case_id": "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_alongside_placement",
-        "sets": [
-          "full-train"
-        ],
-        "checks": [
-          "native_source",
-          "all_participants",
-          "time_join",
-          "full_video_decode",
-          "actual_pixels",
-          "physical_completion"
-        ],
-        "script": "statutory_delivery_audit.py",
-        "script_sha256": "56075c9bb073794bddcbad770c6ff2e6a59dedaf18fc9d2cdc74323c02a7e442",
-        "command": ".venv-cpu/bin/python work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/statutory_delivery_audit.py --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_alongside_placement --self-test",
-        "test_exit_code": 0,
-        "test_log": "cases/alongside_placement/proofs/delivery-positive.log",
-        "test_log_sha256": "e45dd82f2044bc1f578c4a7312fd050c22362e1013fa5cd794eadd99b59c44d8",
-        "negative_command": ".venv-cpu/bin/python work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/statutory_delivery_audit.py --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_alongside_placement --self-test --negative",
-        "negative_exit_code": 1,
-        "negative_expected_error": "Missing exact original Native result",
-        "negative_log": "cases/alongside_placement/proofs/delivery-negative.log",
-        "negative_log_sha256": "13e503a9e3314223c2eae0fd0f095aa86046198278980560b6741faa85b7345d",
-        "scope": "CPU source protocol only; original physical source and legal applicability pending"
       },
       "acquisition": {
         "drv.standing_or_parked": {
@@ -596,7 +320,7 @@
       "case_id": "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_traffic_conflict",
       "kind": "delivery",
       "construction": "cases/traffic_conflict/statutory-construction.json",
-      "construction_sha256": "f353fb8aeb75a5cbba5494660d76fb86d4c4db7510fcad0baf9834d8c014a29c",
+      "construction_sha256": "802eb3c75f398b8a104a1165f8868b9733c2a87ee1653094666a69473286ddca",
       "candidate_risk": {
         "status": "physical",
         "reason": "Original passing vehicle may not sustain a stable pre-obstruction halt with the primary braking station."
@@ -605,7 +329,7 @@
         {
           "id": "fallback1",
           "construction": "cases/traffic_conflict/statutory-fallback1-construction.json",
-          "construction_sha256": "362174d7779dc7d6219714d905dc3f3e5fc06202cdaa1ed31da870d2274606bd",
+          "construction_sha256": "1fd60503208de4d6ec7663a0eaf6a997bfcf0e9eee70a1d444c517446dd583e8",
           "trigger": {
             "source": "original native_samples.jsonl",
             "metric": "minimum_passing_speed_m_s and passing_halt_frames",
@@ -614,82 +338,13 @@
           "changed_knobs": [
             "passing_throttle .25 to .35",
             "brake_station_x_m -11 to -15"
-          ],
-          "compatibility": {
-            "receipt": "cases/traffic_conflict/proofs/fallback1-compatibility.json",
-            "sha256": "4d6bb4525d37643ae99bd93de7c25795032ddaa598091b49d6a1bf7d563fc083",
-            "log": "cases/traffic_conflict/proofs/fallback1-analysis.log",
-            "negative_log": "cases/traffic_conflict/proofs/fallback1-negative.log"
-          },
-          "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/statutory-offline-draft-manifest.json --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_traffic_conflict --candidate fallback1 --output .runtime-work/c135702-statutory-temp/offline-v3-traffic_conflict-fallback1 --python \"$PWD/.venv-cpu/bin/python\"",
-            "exit_code": 0,
-            "construction_sha256": "362174d7779dc7d6219714d905dc3f3e5fc06202cdaa1ed31da870d2274606bd",
-            "log": "statutory-offline-logs/traffic_conflict-fallback1.log",
-            "log_sha256": "c43d2395866ddfdcb03263f128cdb78d0f3b2cc28b8611e61fb2afda29696464"
-          }
+          ]
         }
       ],
       "fixture_recipe": "work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/selected-recipe-statutory-traffic_conflict.json",
       "measurement_contract": "measurement-statutory-traffic_conflict.json",
       "measurement_procedure": {
         "entrypoint": "finalize.py"
-      },
-      "compatibility": {
-        "receipt": "cases/traffic_conflict/proofs/primary-compatibility.json",
-        "sha256": "0093e57868db246b7e015ef167e47a20ac68d2dd200ab618e175a6c454992afc",
-        "log": "cases/traffic_conflict/proofs/primary-analysis.log",
-        "negative_log": "cases/traffic_conflict/proofs/primary-negative.log"
-      },
-      "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/statutory-offline-draft-manifest.json --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_traffic_conflict --candidate primary --output .runtime-work/c135702-statutory-temp/offline-v3-traffic_conflict-primary --python \"$PWD/.venv-cpu/bin/python\"",
-        "exit_code": 0,
-        "construction_sha256": "f353fb8aeb75a5cbba5494660d76fb86d4c4db7510fcad0baf9834d8c014a29c",
-        "log": "statutory-offline-logs/traffic_conflict-primary.log",
-        "log_sha256": "77a0f7ca03c277b53e40dfdf43f612398809c017f3601e05151f8ffc42848814"
-      },
-      "negative": {
-        "log": "cases/traffic_conflict/proofs/primary-negative.log"
-      },
-      "physical_preparation": {
-        "receipt": "cases/traffic_conflict/proofs/physical-receipt.json",
-        "sha256": "db9b2a77ba95dea5f4896104eba3daeae9bc006db3dd71763e6970a699665f16"
-      },
-      "post_capture": {
-        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/execution-manifest.json --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_traffic_conflict --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
-        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/execution-manifest.json --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_traffic_conflict --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
-        "recorded_only": true,
-        "test_exit_code": 0,
-        "test_log": "cases/traffic_conflict/proofs/saved-processing.log",
-        "test_log_sha256": "83ac021d9badaf3a257266f6899f295835a42c5c5dcfcf80492b6f83221447a7",
-        "processing_receipt": "cases/traffic_conflict/proofs/saved-processing.json",
-        "processing_receipt_sha256": "83ac021d9badaf3a257266f6899f295835a42c5c5dcfcf80492b6f83221447a7"
-      },
-      "delivery_acceptance": {
-        "case_id": "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_traffic_conflict",
-        "sets": [
-          "full-train"
-        ],
-        "checks": [
-          "native_source",
-          "all_participants",
-          "time_join",
-          "full_video_decode",
-          "actual_pixels",
-          "physical_completion"
-        ],
-        "script": "statutory_delivery_audit.py",
-        "script_sha256": "56075c9bb073794bddcbad770c6ff2e6a59dedaf18fc9d2cdc74323c02a7e442",
-        "command": ".venv-cpu/bin/python work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/statutory_delivery_audit.py --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_traffic_conflict --self-test",
-        "test_exit_code": 0,
-        "test_log": "cases/traffic_conflict/proofs/delivery-positive.log",
-        "test_log_sha256": "a857ea7f133065bda6a18c434b6372ec7ad2bab67d7f8a9ee6b1d19f86725169",
-        "negative_command": ".venv-cpu/bin/python work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/statutory_delivery_audit.py --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_traffic_conflict --self-test --negative",
-        "negative_exit_code": 1,
-        "negative_expected_error": "Missing exact original Native result",
-        "negative_log": "cases/traffic_conflict/proofs/delivery-negative.log",
-        "negative_log_sha256": "13e503a9e3314223c2eae0fd0f095aa86046198278980560b6741faa85b7345d",
-        "scope": "CPU source protocol only; original physical source and legal applicability pending"
       },
       "acquisition": {
         "drv.standing_or_parked": {
@@ -743,7 +398,7 @@
       "case_id": "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_law_direction",
       "kind": "delivery",
       "construction": "cases/law_direction/statutory-construction.json",
-      "construction_sha256": "93d8bb92a4b51ba776e9be97a30e05496d589c22dd0d7578381589d0be9b446e",
+      "construction_sha256": "30d7bf361b75eb850872f1dd0c09bdcca965e056842fe1b7da43080e23d3d0c3",
       "candidate_risk": {
         "status": "physical",
         "reason": "Original passing vehicle may not sustain a stable pre-obstruction halt with the primary braking station."
@@ -752,7 +407,7 @@
         {
           "id": "fallback1",
           "construction": "cases/law_direction/statutory-fallback1-construction.json",
-          "construction_sha256": "9bb051c61d5a103f615b573d49d7a7031ea0a588fc7b66460b9d10bfae10a1e6",
+          "construction_sha256": "0954638bdb78e35385cfd1a478afd26eedc33bae873423a136f8beb0cfdb64b4",
           "trigger": {
             "source": "original native_samples.jsonl",
             "metric": "minimum_passing_speed_m_s and passing_halt_frames",
@@ -761,82 +416,13 @@
           "changed_knobs": [
             "passing_throttle .25 to .35",
             "brake_station_x_m -11 to -15"
-          ],
-          "compatibility": {
-            "receipt": "cases/law_direction/proofs/fallback1-compatibility.json",
-            "sha256": "d86264e73033cb61dadd5119d050bb1b36b1bdfbf0cd004a85b5ebef14e86e32",
-            "log": "cases/law_direction/proofs/fallback1-analysis.log",
-            "negative_log": "cases/law_direction/proofs/fallback1-negative.log"
-          },
-          "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/statutory-offline-draft-manifest.json --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_law_direction --candidate fallback1 --output .runtime-work/c135702-statutory-temp/offline-v3-law_direction-fallback1 --python \"$PWD/.venv-cpu/bin/python\"",
-            "exit_code": 0,
-            "construction_sha256": "9bb051c61d5a103f615b573d49d7a7031ea0a588fc7b66460b9d10bfae10a1e6",
-            "log": "statutory-offline-logs/law_direction-fallback1.log",
-            "log_sha256": "c1f0073fdb6c8ae589d494013c5c0a331ce7d68c639fb84781b4ff73cb6b41a3"
-          }
+          ]
         }
       ],
       "fixture_recipe": "work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/selected-recipe-statutory-law_direction.json",
       "measurement_contract": "measurement-statutory-law_direction.json",
       "measurement_procedure": {
         "entrypoint": "finalize.py"
-      },
-      "compatibility": {
-        "receipt": "cases/law_direction/proofs/primary-compatibility.json",
-        "sha256": "889b798a8a9281b8eff85b934924bcc2c94396e17b9b2a4b3318356ef89d86fe",
-        "log": "cases/law_direction/proofs/primary-analysis.log",
-        "negative_log": "cases/law_direction/proofs/primary-negative.log"
-      },
-      "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/statutory-offline-draft-manifest.json --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_law_direction --candidate primary --output .runtime-work/c135702-statutory-temp/offline-v3-law_direction-primary --python \"$PWD/.venv-cpu/bin/python\"",
-        "exit_code": 0,
-        "construction_sha256": "93d8bb92a4b51ba776e9be97a30e05496d589c22dd0d7578381589d0be9b446e",
-        "log": "statutory-offline-logs/law_direction-primary.log",
-        "log_sha256": "a1dca39c7c275a373c934df185d762dca4a08efe5659387757e6b805f3f2e420"
-      },
-      "negative": {
-        "log": "cases/law_direction/proofs/primary-negative.log"
-      },
-      "physical_preparation": {
-        "receipt": "cases/law_direction/proofs/physical-receipt.json",
-        "sha256": "d33d270a2c9613b87bfb42f2373cfb5c43da16220debffda6e206fd44033db34"
-      },
-      "post_capture": {
-        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/execution-manifest.json --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_law_direction --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
-        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/execution-manifest.json --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_law_direction --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
-        "recorded_only": true,
-        "test_exit_code": 0,
-        "test_log": "cases/law_direction/proofs/saved-processing.log",
-        "test_log_sha256": "eee835779f756cc7235c28d244505364de2e6d04714e6e8ea6e8b804eb6c5e25",
-        "processing_receipt": "cases/law_direction/proofs/saved-processing.json",
-        "processing_receipt_sha256": "eee835779f756cc7235c28d244505364de2e6d04714e6e8ea6e8b804eb6c5e25"
-      },
-      "delivery_acceptance": {
-        "case_id": "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_law_direction",
-        "sets": [
-          "full-train"
-        ],
-        "checks": [
-          "native_source",
-          "all_participants",
-          "time_join",
-          "full_video_decode",
-          "actual_pixels",
-          "physical_completion"
-        ],
-        "script": "statutory_delivery_audit.py",
-        "script_sha256": "56075c9bb073794bddcbad770c6ff2e6a59dedaf18fc9d2cdc74323c02a7e442",
-        "command": ".venv-cpu/bin/python work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/statutory_delivery_audit.py --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_law_direction --self-test",
-        "test_exit_code": 0,
-        "test_log": "cases/law_direction/proofs/delivery-positive.log",
-        "test_log_sha256": "5ceb794bb5226697d6cf0b1da7612cb048783efa8964ced23afb17821cd41dbe",
-        "negative_command": ".venv-cpu/bin/python work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/statutory_delivery_audit.py --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_law_direction --self-test --negative",
-        "negative_exit_code": 1,
-        "negative_expected_error": "Missing exact original Native result",
-        "negative_log": "cases/law_direction/proofs/delivery-negative.log",
-        "negative_log_sha256": "13e503a9e3314223c2eae0fd0f095aa86046198278980560b6741faa85b7345d",
-        "scope": "CPU source protocol only; original physical source and legal applicability pending"
       },
       "acquisition": {
         "drv.standing_or_parked": {
@@ -890,7 +476,7 @@
       "case_id": "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_traffic_device",
       "kind": "delivery",
       "construction": "cases/traffic_device/statutory-construction.json",
-      "construction_sha256": "ad01c063a3350a96ee0363bcd4892581b91fd260d701246775cc87aa519c7f86",
+      "construction_sha256": "c40da682a9b2fa0d4c6d11ce04ace8c61571e6a59aa2bd7d4ff7079934fc2188",
       "candidate_risk": {
         "status": "physical",
         "reason": "Original passing vehicle may not sustain a stable pre-obstruction halt with the primary braking station."
@@ -899,7 +485,7 @@
         {
           "id": "fallback1",
           "construction": "cases/traffic_device/statutory-fallback1-construction.json",
-          "construction_sha256": "43f98431b025c224035511a5a94c055039bd4356be80fe55cc78d04afb70ffa9",
+          "construction_sha256": "16bbdafdb52a491062dbd2a4676b776313a709df13cfc6515fee41ebad315c0b",
           "trigger": {
             "source": "original native_samples.jsonl",
             "metric": "minimum_passing_speed_m_s and passing_halt_frames",
@@ -908,82 +494,13 @@
           "changed_knobs": [
             "passing_throttle .25 to .35",
             "brake_station_x_m -11 to -15"
-          ],
-          "compatibility": {
-            "receipt": "cases/traffic_device/proofs/fallback1-compatibility.json",
-            "sha256": "4c64d8bb3e82edb79b2ac3a761cbcc4e6f79a7b54ac6e031ff9a28436dd9d2ea",
-            "log": "cases/traffic_device/proofs/fallback1-analysis.log",
-            "negative_log": "cases/traffic_device/proofs/fallback1-negative.log"
-          },
-          "offline": {
-            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/statutory-offline-draft-manifest.json --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_traffic_device --candidate fallback1 --output .runtime-work/c135702-statutory-temp/offline-v3-traffic_device-fallback1 --python \"$PWD/.venv-cpu/bin/python\"",
-            "exit_code": 0,
-            "construction_sha256": "43f98431b025c224035511a5a94c055039bd4356be80fe55cc78d04afb70ffa9",
-            "log": "statutory-offline-logs/traffic_device-fallback1.log",
-            "log_sha256": "977e434331272b7087a41135c74ca856ff9bfbcf5094ddf8512106684763ded1"
-          }
+          ]
         }
       ],
       "fixture_recipe": "work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/selected-recipe-statutory-traffic_device.json",
       "measurement_contract": "measurement-statutory-traffic_device.json",
       "measurement_procedure": {
         "entrypoint": "finalize.py"
-      },
-      "compatibility": {
-        "receipt": "cases/traffic_device/proofs/primary-compatibility.json",
-        "sha256": "87e6f8632a882b502f5f9cc8324909a09dff26beb9f5681fcd42cd3d24caa2b7",
-        "log": "cases/traffic_device/proofs/primary-analysis.log",
-        "negative_log": "cases/traffic_device/proofs/primary-negative.log"
-      },
-      "offline": {
-        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/statutory-offline-draft-manifest.json --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_traffic_device --candidate primary --output .runtime-work/c135702-statutory-temp/offline-v3-traffic_device-primary --python \"$PWD/.venv-cpu/bin/python\"",
-        "exit_code": 0,
-        "construction_sha256": "ad01c063a3350a96ee0363bcd4892581b91fd260d701246775cc87aa519c7f86",
-        "log": "statutory-offline-logs/traffic_device-primary.log",
-        "log_sha256": "84a62b747abda8664e55eb2ed2b8e29a07f6b98918a2fc7a6862e57614326541"
-      },
-      "negative": {
-        "log": "cases/traffic_device/proofs/primary-negative.log"
-      },
-      "physical_preparation": {
-        "receipt": "cases/traffic_device/proofs/physical-receipt.json",
-        "sha256": "948c5a799748ea4aedd428e14fcfa3e7d50844207063890f26b6a19dd239ef2a"
-      },
-      "post_capture": {
-        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/execution-manifest.json --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_traffic_device --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
-        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/execution-manifest.json --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_traffic_device --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
-        "recorded_only": true,
-        "test_exit_code": 0,
-        "test_log": "cases/traffic_device/proofs/saved-processing.log",
-        "test_log_sha256": "3ad8ee9f1515d6863014fb40e859a1c6d8f290364fd8002121c991dad626badc",
-        "processing_receipt": "cases/traffic_device/proofs/saved-processing.json",
-        "processing_receipt_sha256": "3ad8ee9f1515d6863014fb40e859a1c6d8f290364fd8002121c991dad626badc"
-      },
-      "delivery_acceptance": {
-        "case_id": "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_traffic_device",
-        "sets": [
-          "full-train"
-        ],
-        "checks": [
-          "native_source",
-          "all_participants",
-          "time_join",
-          "full_video_decode",
-          "actual_pixels",
-          "physical_completion"
-        ],
-        "script": "statutory_delivery_audit.py",
-        "script_sha256": "56075c9bb073794bddcbad770c6ff2e6a59dedaf18fc9d2cdc74323c02a7e442",
-        "command": ".venv-cpu/bin/python work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/statutory_delivery_audit.py --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_traffic_device --self-test",
-        "test_exit_code": 0,
-        "test_log": "cases/traffic_device/proofs/delivery-positive.log",
-        "test_log_sha256": "2bf8f725e9d37a91ab6a9d03bb3c07065dc5e3d64d0c7113ae7e473d652a5470",
-        "negative_command": ".venv-cpu/bin/python work/training__C135702__NRS-484B-450-1k__motor_vehicle_driver/statutory_delivery_audit.py --case training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_traffic_device --self-test --negative",
-        "negative_exit_code": 1,
-        "negative_expected_error": "Missing exact original Native result",
-        "negative_log": "cases/traffic_device/proofs/delivery-negative.log",
-        "negative_log_sha256": "13e503a9e3314223c2eae0fd0f095aa86046198278980560b6741faa85b7345d",
-        "scope": "CPU source protocol only; original physical source and legal applicability pending"
       },
       "acquisition": {
         "drv.standing_or_parked": {

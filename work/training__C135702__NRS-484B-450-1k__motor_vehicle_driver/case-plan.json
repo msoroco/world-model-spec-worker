@@ -49,7 +49,8 @@
         "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_alongside_placement",
         "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_traffic_conflict",
         "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_law_direction",
-        "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_traffic_device"
+        "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_traffic_device",
+        "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_excavation_kind"
       ]
     },
     {
@@ -69,7 +70,8 @@
         "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_alongside_placement",
         "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_traffic_conflict",
         "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_law_direction",
-        "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_traffic_device"
+        "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_traffic_device",
+        "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_excavation_kind"
       ]
     },
     {
@@ -89,7 +91,8 @@
         "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_alongside_placement",
         "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_traffic_conflict",
         "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_law_direction",
-        "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_traffic_device"
+        "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_traffic_device",
+        "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_excavation_kind"
       ]
     }
   ],
@@ -636,6 +639,71 @@
         "source": "NRS 484B.450(1)(k)"
       },
       "claim": "Primary/fallback offline and compatibility, synthetic saved-only, physical/lifecycle and independent delivery CPU proofs passed. Original source context, physical realization and legal outcome remain unverified."
+    },
+    {
+      "case_id": "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_excavation_kind",
+      "target_law_id": "NRS-484B-450-1k",
+      "target_type": "planned_source_conditional_comparison",
+      "planning_status": "selected_cpu_proof_chain_passed_original_review_pending",
+      "source_branch": {
+        "id": "NRS-484B-450-1k",
+        "title": "Stopping, standing or parking prohibited in specified places (1)(k)",
+        "text": "A person shall not stop, stand or park a vehicle, except when necessary to avoid conflict with other traffic or in compliance with law or the directions of a police officer or official traffic-control device, in any of the following places: Alongside or opposite any highway excavation or obstruction when stopping, standing or parking would obstruct traffic.",
+        "source": "NRS 484B.450(1)(k)"
+      },
+      "comparison_variable": "obstruction_kind_request",
+      "fixed_conditions": {
+        "cell_id": "C135702",
+        "layout": "narrow_road",
+        "actor": "motor_vehicle_driver",
+        "law_id": "NRS-484B-450-1k",
+        "selection_targets": [
+          "full-train"
+        ],
+        "camera_profile": [
+          {
+            "name": "overview",
+            "width": 1920,
+            "height": 1080,
+            "fps": 20,
+            "pose_strategy": "high oblique overview of full road and obstruction",
+            "fov_deg": 85
+          },
+          {
+            "name": "approach",
+            "width": 1280,
+            "height": 720,
+            "fps": 20,
+            "pose_strategy": "upstream passing-traffic approach",
+            "fov_deg": 85
+          },
+          {
+            "name": "reference_corner",
+            "width": 1280,
+            "height": 720,
+            "fps": 20,
+            "pose_strategy": "excavation boundary and parked body",
+            "fov_deg": 85
+          },
+          {
+            "name": "driver_reference",
+            "width": 1280,
+            "height": 720,
+            "fps": 20,
+            "pose_strategy": "downstream view back toward passing vehicle",
+            "fov_deg": 85
+          }
+        ],
+        "duration_s": 30,
+        "rate_hz": 20
+      },
+      "source_text": {
+        "id": "NRS-484B-450-1k",
+        "title": "Stopping, standing or parking prohibited in specified places (1)(k)",
+        "text": "A person shall not stop, stand or park a vehicle, except when necessary to avoid conflict with other traffic or in compliance with law or the directions of a police officer or official traffic-control device, in any of the following places: Alongside or opposite any highway excavation or obstruction when stopping, standing or parking would obstruct traffic.",
+        "source": "NRS 484B.450(1)(k)"
+      },
+      "claim": "Primary/fallback offline and compatibility, synthetic saved-only, physical/lifecycle and independent delivery CPU proofs passed. Original excavation source, terrain readback, pixels, physical realization and legal outcome remain unverified."
     }
   ],
   "comparisons": [
@@ -806,6 +874,26 @@
       },
       "status": "selected_synthetic_request_axis_audit_passed",
       "audit_gap": "Original paired Native traces, physical response, source authority and legal judgment remain pending."
+    },
+    {
+      "comparison_id": "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_excavation_kind__comparison",
+      "case_ids": [
+        "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_baseline",
+        "training__C135702__NRS-484B-450-1k__motor_vehicle_driver__selected_statutory_excavation_kind"
+      ],
+      "deliberate_differences": [
+        "obstruction_kind_request"
+      ],
+      "fixed_conditions": {
+        "road": "C135702 narrow two-lane",
+        "physical_obstruction_geometry": "surveyed source and Native readback except excavation-kind axis",
+        "camera_profile": "overview1080-capability",
+        "duration_s": 30,
+        "rate_hz": 20,
+        "actor": "motor_vehicle_driver"
+      },
+      "status": "selected_synthetic_request_axis_audit_passed",
+      "audit_gap": "Original paired Native excavation/obstruction traces, surface realization, source authority and legal judgment remain pending."
     }
   ],
   "observations": [
