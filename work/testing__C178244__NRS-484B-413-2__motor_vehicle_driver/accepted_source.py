@@ -85,6 +85,33 @@ def verify(repo: Path, recording_id: str, trace: Path, video: Path) -> dict:
     }
 
 
+def verify_packet_binding(repo: Path, recording_id: str, packet_path: Path) -> str:
+    """Require the measurement packet itself in the frozen evidence inventory.
+
+    Original trace/video admission alone cannot authenticate a later signal
+    readback packet. The packet must be a separately frozen source for this
+    exact recording, then its referenced source files are checked by the
+    measurement reviewer.
+    """
+    repo = repo.resolve()
+    packet_path = packet_path.resolve()
+    try:
+        rel = str(packet_path.relative_to(repo))
+    except ValueError as exc:
+        raise SourceError("signal packet escapes frozen evidence root") from exc
+    if not packet_path.is_file():
+        raise SourceError("original signal packet is missing")
+    evidence = json.loads((repo / "inputs" / ASSIGNMENT / "evidence.json").read_text())
+    rows = [row for row in evidence.get("recordings", [])
+            if row.get("recording_id") == recording_id]
+    if len(rows) != 1:
+        raise SourceError("signal packet recording is absent from frozen evidence inventory")
+    digest = sha(packet_path)
+    if {"path": rel, "sha256": digest} not in rows[0].get("sources", []):
+        raise SourceError("signal packet hash is not bound to frozen accepted evidence")
+    return digest
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--repo", type=Path, required=True)

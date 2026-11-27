@@ -6,7 +6,7 @@ import argparse
 import json
 from pathlib import Path
 
-from accepted_source import verify as verify_accepted
+from accepted_source import verify as verify_accepted, verify_packet_binding
 from signal_distance import EvidenceError, measure, verify_source_bindings
 
 
@@ -20,6 +20,7 @@ DISTRICT_FROM_CASE = {
 def review(repo: Path, recording_id: str, trace: Path, video: Path,
            packet_path: Path, source_root: Path) -> dict:
     admission = verify_accepted(repo, recording_id, trace, video)
+    packet_hash = verify_packet_binding(repo, recording_id, packet_path)
     packet = json.loads(packet_path.read_text())
     if packet.get("case_id") != admission["case_id"]:
         raise EvidenceError("signal packet differs from accepted case identity")
@@ -38,6 +39,7 @@ def review(repo: Path, recording_id: str, trace: Path, video: Path,
         "recording_id": recording_id,
         "case_id": admission["case_id"],
         "admission": admission,
+        "packet_source_sha256": packet_hash,
         "signal_sources_verified": bound,
         "measurement": measurement,
         "finding": "source-bound physical distance measurement; district applicability and legal compliance remain independent review questions",
