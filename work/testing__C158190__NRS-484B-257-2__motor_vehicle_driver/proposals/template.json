@@ -1,0 +1,86 @@
+{
+  "actor": "motor_vehicle_driver",
+  "law_id": "NRS-484B-257-2",
+  "parameter_refs": [
+    {
+      "kind": "world_setup",
+      "name": "through_phase",
+      "range_or_domain": "within or approaching at physical ego entry"
+    },
+    {
+      "kind": "controller",
+      "name": "approach_policy",
+      "range_or_domain": "stop or uninterrupted request"
+    },
+    {
+      "kind": "world_setup",
+      "name": "requested_other_station_m",
+      "range_or_domain": "0, 8 or 35 m requested"
+    },
+    {
+      "kind": "world_setup",
+      "name": "non_through_highway",
+      "range_or_domain": "source-reviewed true"
+    },
+    {
+      "kind": "world_setup",
+      "name": "ego_control",
+      "range_or_domain": "source-reviewed yield sign"
+    },
+    {
+      "kind": "world_setup",
+      "name": "officer_controls",
+      "range_or_domain": "source-reviewed absent"
+    },
+    {
+      "kind": "world_setup",
+      "name": "signal_controls",
+      "range_or_domain": "source-reviewed absent"
+    },
+    {
+      "kind": "controller",
+      "name": "requested_ego_crossing_speed_mps",
+      "range_or_domain": "positive requested m/s or unconstrained for original station and response probes"
+    }
+  ],
+  "quote": "Except when traffic is being controlled by a police officer or a traffic-control signal: The driver of a vehicle shall stop in obedience to a stop sign or yield in compliance with a yield sign, in compliance with the manner prescribed in subsection 1 [NRS-484B-257-1], prior to entering an intersection if a stop sign or a yield sign is erected at one or more entrances thereto although not a part of a through highway and shall proceed cautiously, yielding to vehicles not so obligated to stop or yield and which are within the intersection or approaching so closely as to constitute an immediate hazard during the time such driver is moving across or within the intersection.",
+  "structure": {
+    "activation": {
+      "condition": "Vehicle entering a non-through intersection with a stop or yield entrance and no controlling police officer or traffic-control signal.",
+      "numeric_conditions": []
+    },
+    "exceptions": [
+      {
+        "effect": "This subsection yields to that control",
+        "replacement_obligation": "Follow controlling officer or signal under its applicable law",
+        "source_clause": "Except when traffic is being controlled by a police officer or a traffic-control signal",
+        "trigger": "Traffic controlled by police officer or traffic-control signal"
+      }
+    ],
+    "judgment_calls_needed": [
+      {
+        "note": "",
+        "phrase": "immediate hazard"
+      },
+      {
+        "note": "",
+        "phrase": "proceed cautiously"
+      },
+      {
+        "note": "",
+        "phrase": "yielding to vehicles not so obligated to stop or yield"
+      }
+    ],
+    "law_id": "NRS-484B-257-2",
+    "obligation": {
+      "description": "Obey the applicable stop/yield sign before entry in subsection 1 manner, proceed cautiously, and yield to non-obligated vehicles within or immediately approaching throughout movement across or within.",
+      "numeric_conditions": [],
+      "type": "must"
+    },
+    "timing": {
+      "description": "Before entry for sign obedience, then throughout movement across or within the intersection for yielding.",
+      "numeric_conditions": []
+    }
+  },
+  "template_id": "NRS-484B-257-2@motor_vehicle_driver"
+}

@@ -19,23 +19,25 @@ class PermissionRuntimeTrialTests(unittest.TestCase):
         self.plan = json.loads((ROOT / "case-plan.json").read_text())
         self.binding = json.loads((ROOT / "proposals/bindings.json").read_text())
 
-    def call(self, template):
+    def call(self, template, sweeps=None):
         return permission_aware_coverage(
-            self.proposal["cases"], self.binding, [template], [],
+            self.proposal["cases"], self.binding, [template],
+            self.proposal["sweep_specs"] if sweeps is None else sweeps,
             template=self.template, proposal=self.proposal, plan=self.plan,
             assignment=self.assignment)
 
-    def test_full_pinned_stage_chain_passes_only_with_trial(self):
+    def test_full_pinned_stage_chain_passes_with_source_judgment(self):
         report = trial()
         self.assertEqual(report["selected_cases"], 4)
-        self.assertFalse(report["pinned_semantic_validator_passed"])
+        self.assertTrue(report["pinned_semantic_validator_passed"])
         self.assertFalse(report["pinned_semantic_runtime_modified"])
 
     def test_plain_duty_still_requires_compliant_violating_pair(self):
         duty = json.loads(json.dumps(self.template))
         duty["structure"]["obligation"]["type"] = "duty"
+        duty["structure"]["judgment_calls_needed"] = []
         with self.assertRaisesRegex(ValueError, "Missing plain-rule attempt pair"):
-            self.call(duty)
+            self.call(duty, sweeps=[])
 
     def test_permission_trial_rejects_altered_source_quote(self):
         changed = json.loads(json.dumps(self.template))

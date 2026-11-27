@@ -108,6 +108,16 @@ def build() -> dict:
             "probe": {"primary_variable": "target_permit_status",
                 "comparison_or_standard": "same original reviewed site and vehicle except declared comparison variable",
                 "target_value_or_branch": values}})
+        if short in ("weight_below_8000", "weight_at_8000", "night_nonroute_no_permit"):
+            boundary = cases[-1]
+            boundary["target_type"] = "boundary_probe"
+            boundary["paired_probe_id"] = "strictly-greater-than-8000-unladen-weight"
+            boundary["epsilon_used"] = {"value": 1, "unit": "lb",
+                "rationale": "One-pound authored source target probes the strict numeric boundary; no measurement tolerance is claimed."}
+            boundary["probe"].update({"primary_variable": "target_unladen_lb",
+                "threshold_ref": "activation.numeric_conditions[0]", "operator": "greater_than",
+                "unit": "lb", "test_value": values["target_unladen_lb"],
+                "target_value_or_branch": values["target_unladen_lb"]})
     sweep = {"sweep_id": "source-gated-night-truck-restriction", "target_law_id": LAW,
         "judgment_refs": [{"phrase": phrase, "note": NOTE} for phrase in (
             "residence district", "truck route", "between seven p.m. and six a.m.",

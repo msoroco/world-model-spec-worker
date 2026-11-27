@@ -87,6 +87,11 @@ def capture(*, case_id, packet, world, ego, route_reader, ray_reader,
                 raise ValueError("original rail 20 Hz time differs")
             velocity = ego.get_velocity()
             speed_mps = math.sqrt(velocity.x ** 2 + velocity.y ** 2 + velocity.z ** 2)
+            location = ego.get_transform().location
+            position_xy_m = [location.x, location.y]
+            if any(type(value) not in (int, float) or not math.isfinite(value)
+                   for value in position_xy_m):
+                raise ValueError("original rail ego position invalid")
             route_station_m, body_on_crossing = route_reader(original_frame, snapshot, ego)
             rays = ray_reader(original_frame, snapshot, ego)
             exceptions = exception_reader(original_frame, snapshot, ego)
@@ -104,6 +109,7 @@ def capture(*, case_id, packet, world, ego, route_reader, ray_reader,
                 raise ValueError("original rail route, sight or exception readback invalid")
             frame = {"original_frame": original_frame, "time_s": time_s,
                      "route_station_m": route_station_m, "speed_mps": speed_mps,
+                     "position_xy_m": position_xy_m,
                      "body_on_crossing": body_on_crossing,
                      **{key: exceptions[key] for key in FRAME_FIELDS[5:]}}
             if "source_trace" in exceptions:

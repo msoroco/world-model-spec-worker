@@ -2,6 +2,48 @@
 
 Archived checkpoints: [2026-11-22 through 2026-11-25](RETURN-REPORT-archive-2026-11-22-to-2026-11-25.md).
 
+## 2026-11-27 10:19 UTC: C147332 lead gate passed; proposal pending
+
+- C147332/NRS-484B-307-12a passed the lead's independent exact strict assignment gate (`.runtime-work/c147332-lead-nov27-strict.log`, `static_checks_passed: true`). Queue integration found that this otherwise sealed ready package has no queue proposal. Its owner is creating the exact plan/manifest-bound proposal and validating command syntax in the assignment folder; the shared queue remains at 209 assignments until integration succeeds. This is unfinished worker-owned packaging, not a CPU dependency blocker. No Git command was run.
+
+## 2026-11-27 10:18 UTC: C147332 owner strict pass
+
+- C147332/NRS-484B-307-12a bus passed its owner's exact strict assignment gate twice after a source-bound `highway` judgment observable and incomplete-source sweep resolved the pinned semantic proof without inventing a violating act. All 61 focused tests pass. The frozen package is under the 2 MiB file cap with clean whitespace and EOF. Lead independent exact strict validation is running in `.runtime-work/c147332-lead-nov27-strict.log`; no shared queue integration is claimed yet. The freed owner began the distinct partial C158190/NRS-484B-257-1 assignment. C158190/257-2 has a separate owner. No Git command was run.
+
+## 2026-11-27 10:17 UTC: railway post-capture media finalizer
+
+- C410753 railway remains **partial**. A new operator CLI checks the sealed original 900-frame four-camera map, encodes FFV1 videos at 20 Hz, verifies frame count/profile and full decode, and hashes the resulting media. Four CPU tests pass, including a complete 900-frame diagnostic single-camera encode at reduced 64x36 dimensions, missing-frame rejection and wrong-profile rejection; cleaned log SHA256 `f601a05b078a4150949bb63f3cd84f28c1c8ea09fc15f917ea473506b1e1e665` is bound in `result.json`. The scoped static gate passes. Production 900-frame encoding, selected case bundles and delivery proof binding remain CPU work. No Git command was run.
+
+## 2026-11-27 10:14 UTC: railway focused proof refresh
+
+- C410753 railway remains **partial**. The complete post-change source/measurement suite now passes 23/23 tests in 59.077 s, including a negative test that rejects a relabeled original ego XY position. The cleaned test log SHA256 `7cc2f1b7e338434bcec69185d8758b712cf271faab97a446aa60a62d6c80297b` is bound in `result.json`, and the exact scoped static gate passes. The CPU fixture establishes source binding and saved recomputation only; selected delivery bundles, semantic proposals, compatibility and independent delivery audits remain worker-owned. No Git command was run.
+
+## 2026-11-27 10:13 UTC: C393410 independently gated and published
+
+- `testing__C393410__LVMC-11-48-050__heavy_vehicle_driver` passed the lead's independent exact strict assignment gate (`.runtime-work/c393410-lead-nov27-strict.log`, `static_checks_passed: true`). Lead checked exact plan/manifest/proposal case and comparison IDs, syntax-checked 116 dispatch/audit commands, and validated the full queue after integration. The queue now has 209 independently gated assignments, 1,452 cases and 1,018 comparison audits, 3,814,723 bytes; SHA256 `3f8354e9554e35137663818c884ae04661f351d3e5023a65e1c252d4c2686bab`. Thirty-three batch assignments remain partial. C147332, C378245 and C158190/257-2 have separate owners; root continues C410753 railway. No Git command was run.
+
+## 2026-11-27 10:12 UTC: returned-work hygiene
+
+- A non-Git scan of 76,319 files under `work/` found zero oversized, invalid UTF-8, trailing-whitespace, blank-EOF or conflict-marker files. The shared queue remains below its 5 MiB cap; every other returned file remains below 2 MiB. The C393410 independent gate continues. No Git command was run.
+
+## 2026-11-27 10:12 UTC: C393410 owner strict pass and next partial
+
+- C393410/LVMC-11-48-050 heavy vehicle passed its owner's repeat exact strict assignment gate with 13 selected cases, 12 comparisons, 26 offline/compatibility, 13 saved and independent proof pairs, semantic validation and focused tests. After log hygiene and receipt rebinding, its files are frozen. The lead's independent exact strict gate is running in `.runtime-work/c393410-lead-nov27-strict.log`; its cases are not yet in the shared queue.
+- The freed owner began the existing nearest-to-ready C147332/NRS-484B-307-12a bus assignment. C378245 taxi and C158190/257-2 stop-sign owners continue their distinct partial assignments. C410753 railway remains partial. No Git command was run.
+
+## 2026-11-27 10:11 UTC: source-bound railway ego position
+
+- C410753 railway remains **partial**. Native capture now seals finite ego XY position in each original frame; saved measurement reopens the hashed frame and rejects a relabeled position. The full 22-test railway suite, a separate position-tamper test, and the scoped static `--complete` gate pass. The 900-frame four-camera CPU fixture recomputes the saved observation with this field. This is source-admission proof; selected case bundles, semantic proposals, compatibility, and independent delivery proofs remain unfinished CPU work. No Git command was run.
+
+## 2026-11-27 10:09 UTC: C386226 independently gated and published
+
+- `testing__C386226__NRS-484B-507-1__motor_vehicle_driver` passed the lead's independent exact strict assignment gate (`.runtime-work/c386226-lead-nov27-strict.log`, `static_checks_passed: true`). The owner then sealed its exact 27-case, six-comparison queue proposal; all 195 dispatch/audit command strings passed bash syntax validation. Lead integration validated plan/manifest/proposal IDs and the full queue. The queue now contains 208 assignments, 1,439 cases and 1,006 comparison audits, 3,757,021 bytes; SHA256 `a2b05675590c0e06be9b98924e4937d3f2e7be667141cffeddb7808051f331f0`. Thirty-four assignments remain partial. No Git command was run.
+- C410753 railway remains partial. Native capture now seals the original ego XY position in each source-hashed frame and saved-only recomputation rejects position relabeling. Its focused test run is in progress; selected bundles and delivery proofs remain CPU work.
+
+## 2026-11-27 10:04 UTC: railway exception construction
+
+- C410753 railway remains **partial**. Source-hashed reviewed actor construction now creates/readbacks flagman and signal props for all three exception probes, with cleanup even when occluder teardown fails. Four focused construction/lifecycle tests pass (log SHA256 `f3e5a2b15cfdc40dfda1990113199412f2fcf7ca4b1b122f367f2b9f0fa91b39`), the runner missing-source test passes, and the scoped static check still passes. Actor presence is kept separate from original evidence of on-duty flagman, installed visible signal and immediate-train warning. Selected bundles, semantic proposals, compatibility and delivery proofs remain CPU work.
+
 ## 2026-11-27 10:01 UTC: independent C386226 gate and railway packet seal
 
 - C386226/NRS-484B-507-1 passed its owner's exact strict gate with 27 cases, six comparisons and five three-point engineering sweeps; all selected offline, compatibility, saved-only, physical/lifecycle and delivery bindings were reported passing. Its files are frozen. The lead's independent exact strict gate is now running in `.runtime-work/c386226-lead-nov27-strict.log`; the 27 cases are not yet added to the shared queue. The freed owner began the distinct unfinished C158190/NRS-484B-257-2 stop-sign assignment.

@@ -56,6 +56,7 @@ class RailSightTests(unittest.TestCase):
                                 "time_s": index * .05,
                                 "route_station_m": index * 6.096,
                                 "speed_mps": 14 / 2.2369362920544,
+                                "position_xy_m": [index * 6.096, 0.0],
                                 "body_on_crossing": index >= 6,
                                 "sight_crossing_clear": True,
                                 "sight_rail_negative_400ft_clear": index != 2,
@@ -69,14 +70,14 @@ class RailSightTests(unittest.TestCase):
         self.seal_frames()
 
     def seal_frames(self):
-        observed = ("original_frame", "time_s", "route_station_m", "speed_mps",
+        observed = ("original_frame", "time_s", "route_station_m", "speed_mps", "position_xy_m",
                     "body_on_crossing", "flagman_on_duty", "signal_installed",
                     "signal_clearly_visible", "signal_immediate_train_approach")
         for index, row in enumerate(self.frames):
             exception = self.root / ("exception-" + str(index) + ".json")
             exception.write_text(json.dumps({
                 "frame": row["original_frame"],
-                **{key: row[key] for key in observed[5:]}}) + "\n")
+                **{key: row[key] for key in observed[6:]}}) + "\n")
             trace = {"path": exception.name, "sha256": sha(exception)}
             source = self.root / ("frame-" + str(index) + ".json")
             source.write_text(json.dumps({**{key: row[key] for key in observed},
@@ -164,6 +165,11 @@ class RailSightTests(unittest.TestCase):
 
     def test_row_cannot_relabel_original_body_or_signal(self):
         self.frames[6]["body_on_crossing"] = False
+        with self.assertRaisesRegex(ValueError, "frame readback"):
+            measure(self.root, self.packet, self.road, self.frames)
+
+    def test_row_cannot_relabel_original_ego_position(self):
+        self.frames[6]["position_xy_m"] = [999.0, 0.0]
         with self.assertRaisesRegex(ValueError, "frame readback"):
             measure(self.root, self.packet, self.road, self.frames)
 
@@ -263,6 +269,7 @@ class RailSightTests(unittest.TestCase):
                 "original_frame": original_frame, "time_s": index * .05,
                 "route_station_m": index * 6.096,
                 "speed_mps": 14 / 2.2369362920544,
+                "position_xy_m": [index * 6.096, 0.0],
                 "body_on_crossing": index >= 6,
                 "flagman_on_duty": False, "signal_installed": False,
                 "signal_clearly_visible": False,
@@ -341,7 +348,9 @@ class RailSightTests(unittest.TestCase):
                     timestamp=SimpleNamespace(elapsed_seconds=(self.frame - 100) * .05))
 
         world = World(self.road)
-        ego = SimpleNamespace(get_velocity=lambda: SimpleNamespace(x=6.0, y=0.0, z=0.0))
+        ego = SimpleNamespace(
+            get_velocity=lambda: SimpleNamespace(x=6.0, y=0.0, z=0.0),
+            get_transform=lambda: SimpleNamespace(location=SimpleNamespace(x=0.0, y=0.0)))
         brake_calls = []
         receipt = capture(
             case_id=HERE.name + "__obscured_14mph", packet=self.packet,

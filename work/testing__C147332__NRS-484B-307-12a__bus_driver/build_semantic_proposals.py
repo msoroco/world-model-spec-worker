@@ -41,7 +41,9 @@ def main() -> None:
                                    'type': 'permission'},
                     'exceptions': [],
                     'timing': {'description': 'The arrow and lane coverage are measured during original bus observations.'},
-                    'judgment_calls_needed': []}, 'parameter_refs': params}
+                    'judgment_calls_needed': [{'phrase': 'highway',
+                        'note': 'Original source review must establish whether the traveled surface is a highway within this clause; authored lane geometry alone does not establish that fact.'}]},
+                'parameter_refs': params}
     binding = {'cell_id': ASSIGNMENT['cell_id'], 'actor': ACTOR, 'status': 'draft',
                'established_contexts': ['one-way multilane target geometry', 'bus route targets'],
                'law_refs': [{'template_id': TEMPLATE_ID, 'binding_kind': 'direct'}],
@@ -79,20 +81,40 @@ def main() -> None:
                                 'comparison_or_standard': 'Paired original-frame comparison under source-reviewed lane signal',
                                 'target_value_or_branch': arrow if 'indication' in pairs[suffix] else motion},
                       'recording_description': construction['recording_description'],
-                      'unresolved_judgment_calls': []})
+                      'unresolved_judgment_calls': ['highway']})
     baseline = {'case_id': AID + '__baseline', 'target_law_id': None,
                 'target_type': 'baseline', 'status': 'draft',
                 'rationale': 'Shared fixed highway, mapped lanes, bus and source-review context; no acceptance claim.',
                 'variable_assignments': cases[0]['variable_assignments'],
                 'recording_description': cases[0]['recording_description'],
-                'unresolved_judgment_calls': []}
+                'unresolved_judgment_calls': ['highway']}
     cases.insert(0, baseline)
+    highway_judgment = {'template_id': TEMPLATE_ID, 'phrase': 'highway',
+        'note': template['structure']['judgment_calls_needed'][0]['note'], 'status': 'draft',
+        'observable_requirements': {
+            'observables': [{'name': 'mapped_lane_signals',
+                'unit': 'structured original source record',
+                'description': 'Original overhead signal placement and lane mapping on the traveled surface.'}],
+            'context_inputs': [{'name': 'reviewed_highway_and_official_device',
+                'unit': 'retained original source packet',
+                'description': 'Independently reviewed public-highway and official-device source records.'}],
+            'sweep_dimensions': [], 'landmarks': [],
+            'recording_needs': [{'name': 'mapped_lane_signals',
+                'unit': 'structured original source record',
+                'description': 'Original signal/lane mapping and highway source identity.'}],
+            'limitations': ['Authored CARLA road geometry does not establish original public-highway status or a legal conclusion.']}}
+    highway_sweep = {'sweep_id': 'source-reviewed-highway-status',
+        'target_law_id': LAW_ID, 'judgment_refs': [{'phrase': 'highway',
+            'note': highway_judgment['note']}], 'status': 'incomplete',
+        'rationale': 'Highway status requires original reviewed legal and physical source context; no worker legal cutoff is inferred.',
+        'missing_inputs': ['Independently reviewed public-highway source and official-device records for the actual traveled surface.']}
     case_stage = {'cell_id': ASSIGNMENT['cell_id'], 'actor': ACTOR, 'status': 'draft',
-                  'cases': cases, 'sweep_specs': []}
+                  'cases': cases, 'sweep_specs': [highway_sweep],
+                  'sweeps_expanded': True}
     refs = {'relevance_batch': write('relevance_batch.json', relevance),
             'relevance': write('relevance.json', relevance),
             'template': write('template.json', template),
-            'judgment_observables': [],
+            'judgment_observables': [write('judgment-highway.json', highway_judgment)],
             'bindings': write('bindings.json', binding),
             'cases': write('cases.json', case_stage)}
     write('semantic-index.json', {'format': 'worker-semantic-delivery',

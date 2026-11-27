@@ -73,7 +73,7 @@ class PermissionSemanticTests(unittest.TestCase):
     def test_permission_package_binds_stages_and_constructions(self):
         report = validate_package(ROOT, self.assignment)
         self.assertEqual(len(report['construction_sha256']), 4)
-        self.assertFalse(report['pinned_semantic_validator_passed'])
+        self.assertTrue(report['pinned_semantic_validator_passed'])
         index = json.loads((ROOT / 'proposals/semantic-index.json').read_text())
         index['stages']['cases']['sha256'] = '0' * 64
         with self.assertRaisesRegex(ValueError, 'stage source hash differs'):

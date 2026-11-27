@@ -20,6 +20,7 @@ def build() -> None:
     plan = json.loads((ROOT / "case-plan.json").read_text())
     manifest_path = ROOT / "execution-manifest.draft.json"
     manifest = json.loads(manifest_path.read_text())
+    manifest["runtime_manifest_sha256"] = sha(ROOT.parents[1] / "runtime/SOURCE-MANIFEST.json")
     for entry in manifest["cases"]:
         case_id = entry["case_id"]
         suffix = case_id.split("__")[-1]
@@ -46,6 +47,9 @@ def build() -> None:
         path.write_text(json.dumps(contract, indent=2, sort_keys=True) + "\n")
         entry["measurement_contract"] = str(path.relative_to(ROOT))
         entry["measurement_procedure"] = {"entrypoint": "analysis.py"}
+        entry["fixture_recipe"] = "work/" + ROOT.name + "/cases/" + suffix + "/fixture-recipe.json"
+        entry["native_handoff"] = {"python_env_var": "CARLA_PYTHON",
+                                   "host_env_var": "CARLA_HOST", "port_env_var": "CARLA_PORT"}
     manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n")
 
 

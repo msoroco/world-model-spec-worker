@@ -70,7 +70,7 @@ def measure(root, packet, live_opendrive, frames):
     first = frames[0]
     if type(first.get("original_frame")) is not int:
         raise ValueError("original frame identity missing")
-    required = ("time_s", "route_station_m", "speed_mps", "body_on_crossing",
+    required = ("time_s", "route_station_m", "speed_mps", "position_xy_m", "body_on_crossing",
                 "sight_crossing_clear", "sight_rail_negative_400ft_clear",
                 "sight_rail_positive_400ft_clear", "sight_source_path",
                 "sight_source_sha256",
@@ -84,13 +84,17 @@ def measure(root, packet, live_opendrive, frames):
         if not all(isinstance(row[key], (int, float)) and math.isfinite(row[key])
                    for key in ("time_s", "route_station_m", "speed_mps")):
             raise ValueError("original rail time, station or speed invalid")
+        if (not isinstance(row["position_xy_m"], list) or len(row["position_xy_m"]) != 2 or
+                any(type(value) not in (int, float) or not math.isfinite(value)
+                    for value in row["position_xy_m"])):
+            raise ValueError("original rail ego position invalid")
         if index and (abs(row["time_s"] - frames[index - 1]["time_s"] - .05) > .005 or
                       row["route_station_m"] < frames[index - 1]["route_station_m"]):
             raise ValueError("original 20 Hz rail route join differs")
         frame_source = _source(root, row["frame_source_path"],
                                row["frame_source_sha256"], "frame")
         original = json.loads(frame_source.read_text())
-        observed = ("original_frame", "time_s", "route_station_m", "speed_mps",
+        observed = ("original_frame", "time_s", "route_station_m", "speed_mps", "position_xy_m",
                     "body_on_crossing", "flagman_on_duty", "signal_installed",
                     "signal_clearly_visible", "signal_immediate_train_approach")
         if any(original.get(key) != row[key] for key in observed):
@@ -102,7 +106,7 @@ def measure(root, packet, live_opendrive, frames):
                                    exception_ref.get("sha256"), "exception")
         exception = json.loads(exception_source.read_text())
         if (exception.get("frame") != row["original_frame"] or
-                any(exception.get(key) != row[key] for key in observed[5:])):
+                any(exception.get(key) != row[key] for key in observed[6:])):
             raise ValueError("original rail exception readback differs")
         source = _source(root, row["sight_source_path"],
                          row["sight_source_sha256"], "sight ray")
@@ -114,7 +118,10 @@ def measure(root, packet, live_opendrive, frames):
                  row["sight_rail_positive_400ft_clear"]]):
             raise ValueError("original rail sight ray readback differs")
         if any(type(row[key]) is not bool for key in
-               ("body_on_crossing",) + required[4:7] + required[9:13]):
+               ("body_on_crossing", "sight_crossing_clear",
+                "sight_rail_negative_400ft_clear", "sight_rail_positive_400ft_clear",
+                "flagman_on_duty", "signal_installed", "signal_clearly_visible",
+                "signal_immediate_train_approach")):
             raise ValueError("original rail sight or exception state invalid")
     crossing = [i for i, row in enumerate(frames) if row["body_on_crossing"]]
     if not crossing or crossing != list(range(crossing[0], crossing[-1] + 1)):

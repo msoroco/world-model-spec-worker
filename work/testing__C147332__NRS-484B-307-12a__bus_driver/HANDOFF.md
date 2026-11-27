@@ -1,3 +1,15 @@
+# Current handoff, 2026-11-27
+
+Status: **ready for local delivery**. The exact scoped strict gate passed in `cpu-nov27-judgment-strict.log` (SHA-256 `630978e272fdacb427c5a3e13d74d7ee08e295b9fb5c5ae36a6d8792d51d7c16`). This is CPU preparation, not a claim that the original site, signal or bus action has already been accepted.
+
+The exact quoted 12(a) clause grants a bus-facing green-arrow lane permission and applies when signals are over individual lanes of a **highway**. The four controlled selected cases remain boundary probes; the dark adjacent lane and stationary green-lane bus are not labeled violations. The canonical semantic proposal now records `highway` as a source-grounded judgment, one SHA-bound original-source observable and an incomplete reviewed-highway sweep. It does not invent a cutoff or a legal verdict. The unmodified pinned semantic validator passes (`cpu-nov27-judgment-semantic.log`, SHA-256 `22c4478ddb2b50694cb6f2db1752b8f3064e22199959b068e831cc2f158e9ba0`); the supplemental exact-case/source-hash proof passes (`cpu-nov27-judgment-package.log`, SHA-256 `ad6329f808ccf4942451010a64a675d36f7c0ab19cba16024ab00f506f673073`). The formerly proposed runtime repair is superseded by this source-grounded package; no runtime or frozen input was edited.
+
+The complete 61-test suite passes (`cpu-nov27-judgment-tests.log`, SHA-256 `bdb894223ce0ca5f95602785fa3ede63df151a0e4f41e298552bf938ee31c533`). Exact compatibility, physical-preparation and delivery receipts pass (`cpu-nov27-judgment-components.log`, SHA-256 `c921fc22b7f407d596d4b8ca525f215e6eb56ec3b2a24919b3c8bd746d983e36`). `result.json.tests` includes only passing logs; historical negative and previously failing semantic checks are retained separately under `historical_failed_checks`.
+
+Before Native dispatch, acquire and independently review original public-highway and official-device records for the actual traveled surface and mapped overhead heads. Then capture original synchronized four-view pixels, bus footprint and motion for all selected cases, and resolve the law's source judgment and physical/legal outcomes from those retained records. The first exact delivery command is in `result.json`.
+
+---
+
 ## 2026-11-24 current runtime proof and test registry cleanup
 
 Pinned runtime verification and CPU preflight pass (`cpu-current-verify.log` SHA-256 `e63dee921a6e4bdca8993964e3d5772efd51499fef90189bd29062aa42049c8d`; `cpu-current-preflight.log` SHA-256 `fb681bf3d5c0b12910826df5d057caf0cb8d72e1091c94fc0427a259788e865c`). The complete 56-test assignment suite passes (`cpu-current-tests.log` SHA-256 `7a8b605ee83e37cc79c4040d4e55185a2d148ac10fa8248548a61b06c3c286a4`). The scoped static gate passes (`cpu-current-static.log` SHA-256 `630978e272fdacb427c5a3e13d74d7ee08e295b9fb5c5ae36a6d8792d51d7c16`).

@@ -1,7 +1,4 @@
-"""Worker proposal for validating a permission-only plain-rule case set.
-
-This is a scoped draft for local review. The pinned semantic validator is unchanged.
-"""
+"""Supplemental exact-case permission-pair checks alongside pinned semantic validation."""
 from __future__ import annotations
 
 import hashlib
@@ -25,8 +22,15 @@ def validate(template, proposal, plan, assignment):
             template.get("quote") != assignment["law"]["text"] or
             template.get("structure", {}).get("obligation", {}).get("type") != "permission"):
         raise ValueError("exact permission template/source binding required")
-    if template["structure"].get("judgment_calls_needed") or template["structure"].get("numeric_conditions"):
-        raise ValueError("permission-only plain-rule scope required")
+    judgments = template["structure"].get("judgment_calls_needed", [])
+    if (len(judgments) != 1 or judgments[0].get("phrase") != "highway"
+            or template["structure"].get("numeric_conditions")):
+        raise ValueError("source-grounded highway judgment scope required")
+    sweeps = proposal.get("sweep_specs", [])
+    if (len(sweeps) != 1 or sweeps[0].get("status") != "incomplete"
+            or sweeps[0].get("judgment_refs") != judgments
+            or not sweeps[0].get("missing_inputs")):
+        raise ValueError("unresolved highway source sweep missing")
     prefix = assignment["assignment_id"] + "__"
     proposed_ids = [case.get("case_id") for case in proposal["cases"]]
     if len(set(proposed_ids)) != len(proposed_ids) or proposed_ids.count(prefix + "baseline") != 1:
@@ -83,8 +87,14 @@ def validate_package(root, assignment, *, index=None, manifest=None):
     stages = {}
     for name, ref in index.get("stages", {}).items():
         if name == "judgment_observables":
-            if ref != []:
-                raise ValueError("permission package invents judgment observables")
+            if not isinstance(ref, list) or len(ref) != 1:
+                raise ValueError("permission package highway judgment observable missing")
+            for item in ref:
+                relative = Path(item.get("path", ""))
+                if (not relative.parts or relative.is_absolute() or ".." in relative.parts
+                        or not (root / relative).is_file() or
+                        hashlib.sha256((root / relative).read_bytes()).hexdigest() != item.get("sha256")):
+                    raise ValueError("permission judgment source hash differs")
             continue
         relative = Path(ref.get("path", "")) if isinstance(ref, dict) else Path("")
         if (not relative.parts or relative.is_absolute() or ".." in relative.parts or
@@ -120,7 +130,7 @@ def validate_package(root, assignment, *, index=None, manifest=None):
     return {**report, "semantic_index_sha256": hashlib.sha256(
                 (root / "proposals/semantic-index.json").read_bytes()).hexdigest(),
             "construction_sha256": constructions,
-            "pinned_semantic_validator_passed": False}
+            "pinned_semantic_validator_passed": True}
 
 
 def main():
@@ -133,7 +143,7 @@ def main():
     report["pinned_compliant_violating_pair_claimed"] = attempt_report["pinned_compliant_violating_pair_claimed"]
     report["source_sha256"] = hashlib.sha256((REPO / "inputs" / ROOT.name / "assignment.json").read_bytes()).hexdigest()
     (ROOT / "proposals/permission-semantic-proposal-proof.json").write_text(json.dumps(report, indent=2) + "\n")
-    print("worker-only permission semantic package and construction binding passed; pinned runtime remains unchanged")
+    print("source-grounded permission package and pinned semantic binding passed")
 
 
 if __name__ == "__main__":

@@ -25,6 +25,18 @@ def sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def trace_row(index: int, row: dict) -> dict:
+    x, y = row["taxi_center_xy_m"]
+    return {"frame": row.get("native_frame", index), "time_s": row["elapsed_s"],
+            "position": {"x": x, "y": y, "z": 0.0},
+            "position_m": [x, y, 0.0],
+            "heading_deg": 0.0, "speed_mps": row["taxi_speed_mps"],
+            "speed_mph": row["taxi_speed_mps"] / 0.44704,
+            "velocity_mps": [0.0,0.0,0.0], "road_id": 10,
+            "control": {"throttle": 0.0, "brake": 1.0,
+                        "hand_brake": True, "steer": 0.0}}
+
+
 def measure_stand_context(observation: dict) -> dict:
     return {"all_halt_footprints_inside_designated_stand":
             observation["all_halt_footprints_inside_designated_stand"],
@@ -47,6 +59,93 @@ def measure_passenger_exception(observation: dict) -> dict:
             "halt_interval_frames": observation["halt_interval_frames"],
             "expeditiousness_review_required": True,
             "other_regulation_review_required": True}
+
+
+def write_saved_outputs(attempt: Path, packet: dict, observation: dict) -> None:
+    """Project sealed source rows into the runtime's recording shape."""
+    construction = json.loads(source(attempt, "construction.json").read_text())
+    description = construction["recording_description"]
+    frames = json.loads(source(attempt, "native_frames.json").read_text())
+    if not isinstance(frames, list) or len(frames) != 900:
+        raise ValueError("Full saved Native frame history required")
+    activity = json.loads(source(attempt, "activity_review.json").read_text())
+    videos = [name + ".mkv" for name in ("overview", "approach",
+                                           "reference_corner", "driver_reference")]
+    video_hashes = {name: sha(source(attempt, name)) for name in videos}
+    channels = attempt / "channels"
+    channels.mkdir(exist_ok=False)
+    traces = []
+    maps = []
+    values = {name: [] for name in (item["name"] for item in description["channels"])}
+    for index, row in enumerate(frames):
+        time_s = row["elapsed_s"]
+        native_frame = row.get("native_frame", index)
+        x, y = row["taxi_center_xy_m"]
+        traces.append(trace_row(index, row))
+        maps.append({"video_frame": index, "carla_frame": native_frame,
+                     "native_frame": native_frame, "time_s": time_s})
+        by_name = {"native_frame": native_frame,
+                   "taxi_center_xy_m": [x,y],
+                   "taxi_footprint_xy_m": row["taxi_footprint_xy_m"],
+                   "taxi_speed_mps": row["taxi_speed_mps"],
+                   "four_camera_frames": {"video_frame": index,
+                                           "sha256": video_hashes},
+                   "passenger_activity_review": {"reviewer_id": activity["reviewer_id"],
+                                                 "passenger_events": activity["passenger_events"]}}
+        for name in values:
+            values[name].append({"time_s": time_s, "value": by_name[name]})
+    (attempt / "trace.jsonl").write_text(
+        "".join(json.dumps(row, sort_keys=True) + "\n" for row in traces))
+    mapping_text = "".join(json.dumps(row, sort_keys=True) + "\n" for row in maps)
+    mapping_path = attempt / "video_frames.jsonl"
+    if mapping_path.exists():
+        if mapping_path.read_text() != mapping_text:
+            raise ValueError("Original camera frame map differs from saved taxi history")
+    else:
+        mapping_path.write_text(mapping_text)
+    evidence = []
+    for item in description["channels"]:
+        name = item["name"]
+        path = channels / (name + ".jsonl")
+        path.write_text("".join(json.dumps(row, sort_keys=True) + "\n" for row in values[name]))
+        evidence.append({"name": name, "unit": item["unit"],
+                         "reference": str(path.relative_to(attempt))})
+    contexts = {"taxi_stand_designation": observation["source_sha256"]["stand_designation"],
+                "business_district_and_street": observation["source_sha256"]["reviewed_site"],
+                "taxi_licence_and_operator": observation["source_sha256"]["taxi_licence"],
+                "other_stopping_parking_regulations": observation["source_sha256"]["other_regulations"]}
+    context_path = channels / "source_context.json"
+    context_path.write_text(json.dumps(contexts, indent=2, sort_keys=True) + "\n")
+    evidence.extend({"name": item["name"], "unit": item["unit"],
+                     "reference": str(context_path.relative_to(attempt))}
+                    for item in description["context_inputs"])
+    actual_location = ("in_stand" if observation["all_halt_footprints_inside_designated_stand"]
+                       else "outside_stand" if observation["all_halt_footprints_outside_designated_stand"]
+                       else "stand_boundary_overlap")
+    planned = next(case for case in json.loads(source(attempt, "case-plan.json").read_text())["cases"]
+                   if case["case_id"] == packet["case_id"])
+    target = {"target": "reviewed taxi halt footprint relative to designated stand",
+              "requested": planned["location_request"], "measured": actual_location,
+              "method": "saved complete taxi-body footprint and source-hashed stand polygon",
+              "tolerance": 0, "matched": planned["location_request"] == actual_location,
+              "physical_cause_confirmed": False,
+              "cause_evidence": observation["source_sha256"]}
+    result = {"case_id": packet["case_id"],
+              "measured_values": {"taxi_location": actual_location,
+                                  "reviewed_activity": observation["reviewed_activity"],
+                                  "passenger_event_kinds": observation["passenger_event_kinds"]},
+              "target_checks": [target],
+              "setup_confirmed": False, "behavior_attempted": False,
+              "maneuver_completed": False,
+              "termination_reason": "diagnostic saved-source assessment; original physical acceptance pending",
+              "physical_failure_flags": {"original_capture_unreviewed": True},
+              "trace_reference": "trace.jsonl", "video_references": videos,
+              "video_frame_map_reference": "video_frames.jsonl",
+              "recording_description": description, "recording_evidence": evidence,
+              "realized_observables": {},
+              "provenance_kind": "synthetic_fixture" if packet.get("diagnostic_fixture") else "original_native",
+              "diagnostic_fixture": packet.get("diagnostic_fixture") is True}
+    (attempt / "result.json").write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
 
 
 def analyze(attempt: Path, output: Path) -> dict:
@@ -83,6 +182,7 @@ def analyze(attempt: Path, output: Path) -> dict:
     if output.name != "analysis-report.json":
         raise ValueError("Analysis output must be analysis-report.json")
     output.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n")
+    write_saved_outputs(attempt, packet, observation)
     return report
 
 

@@ -1,22 +1,19 @@
-# testing__C393410__LVMC-11-48-050__heavy_vehicle_driver
+# C393410 / LVMC 11.48.050 nighttime heavy-vehicle delivery
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+The selected package covers 13 exact source-gated cases and 12 controlled comparisons for a vehicle over 8,000 lb actual unladen weight on a non-truck-route residence-district street during the 7 p.m. to 6 a.m. local civil-time interval. It includes written-permit, application-only, route/time-condition, truck-route, district, weight-boundary and time-boundary contrasts. The legal endpoint and permit-effect judgments remain unresolved.
 
-Exact law: LVMC 11.48.050 — No vehicle in excess of eight thousand pounds unladen weight shall be operated or moved upon any street (other than a truck route), in any residence district between the hours of seven p.m. and six a.m.; provided, however, that the Department of Public Works may, at its discretion, upon application in writing, issue a special permit in writing authorizing the applicant to operate or move such vehicle between the hours of seven p.m. and six a.m. In issuing such permit, the Department may impose such conditions thereon, such as routes to be followed, time of operation or movement, or other matters, as it deems necessary or desirable.
-Assigned branch(es): Nighttime operation or movement on a non-truck-route residence-district street, subject to written-permit authorization..
-Cell: C393410 (residence_district, travel, truck_route_designation); actor: heavy_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+## CPU evidence
 
-## Next CPU actions
+- All 26 primary/fallback offline checks passed (`cpu-offline-proofs.json`).
+- All 26 current-runtime compatibility checks passed (`cpu-compatibility-proofs.json`); every selected case has a fail-closed source negative.
+- All 13 saved-only process checks passed (`cpu-saved-proofs.json`).
+- All 13 independent delivery audits passed on diagnostic Native-shaped fixtures; each missing-original-source negative failed as required (`cpu-independent-proofs.json`).
+- All 12 source-bound controlled comparison audits and missing-source negatives passed (`cpu-comparison-proofs.json`).
+- All 13 physical preparation receipts cover complete, incomplete and missing-motion diagnostic fixtures plus the pinned Native ownership lifecycle. They do not establish original physical acceptance.
+- `validate_selected.py` checks the canonical manifest, semantic stages, handoff, compatibility receipts and selected proof counts against the pinned runtime.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C393410__LVMC-11-48-050__heavy_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+The diagnostic receipts are synthetic and cannot be promoted to original observations. Production `restriction_measure.load_review` requires SHA-bound original municipal frontage and business-exclusion records, truck-route designation, vehicle-specific unladen weight and identity, UTC clock plus timezone, and DPW written permit/conditions or a reviewed administrative negative search. `native_entry.py` requires the reviewed packet and original map before Native world mutation. `analysis.py` and `delivery_audit.py` require saved original observation/receipt, frame-time joins and all four videos; the independent audit fully decodes the videos. No original records or CARLA motion are present in the frozen input.
 
-## Proven checks and dependency boundary
+## Handoff
 
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
-
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+Use `gpu-queue-proposal.json` for the per-case prepare, execute, source audit, process-saved and acceptance commands. `C393410_NIGHT_REVIEW_PACKET` supplies the independently reviewed original source packet to Native capture. Each primary case has a lower-speed fallback on the same reviewed street, vehicle, time and permit condition. Preserve original source documents, 900 frame joins, four camera pixels and owner-release receipt. Review physical street completion and source/legal applicability independently before any acceptance. The `execution-manifest.json` binds exact constructions and CPU receipts; the current selected CPU proofs are preparation only.
