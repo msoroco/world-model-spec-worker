@@ -20,6 +20,7 @@ from native.person_scene import (EGO_START_X_M, LANE_WIDTH_M, MODES, WORKER_X_M,
                                  WORKER_Y_M, inspect, open_drive, require_source_packet)
 
 ASSIGNMENT = 'training__C179799__NRS-484B-653-1a__motor_vehicle_driver'
+CASE_PREFIX = ASSIGNMENT + '__selected_ce719cfa__'
 CAMERAS = (
     ('overview', 1920, 1080, -18, -14, 12, -22),
     ('approach', 1280, 720, -12, -4, 5, -10),
@@ -29,8 +30,8 @@ CAMERAS = (
 
 
 def check(config):
-    suffix = config.get('case_id', '').removeprefix(ASSIGNMENT + '__')
-    if (config.get('case_id') != ASSIGNMENT + '__' + suffix or suffix not in MODES
+    suffix = config.get('case_id', '').removeprefix(CASE_PREFIX)
+    if (config.get('case_id') != CASE_PREFIX + suffix or suffix not in MODES
             or config.get('interaction_mode') != MODES[suffix]):
         raise ValueError('Selected person interaction identity or response mode changed')
     if (config.get('law_id'), config.get('cell_id'), config.get('actor')) != (
@@ -38,6 +39,8 @@ def check(config):
         raise ValueError('Frozen law, cell or actor changed')
     if config.get('duration_s') != 30 or config.get('rate_hz') != FRAME_RATE:
         raise ValueError('Thirty-second original capture changed')
+    if not -5.5 <= config.get('worker_y_m', -5.2) <= -4.6:
+        raise ValueError('Roadside worker engineering offset changed scope')
     if [(c.get('name'), c.get('width'), c.get('height')) for c in config.get('cameras', [])] != [
             (name, width, height) for name, width, height, *_ in CAMERAS]:
         raise ValueError('Four original source cameras changed')
@@ -132,8 +135,9 @@ def execute(config, output_dir, context_packet, host='127.0.0.1', port=2000):
         owned.append(ego)
         worker_bp = sorted(library.filter('walker.pedestrian.*'), key=lambda b: b.id)[0]
         worker_bp.set_attribute('role_name', 'c179799_roadside_worker')
+        worker_y = config.get('worker_y_m', WORKER_Y_M)
         worker = world.spawn_actor(worker_bp, carla.Transform(
-            carla.Location(x=WORKER_X_M, y=WORKER_Y_M, z=.8),
+            carla.Location(x=WORKER_X_M, y=worker_y, z=.8),
             carla.Rotation(yaw=90)))
         owned.append(worker)
         if worker.id == ego.id or not worker.type_id.startswith('walker.pedestrian.'):

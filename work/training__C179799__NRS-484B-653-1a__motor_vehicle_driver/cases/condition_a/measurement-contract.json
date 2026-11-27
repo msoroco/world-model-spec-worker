@@ -1,0 +1,53 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C179799__NRS-484B-653-1a__motor_vehicle_driver__selected_ce719cfa__condition_a",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "text-0",
+      "source": "NRS 484B.653(1)(a)",
+      "output_key": "intro",
+      "method": "measure_intro",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "native-person-interaction.jsonl",
+        "original-context-packet.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "text-1",
+      "source": "NRS 484B.653(1)(a)",
+      "output_key": "clause",
+      "method": "measure_clause",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native-person-interaction.jsonl",
+        "original-context-packet.json",
+        "video_frames.jsonl",
+        "native-road-readback.json"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "output_key": "scope",
+      "method": "measure_scope",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "native-person-interaction.jsonl",
+        "original-context-packet.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "original-context-packet.json"
+    ],
+    "error_contains": "Missing required source: original-context-packet.json"
+  }
+}

@@ -7,7 +7,8 @@ from tempfile import TemporaryDirectory
 
 from authority_source import ASSIGNMENT, check
 
-FIXED = ('vehicle-trace.jsonl', 'video_frames.jsonl')
+FIXED = ('vehicle-trace.jsonl', 'video_frames.jsonl',
+         'camera-frames.jsonl', 'map-packet.json', 'native-road.xodr')
 
 
 def sha(path):

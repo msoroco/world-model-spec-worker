@@ -112,16 +112,99 @@ def analyze(attempt):
             'mental_state_conclusion': None, 'legal_recklessness_conclusion': None}
 
 
+def finalize(attempt, output):
+    root, output = Path(attempt).resolve(), Path(output).resolve()
+    if output.exists() or (root / 'result.json').exists():
+        raise ValueError('Retain prior saved analysis; choose fresh output')
+    report = analyze(root)
+    config = json.loads((root / 'config.json').read_text())
+    construction = json.loads(require_file(root, 'construction.json').read_text())
+    if construction.get('case_id') != report['case_id']:
+        raise ValueError('Selected case and construction identity differ')
+    videos = [name + '.mkv' for name in (
+        'overview', 'approach', 'reference_corner', 'driver_reference')]
+    for name in ('trace.jsonl', 'capture/evidence.jsonl', *videos):
+        require_file(root, name)
+    samples = rows(root / 'native-person-interaction.jsonl')
+    mapped = rows(root / 'video_frames.jsonl')
+    channel_dir = root / 'channels'
+    channel_dir.mkdir(exist_ok=False)
+    evidence = []
+    context = json.loads((root / 'original-context-packet.json').read_text())
+    for channel in construction['recording_description']['channels']:
+        name = channel['name']
+        if name == 'drv.time_to_conflict':
+            values = [report['selected_branch_measurement']['minimum_projected_ttc_s']] * len(samples)
+        elif name == 'drv.hard_deceleration':
+            values = [sample['ego_accel_longitudinal_mps2'] for sample in samples]
+        elif name == 'kin.speed':
+            values = [(sample['ego_vx_mps']**2 + sample['ego_vy_mps']**2)**.5 for sample in samples]
+        elif name == 'kin.accel_longitudinal':
+            values = [sample['ego_accel_longitudinal_mps2'] for sample in samples]
+        elif name == 'kin.yaw_rate':
+            values = [sample['ego_yaw_rate_radps'] for sample in samples]
+        elif name == 'rel.surface_gap':
+            values = [((sample['person_x_m']-sample['ego_x_m'])**2 +
+                       (sample['person_y_m']-sample['ego_y_m'])**2)**.5 -
+                      sample['ego_radius_m'] - sample['person_radius_m'] for sample in samples]
+        elif name == 'rel.contact':
+            values = [sample['collision_sensor_contact'] for sample in samples]
+        elif name == 'st.highway':
+            values = [{'access_kind_claimed_by_source': context['access_kind'],
+                       'source': 'original-context-packet.json',
+                       'legal_status_independently_reviewed': False}] * len(samples)
+        elif name == 'ru.pedestrian':
+            values = [{'actor_id': sample['person_actor_id'],
+                       'blueprint_id': sample['person_blueprint_id'],
+                       'x_m': sample['person_x_m'], 'y_m': sample['person_y_m'],
+                       'worker_role_independently_reviewed': False} for sample in samples]
+        else:
+            raise ValueError('Unrecognized mandatory person-interaction channel: ' + name)
+        with (channel_dir / (name + '.jsonl')).open('x') as stream:
+            for frame, value in zip(mapped, values):
+                stream.write(json.dumps({'time_s': frame['time_s'], 'value': value},
+                                        allow_nan=False) + '\n')
+        evidence.append({'name': name, 'unit': channel['unit'],
+                         'reference': 'channels/' + name + '.jsonl'})
+    result = {'case_id': report['case_id'],
+              'measured_values': report['selected_branch_measurement'],
+              'target_checks': [{
+                  'target': 'complete original person encounter on sourced paved route',
+                  'requested': True,
+                  'measured': len(samples) == 600,
+                  'method': 'source-joined actor telemetry, map, context and four-camera frame map',
+                  'tolerance': 0, 'matched': len(samples) == 600,
+                  'physical_cause_confirmed': False,
+                  'cause_evidence': ['native-person-interaction.jsonl',
+                                     'original-context-packet.json',
+                                     'native-road-readback.json', 'video_frames.jsonl']}],
+              'setup_confirmed': False, 'behavior_attempted': False,
+              'maneuver_completed': False,
+              'termination_reason': '600-frame saved diagnostic; independent physical and legal review pending',
+              'physical_failure_flags': [
+                  'Actual worker role and location, highway or public access, sight lines and surface require review',
+                  'Willful or wanton mental state cannot be inferred from telemetry'],
+              'trace_reference': 'trace.jsonl',
+              'video_references': videos,
+              'video_frame_map_reference': 'video_frames.jsonl',
+              'recording_description': construction['recording_description'],
+              'recording_evidence': evidence,
+              'realized_observables': {},
+              'provenance_kind': ('synthetic_local_diagnostic' if context.get('synthetic_diagnostic')
+                                  else 'original_native'),
+              'accepted': False}
+    from worker_exchange.native_output import write_result
+    write_result(root, result)
+    output.write_text(json.dumps(report, indent=2, allow_nan=False) + '\n')
+    return report
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--attempt', required=True)
     parser.add_argument('--output', required=True)
     args = parser.parse_args()
-    result = analyze(args.attempt)
-    output = Path(args.output)
-    if output.exists():
-        raise ValueError('Retain prior saved analysis; choose fresh output')
-    output.write_text(json.dumps(result, indent=2, allow_nan=False) + '\n')
+    result = finalize(args.attempt, args.output)
     print(json.dumps({'case_id': result['case_id'], 'source_complete': True,
                       'physical_completion_confirmed': False}))
 

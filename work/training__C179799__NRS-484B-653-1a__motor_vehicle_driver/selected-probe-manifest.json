@@ -1,0 +1,87 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C179799__NRS-484B-653-1a__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "case_id": "training__C179799__NRS-484B-653-1a__motor_vehicle_driver__selected_ce719cfa__condition_a",
+      "kind": "delivery",
+      "construction": "cases/condition_a/construction.json",
+      "construction_sha256": "c34bc09bcdb64d7f48676ddc3fe2281def0e0bc3365f14be6244363e05c34d15",
+      "measurement_contract": "cases/condition_a/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c179799-saved-interaction-analysis-v1"
+      },
+      "fixture_recipe": "work/training__C179799__NRS-484B-653-1a__motor_vehicle_driver/cases/condition_a/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Walker may fail to remain visible or stable outside the driving lane."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/condition_a/construction-fallback1.json",
+          "construction_sha256": "0e6b870b74d209f3610b76af13e75e5d35f250fa0bdcc4716efe8b97d4ca9678",
+          "trigger": {
+            "source": "original Native actor/body and four-camera audit",
+            "metric": "worker visibility or stable roadside pose",
+            "failure_condition": "worker missing from full encounter or source pixels"
+          },
+          "changed_knobs": [
+            "worker_y_m shifted from -5.2 m to -4.8 m while still outside lane"
+          ]
+        }
+      ],
+      "physical_preparation": {
+        "receipt": "physical-proof/condition_a/proof.json",
+        "sha256": "bad28e2f18db2b37eb85909b0f1d9a83414cfb3ec984939a1e43cff6e9acf882"
+      }
+    },
+    {
+      "case_id": "training__C179799__NRS-484B-653-1a__motor_vehicle_driver__selected_ce719cfa__condition_b",
+      "kind": "delivery",
+      "construction": "cases/condition_b/construction.json",
+      "construction_sha256": "67f959a0fda3549530e08103a8a8eb5d43cb51529ae8a5bca91f0f8944bc11c1",
+      "measurement_contract": "cases/condition_b/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "c179799-saved-interaction-analysis-v1"
+      },
+      "fixture_recipe": "work/training__C179799__NRS-484B-653-1a__motor_vehicle_driver/cases/condition_b/fixture-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Walker may fail to remain visible or stable outside the driving lane."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/condition_b/construction-fallback1.json",
+          "construction_sha256": "389a6244fe7a482fb97e7d1d2893fc253f440d16fde37671899720ce21e4328a",
+          "trigger": {
+            "source": "original Native actor/body and four-camera audit",
+            "metric": "worker visibility or stable roadside pose",
+            "failure_condition": "worker missing from full encounter or source pixels"
+          },
+          "changed_knobs": [
+            "worker_y_m shifted from -5.2 m to -4.8 m while still outside lane"
+          ]
+        }
+      ],
+      "physical_preparation": {
+        "receipt": "physical-proof/condition_b/proof.json",
+        "sha256": "179ca6a1c1f6722564411dadf09a0dbfd77776b6d0769dbc60e712e8a59e766c"
+      }
+    }
+  ]
+}

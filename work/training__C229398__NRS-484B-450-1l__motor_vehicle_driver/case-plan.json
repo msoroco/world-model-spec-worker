@@ -349,37 +349,37 @@
     {
       "term": "drv.standing_or_parked",
       "purpose": "the subject at rest",
-      "status": "measurement_mapping_pending"
+      "status": "selected_source_mapping_original_review_pending"
     },
     {
       "term": "st.road_edge",
       "purpose": "the edge or curb where the other vehicle is stopped",
-      "status": "measurement_mapping_pending"
+      "status": "selected_source_mapping_original_review_pending"
     },
     {
       "term": "rel.bearing",
       "purpose": "the subject on the highway side of that vehicle — double parking",
-      "status": "measurement_mapping_pending"
+      "status": "selected_source_mapping_original_review_pending"
     },
     {
       "term": "rel.longitudinal_overlap",
       "purpose": "the two bodies abreast",
-      "status": "measurement_mapping_pending"
+      "status": "selected_source_mapping_original_review_pending"
     },
     {
       "term": "rel.surface_gap",
       "purpose": "the lateral relation between them",
-      "status": "measurement_mapping_pending"
+      "status": "selected_source_mapping_original_review_pending"
     },
     {
       "term": "drv.standing_or_parked",
       "purpose": "the other vehicle is itself stopped or parked",
-      "status": "measurement_mapping_pending"
+      "status": "selected_source_mapping_original_review_pending"
     },
     {
       "term": "drv.forced_halt",
       "purpose": "the traffic-conflict exception",
-      "status": "measurement_mapping_pending"
+      "status": "selected_source_mapping_original_review_pending"
     }
   ],
   "candidate_plans": [],
@@ -411,39 +411,74 @@
   "selected_branch": "Parking on the highway side of a curbside vehicle.",
   "observations": [
     {
-      "name": "drv.standing_or_parked",
+      "name": "ego_pose",
       "mandatory": true,
-      "reason": "the subject at rest"
+      "reason": "original subject motion and rest"
     },
     {
-      "name": "st.road_edge",
+      "name": "curbside_pose",
       "mandatory": true,
-      "reason": "the edge or curb where the other vehicle is stopped"
+      "reason": "original stopped curbside vehicle"
     },
     {
-      "name": "rel.bearing",
+      "name": "curb_geometry",
       "mandatory": true,
-      "reason": "the subject on the highway side of that vehicle — double parking"
+      "reason": "surveyed road edge and highway side"
     },
     {
-      "name": "rel.longitudinal_overlap",
+      "name": "ego_highway_side_of_curbside",
       "mandatory": true,
-      "reason": "the two bodies abreast"
+      "reason": "two-body side relation"
     },
     {
-      "name": "rel.surface_gap",
+      "name": "longitudinal_overlap_m",
       "mandatory": true,
-      "reason": "the lateral relation between them"
+      "reason": "body abreast relation"
     },
     {
-      "name": "drv.standing_or_parked",
+      "name": "lateral_surface_gap_m",
       "mandatory": true,
-      "reason": "the other vehicle is itself stopped or parked"
+      "reason": "body surface separation"
     },
     {
-      "name": "drv.forced_halt",
+      "name": "concurrent_overlap_at_rest",
       "mandatory": true,
-      "reason": "the traffic-conflict exception"
+      "reason": "joint stationary double-parking interval"
+    },
+    {
+      "name": "longest_concurrent_run_frames",
+      "mandatory": true,
+      "reason": "source-bound duration without legal threshold"
+    },
+    {
+      "name": "activity_context",
+      "mandatory": true,
+      "reason": "separate stop, stand or park purpose review"
+    },
+    {
+      "name": "traffic_conflict_context",
+      "mandatory": true,
+      "reason": "necessity exception source"
+    },
+    {
+      "name": "law_compliance_context",
+      "mandatory": true,
+      "reason": "applicable law exception source"
+    },
+    {
+      "name": "police_direction_context",
+      "mandatory": true,
+      "reason": "officer authority and direction source"
+    },
+    {
+      "name": "device_direction_context",
+      "mandatory": true,
+      "reason": "official device authority and direction source"
+    },
+    {
+      "name": "source_camera_frame_join",
+      "mandatory": true,
+      "reason": "four-view original frame join"
     }
   ],
   "runtime_uncertainties": [
@@ -451,64 +486,72 @@
   ],
   "source_observation_mapping": {
     "drv.standing_or_parked": {
-      "evidence": "native/double_parking_meter.py derives this from surveyed curb geometry and original 20 Hz body footprints; current proof uses synthetic source-shaped fixtures, not Native evidence. Both actors need original halt-purpose evidence before statutory status is known.",
+      "evidence": "Original Native source and independently reviewed context required; CPU fixture only verifies shape.",
       "channels": [
         "concurrent_overlap_at_rest",
-        "longest_concurrent_run_frames"
+        "longest_concurrent_run_frames",
+        "activity_context"
       ],
       "source_refs": [
         "inputs/training__C229398__NRS-484B-450-1l__motor_vehicle_driver/assignment.json",
-        "native/measurement-contract.json"
+        "native/double_parking_meter.py",
+        "native/finalize.py"
       ]
     },
     "st.road_edge": {
-      "evidence": "Surveyed curb endpoints and road-interior side are required, with highway dedication/public-access review pending.",
+      "evidence": "Original Native source and independently reviewed context required; CPU fixture only verifies shape.",
       "channels": [
-        "curb_start_xy_m",
-        "curb_end_xy_m",
-        "road_interior_normal_sign"
+        "curb_geometry",
+        "curbside_pose"
       ],
       "source_refs": [
         "inputs/training__C229398__NRS-484B-450-1l__motor_vehicle_driver/assignment.json",
-        "native/measurement-contract.json"
+        "native/double_parking_meter.py",
+        "native/finalize.py"
       ]
     },
     "rel.bearing": {
-      "evidence": "native/double_parking_meter.py derives this from surveyed curb geometry and original 20 Hz body footprints; current proof uses synthetic source-shaped fixtures, not Native evidence.",
+      "evidence": "Original Native source and independently reviewed context required; CPU fixture only verifies shape.",
       "channels": [
         "ego_highway_side_of_curbside"
       ],
       "source_refs": [
         "inputs/training__C229398__NRS-484B-450-1l__motor_vehicle_driver/assignment.json",
-        "native/measurement-contract.json"
+        "native/double_parking_meter.py",
+        "native/finalize.py"
       ]
     },
     "rel.longitudinal_overlap": {
-      "evidence": "native/double_parking_meter.py derives this from surveyed curb geometry and original 20 Hz body footprints; current proof uses synthetic source-shaped fixtures, not Native evidence.",
+      "evidence": "Original Native source and independently reviewed context required; CPU fixture only verifies shape.",
       "channels": [
         "longitudinal_overlap_m"
       ],
       "source_refs": [
         "inputs/training__C229398__NRS-484B-450-1l__motor_vehicle_driver/assignment.json",
-        "native/measurement-contract.json"
+        "native/double_parking_meter.py",
+        "native/finalize.py"
       ]
     },
     "rel.surface_gap": {
-      "evidence": "native/double_parking_meter.py derives this from surveyed curb geometry and original 20 Hz body footprints; current proof uses synthetic source-shaped fixtures, not Native evidence.",
+      "evidence": "Original Native source and independently reviewed context required; CPU fixture only verifies shape.",
       "channels": [
         "lateral_surface_gap_m"
       ],
       "source_refs": [
         "inputs/training__C229398__NRS-484B-450-1l__motor_vehicle_driver/assignment.json",
-        "native/measurement-contract.json"
+        "native/double_parking_meter.py",
+        "native/finalize.py"
       ]
     },
     "drv.forced_halt": {
-      "evidence": "Traffic conflict cause and necessity require original actors/control review; geometry meter cannot decide the exception.",
-      "channels": [],
+      "evidence": "Original Native source and independently reviewed context required; CPU fixture only verifies shape.",
+      "channels": [
+        "traffic_conflict_context"
+      ],
       "source_refs": [
         "inputs/training__C229398__NRS-484B-450-1l__motor_vehicle_driver/assignment.json",
-        "native/measurement-contract.json"
+        "native/double_parking_meter.py",
+        "native/finalize.py"
       ]
     }
   },
@@ -556,6 +599,33 @@
         "requirement": "source-bound geometry, activity and exception evidence",
         "source": "NRS 484B.450(1)(l)",
         "why_existing_insufficient": "Frozen membership summary lacks original video/footprints, independent activity and exception review."
+      }
+    ]
+  },
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "entire highway curb, ego and curbside vehicle plus exception context",
+        "interval": "600 original 20 Hz frames"
+      },
+      {
+        "view": "approach",
+        "subject": "ego approach, halt and highway-side lateral relation",
+        "interval": "600 original 20 Hz frames"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "curbside vehicle body, curb and ego overlap",
+        "interval": "600 original 20 Hz frames"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "driver-side sight line to curbside body and context",
+        "interval": "600 original 20 Hz frames"
       }
     ]
   }

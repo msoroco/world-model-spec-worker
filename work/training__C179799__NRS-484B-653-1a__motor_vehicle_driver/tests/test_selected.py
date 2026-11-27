@@ -19,8 +19,8 @@ from native.person_scene import MODES, inspect, open_drive, require_source_packe
 
 class SelectedPersonInteraction(unittest.TestCase):
     def config(self, suffix):
-        return {'case_id': runner.ASSIGNMENT + '__' + suffix,
-                'selected_case_id': runner.ASSIGNMENT + '__' + suffix,
+        return {'case_id': runner.CASE_PREFIX + suffix,
+                'selected_case_id': runner.CASE_PREFIX + suffix,
                 'law_id': 'NRS-484B-653-1a', 'cell_id': 'C179799',
                 'actor': 'motor_vehicle_driver', 'interaction_mode': MODES[suffix],
                 'candidate_id': 'primary', 'duration_s': 30, 'rate_hz': 20,
@@ -89,7 +89,7 @@ class SelectedPersonInteraction(unittest.TestCase):
                 attempt.mkdir()
                 self.make_fixture(attempt, suffix)
                 result = finalize.analyze(attempt)
-                self.assertEqual(result['case_id'], runner.ASSIGNMENT + '__' + suffix)
+                self.assertEqual(result['case_id'], runner.CASE_PREFIX + suffix)
                 self.assertEqual(result['selected_branch_measurement']['frames'], 600)
                 self.assertIsNone(result['mental_state_conclusion'])
                 raw = attempt / 'native-person-interaction.jsonl'
