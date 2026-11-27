@@ -1,0 +1,58 @@
+{
+  "actor": "bus_driver",
+  "law_id": "LVMC-11-60-030-A5",
+  "parameter_refs": [
+    {
+      "kind": "world_setup",
+      "name": "applicable_designated_duration_s",
+      "range_or_domain": "actual reviewed stop-specific duration; 15 s synthetic diagnostic only",
+      "unit": "s"
+    },
+    {
+      "kind": "controller",
+      "name": "duration_request_s",
+      "range_or_domain": "D-2, D, D+2 engineering requests",
+      "unit": "s"
+    },
+    {
+      "kind": "subject_behavior",
+      "name": "observed_stand_park_duration_s",
+      "range_or_domain": "source-bound full original activity interval",
+      "unit": "s"
+    },
+    {
+      "kind": "world_setup",
+      "name": "conduct",
+      "range_or_domain": "stand or park",
+      "unit": "category"
+    }
+  ],
+  "quote": "The operator of a bus, other than a tour bus, shall: Not stand or park a bus at a bus stop or an origin or destination point for a period of time longer than has been designated for such bus stop or origin or destination point in accordance with Section 11.60.010 [DEF-LVMC-11-60-010].",
+  "status": "draft",
+  "structure": {
+    "activation": {
+      "condition": "Operator of a covered non-tour bus stands or parks at a source-reviewed bus stop; cell is residential bus stop.",
+      "numeric_conditions": []
+    },
+    "exceptions": [],
+    "judgment_calls_needed": [],
+    "law_id": "LVMC-11-60-030-A5",
+    "obligation": {
+      "description": "Do not stand or park longer than the actual applicable stop-specific designated duration under Section 11.60.010.",
+      "numeric_conditions": [
+        {
+          "operator": "<=",
+          "unit": "s",
+          "value": "applicable_designated_duration_s",
+          "variable": "observed_stand_park_duration_s"
+        }
+      ],
+      "type": "must"
+    },
+    "timing": {
+      "description": "Measure complete continuous standing or parking interval including activity changes and end; do not infer duration from a sign alone.",
+      "numeric_conditions": []
+    }
+  },
+  "template_id": "LVMC-11-60-030-A5@bus_driver"
+}

@@ -58,7 +58,9 @@ def build():
     template = {"template_id": TEMPLATE, "law_id": LAW, "actor": ACTOR, "quote": quote,
         "structure": {"law_id": LAW,
             "activation": {"condition": "Las Vegas school-vicinity intersection has an established school crossing and an actually displayed School-Xing sign governing the approach.",
-                           "numeric_conditions": [{"value": 100, "unit": "ft", "operator": ">=", "variable": "sign_advance_distance_ft"}]},
+                           "numeric_conditions": []},
+            "authorization": {"description": "If necessary, the City Traffic Engineer may mark conspicuous School-Xing words not less than one hundred feet in advance; placement is measured separately from operator entry.",
+                              "numeric_conditions": [{"value": 100, "unit": "ft", "operator": ">=", "variable": "sign_advance_distance_ft"}]},
             "obligation": {"description": "Operator of any vehicle does not drive into the crosswalk when a person in it on the approaching side attempts to cross.",
                            "type": "must_not", "numeric_conditions": []},
             "exceptions": [],
@@ -115,7 +117,7 @@ def build():
                  "comparison_or_standard": "original sign placement relative to reviewed crossing" if numeric_sign_probe else "physical vehicle-front crossing entry with person in crossing",
                  "target_value_or_branch": case.sign_distance_ft if numeric_sign_probe else case.entry_requested}
         if numeric_sign_probe:
-            probe.update({"threshold_ref": "activation.numeric_conditions[0]", "operator": ">=",
+            probe.update({"threshold_ref": "authorization.numeric_conditions[0]", "operator": ">=",
                           "unit": "ft", "test_value": case.sign_distance_ft})
         entry = {"case_id": case_id,
             "paired_probe_id": "sign_100ft_boundary" if numeric_sign_probe else case.name,

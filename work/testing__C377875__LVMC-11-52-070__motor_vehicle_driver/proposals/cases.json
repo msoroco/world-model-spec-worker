@@ -1,0 +1,532 @@
+{
+  "cell_id": "C377875",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "cases": [
+    {
+      "case_id": "testing__C377875__LVMC-11-52-070__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Shared Engineer-permitted and marked angle-parking setup; neutral baseline is not simulated.",
+      "variable_assignments": {
+        "requested_front_yaw_degrees": {
+          "kind": "controller",
+          "value": 0,
+          "note": "engineering request only"
+        },
+        "requested_activity": {
+          "kind": "controller",
+          "value": "stand",
+          "note": "actual stand/park classification requires original review"
+        },
+        "lawful_traffic_vector_xy": {
+          "kind": "world_setup",
+          "value": [
+            1,
+            0
+          ],
+          "note": "diagnostic setup only; original lawful lane direction required"
+        },
+        "engineer_angle_permission": {
+          "kind": "world_setup",
+          "value": "reviewed_original_required",
+          "note": "original Engineer determination and marking required"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "vehicle_front_orientation_history",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only analysis",
+            "time_window": "approach through standing or parking/departure",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and body/map precision"
+          },
+          {
+            "name": "lawful_traffic_direction",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only analysis",
+            "time_window": "approach through standing or parking/departure",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and body/map precision"
+          },
+          {
+            "name": "engineer_permission_marking",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only analysis",
+            "time_window": "approach through standing or parking/departure",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and body/map precision"
+          },
+          {
+            "name": "halt_purpose_and_service",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only analysis",
+            "time_window": "approach through standing or parking/departure",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and body/map precision"
+          },
+          {
+            "name": "four_synchronized_camera_streams",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only analysis",
+            "time_window": "approach through standing or parking/departure",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and body/map precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "engineer_permission_context",
+            "unit": "structured record",
+            "method": "Original City Traffic Engineer determination, permission extent and sign/marking with Native prop readback"
+          },
+          {
+            "name": "standing_parking_context",
+            "unit": "structured record",
+            "method": "Original roadway, lawful direction and purpose packets with Native body readback"
+          }
+        ],
+        "limitations": [
+          "Physical status and legal interpretation require independent original-source review"
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C377875__LVMC-11-52-070__motor_vehicle_driver__stand_forward",
+      "target_law_id": "LVMC-11-52-070",
+      "target_type": "compliant_attempt",
+      "rationale": "Prospective source-gated vehicle-front orientation probe, not a legal finding.",
+      "paired_probe_id": "stand_forward_vs_opposing",
+      "deliberate_differences": [
+        "requested_front_yaw_degrees"
+      ],
+      "probe": {
+        "primary_variable": "requested_front_yaw_degrees",
+        "comparison_or_standard": "source-reviewed lawful traffic movement direction",
+        "target_value_or_branch": "forward"
+      },
+      "variable_assignments": {
+        "requested_front_yaw_degrees": {
+          "kind": "controller",
+          "value": 0,
+          "note": "engineering request only"
+        },
+        "requested_activity": {
+          "kind": "controller",
+          "value": "stand",
+          "note": "actual stand/park classification requires original review"
+        },
+        "lawful_traffic_vector_xy": {
+          "kind": "world_setup",
+          "value": [
+            1,
+            0
+          ],
+          "note": "diagnostic setup only; original lawful lane direction required"
+        },
+        "engineer_angle_permission": {
+          "kind": "world_setup",
+          "value": "reviewed_original_required",
+          "note": "original Engineer determination and marking required"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Actual Engineer permission, marking, lawful direction, front and stand/park classification require original review"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "vehicle_front_orientation_history",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only analysis",
+            "time_window": "approach through standing or parking/departure",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and body/map precision"
+          },
+          {
+            "name": "lawful_traffic_direction",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only analysis",
+            "time_window": "approach through standing or parking/departure",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and body/map precision"
+          },
+          {
+            "name": "engineer_permission_marking",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only analysis",
+            "time_window": "approach through standing or parking/departure",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and body/map precision"
+          },
+          {
+            "name": "halt_purpose_and_service",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only analysis",
+            "time_window": "approach through standing or parking/departure",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and body/map precision"
+          },
+          {
+            "name": "four_synchronized_camera_streams",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only analysis",
+            "time_window": "approach through standing or parking/departure",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and body/map precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "engineer_permission_context",
+            "unit": "structured record",
+            "method": "Original City Traffic Engineer determination, permission extent and sign/marking with Native prop readback"
+          },
+          {
+            "name": "standing_parking_context",
+            "unit": "structured record",
+            "method": "Original roadway, lawful direction and purpose packets with Native body readback"
+          }
+        ],
+        "limitations": [
+          "Physical status and legal interpretation require independent original-source review"
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C377875__LVMC-11-52-070__motor_vehicle_driver__stand_opposing",
+      "target_law_id": "LVMC-11-52-070",
+      "target_type": "violating_attempt",
+      "rationale": "Prospective source-gated vehicle-front orientation probe, not a legal finding.",
+      "paired_probe_id": "stand_forward_vs_opposing",
+      "deliberate_differences": [
+        "requested_front_yaw_degrees"
+      ],
+      "probe": {
+        "primary_variable": "requested_front_yaw_degrees",
+        "comparison_or_standard": "source-reviewed lawful traffic movement direction",
+        "target_value_or_branch": "opposing"
+      },
+      "variable_assignments": {
+        "requested_front_yaw_degrees": {
+          "kind": "controller",
+          "value": 180,
+          "note": "engineering request only"
+        },
+        "requested_activity": {
+          "kind": "controller",
+          "value": "stand",
+          "note": "actual stand/park classification requires original review"
+        },
+        "lawful_traffic_vector_xy": {
+          "kind": "world_setup",
+          "value": [
+            1,
+            0
+          ],
+          "note": "diagnostic setup only; original lawful lane direction required"
+        },
+        "engineer_angle_permission": {
+          "kind": "world_setup",
+          "value": "reviewed_original_required",
+          "note": "original Engineer determination and marking required"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Actual Engineer permission, marking, lawful direction, front and stand/park classification require original review"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "vehicle_front_orientation_history",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only analysis",
+            "time_window": "approach through standing or parking/departure",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and body/map precision"
+          },
+          {
+            "name": "lawful_traffic_direction",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only analysis",
+            "time_window": "approach through standing or parking/departure",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and body/map precision"
+          },
+          {
+            "name": "engineer_permission_marking",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only analysis",
+            "time_window": "approach through standing or parking/departure",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and body/map precision"
+          },
+          {
+            "name": "halt_purpose_and_service",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only analysis",
+            "time_window": "approach through standing or parking/departure",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and body/map precision"
+          },
+          {
+            "name": "four_synchronized_camera_streams",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only analysis",
+            "time_window": "approach through standing or parking/departure",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and body/map precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "engineer_permission_context",
+            "unit": "structured record",
+            "method": "Original City Traffic Engineer determination, permission extent and sign/marking with Native prop readback"
+          },
+          {
+            "name": "standing_parking_context",
+            "unit": "structured record",
+            "method": "Original roadway, lawful direction and purpose packets with Native body readback"
+          }
+        ],
+        "limitations": [
+          "Physical status and legal interpretation require independent original-source review"
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C377875__LVMC-11-52-070__motor_vehicle_driver__park_forward",
+      "target_law_id": "LVMC-11-52-070",
+      "target_type": "compliant_attempt",
+      "rationale": "Prospective source-gated vehicle-front orientation probe, not a legal finding.",
+      "paired_probe_id": "park_forward_vs_opposing",
+      "deliberate_differences": [
+        "requested_front_yaw_degrees"
+      ],
+      "probe": {
+        "primary_variable": "requested_front_yaw_degrees",
+        "comparison_or_standard": "source-reviewed lawful traffic movement direction",
+        "target_value_or_branch": "forward"
+      },
+      "variable_assignments": {
+        "requested_front_yaw_degrees": {
+          "kind": "controller",
+          "value": 0,
+          "note": "engineering request only"
+        },
+        "requested_activity": {
+          "kind": "controller",
+          "value": "park",
+          "note": "actual stand/park classification requires original review"
+        },
+        "lawful_traffic_vector_xy": {
+          "kind": "world_setup",
+          "value": [
+            1,
+            0
+          ],
+          "note": "diagnostic setup only; original lawful lane direction required"
+        },
+        "engineer_angle_permission": {
+          "kind": "world_setup",
+          "value": "reviewed_original_required",
+          "note": "original Engineer determination and marking required"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Actual Engineer permission, marking, lawful direction, front and stand/park classification require original review"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "vehicle_front_orientation_history",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only analysis",
+            "time_window": "approach through standing or parking/departure",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and body/map precision"
+          },
+          {
+            "name": "lawful_traffic_direction",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only analysis",
+            "time_window": "approach through standing or parking/departure",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and body/map precision"
+          },
+          {
+            "name": "engineer_permission_marking",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only analysis",
+            "time_window": "approach through standing or parking/departure",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and body/map precision"
+          },
+          {
+            "name": "halt_purpose_and_service",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only analysis",
+            "time_window": "approach through standing or parking/departure",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and body/map precision"
+          },
+          {
+            "name": "four_synchronized_camera_streams",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only analysis",
+            "time_window": "approach through standing or parking/departure",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and body/map precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "engineer_permission_context",
+            "unit": "structured record",
+            "method": "Original City Traffic Engineer determination, permission extent and sign/marking with Native prop readback"
+          },
+          {
+            "name": "standing_parking_context",
+            "unit": "structured record",
+            "method": "Original roadway, lawful direction and purpose packets with Native body readback"
+          }
+        ],
+        "limitations": [
+          "Physical status and legal interpretation require independent original-source review"
+        ]
+      }
+    },
+    {
+      "case_id": "testing__C377875__LVMC-11-52-070__motor_vehicle_driver__park_opposing",
+      "target_law_id": "LVMC-11-52-070",
+      "target_type": "violating_attempt",
+      "rationale": "Prospective source-gated vehicle-front orientation probe, not a legal finding.",
+      "paired_probe_id": "park_forward_vs_opposing",
+      "deliberate_differences": [
+        "requested_front_yaw_degrees"
+      ],
+      "probe": {
+        "primary_variable": "requested_front_yaw_degrees",
+        "comparison_or_standard": "source-reviewed lawful traffic movement direction",
+        "target_value_or_branch": "opposing"
+      },
+      "variable_assignments": {
+        "requested_front_yaw_degrees": {
+          "kind": "controller",
+          "value": 180,
+          "note": "engineering request only"
+        },
+        "requested_activity": {
+          "kind": "controller",
+          "value": "park",
+          "note": "actual stand/park classification requires original review"
+        },
+        "lawful_traffic_vector_xy": {
+          "kind": "world_setup",
+          "value": [
+            1,
+            0
+          ],
+          "note": "diagnostic setup only; original lawful lane direction required"
+        },
+        "engineer_angle_permission": {
+          "kind": "world_setup",
+          "value": "reviewed_original_required",
+          "note": "original Engineer determination and marking required"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "Actual Engineer permission, marking, lawful direction, front and stand/park classification require original review"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "vehicle_front_orientation_history",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only analysis",
+            "time_window": "approach through standing or parking/departure",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and body/map precision"
+          },
+          {
+            "name": "lawful_traffic_direction",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only analysis",
+            "time_window": "approach through standing or parking/departure",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and body/map precision"
+          },
+          {
+            "name": "engineer_permission_marking",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only analysis",
+            "time_window": "approach through standing or parking/departure",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and body/map precision"
+          },
+          {
+            "name": "halt_purpose_and_service",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only analysis",
+            "time_window": "approach through standing or parking/departure",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and body/map precision"
+          },
+          {
+            "name": "four_synchronized_camera_streams",
+            "unit": "structured original source",
+            "sampling_rate_hz": 20,
+            "method": "Original Native frame acquisition and saved-only analysis",
+            "time_window": "approach through standing or parking/departure",
+            "reference_frame": "original CARLA world frame and timestamp",
+            "uncertainty": "20 Hz sample and body/map precision"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "engineer_permission_context",
+            "unit": "structured record",
+            "method": "Original City Traffic Engineer determination, permission extent and sign/marking with Native prop readback"
+          },
+          {
+            "name": "standing_parking_context",
+            "unit": "structured record",
+            "method": "Original roadway, lawful direction and purpose packets with Native body readback"
+          }
+        ],
+        "limitations": [
+          "Physical status and legal interpretation require independent original-source review"
+        ]
+      }
+    }
+  ],
+  "sweep_specs": [],
+  "sweeps_expanded": true
+}

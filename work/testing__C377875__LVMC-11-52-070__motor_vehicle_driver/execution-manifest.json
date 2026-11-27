@@ -1,0 +1,315 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C377875__LVMC-11-52-070__motor_vehicle_driver",
+  "cases": [
+    {
+      "case_id": "testing__C377875__LVMC-11-52-070__motor_vehicle_driver__stand_forward",
+      "construction": "construction.json",
+      "construction_sha256": "569100659749934c4f0bb2bebc53489a2b5eb66dbf0151bc3b37c7c5d4272701",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Approach and braking may miss the reviewed permitted angle-parking space or stable standing/parking interval."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback1-construction.json",
+          "construction_sha256": "02ce52e5a2925a30353131f1785edb36e4277d8bc2ef9436783310695a06bdb0",
+          "trigger": {
+            "source": "original orientation-history.jsonl and reference_corner.mkv",
+            "metric": "target-space overshoot or no stationary front-direction interval",
+            "failure_condition": "reviewed original placement outside permitted marked space or fewer than two observed standing/parking frames"
+          },
+          "changed_knobs": [
+            "engineering_brake_gain: 0.70 to 0.85"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C377875__LVMC-11-52-070__motor_vehicle_driver/execution-manifest.json --case testing__C377875__LVMC-11-52-070__motor_vehicle_driver__stand_forward --candidate fallback1 --output .runtime-work/c377875-lvmc-owner/offline-stand_forward-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "02ce52e5a2925a30353131f1785edb36e4277d8bc2ef9436783310695a06bdb0",
+            "log": "cpu-offline-stand_forward-fallback1.log",
+            "log_sha256": "d074eeea9b084c6c064a76bc5d1d132f558fb53086a78bf7b3aca873636d848d"
+          }
+        }
+      ],
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "measure_saved"
+      },
+      "fixture_recipe": "work/testing__C377875__LVMC-11-52-070__motor_vehicle_driver/diagnostic-stand_forward-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "vehicle_front_orientation_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/vehicle_front_orientation_history.jsonl",
+          "method": "original Native body yaw, vertices, pose and speed"
+        },
+        "lawful_traffic_direction": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/lawful_traffic_direction.jsonl",
+          "method": "reviewed original lawful traffic movement vector joined to Native road"
+        },
+        "engineer_permission_marking": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/engineer_permission_marking.jsonl",
+          "method": "reviewed original Engineer determination and marking prop readback"
+        },
+        "halt_purpose_and_service": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/halt_purpose_and_service.jsonl",
+          "method": "original standing/parking purpose and control history"
+        },
+        "four_synchronized_camera_streams": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/four_synchronized_camera_streams.jsonl",
+          "method": "four original synchronized camera frame identities"
+        }
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C377875__LVMC-11-52-070__motor_vehicle_driver/execution-manifest.json --case testing__C377875__LVMC-11-52-070__motor_vehicle_driver__stand_forward --candidate primary --output .runtime-work/c377875-lvmc-owner/offline-stand_forward-primary",
+        "exit_code": 0,
+        "construction_sha256": "569100659749934c4f0bb2bebc53489a2b5eb66dbf0151bc3b37c7c5d4272701",
+        "log": "cpu-offline-stand_forward-primary.log",
+        "log_sha256": "a9f4784396843a4d128fba22c7584baf80aea44776e139d0259c182690dcc063"
+      }
+    },
+    {
+      "case_id": "testing__C377875__LVMC-11-52-070__motor_vehicle_driver__stand_opposing",
+      "construction": "cases/stand_opposing/construction.json",
+      "construction_sha256": "23b96babd4f43354e64dd39f0a405ab73e5b89748b5685ca4b2bbc326c06e267",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Approach and braking may miss the reviewed permitted angle-parking space or stable standing/parking interval."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/stand_opposing/fallback1-construction.json",
+          "construction_sha256": "c37a3b320588d1c393dc0c30c72cd2ab648c324715ab2a699e425c192491e293",
+          "trigger": {
+            "source": "original orientation-history.jsonl and reference_corner.mkv",
+            "metric": "target-space overshoot or no stationary front-direction interval",
+            "failure_condition": "reviewed original placement outside permitted marked space or fewer than two observed standing/parking frames"
+          },
+          "changed_knobs": [
+            "engineering_brake_gain: 0.70 to 0.85"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C377875__LVMC-11-52-070__motor_vehicle_driver/execution-manifest.json --case testing__C377875__LVMC-11-52-070__motor_vehicle_driver__stand_opposing --candidate fallback1 --output .runtime-work/c377875-lvmc-owner/offline-stand_opposing-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "c37a3b320588d1c393dc0c30c72cd2ab648c324715ab2a699e425c192491e293",
+            "log": "cpu-offline-stand_opposing-fallback1.log",
+            "log_sha256": "5a41a80c38a008ce1cd53693ca9ed7a79d96776fa8463a4f4e832946e7683f00"
+          }
+        }
+      ],
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "measure_saved"
+      },
+      "fixture_recipe": "work/testing__C377875__LVMC-11-52-070__motor_vehicle_driver/diagnostic-stand_opposing-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "vehicle_front_orientation_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/vehicle_front_orientation_history.jsonl",
+          "method": "original Native body yaw, vertices, pose and speed"
+        },
+        "lawful_traffic_direction": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/lawful_traffic_direction.jsonl",
+          "method": "reviewed original lawful traffic movement vector joined to Native road"
+        },
+        "engineer_permission_marking": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/engineer_permission_marking.jsonl",
+          "method": "reviewed original Engineer determination and marking prop readback"
+        },
+        "halt_purpose_and_service": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/halt_purpose_and_service.jsonl",
+          "method": "original standing/parking purpose and control history"
+        },
+        "four_synchronized_camera_streams": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/four_synchronized_camera_streams.jsonl",
+          "method": "four original synchronized camera frame identities"
+        }
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C377875__LVMC-11-52-070__motor_vehicle_driver/execution-manifest.json --case testing__C377875__LVMC-11-52-070__motor_vehicle_driver__stand_opposing --candidate primary --output .runtime-work/c377875-lvmc-owner/offline-stand_opposing-primary",
+        "exit_code": 0,
+        "construction_sha256": "23b96babd4f43354e64dd39f0a405ab73e5b89748b5685ca4b2bbc326c06e267",
+        "log": "cpu-offline-stand_opposing-primary.log",
+        "log_sha256": "036ea85024ab09ef3aa011c01bc9972ddcf626b2d27e9741fd244dba03958c1b"
+      }
+    },
+    {
+      "case_id": "testing__C377875__LVMC-11-52-070__motor_vehicle_driver__park_forward",
+      "construction": "cases/park_forward/construction.json",
+      "construction_sha256": "5f90de22dd0e38ffcb25d395eb43c1e055c45ffd3b79d840a00608c2d181d7fc",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Approach and braking may miss the reviewed permitted angle-parking space or stable standing/parking interval."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/park_forward/fallback1-construction.json",
+          "construction_sha256": "168266b33789895d79f61fae1a7fdabc025f223d2975b69198b4910bc659e2b0",
+          "trigger": {
+            "source": "original orientation-history.jsonl and reference_corner.mkv",
+            "metric": "target-space overshoot or no stationary front-direction interval",
+            "failure_condition": "reviewed original placement outside permitted marked space or fewer than two observed standing/parking frames"
+          },
+          "changed_knobs": [
+            "engineering_brake_gain: 0.70 to 0.85"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C377875__LVMC-11-52-070__motor_vehicle_driver/execution-manifest.json --case testing__C377875__LVMC-11-52-070__motor_vehicle_driver__park_forward --candidate fallback1 --output .runtime-work/c377875-lvmc-owner/offline-park_forward-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "168266b33789895d79f61fae1a7fdabc025f223d2975b69198b4910bc659e2b0",
+            "log": "cpu-offline-park_forward-fallback1.log",
+            "log_sha256": "08bd88fbb85deae81a9eb81bf88f142962ecec0841ac1b7b43dd565bc9728ba8"
+          }
+        }
+      ],
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "measure_saved"
+      },
+      "fixture_recipe": "work/testing__C377875__LVMC-11-52-070__motor_vehicle_driver/diagnostic-park_forward-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "vehicle_front_orientation_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/vehicle_front_orientation_history.jsonl",
+          "method": "original Native body yaw, vertices, pose and speed"
+        },
+        "lawful_traffic_direction": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/lawful_traffic_direction.jsonl",
+          "method": "reviewed original lawful traffic movement vector joined to Native road"
+        },
+        "engineer_permission_marking": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/engineer_permission_marking.jsonl",
+          "method": "reviewed original Engineer determination and marking prop readback"
+        },
+        "halt_purpose_and_service": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/halt_purpose_and_service.jsonl",
+          "method": "original standing/parking purpose and control history"
+        },
+        "four_synchronized_camera_streams": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/four_synchronized_camera_streams.jsonl",
+          "method": "four original synchronized camera frame identities"
+        }
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C377875__LVMC-11-52-070__motor_vehicle_driver/execution-manifest.json --case testing__C377875__LVMC-11-52-070__motor_vehicle_driver__park_forward --candidate primary --output .runtime-work/c377875-lvmc-owner/offline-park_forward-primary",
+        "exit_code": 0,
+        "construction_sha256": "5f90de22dd0e38ffcb25d395eb43c1e055c45ffd3b79d840a00608c2d181d7fc",
+        "log": "cpu-offline-park_forward-primary.log",
+        "log_sha256": "fe9975fd54d6337a307c2ce15d30d3c7b15bd103ba79388b7c65d10f0fae1d17"
+      }
+    },
+    {
+      "case_id": "testing__C377875__LVMC-11-52-070__motor_vehicle_driver__park_opposing",
+      "construction": "cases/park_opposing/construction.json",
+      "construction_sha256": "905424103f3500ecc19542cde67432a47ae820b4a51a478889a678e7ce453790",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Approach and braking may miss the reviewed permitted angle-parking space or stable standing/parking interval."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/park_opposing/fallback1-construction.json",
+          "construction_sha256": "b147930de4c9526d2f904f82ff7e790f6b2cc50e83a39cc4daa8b6249bf8db7f",
+          "trigger": {
+            "source": "original orientation-history.jsonl and reference_corner.mkv",
+            "metric": "target-space overshoot or no stationary front-direction interval",
+            "failure_condition": "reviewed original placement outside permitted marked space or fewer than two observed standing/parking frames"
+          },
+          "changed_knobs": [
+            "engineering_brake_gain: 0.70 to 0.85"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C377875__LVMC-11-52-070__motor_vehicle_driver/execution-manifest.json --case testing__C377875__LVMC-11-52-070__motor_vehicle_driver__park_opposing --candidate fallback1 --output .runtime-work/c377875-lvmc-owner/offline-park_opposing-fallback1",
+            "exit_code": 0,
+            "construction_sha256": "b147930de4c9526d2f904f82ff7e790f6b2cc50e83a39cc4daa8b6249bf8db7f",
+            "log": "cpu-offline-park_opposing-fallback1.log",
+            "log_sha256": "269b5ed463307f2b003c7d3565a4d200ff0cb6a052e1d8acd2f1a2160cc18f2d"
+          }
+        }
+      ],
+      "kind": "delivery",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py",
+        "method": "measure_saved"
+      },
+      "fixture_recipe": "work/testing__C377875__LVMC-11-52-070__motor_vehicle_driver/diagnostic-park_opposing-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "vehicle_front_orientation_history": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/vehicle_front_orientation_history.jsonl",
+          "method": "original Native body yaw, vertices, pose and speed"
+        },
+        "lawful_traffic_direction": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/lawful_traffic_direction.jsonl",
+          "method": "reviewed original lawful traffic movement vector joined to Native road"
+        },
+        "engineer_permission_marking": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/engineer_permission_marking.jsonl",
+          "method": "reviewed original Engineer determination and marking prop readback"
+        },
+        "halt_purpose_and_service": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/halt_purpose_and_service.jsonl",
+          "method": "original standing/parking purpose and control history"
+        },
+        "four_synchronized_camera_streams": {
+          "entrypoint": "analysis.py",
+          "evidence": "channels/four_synchronized_camera_streams.jsonl",
+          "method": "four original synchronized camera frame identities"
+        }
+      },
+      "offline": {
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py offline --manifest work/testing__C377875__LVMC-11-52-070__motor_vehicle_driver/execution-manifest.json --case testing__C377875__LVMC-11-52-070__motor_vehicle_driver__park_opposing --candidate primary --output .runtime-work/c377875-lvmc-owner/offline-park_opposing-primary",
+        "exit_code": 0,
+        "construction_sha256": "905424103f3500ecc19542cde67432a47ae820b4a51a478889a678e7ce453790",
+        "log": "cpu-offline-park_opposing-primary.log",
+        "log_sha256": "ec85fcec1bea392a0948035095e7d092de59efe7258c541cc379d7afbfc6afa0"
+      }
+    }
+  ],
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3"
+}

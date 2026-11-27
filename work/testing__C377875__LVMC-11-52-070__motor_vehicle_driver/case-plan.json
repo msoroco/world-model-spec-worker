@@ -24,9 +24,225 @@
   "topic_inventory": {
     "exact-text": "The City Traffic Engineer shall determine upon what streets angle parking shall be permitted, and shall provide signage or other markings to indicate where such parking is permitted. Where angle parking is permitted, no person shall stand or park a vehicle unless the front of the vehicle is pointed toward the direction of lawful traffic movement."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C377875__LVMC-11-52-070__motor_vehicle_driver__stand_forward",
+      "target_law_id": "LVMC-11-52-070",
+      "cell_id": "C377875",
+      "actor": "motor_vehicle_driver",
+      "kind": "delivery",
+      "branch": "permitted angle-parking orientation",
+      "planning_status": "exact_target_unexecuted",
+      "new_capture_selected": true,
+      "gap_ids": [
+        "no-original-engineer-permission-direction-evidence"
+      ],
+      "activity_request": "stand",
+      "front_orientation_request": "forward",
+      "target_front_yaw_degrees": 0,
+      "recording_description": "Original Engineer determination, sign/marking and permission extent; lawful lane movement vector and vehicle front throughout standing/parking; 20 Hz four-view Native capture",
+      "required_original_packets": [
+        "engineer_determination",
+        "permission_extent",
+        "marking",
+        "lawful_lane_direction",
+        "vehicle_front",
+        "halt_purpose",
+        "frame_map",
+        "video"
+      ],
+      "physical_risk": {
+        "risk": "Vehicle may fail to enter the reviewed angle-parking space with the intended front orientation.",
+        "trigger": "Original body, roadway and camera review shows outside space or absent stable halt.",
+        "fallback": "Adjust engineering brake gain while keeping all legal facts and requested orientation fixed."
+      }
+    },
+    {
+      "case_id": "testing__C377875__LVMC-11-52-070__motor_vehicle_driver__stand_opposing",
+      "target_law_id": "LVMC-11-52-070",
+      "cell_id": "C377875",
+      "actor": "motor_vehicle_driver",
+      "kind": "delivery",
+      "branch": "permitted angle-parking orientation",
+      "planning_status": "exact_target_unexecuted",
+      "new_capture_selected": true,
+      "gap_ids": [
+        "no-original-engineer-permission-direction-evidence"
+      ],
+      "activity_request": "stand",
+      "front_orientation_request": "opposing",
+      "target_front_yaw_degrees": 180,
+      "recording_description": "Original Engineer determination, sign/marking and permission extent; lawful lane movement vector and vehicle front throughout standing/parking; 20 Hz four-view Native capture",
+      "required_original_packets": [
+        "engineer_determination",
+        "permission_extent",
+        "marking",
+        "lawful_lane_direction",
+        "vehicle_front",
+        "halt_purpose",
+        "frame_map",
+        "video"
+      ],
+      "physical_risk": {
+        "risk": "Vehicle may fail to enter the reviewed angle-parking space with the intended front orientation.",
+        "trigger": "Original body, roadway and camera review shows outside space or absent stable halt.",
+        "fallback": "Adjust engineering brake gain while keeping all legal facts and requested orientation fixed."
+      }
+    },
+    {
+      "case_id": "testing__C377875__LVMC-11-52-070__motor_vehicle_driver__park_forward",
+      "target_law_id": "LVMC-11-52-070",
+      "cell_id": "C377875",
+      "actor": "motor_vehicle_driver",
+      "kind": "delivery",
+      "branch": "permitted angle-parking orientation",
+      "planning_status": "exact_target_unexecuted",
+      "new_capture_selected": true,
+      "gap_ids": [
+        "no-original-engineer-permission-direction-evidence"
+      ],
+      "activity_request": "park",
+      "front_orientation_request": "forward",
+      "target_front_yaw_degrees": 0,
+      "recording_description": "Original Engineer determination, sign/marking and permission extent; lawful lane movement vector and vehicle front throughout standing/parking; 20 Hz four-view Native capture",
+      "required_original_packets": [
+        "engineer_determination",
+        "permission_extent",
+        "marking",
+        "lawful_lane_direction",
+        "vehicle_front",
+        "halt_purpose",
+        "frame_map",
+        "video"
+      ],
+      "physical_risk": {
+        "risk": "Vehicle may fail to enter the reviewed angle-parking space with the intended front orientation.",
+        "trigger": "Original body, roadway and camera review shows outside space or absent stable halt.",
+        "fallback": "Adjust engineering brake gain while keeping all legal facts and requested orientation fixed."
+      }
+    },
+    {
+      "case_id": "testing__C377875__LVMC-11-52-070__motor_vehicle_driver__park_opposing",
+      "target_law_id": "LVMC-11-52-070",
+      "cell_id": "C377875",
+      "actor": "motor_vehicle_driver",
+      "kind": "delivery",
+      "branch": "permitted angle-parking orientation",
+      "planning_status": "exact_target_unexecuted",
+      "new_capture_selected": true,
+      "gap_ids": [
+        "no-original-engineer-permission-direction-evidence"
+      ],
+      "activity_request": "park",
+      "front_orientation_request": "opposing",
+      "target_front_yaw_degrees": 180,
+      "recording_description": "Original Engineer determination, sign/marking and permission extent; lawful lane movement vector and vehicle front throughout standing/parking; 20 Hz four-view Native capture",
+      "required_original_packets": [
+        "engineer_determination",
+        "permission_extent",
+        "marking",
+        "lawful_lane_direction",
+        "vehicle_front",
+        "halt_purpose",
+        "frame_map",
+        "video"
+      ],
+      "physical_risk": {
+        "risk": "Vehicle may fail to enter the reviewed angle-parking space with the intended front orientation.",
+        "trigger": "Original body, roadway and camera review shows outside space or absent stable halt.",
+        "fallback": "Adjust engineering brake gain while keeping all legal facts and requested orientation fixed."
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "stand_forward_vs_opposing",
+      "case_ids": [
+        "testing__C377875__LVMC-11-52-070__motor_vehicle_driver__stand_forward",
+        "testing__C377875__LVMC-11-52-070__motor_vehicle_driver__stand_opposing"
+      ],
+      "fixed_conditions": [
+        "same City Traffic Engineer determination and permitted angle-parking extent",
+        "same marking, vehicle, lawful traffic vector, activity, cameras and 20 Hz duration"
+      ],
+      "deliberate_differences": [
+        "requested vehicle-front orientation: toward versus opposing lawful traffic movement"
+      ],
+      "isolated_question": "observed front vector relative to original lawful traffic movement",
+      "status": "selected_cpu_comparison_audit_passed",
+      "audit": {
+        "script": "comparison_audit.py",
+        "script_sha256": "0f8e518ece5c78f6adbbff27c0e2b3c4f1a9cada2536a112894aa686515c6bd6",
+        "positive_command": ".venv-cpu/bin/python work/testing__C377875__LVMC-11-52-070__motor_vehicle_driver/comparison_audit.py --comparison stand_forward_vs_opposing --first-attempt .runtime-work/c377875-lvmc-owner/audit-stand_forward --second-attempt .runtime-work/c377875-lvmc-owner/audit-stand_opposing --diagnostic-fixture --output .runtime-work/c377875-lvmc-owner/comparison-stand-positive.json",
+        "positive_log": "cpu-comparison-stand-positive.log",
+        "positive_log_sha256": "e111cf2fdfab56f6c58f73cf41e620ce948f0afe8fb595a8d75fb7ca8580e6a8",
+        "positive_exit_code": 0,
+        "negative_command": ".venv-cpu/bin/python work/testing__C377875__LVMC-11-52-070__motor_vehicle_driver/comparison_audit.py --comparison stand_forward_vs_opposing --first-attempt .runtime-work/c377875-lvmc-owner/audit-stand_forward --second-attempt .runtime-work/c377875-lvmc-owner/audit-stand_opposing --output .runtime-work/c377875-lvmc-owner/comparison-stand-negative.json",
+        "negative_log": "cpu-comparison-stand-negative.log",
+        "negative_log_sha256": "4ae2947cd8bbadd1053b5046a35e8b499ebce80f8dad3fc5b308023e67b012fc",
+        "negative_exit_code": 1,
+        "negative_expected_error": "diagnostic fixture cannot establish Native delivery",
+        "diagnostic_only": true
+      }
+    },
+    {
+      "comparison_id": "park_forward_vs_opposing",
+      "case_ids": [
+        "testing__C377875__LVMC-11-52-070__motor_vehicle_driver__park_forward",
+        "testing__C377875__LVMC-11-52-070__motor_vehicle_driver__park_opposing"
+      ],
+      "fixed_conditions": [
+        "same City Traffic Engineer determination and permitted angle-parking extent",
+        "same marking, vehicle, lawful traffic vector, activity, cameras and 20 Hz duration"
+      ],
+      "deliberate_differences": [
+        "requested vehicle-front orientation: toward versus opposing lawful traffic movement"
+      ],
+      "isolated_question": "observed front vector relative to original lawful traffic movement",
+      "status": "selected_cpu_comparison_audit_passed",
+      "audit": {
+        "script": "comparison_audit.py",
+        "script_sha256": "0f8e518ece5c78f6adbbff27c0e2b3c4f1a9cada2536a112894aa686515c6bd6",
+        "positive_command": ".venv-cpu/bin/python work/testing__C377875__LVMC-11-52-070__motor_vehicle_driver/comparison_audit.py --comparison park_forward_vs_opposing --first-attempt .runtime-work/c377875-lvmc-owner/audit-park_forward --second-attempt .runtime-work/c377875-lvmc-owner/audit-park_opposing --diagnostic-fixture --output .runtime-work/c377875-lvmc-owner/comparison-park-positive.json",
+        "positive_log": "cpu-comparison-park-positive.log",
+        "positive_log_sha256": "7813c06bd88ce914b9a2f8533fcfaab8729e5b7d15139ebb8fa1fe352a0fce83",
+        "positive_exit_code": 0,
+        "negative_command": ".venv-cpu/bin/python work/testing__C377875__LVMC-11-52-070__motor_vehicle_driver/comparison_audit.py --comparison park_forward_vs_opposing --first-attempt .runtime-work/c377875-lvmc-owner/audit-park_forward --second-attempt .runtime-work/c377875-lvmc-owner/audit-park_opposing --output .runtime-work/c377875-lvmc-owner/comparison-park-negative.json",
+        "negative_log": "cpu-comparison-park-negative.log",
+        "negative_log_sha256": "4ae2947cd8bbadd1053b5046a35e8b499ebce80f8dad3fc5b308023e67b012fc",
+        "negative_exit_code": 1,
+        "negative_expected_error": "diagnostic fixture cannot establish Native delivery",
+        "diagnostic_only": true
+      }
+    }
+  ],
+  "observations": [
+    {
+      "name": "vehicle_front_orientation_history",
+      "mandatory": true,
+      "description": "Original body yaw, front vertices, speed and position"
+    },
+    {
+      "name": "lawful_traffic_direction",
+      "mandatory": true,
+      "description": "Original lawful lane movement vector"
+    },
+    {
+      "name": "engineer_permission_marking",
+      "mandatory": true,
+      "description": "Engineer determination, permission extent, sign/marking and Native prop"
+    },
+    {
+      "name": "halt_purpose_and_service",
+      "mandatory": true,
+      "description": "Original standing or parking purpose and control history"
+    },
+    {
+      "name": "four_synchronized_camera_streams",
+      "mandatory": true,
+      "description": "Synchronized original frame map and four videos"
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C377875__LVMC-11-52-070__motor_vehicle_driver/assignment.json",
@@ -51,17 +267,25 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "Actual City Traffic Engineer determination, sign/marking, permission extent, lawful lane direction and standing/parking activity require original independent review.",
+    "Actual CARLA motion, camera pixels and physical completion remain unverified until local Native execution.",
+    "No numeric legal direction tolerance is supplied by the law; software reports geometry and leaves legal classification unreviewed."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
+    "method": "Reviewed frozen evidence.json and exact law/actor witness; no accepted recordings exist.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "no-original-engineer-permission-direction-evidence",
+        "requirement": "City Engineer-permitted angle parking and front direction toward lawful traffic during standing/parking",
+        "source": "inputs/testing__C377875__LVMC-11-52-070__motor_vehicle_driver/evidence.json",
+        "why_existing_insufficient": "Frozen accepted evidence has zero recordings."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "selected_cpu_delivery_construction_in_progress",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
@@ -80,5 +304,48 @@
       ],
       "reason": "Business-district angle parking can activate the orientation requirement where legal permission and standing or parking are established."
     }
-  ]
+  ],
+  "source_observation_mapping": {},
+  "requirement_dispositions": [
+    {
+      "requirement": "Vehicle front pointed toward lawful traffic movement when standing or parking where Engineer-permitted angle parking is indicated",
+      "source": "inputs/testing__C377875__LVMC-11-52-070__motor_vehicle_driver/assignment.json",
+      "status": "selected_required",
+      "evidence_or_gap": "No frozen accepted recording; original Engineer authorization, marking extent, lane direction, front and halt purpose require later review.",
+      "case_ids": [
+        "testing__C377875__LVMC-11-52-070__motor_vehicle_driver__stand_forward",
+        "testing__C377875__LVMC-11-52-070__motor_vehicle_driver__stand_opposing",
+        "testing__C377875__LVMC-11-52-070__motor_vehicle_driver__park_forward",
+        "testing__C377875__LVMC-11-52-070__motor_vehicle_driver__park_opposing"
+      ]
+    }
+  ],
+  "selected_branch": "permitted angle-parking orientation",
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 30,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "Engineer-permitted angle-parking sign, curb, space and vehicle",
+        "interval": "all 600 original 20 Hz frames"
+      },
+      {
+        "view": "approach",
+        "subject": "vehicle approach and marking",
+        "interval": "all 600 original 20 Hz frames"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "vehicle front and lawful lane movement direction",
+        "interval": "all 600 original 20 Hz frames"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "driver view through standing/parking interval",
+        "interval": "all 600 original 20 Hz frames"
+      }
+    ]
+  }
 }

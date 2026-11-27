@@ -82,9 +82,12 @@ def analyze(attempt, output):
               "sign_advance_distance_ft_measured": measured["sign_advance_distance_ft_measured"],
               "sign_displayed_at_entry": measured["sign_displayed_at_entry"],
               "original_frame_count": len(frames), "legal_judgment": None}
+    measured_sources = {name: hashes[name] for name in
+                        ("site.json", "history.json", "frame-map.json")}
     report = {"format": "worker-analysis-report", "case_id": case_id,
-              "measurements": {"school_crossing_entry": {
-                  "method": "measure", "value": values, "sources": hashes}},
+              "measurements": {"school_crossing_entry_" + str(index): {
+                  "method": "measure", "value": values, "sources": measured_sources}
+                  for index in range(3)},
               "diagnostic_fixture": fixture, "legal_verdict_claimed": False,
               "limitations": ["An observed attempt flag requires independent original-source review.",
                               "Approaching-side and approximately twelve feet remain unresolved legal phrases.",

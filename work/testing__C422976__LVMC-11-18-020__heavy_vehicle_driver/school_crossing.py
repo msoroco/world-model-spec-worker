@@ -102,6 +102,18 @@ def source_site(site: dict, site_path: str | Path, site_sha256: str,
             "engineer opinion and necessity source missing")
     require(site.get("operator_id") and site.get("vehicle_id") and
             site.get("vehicle_class") == "heavy_vehicle", "driver or heavy vehicle unreviewed")
+    require(str(site["vehicle_id"]).isdigit() and
+            str(site.get("person", {}).get("id", "")).isdigit(),
+            "original CARLA participant IDs unreviewed")
+    require(isinstance(site.get("vehicle_blueprint"), str) and
+            site["vehicle_blueprint"].startswith("vehicle."),
+            "original heavy-vehicle blueprint unreviewed")
+    dimensions = site.get("vehicle_dimensions_m")
+    require(isinstance(dimensions, dict) and
+            all(isinstance(dimensions.get(axis), (int, float)) and
+                math.isfinite(dimensions[axis]) and dimensions[axis] > 0
+                for axis in ("length", "width", "height")),
+            "original heavy-vehicle dimensions unreviewed")
     require(site.get("route_clearance_reviewed") is True,
             "heavy-vehicle route clearance unreviewed")
     require(site.get("intersection_status") == "intersection" and

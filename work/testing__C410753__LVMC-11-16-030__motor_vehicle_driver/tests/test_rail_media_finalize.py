@@ -72,13 +72,19 @@ class RailMediaTests(unittest.TestCase):
         raw = (self.folder / "00000100.png").read_bytes()
         rows = []
         frames = []
+        views = ("overview", "approach", "reference_corner", "driver_reference")
+        for view in views[1:]:
+            (self.root / "original-cameras" / view).mkdir(parents=True)
         for index in range(900):
             number = 100 + index
-            relative = f"original-cameras/overview/{number:08d}.png"
-            if number >= 101:
-                (self.root / relative).write_bytes(raw)
-            rows.append({"original_frame": number, "sources": {"overview": {
-                "path": relative, "sha256": hashlib.sha256(raw).hexdigest()}}})
+            sources = {}
+            for view in views:
+                relative = f"original-cameras/{view}/{number:08d}.png"
+                if view != "overview" or number >= 101:
+                    (self.root / relative).write_bytes(raw)
+                sources[view] = {"path": relative,
+                                 "sha256": hashlib.sha256(raw).hexdigest()}
+            rows.append({"original_frame": number, "sources": sources})
             frames.append({"original_frame": number})
 
         def source(name, value):
@@ -93,10 +99,11 @@ class RailMediaTests(unittest.TestCase):
                    "camera_map": source("camera-map.json", rows),
                    "frames": source("frames.json", frames)}
         (self.root / "native-rail-receipt.json").write_text(json.dumps(receipt) + "\n")
-        with patch.dict(CAMERAS, {"overview": (64, 36)}, clear=True):
+        with patch.dict(CAMERAS, {view: (64, 36) for view in views}, clear=True):
             result = finalize(self.root, packet, receipt["case_id"])
         self.assertEqual(result["original_frame_count"], 900)
-        self.assertEqual(result["media"]["overview"]["frames"], 900)
+        self.assertEqual(set(result["media"]), set(views))
+        self.assertTrue(all(result["media"][view]["frames"] == 900 for view in views))
         self.assertTrue((self.root / "rail-media-receipt.json").is_file())
         self.assertFalse(result["physical_completion_confirmed"])
 

@@ -1,0 +1,46 @@
+{
+  "template_id": "LVMC-11-52-070@motor_vehicle_driver",
+  "law_id": "LVMC-11-52-070",
+  "actor": "motor_vehicle_driver",
+  "quote": "The City Traffic Engineer shall determine upon what streets angle parking shall be permitted, and shall provide signage or other markings to indicate where such parking is permitted. Where angle parking is permitted, no person shall stand or park a vehicle unless the front of the vehicle is pointed toward the direction of lawful traffic movement.",
+  "structure": {
+    "law_id": "LVMC-11-52-070",
+    "activation": {
+      "condition": "City Traffic Engineer has permitted angle parking on this street and signage or markings indicate the permission.",
+      "numeric_conditions": []
+    },
+    "obligation": {
+      "description": "Person standing or parking a vehicle must point its front toward the direction of lawful traffic movement.",
+      "type": "must",
+      "numeric_conditions": []
+    },
+    "exceptions": [],
+    "timing": {
+      "description": "During the observed standing or parking interval.",
+      "numeric_conditions": []
+    },
+    "judgment_calls_needed": []
+  },
+  "parameter_refs": [
+    {
+      "name": "requested_front_yaw_degrees",
+      "kind": "controller",
+      "range_or_domain": "engineering target 0 or 180 degrees; original front direction measured"
+    },
+    {
+      "name": "requested_activity",
+      "kind": "controller",
+      "range_or_domain": "stand or park request; actual activity requires original review"
+    },
+    {
+      "name": "lawful_traffic_vector_xy",
+      "kind": "world_setup",
+      "range_or_domain": "original source-reviewed lawful traffic direction vector"
+    },
+    {
+      "name": "engineer_angle_permission",
+      "kind": "world_setup",
+      "range_or_domain": "original Engineer determination, permission extent and marking"
+    }
+  ]
+}

@@ -90,8 +90,15 @@ def capture(world, *, case_id: str, site_path: str | Path, site_sha256: str,
         school.require(str(vehicle.id) == site["vehicle_id"] and
                        str(person.id) == site["person"]["id"],
                        "original participant IDs differ from reviewed site")
-        school.require(getattr(vehicle, "type_id", "").startswith("vehicle."),
-                       "heavy vehicle blueprint missing")
+        school.require(getattr(vehicle, "type_id", "") == site["vehicle_blueprint"],
+                       "heavy vehicle blueprint differs from reviewed class source")
+        extent = vehicle.bounding_box.extent
+        actual_dimensions = {"length": float(extent.x) * 2,
+                             "width": float(extent.y) * 2,
+                             "height": float(extent.z) * 2}
+        school.require(all(abs(actual_dimensions[key] - site["vehicle_dimensions_m"][key]) <= .1
+                           for key in actual_dimensions),
+                       "heavy vehicle dimensions differ from reviewed class source")
         cameras, sensors = operator.cameras(world, vehicle, person, VIEWS)
         school.require(isinstance(cameras, dict) and set(cameras) == set(VIEWS) and
                        all(callable(cameras[v]) for v in VIEWS),

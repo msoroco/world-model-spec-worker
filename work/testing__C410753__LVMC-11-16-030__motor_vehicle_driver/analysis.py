@@ -77,15 +77,32 @@ def analyze(attempt, contract, case_id):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--attempt", type=Path, required=True)
-    parser.add_argument("--contract", type=Path, required=True)
-    parser.add_argument("--case-id", required=True)
+    parser.add_argument("--contract", type=Path)
+    parser.add_argument("--case-id")
+    parser.add_argument("--output", type=Path)
     args = parser.parse_args()
-    report = analyze(args.attempt, args.contract, args.case_id)
-    target = args.attempt / "rail-analysis.json"
+    contract = args.contract or args.attempt / "measurement-contract.json"
+    config = json.loads((args.attempt / "config.json").read_text())
+    case_id = args.case_id or config.get("selected_case_id")
+    if args.case_id is not None and args.case_id != config.get("selected_case_id"):
+        raise ValueError("selected railway case differs from materialized config")
+    report = analyze(args.attempt, contract, case_id)
+    target = args.output or args.attempt / "rail-analysis.json"
+    if target.parent.resolve() != args.attempt.resolve() or target.name not in (
+            "rail-analysis.json", "analysis-report.json"):
+        raise ValueError("rail analysis output must remain in the saved attempt")
     if target.exists() or target.is_symlink():
         raise ValueError("rail analysis result already exists")
     target.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n")
-    print(json.dumps({"case_id": args.case_id, "source_complete": True}))
+    if target.name == "analysis-report.json":
+        from rail_media_finalize import finalize
+        from rail_core_projection import project
+        receipt = json.loads((args.attempt / "native-rail-receipt.json").read_text())
+        packet = json.loads(_source(args.attempt, receipt["packet"]).read_text())
+        finalize(args.attempt, packet, case_id)
+        project(args.attempt, packet, case_id,
+                json.loads(_source(args.attempt, receipt["frames"]).read_text())
+    print(json.dumps({"case_id": case_id, "source_complete": True}))
 
 
 if __name__ == "__main__":

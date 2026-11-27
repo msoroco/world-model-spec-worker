@@ -1,0 +1,718 @@
+{
+  "actor": "bus_driver",
+  "cases": [
+    {
+      "case_id": "testing__C393262__LVMC-11-60-030-A5__bus_driver__baseline",
+      "rationale": "Common source-gated non-tour bus at designated residential bus stop; no original duration or legal finding.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "source-sealed Native frame and independent activity transition join",
+            "name": "bus_stopped_interval",
+            "reference_frame": "original frame/time",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "uncertainty": "activity transition review",
+            "unit": "s"
+          },
+          {
+            "method": "independently reviewed City Traffic Engineer designation and governing conditions",
+            "name": "applicable_designated_duration",
+            "reference_frame": "source reviewed designation",
+            "sampling_rate_hz": 20,
+            "time_window": "entire stop event",
+            "uncertainty": "applicability review",
+            "unit": "s"
+          },
+          {
+            "method": "Native bus footprint versus reviewed bus-stop boundary",
+            "name": "body_inside_stop",
+            "reference_frame": "original frame/time",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "uncertainty": "map and body localization",
+            "unit": "bool"
+          },
+          {
+            "method": "four synchronized RGB cameras",
+            "name": "four_camera_frame_identity",
+            "reference_frame": "original frame/time",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "uncertainty": "pixel review",
+            "unit": "frame ID"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed official designation, stop boundary and conditions",
+            "name": "reviewed_site_and_designation",
+            "unit": "structured original record"
+          },
+          {
+            "method": "source-hashed non-tour bus/operator and independent activity review",
+            "name": "bus_operator_and_activity",
+            "unit": "structured original record"
+          }
+        ],
+        "limitations": [
+          "Synthetic D=15 s diagnostics are not original designation or legal acceptance."
+        ]
+      },
+      "status": "draft",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "unresolved_judgment_calls": [],
+      "variable_assignments": {
+        "applicable_designated_duration_s": {
+          "kind": "world_setup",
+          "unit": "s",
+          "value": 15
+        },
+        "conduct": {
+          "kind": "world_setup",
+          "unit": "category",
+          "value": "park"
+        },
+        "duration_request_s": {
+          "kind": "controller",
+          "unit": "s",
+          "value": 13
+        },
+        "observed_stand_park_duration_s": {
+          "kind": "subject_behavior",
+          "unit": "s",
+          "value": null
+        }
+      }
+    },
+    {
+      "case_id": "testing__C393262__LVMC-11-60-030-A5__bus_driver__park_below",
+      "deliberate_differences": [
+        "duration_request_s",
+        "conduct"
+      ],
+      "epsilon_used": {
+        "rationale": "Engineering spacing around source-resolved D in diagnostic construction; not a legal tolerance.",
+        "unit": "s",
+        "value": 2
+      },
+      "paired_probe_id": "stop_duration_and_conduct",
+      "probe": {
+        "comparison_or_standard": "actual source-reviewed D; original interval measured separately",
+        "operator": "<=",
+        "primary_variable": "duration_request_s",
+        "target_value_or_branch": "below",
+        "test_value": 13,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "unit": "s"
+      },
+      "rationale": "Source-resolved designated duration D; diagnostic 15 s value is not a law cutoff or original designation.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "source-sealed Native frame and independent activity transition join",
+            "name": "bus_stopped_interval",
+            "reference_frame": "original frame/time",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "uncertainty": "activity transition review",
+            "unit": "s"
+          },
+          {
+            "method": "independently reviewed City Traffic Engineer designation and governing conditions",
+            "name": "applicable_designated_duration",
+            "reference_frame": "source reviewed designation",
+            "sampling_rate_hz": 20,
+            "time_window": "entire stop event",
+            "uncertainty": "applicability review",
+            "unit": "s"
+          },
+          {
+            "method": "Native bus footprint versus reviewed bus-stop boundary",
+            "name": "body_inside_stop",
+            "reference_frame": "original frame/time",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "uncertainty": "map and body localization",
+            "unit": "bool"
+          },
+          {
+            "method": "four synchronized RGB cameras",
+            "name": "four_camera_frame_identity",
+            "reference_frame": "original frame/time",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "uncertainty": "pixel review",
+            "unit": "frame ID"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed official designation, stop boundary and conditions",
+            "name": "reviewed_site_and_designation",
+            "unit": "structured original record"
+          },
+          {
+            "method": "source-hashed non-tour bus/operator and independent activity review",
+            "name": "bus_operator_and_activity",
+            "unit": "structured original record"
+          }
+        ],
+        "limitations": [
+          "Synthetic D=15 s diagnostics are not original designation or legal acceptance."
+        ]
+      },
+      "status": "draft",
+      "target_law_id": "LVMC-11-60-030-A5",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [],
+      "variable_assignments": {
+        "applicable_designated_duration_s": {
+          "kind": "world_setup",
+          "unit": "s",
+          "value": 15
+        },
+        "conduct": {
+          "kind": "world_setup",
+          "unit": "category",
+          "value": "park"
+        },
+        "duration_request_s": {
+          "kind": "controller",
+          "unit": "s",
+          "value": 13
+        },
+        "observed_stand_park_duration_s": {
+          "kind": "subject_behavior",
+          "unit": "s",
+          "value": null
+        }
+      }
+    },
+    {
+      "case_id": "testing__C393262__LVMC-11-60-030-A5__bus_driver__park_at",
+      "deliberate_differences": [
+        "duration_request_s",
+        "conduct"
+      ],
+      "epsilon_used": {
+        "rationale": "Engineering spacing around source-resolved D in diagnostic construction; not a legal tolerance.",
+        "unit": "s",
+        "value": 2
+      },
+      "paired_probe_id": "stop_duration_and_conduct",
+      "probe": {
+        "comparison_or_standard": "actual source-reviewed D; original interval measured separately",
+        "operator": "<=",
+        "primary_variable": "duration_request_s",
+        "target_value_or_branch": "at",
+        "test_value": 15,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "unit": "s"
+      },
+      "rationale": "Source-resolved designated duration D; diagnostic 15 s value is not a law cutoff or original designation.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "source-sealed Native frame and independent activity transition join",
+            "name": "bus_stopped_interval",
+            "reference_frame": "original frame/time",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "uncertainty": "activity transition review",
+            "unit": "s"
+          },
+          {
+            "method": "independently reviewed City Traffic Engineer designation and governing conditions",
+            "name": "applicable_designated_duration",
+            "reference_frame": "source reviewed designation",
+            "sampling_rate_hz": 20,
+            "time_window": "entire stop event",
+            "uncertainty": "applicability review",
+            "unit": "s"
+          },
+          {
+            "method": "Native bus footprint versus reviewed bus-stop boundary",
+            "name": "body_inside_stop",
+            "reference_frame": "original frame/time",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "uncertainty": "map and body localization",
+            "unit": "bool"
+          },
+          {
+            "method": "four synchronized RGB cameras",
+            "name": "four_camera_frame_identity",
+            "reference_frame": "original frame/time",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "uncertainty": "pixel review",
+            "unit": "frame ID"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed official designation, stop boundary and conditions",
+            "name": "reviewed_site_and_designation",
+            "unit": "structured original record"
+          },
+          {
+            "method": "source-hashed non-tour bus/operator and independent activity review",
+            "name": "bus_operator_and_activity",
+            "unit": "structured original record"
+          }
+        ],
+        "limitations": [
+          "Synthetic D=15 s diagnostics are not original designation or legal acceptance."
+        ]
+      },
+      "status": "draft",
+      "target_law_id": "LVMC-11-60-030-A5",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [],
+      "variable_assignments": {
+        "applicable_designated_duration_s": {
+          "kind": "world_setup",
+          "unit": "s",
+          "value": 15
+        },
+        "conduct": {
+          "kind": "world_setup",
+          "unit": "category",
+          "value": "park"
+        },
+        "duration_request_s": {
+          "kind": "controller",
+          "unit": "s",
+          "value": 15
+        },
+        "observed_stand_park_duration_s": {
+          "kind": "subject_behavior",
+          "unit": "s",
+          "value": null
+        }
+      }
+    },
+    {
+      "case_id": "testing__C393262__LVMC-11-60-030-A5__bus_driver__park_above",
+      "deliberate_differences": [
+        "duration_request_s",
+        "conduct"
+      ],
+      "epsilon_used": {
+        "rationale": "Engineering spacing around source-resolved D in diagnostic construction; not a legal tolerance.",
+        "unit": "s",
+        "value": 2
+      },
+      "paired_probe_id": "stop_duration_and_conduct",
+      "probe": {
+        "comparison_or_standard": "actual source-reviewed D; original interval measured separately",
+        "operator": "<=",
+        "primary_variable": "duration_request_s",
+        "target_value_or_branch": "above",
+        "test_value": 17,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "unit": "s"
+      },
+      "rationale": "Source-resolved designated duration D; diagnostic 15 s value is not a law cutoff or original designation.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "source-sealed Native frame and independent activity transition join",
+            "name": "bus_stopped_interval",
+            "reference_frame": "original frame/time",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "uncertainty": "activity transition review",
+            "unit": "s"
+          },
+          {
+            "method": "independently reviewed City Traffic Engineer designation and governing conditions",
+            "name": "applicable_designated_duration",
+            "reference_frame": "source reviewed designation",
+            "sampling_rate_hz": 20,
+            "time_window": "entire stop event",
+            "uncertainty": "applicability review",
+            "unit": "s"
+          },
+          {
+            "method": "Native bus footprint versus reviewed bus-stop boundary",
+            "name": "body_inside_stop",
+            "reference_frame": "original frame/time",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "uncertainty": "map and body localization",
+            "unit": "bool"
+          },
+          {
+            "method": "four synchronized RGB cameras",
+            "name": "four_camera_frame_identity",
+            "reference_frame": "original frame/time",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "uncertainty": "pixel review",
+            "unit": "frame ID"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed official designation, stop boundary and conditions",
+            "name": "reviewed_site_and_designation",
+            "unit": "structured original record"
+          },
+          {
+            "method": "source-hashed non-tour bus/operator and independent activity review",
+            "name": "bus_operator_and_activity",
+            "unit": "structured original record"
+          }
+        ],
+        "limitations": [
+          "Synthetic D=15 s diagnostics are not original designation or legal acceptance."
+        ]
+      },
+      "status": "draft",
+      "target_law_id": "LVMC-11-60-030-A5",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [],
+      "variable_assignments": {
+        "applicable_designated_duration_s": {
+          "kind": "world_setup",
+          "unit": "s",
+          "value": 15
+        },
+        "conduct": {
+          "kind": "world_setup",
+          "unit": "category",
+          "value": "park"
+        },
+        "duration_request_s": {
+          "kind": "controller",
+          "unit": "s",
+          "value": 17
+        },
+        "observed_stand_park_duration_s": {
+          "kind": "subject_behavior",
+          "unit": "s",
+          "value": null
+        }
+      }
+    },
+    {
+      "case_id": "testing__C393262__LVMC-11-60-030-A5__bus_driver__stand_below",
+      "deliberate_differences": [
+        "duration_request_s",
+        "conduct"
+      ],
+      "epsilon_used": {
+        "rationale": "Engineering spacing around source-resolved D in diagnostic construction; not a legal tolerance.",
+        "unit": "s",
+        "value": 2
+      },
+      "paired_probe_id": "stop_duration_and_conduct",
+      "probe": {
+        "comparison_or_standard": "actual source-reviewed D; original interval measured separately",
+        "operator": "<=",
+        "primary_variable": "duration_request_s",
+        "target_value_or_branch": "below",
+        "test_value": 13,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "unit": "s"
+      },
+      "rationale": "Source-resolved designated duration D; diagnostic 15 s value is not a law cutoff or original designation.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "source-sealed Native frame and independent activity transition join",
+            "name": "bus_stopped_interval",
+            "reference_frame": "original frame/time",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "uncertainty": "activity transition review",
+            "unit": "s"
+          },
+          {
+            "method": "independently reviewed City Traffic Engineer designation and governing conditions",
+            "name": "applicable_designated_duration",
+            "reference_frame": "source reviewed designation",
+            "sampling_rate_hz": 20,
+            "time_window": "entire stop event",
+            "uncertainty": "applicability review",
+            "unit": "s"
+          },
+          {
+            "method": "Native bus footprint versus reviewed bus-stop boundary",
+            "name": "body_inside_stop",
+            "reference_frame": "original frame/time",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "uncertainty": "map and body localization",
+            "unit": "bool"
+          },
+          {
+            "method": "four synchronized RGB cameras",
+            "name": "four_camera_frame_identity",
+            "reference_frame": "original frame/time",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "uncertainty": "pixel review",
+            "unit": "frame ID"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed official designation, stop boundary and conditions",
+            "name": "reviewed_site_and_designation",
+            "unit": "structured original record"
+          },
+          {
+            "method": "source-hashed non-tour bus/operator and independent activity review",
+            "name": "bus_operator_and_activity",
+            "unit": "structured original record"
+          }
+        ],
+        "limitations": [
+          "Synthetic D=15 s diagnostics are not original designation or legal acceptance."
+        ]
+      },
+      "status": "draft",
+      "target_law_id": "LVMC-11-60-030-A5",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [],
+      "variable_assignments": {
+        "applicable_designated_duration_s": {
+          "kind": "world_setup",
+          "unit": "s",
+          "value": 15
+        },
+        "conduct": {
+          "kind": "world_setup",
+          "unit": "category",
+          "value": "stand"
+        },
+        "duration_request_s": {
+          "kind": "controller",
+          "unit": "s",
+          "value": 13
+        },
+        "observed_stand_park_duration_s": {
+          "kind": "subject_behavior",
+          "unit": "s",
+          "value": null
+        }
+      }
+    },
+    {
+      "case_id": "testing__C393262__LVMC-11-60-030-A5__bus_driver__stand_at",
+      "deliberate_differences": [
+        "duration_request_s",
+        "conduct"
+      ],
+      "epsilon_used": {
+        "rationale": "Engineering spacing around source-resolved D in diagnostic construction; not a legal tolerance.",
+        "unit": "s",
+        "value": 2
+      },
+      "paired_probe_id": "stop_duration_and_conduct",
+      "probe": {
+        "comparison_or_standard": "actual source-reviewed D; original interval measured separately",
+        "operator": "<=",
+        "primary_variable": "duration_request_s",
+        "target_value_or_branch": "at",
+        "test_value": 15,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "unit": "s"
+      },
+      "rationale": "Source-resolved designated duration D; diagnostic 15 s value is not a law cutoff or original designation.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "source-sealed Native frame and independent activity transition join",
+            "name": "bus_stopped_interval",
+            "reference_frame": "original frame/time",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "uncertainty": "activity transition review",
+            "unit": "s"
+          },
+          {
+            "method": "independently reviewed City Traffic Engineer designation and governing conditions",
+            "name": "applicable_designated_duration",
+            "reference_frame": "source reviewed designation",
+            "sampling_rate_hz": 20,
+            "time_window": "entire stop event",
+            "uncertainty": "applicability review",
+            "unit": "s"
+          },
+          {
+            "method": "Native bus footprint versus reviewed bus-stop boundary",
+            "name": "body_inside_stop",
+            "reference_frame": "original frame/time",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "uncertainty": "map and body localization",
+            "unit": "bool"
+          },
+          {
+            "method": "four synchronized RGB cameras",
+            "name": "four_camera_frame_identity",
+            "reference_frame": "original frame/time",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "uncertainty": "pixel review",
+            "unit": "frame ID"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed official designation, stop boundary and conditions",
+            "name": "reviewed_site_and_designation",
+            "unit": "structured original record"
+          },
+          {
+            "method": "source-hashed non-tour bus/operator and independent activity review",
+            "name": "bus_operator_and_activity",
+            "unit": "structured original record"
+          }
+        ],
+        "limitations": [
+          "Synthetic D=15 s diagnostics are not original designation or legal acceptance."
+        ]
+      },
+      "status": "draft",
+      "target_law_id": "LVMC-11-60-030-A5",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [],
+      "variable_assignments": {
+        "applicable_designated_duration_s": {
+          "kind": "world_setup",
+          "unit": "s",
+          "value": 15
+        },
+        "conduct": {
+          "kind": "world_setup",
+          "unit": "category",
+          "value": "stand"
+        },
+        "duration_request_s": {
+          "kind": "controller",
+          "unit": "s",
+          "value": 15
+        },
+        "observed_stand_park_duration_s": {
+          "kind": "subject_behavior",
+          "unit": "s",
+          "value": null
+        }
+      }
+    },
+    {
+      "case_id": "testing__C393262__LVMC-11-60-030-A5__bus_driver__stand_above",
+      "deliberate_differences": [
+        "duration_request_s",
+        "conduct"
+      ],
+      "epsilon_used": {
+        "rationale": "Engineering spacing around source-resolved D in diagnostic construction; not a legal tolerance.",
+        "unit": "s",
+        "value": 2
+      },
+      "paired_probe_id": "stop_duration_and_conduct",
+      "probe": {
+        "comparison_or_standard": "actual source-reviewed D; original interval measured separately",
+        "operator": "<=",
+        "primary_variable": "duration_request_s",
+        "target_value_or_branch": "above",
+        "test_value": 17,
+        "threshold_ref": "obligation.numeric_conditions[0]",
+        "unit": "s"
+      },
+      "rationale": "Source-resolved designated duration D; diagnostic 15 s value is not a law cutoff or original designation.",
+      "recording_description": {
+        "channels": [
+          {
+            "method": "source-sealed Native frame and independent activity transition join",
+            "name": "bus_stopped_interval",
+            "reference_frame": "original frame/time",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "uncertainty": "activity transition review",
+            "unit": "s"
+          },
+          {
+            "method": "independently reviewed City Traffic Engineer designation and governing conditions",
+            "name": "applicable_designated_duration",
+            "reference_frame": "source reviewed designation",
+            "sampling_rate_hz": 20,
+            "time_window": "entire stop event",
+            "uncertainty": "applicability review",
+            "unit": "s"
+          },
+          {
+            "method": "Native bus footprint versus reviewed bus-stop boundary",
+            "name": "body_inside_stop",
+            "reference_frame": "original frame/time",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "uncertainty": "map and body localization",
+            "unit": "bool"
+          },
+          {
+            "method": "four synchronized RGB cameras",
+            "name": "four_camera_frame_identity",
+            "reference_frame": "original frame/time",
+            "sampling_rate_hz": 20,
+            "time_window": "all 900 frames",
+            "uncertainty": "pixel review",
+            "unit": "frame ID"
+          }
+        ],
+        "context_inputs": [
+          {
+            "method": "source-hashed official designation, stop boundary and conditions",
+            "name": "reviewed_site_and_designation",
+            "unit": "structured original record"
+          },
+          {
+            "method": "source-hashed non-tour bus/operator and independent activity review",
+            "name": "bus_operator_and_activity",
+            "unit": "structured original record"
+          }
+        ],
+        "limitations": [
+          "Synthetic D=15 s diagnostics are not original designation or legal acceptance."
+        ]
+      },
+      "status": "draft",
+      "target_law_id": "LVMC-11-60-030-A5",
+      "target_type": "boundary_probe",
+      "unresolved_judgment_calls": [],
+      "variable_assignments": {
+        "applicable_designated_duration_s": {
+          "kind": "world_setup",
+          "unit": "s",
+          "value": 15
+        },
+        "conduct": {
+          "kind": "world_setup",
+          "unit": "category",
+          "value": "stand"
+        },
+        "duration_request_s": {
+          "kind": "controller",
+          "unit": "s",
+          "value": 17
+        },
+        "observed_stand_park_duration_s": {
+          "kind": "subject_behavior",
+          "unit": "s",
+          "value": null
+        }
+      }
+    }
+  ],
+  "cell_id": "C393262",
+  "status": "draft",
+  "sweep_specs": [],
+  "sweeps_expanded": true
+}
