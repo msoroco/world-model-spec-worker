@@ -1,5 +1,12 @@
 # Return report
 
+## 2026-11-27 17:14 UTC — Accepted-source reviewers corrected and checked
+
+- C178244/NRS-484B-413-2 now requires the separately reviewed packet to be present, path and SHA-256, in the frozen evidence source inventory. Its 35 focused tests and pinned preflight pass; the frozen inventory has no such original packet, so the result remains `partial`. The exact scoped strict check exits 1 at partial acceptance.
+- C158190/NRS-484B-257-1 now admits only original trace and video hashes from the two frozen accepted rows and parses the runtime's actual Core `scenes` trace shape. Its prior synthetic `site`/`frames` review was corrected and explicitly superseded. The reviewer reports 900 scene timestamps without asserting stop governance or crosswalk behavior. All 48 focused tests, pinned preflight, and scoped `--complete` pass; the exact scoped strict check exits 1 at truthful partial acceptance.
+- A read-only scan of 84,690 returned files found zero size, trailing-whitespace, blank-EOF, or conflict-marker defects. Both assignments pass their scoped `--complete` checks after the edits; update notices remain version 0 with no paused assignments.
+- The immutable selected-branch/cell conflicts remain for these two assignments. The accepted original source bytes or a corrected allocation have not been supplied. Neither result was marked ready; the batch-wide strict gate cannot pass with two partials. No frozen input, runtime or batch file was edited, and no Git command was run.
+
 ## 2026-11-27 17:01 UTC — Current CPU rerun and independent source review
 
 - Pinned runtime source verification and CPU preflight passed with output and temporary paths under `.runtime-work/`; the update notice remained version 0 with no paused assignments. The C158190 and C178244 focused suites passed 42/42 and 33/33 tests. Their exact assignment-scoped `--complete --require-delivery-ready` checks each exited 1 at the truthful partial-status acceptance check. Neither result was relabeled ready.

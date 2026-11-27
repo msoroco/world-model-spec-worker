@@ -142,3 +142,39 @@ No CPU implementation gap remains for the three selected yield diagnostics: offl
 | `cpu-nov27c-source.log` | 0 | `36dc781879cb0fbeb1dfa590e2264e96eb8840fdb96b20f6bf5abadb65eb80fe` |
 | `cpu-nov27c-static.log` | 0 | `fc15fb1752fad1ac61dffd700aaaea71ef4633cfbcc3965bd69b2e3481373422` |
 | `cpu-nov27c-strict.log` | 1 | `0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638` |
+
+## November 27 frozen accepted-source admission
+
+`accepted_source.py` now admits only the two exact frozen C158190 accepted recording IDs and case IDs. It checks the source-hashed frozen evidence row, fixed `stop_sign` assignment, accepted identity, both set memberships, 900-frame acceptance binding, canonical original trace/video paths, and SHA-256 of both original byte streams. `review_accepted.py` can then read stop-sign governance, sidewalk-derived near-side crosswalk, control exclusions, 900 consecutive 20 Hz motion frames, crosswalk/intersection occupancy, and through-highway participants directly from the admitted trace bytes. It reports measured observations only; it makes no response-causality, physical-video, priority, or legal-coverage finding. A planning trace lacking original Native observations is rejected.
+
+The six new focused tests pass for both exact frozen IDs using disposable bytes under `.runtime-work/`; they reject missing or altered trace/video, invented case identity, rewritten metadata, yield governance, missing crosswalk/occupancy, and a metadata label without original observations. The full assignment suite passed **48/48**. A call against the frozen accepted response row's declared original trace/video paths exited 1 with `original trace or video bytes are missing`; the exported worker still has only metadata. This accepted-source review cannot turn the immutable C158190 yield branch into a stop-sign branch and is not selected delivery proof. Keep the result `partial` pending an authorized branch/control correction and original source review.
+
+Pinned runtime preflight exited 0. Scoped `worker_check.py --assignment testing__C158190__NRS-484B-257-1__motor_vehicle_driver --complete` exited 0. The exact scoped command with `--require-delivery-ready` exited 1 at `Preparation acceptance failed: partial/missing packages remain`, consistent with `result.json.status=partial`. The test and passing gate receipts are bound in `result.json`; the strict failure is retained below as a diagnostic, not a readiness claim.
+
+Commands: `SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/c158190-accepted-owner/output TMPDIR=$PWD/.runtime-work/c158190-accepted-owner/tmp PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/tests -v`; `.venv-cpu/bin/python work/testing__C158190__NRS-484B-257-1__motor_vehicle_driver/review_accepted.py --repo "$PWD" --recording-id e500db67c018ddd9928da09eb7e3d0e039881e3f2c65e9e34b8566df1d8626ee --trace /pscratch/sd/m/msoroco/world-model-spec/runs/scenario_pipeline/recordings/e500db67c018ddd9928da09eb7e3d0e039881e3f2c65e9e34b8566df1d8626ee/evidence/traffic_spec/trace.json --video /pscratch/sd/m/msoroco/world-model-spec/runs/scenario_pipeline/recordings/e500db67c018ddd9928da09eb7e3d0e039881e3f2c65e9e34b8566df1d8626ee/evidence/raw.mkv`.
+
+| Accepted-source file | SHA-256 |
+| --- | --- |
+| `accepted_source.py` | `2a36899f9723ef552def94df7765ceadaa71188ea7b1a345976b87103b3b9e93` |
+| `review_accepted.py` | `f71375e07cd392a2c6aa66b7b32201f3c68313ea1a1e6cb0c1ead046960d3aad` |
+| `tests/test_accepted_source.py` | `6d9acca001f3658766112323d7e9e203881d4105b52a426b5622b2625aed8826` |
+| `cpu-accepted-source-tests.log` | `1a02337da25b258f1ee73bab7179461bd92da290c5234ba19a15a035a2f1b877` |
+| `cpu-accepted-source-missing-original.log` | `c558df6d57f1ab1f3debf255732cfb6266148ba0645f1cdbbd6c9c1d8294440a` |
+| `cpu-accepted-source-preflight.log` | `b9fea8700c72d1d20657fd867beb294669e74b80cc73461e1121090c23a94a63` |
+| `cpu-accepted-source-static.log` | `fc15fb1752fad1ac61dffd700aaaea71ef4633cfbcc3965bd69b2e3481373422` |
+| `cpu-accepted-source-strict.log` | `0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638` |
+
+## November 27 Core trace shape correction
+
+The earlier accepted-source review used a synthetic `site`/`frames` packet. That packet is not the original Core `traffic_spec/trace.json` format: the pinned runtime reads `scenes` from that file and joins its timestamps to the original video frame map. The earlier focused tests therefore proved only the synthetic fixture, not real Core trace compatibility. `review_accepted.py` now admits frozen trace and video hashes first, then validates 900 monotonic Core scene timestamps. It reports only scene count and time span. It explicitly does not infer stop-sign governance, crosswalk geometry, stopping behavior, traffic response, video pixels, or legal coverage from those scenes. The fabricated site/frames packet is rejected even when fixture hashes match. This section supersedes the prior accepted-source review's physical-observation claims.
+
+All 48 assignment tests and pinned preflight passed. Scoped `--complete` passed; exact scoped `--complete --require-delivery-ready` exited 1 at truthful `partial` acceptance. Original trace/video bytes and a corrected selected-branch/control binding remain absent, so no readiness claim was made.
+
+| Corrected file or receipt | SHA-256 |
+| --- | --- |
+| `review_accepted.py` | `826d6ebb9b649e3c30b51fafd27583bab56adb3ce282f9adee3e9d13212b10b4` |
+| `tests/test_accepted_source.py` | `83449313b31d7cc205dee8bd9c90faeaab24d1d38169b81670469254ccab81fa` |
+| `cpu-accepted-core-tests.log` | `ff2eb64c2f04acf480e0ded16b66c1c1a5f3094d183dd71824d14e387c8f42f9` |
+| `cpu-accepted-core-preflight.log` | `6ce02c585708f4b929129452f68c4a5116dcfcd8c9371d49b7cb3fbf9b5811c7` |
+| `cpu-accepted-core-static.log` | `fc15fb1752fad1ac61dffd700aaaea71ef4633cfbcc3965bd69b2e3481373422` |
+| `cpu-accepted-core-strict.log` | `0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638` |

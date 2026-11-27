@@ -55,9 +55,20 @@ class ReviewAcceptedTests(unittest.TestCase):
         write_sources(self.root, self.packet)
         self.packet_path = self.root / "packet.json"
         self.save()
+        self.bind_packet(self.rid, self.packet_path)
 
     def save(self):
         self.packet_path.write_text(json.dumps(self.packet) + "\n")
+
+    def bind_packet(self, recording_id, packet_path):
+        evidence_path = self.root / "inputs" / ASSIGNMENT / "evidence.json"
+        evidence = json.loads(evidence_path.read_text())
+        row, = [r for r in evidence["recordings"] if r["recording_id"] == recording_id]
+        rel = str(packet_path.relative_to(self.root))
+        row["sources"] = [s for s in row["sources"] if s["path"] != rel]
+        row["sources"].append({"path": rel,
+                               "sha256": hashlib.sha256(packet_path.read_bytes()).hexdigest()})
+        evidence_path.write_text(json.dumps(evidence) + "\n")
 
     def test_source_bound_left_turn_measurement(self):
         finding = review(self.root, self.rid, self.trace, self.video,
@@ -65,10 +76,29 @@ class ReviewAcceptedTests(unittest.TestCase):
         self.assertEqual(finding["case_id"], self.case_id)
         self.assertEqual(finding["measurement"]["turn_direction"], "left")
         self.assertEqual(len(finding["signal_sources_verified"]), 5)
+        self.assertEqual(finding["packet_source_sha256"],
+                         hashlib.sha256(self.packet_path.read_bytes()).hexdigest())
+
+    def test_unbound_substitute_packet_rejected(self):
+        self.packet["route_sha256"] = "substitute-route"
+        self.save()
+        with self.assertRaisesRegex(ValueError, "not bound to frozen accepted evidence"):
+            review(self.root, self.rid, self.trace, self.video,
+                   self.packet_path, self.root)
+
+    def test_missing_frozen_packet_entry_rejected(self):
+        evidence_path = self.root / "inputs" / ASSIGNMENT / "evidence.json"
+        evidence = json.loads(evidence_path.read_text())
+        evidence["recordings"][0]["sources"] = evidence["recordings"][0]["sources"][:1]
+        evidence_path.write_text(json.dumps(evidence) + "\n")
+        with self.assertRaisesRegex(ValueError, "not bound to frozen accepted evidence"):
+            review(self.root, self.rid, self.trace, self.video,
+                   self.packet_path, self.root)
 
     def test_right_turn_packet_rejected_for_frozen_cell(self):
         self.packet["turn_direction"] = "right"
         self.save()
+        self.bind_packet(self.rid, self.packet_path)
         with self.assertRaisesRegex(EvidenceError, "left-turn"):
             review(self.root, self.rid, self.trace, self.video,
                    self.packet_path, self.root)
@@ -76,6 +106,7 @@ class ReviewAcceptedTests(unittest.TestCase):
     def test_wrong_district_case_rejected(self):
         self.packet["district_class"] = "other"
         self.save()
+        self.bind_packet(self.rid, self.packet_path)
         with self.assertRaisesRegex(EvidenceError, "district"):
             review(self.root, self.rid, self.trace, self.video,
                    self.packet_path, self.root)
@@ -116,6 +147,7 @@ class ReviewAcceptedTests(unittest.TestCase):
         write_sources(folder, second)
         packet_path = folder / "packet.json"
         packet_path.write_text(json.dumps(second) + "\n")
+        self.bind_packet(rid, packet_path)
         return {"recording_id": rid, "trace": trace, "video": video,
                 "packet": packet_path, "source_root": folder}, second
 
@@ -134,6 +166,7 @@ class ReviewAcceptedTests(unittest.TestCase):
         second, packet2 = self.second_side()
         packet2["route_sha256"] = "changed-route"
         second["packet"].write_text(json.dumps(packet2) + "\n")
+        self.bind_packet(second["recording_id"], second["packet"])
         with self.assertRaisesRegex(EvidenceError, "route_sha256"):
             compare(self.root, "business", self.first_side(), second)
 

@@ -104,3 +104,21 @@ The authorized resume input is a corrected branch/cell allocation that places bu
 | `cpu-nov27-final-binding.log` | 0 | `bde18ff5acae9166c3059717b115f0c9b10079e248ef39d48a9ad65bb2b82210` |
 | `cpu-nov27-final-static.log` | 0 | `f0d9b4c1febf22e3df2ea98e277eb6dd5767c1433d5b35d13f070446a8e33aec` |
 | `cpu-nov27-final-strict.log` | 1 | `0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638` |
+
+## November 27 accepted-packet custody repair
+
+Independent review found that `review_accepted.py` admitted frozen trace and video hashes but previously measured a separate signal packet whose own hash was not joined to the frozen accepted evidence inventory. `accepted_source.verify_packet_binding` now requires the exact packet path and SHA-256 in that recording's frozen `evidence.json` source list before signal measurements or comparisons run. It also rejects a packet outside the frozen evidence root. The reviewer records the admitted packet hash. Its five referenced source files are still checked for byte hashes and observation joins by `signal_distance.py`.
+
+The current six frozen accepted rows list metadata but no original signal packets; their original trace/video bytes are also absent. Accordingly this repair prevents a substitute packet from being presented as an accepted original measurement. Synthetic fixtures with a source-listed packet prove the positive code path; new negative tests reject a changed packet and a missing frozen packet entry. The full focused suite passed 35/35, pinned runtime verification and preflight passed, and the scoped `--complete` check passed. The exact scoped strict gate still exited 1 because the selected business right-turn branch conflicts with the fixed C178244 left-turn cell and the result remains partial. No original signal distance, right-turn case or legal outcome is claimed.
+
+| Current file | SHA-256 |
+| --- | --- |
+| `accepted_source.py` | `ce94b3433b5b30e0bb9d2bcb1df76fce8a3bbd64cfef14b2cafac8a9e34f7607` |
+| `review_accepted.py` | `4a4797ef75612041f0923d42a3eaa21d4ff4b4c902cbb916f7def497903a2ad1` |
+| `tests/test_review_accepted.py` | `3094f2a78afc25aea388c84b62dedac53b4f65829fc3fb565f431b8bac0ed12b` |
+| `cpu-nov27-packet-binding-tests.log` | `0f8484d0dca36efa10d9daacb3a954fa9bdc80b0a4b50ca31906fa8435933319` |
+| `cpu-nov27-packet-binding-static.log` | `f0d9b4c1febf22e3df2ea98e277eb6dd5767c1433d5b35d13f070446a8e33aec` |
+| `cpu-nov27-packet-binding-strict.log` | `0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638` |
+| `result.json` | `fe82add6f81b653db6282f969e86b8e455d5274c11139de089fbd4880eba1c3b` |
+
+Resume the historical left-turn review only when original trace, video and an independently frozen signal packet source are present, and correct the selected branch/cell allocation before any C178244 delivery-ready claim. The compatible business right-turn package remains C378304.

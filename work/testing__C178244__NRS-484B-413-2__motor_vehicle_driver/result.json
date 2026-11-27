@@ -3,7 +3,7 @@
   "assignment_id": "testing__C178244__NRS-484B-413-2__motor_vehicle_driver",
   "input_sha256": "d016fa0e3e1bb665756b4270d0ba9f3495e35bf6a0a3c95bd0a2a7acaa14f6f4",
   "readiness_kind": "source_bound_measurement_checkpoint",
-  "reason": "Frozen C178244 is left_turn while its sole selected branch is business-district right_turn. Existing C378304 separately prepares that right-turn branch on a compatible right_turn cell. Six C178244 accepted left-turn memberships are metadata only; all six original trace and video paths in frozen acceptance metadata are absent here. This package passes 33 source-bound CPU tests, current runtime preflight, allocation audit and scoped static gate. A truthful exact scoped strict gate requires an authorized correction of the frozen branch/cell allocation or original source-backed evidence that establishes the selected branch; neither is present. No C178244 right-turn delivery construction or ready claim is made.",
+  "reason": "Frozen C178244 is left_turn while its sole selected branch is business-district right_turn. Existing C378304 separately prepares that right-turn branch on a compatible right_turn cell. Six C178244 accepted left-turn memberships are metadata only; all six original trace and video paths are absent here, and their frozen evidence inventory contains no bound signal packet. The accepted-source reviewer now rejects an unbound substitute packet; 35 source-bound CPU tests, pinned runtime preflight and scoped static gate pass. A truthful exact scoped strict gate requires an authorized correction of the frozen branch/cell allocation or original source-backed evidence that establishes the selected branch; neither is present. No C178244 right-turn delivery construction or ready claim is made.",
   "remaining_gpu_checks": [
     "After CPU delivery readiness: actual CARLA motion, original signal readback, course-change onset, district frontage, full-duration four-camera decode and visibility"
   ],
@@ -170,6 +170,18 @@
       "exit_code": 1,
       "log": "cpu-nov27-final-strict.log",
       "sha256": "0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=$PWD/.runtime-work/turn-nov27-3/output TMPDIR=$PWD/.runtime-work/turn-nov27-3/tmp PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C178244__NRS-484B-413-2__motor_vehicle_driver/tests -q",
+      "exit_code": 0,
+      "log": "cpu-nov27-packet-binding-tests.log",
+      "sha256": "0f8484d0dca36efa10d9daacb3a954fa9bdc80b0a4b50ca31906fa8435933319"
+    },
+    {
+      "command": ".venv-cpu/bin/python worker_check.py --assignment testing__C178244__NRS-484B-413-2__motor_vehicle_driver --complete",
+      "exit_code": 0,
+      "log": "cpu-nov27-packet-binding-static.log",
+      "sha256": "f0d9b4c1febf22e3df2ea98e277eb6dd5767c1433d5b35d13f070446a8e33aec"
     }
   ]
 }
