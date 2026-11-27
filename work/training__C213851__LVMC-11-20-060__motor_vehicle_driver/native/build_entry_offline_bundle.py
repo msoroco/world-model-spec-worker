@@ -134,6 +134,9 @@ class EntryReturnRequest(unittest.TestCase):
             ],
         },
     }
+    config['case'] = {'case_id': case_id,
+                      'recording_description': construction['recording_description']}
+    files[1]['content'] = json.dumps(config, indent=2) + '\n'
     target = folder / 'construction.json'
     target.write_text(json.dumps(construction, indent=2) + '\n')
     dispositions = json.loads((ROOT / 'case-plan.json').read_text())[
@@ -182,7 +185,7 @@ def main():
     manifest = {'format': 'worker-execution-manifest',
                 'assignment_id': AID, 'cases': cases,
                 'diagnostic_only': True}
-    path = NATIVE / 'entry_return/offline-manifest.json'
+    path = NATIVE / 'entry_return/entry-offline-manifest.json'
     path.write_text(json.dumps(manifest, indent=2) + '\n')
     repo = ROOT.parents[1]
     public = {

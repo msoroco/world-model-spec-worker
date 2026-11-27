@@ -6,7 +6,7 @@
     {
       "case_id": "training__C213851__LVMC-11-20-060__motor_vehicle_driver__yield_to_approaching",
       "construction": "native/entry_return/yield_to_approaching/construction.json",
-      "construction_sha256": "0d8bb5058aa93753b1c7963177a8f842c4dcc236f2870b0f3163ee49483ed17e",
+      "construction_sha256": "0515fc48d34af932b568091446a25dbc7c22dfce4a0e6e484c2a04b64e144e36",
       "measurement_contract": "native/entry_return/yield_to_approaching/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "native/finalize_entry_return.py"
@@ -14,18 +14,98 @@
       "fixture_recipe": "work/training__C213851__LVMC-11-20-060__motor_vehicle_driver/native/entry_return/yield_to_approaching/diagnostic/fixture-recipe.json",
       "compatibility": {
         "receipt": "native/entry_return/yield_to_approaching/compatibility/compatibility.json",
-        "sha256": "197abaa646e6873eea6121d911107e03f3a7e2d8996ac2b309bfc1a36a31c860",
+        "sha256": "77b7326bc50b3138dce9588b161bbc76dd6e6ba0e50b12eab0651b2723270113",
         "log": "native/entry_return/yield_to_approaching/compatibility/analysis.log",
         "negative_log": "native/entry_return/yield_to_approaching/compatibility/negative-analysis.log"
       },
       "negative": {
         "log": "native/entry_return/yield_to_approaching/compatibility/negative-analysis.log"
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "0515fc48d34af932b568091446a25dbc7c22dfce4a0e6e484c2a04b64e144e36",
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C213851__LVMC-11-20-060__motor_vehicle_driver/native/entry_return/entry-offline-manifest.json --case training__C213851__LVMC-11-20-060__motor_vehicle_driver__yield_to_approaching --output .runtime-work/c213851-entry-offline-yield_to_approaching-caseconfig --python $PWD/.venv-cpu/bin/python",
+        "log": "native/entry_return/yield_to_approaching/offline.log",
+        "log_sha256": "2cfe02ac434ea0e53fb6221007b094784798d22c0715e477b745741a63605040"
+      },
+      "physical_preparation": {
+        "receipt": "native/entry_return/yield_to_approaching/physical-proof/receipt.json",
+        "sha256": "83d27da2a750324cd015881e564f1dc77a3851e65b942d2536d82e59fe956fb7"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C213851__LVMC-11-20-060__motor_vehicle_driver/entry-return-compat-manifest.json --case training__C213851__LVMC-11-20-060__motor_vehicle_driver__yield_to_approaching --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C213851__LVMC-11-20-060__motor_vehicle_driver/entry-return-compat-manifest.json --case training__C213851__LVMC-11-20-060__motor_vehicle_driver__yield_to_approaching --attempt \"$SAVED_ATTEMPT\" --output \"$FEEDBACK_OUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "proof": "native/entry_return/yield_to_approaching/saved-proof/positive-processing.json",
+        "proof_sha256": "dd319ab053354018afbdaaea69d9a9b48599e17d614ff8b6b60a5bedd604aadb",
+        "missing_source_negative": "native/entry_return/yield_to_approaching/saved-proof/negative-processing.json",
+        "missing_source_negative_sha256": "53a8fcd32e0ea257aa6feae39e13ec34223f485d70a0d1661fca1034f5912fa7",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "native/entry_return/yield_to_approaching/saved-proof/positive-saved.log",
+        "test_log_sha256": "7a8e2a3cfcee3746fabdfade7ac3edae298fad71dfe47f78dad1b8c37f05f483"
+      },
+      "kind": "delivery",
+      "candidate_risk": {
+        "status": "none",
+        "reason": "No original Native physical failure measured; source-shaped CPU diagnostic only."
+      },
+      "candidates": [],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_readiness": "incomplete",
+      "acquisition": {
+        "ru.motor_vehicle": {
+          "entrypoint": "native/runner_entry_return.py",
+          "method": "original 20 Hz Native/Core frame and source join",
+          "evidence": "sealed ego, approaching vehicle, pedestrian and four camera histories"
+        },
+        "kin.position": {
+          "entrypoint": "native/runner_entry_return.py",
+          "method": "original 20 Hz Native/Core frame and source join",
+          "evidence": "sealed ego, approaching vehicle, pedestrian and four camera histories"
+        },
+        "kin.speed": {
+          "entrypoint": "native/runner_entry_return.py",
+          "method": "original 20 Hz Native/Core frame and source join",
+          "evidence": "sealed ego, approaching vehicle, pedestrian and four camera histories"
+        },
+        "ego_pose_speed_footprint": {
+          "entrypoint": "native/runner_entry_return.py",
+          "method": "original 20 Hz Native/Core frame and source join",
+          "evidence": "sealed ego, approaching vehicle, pedestrian and four camera histories"
+        },
+        "approaching_vehicle_trace": {
+          "entrypoint": "native/runner_entry_return.py",
+          "method": "original 20 Hz Native/Core frame and source join",
+          "evidence": "sealed ego, approaching vehicle, pedestrian and four camera histories"
+        },
+        "pedestrian_trace": {
+          "entrypoint": "native/runner_entry_return.py",
+          "method": "original 20 Hz Native/Core frame and source join",
+          "evidence": "sealed ego, approaching vehicle, pedestrian and four camera histories"
+        }
+      },
+      "diagnostic_delivery_audit": {
+        "script": "native/audit_entry_delivery.py",
+        "script_sha256": "679deef5ea052a9f798d834942e3f028d99c2afd7eb788cc80677c56ca198f8e",
+        "result": "native/entry_return/yield_to_approaching/saved-proof/delivery-audit.json",
+        "result_sha256": "ff5c3a6a8b95da5ae020f62a0211e1e6ebe800ec7391d16d372cfaaf78f096b1",
+        "positive_log": "native/entry_return/yield_to_approaching/saved-proof/delivery-audit.log",
+        "positive_log_sha256": "968cbb626f216748ad214b05450e6d296edcc64e6597c7c35e63f0f4715d0d4f",
+        "negative_log": "native/entry_return/yield_to_approaching/saved-proof/delivery-negative.log",
+        "negative_log_sha256": "318951adac8b66204d9277e5795296262945d56117bb8dddfdedb3ddb05afe03",
+        "missing_source_rejected": true,
+        "actual_native_pixels_reviewed": false,
+        "delivery_accepted": false
       }
     },
     {
       "case_id": "training__C213851__LVMC-11-20-060__motor_vehicle_driver__enter_without_yield",
       "construction": "native/entry_return/enter_without_yield/construction.json",
-      "construction_sha256": "e570234153c0c0e46996ecf13126574e6f24b4409daf30315a7e2e02eaa166f2",
+      "construction_sha256": "12bf253b5b374e3689261ff5d73401a267b1467ee6c4df5377378e99c94d8c2e",
       "measurement_contract": "native/entry_return/enter_without_yield/measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "native/finalize_entry_return.py"
@@ -33,12 +113,92 @@
       "fixture_recipe": "work/training__C213851__LVMC-11-20-060__motor_vehicle_driver/native/entry_return/enter_without_yield/diagnostic/fixture-recipe.json",
       "compatibility": {
         "receipt": "native/entry_return/enter_without_yield/compatibility/compatibility.json",
-        "sha256": "82df0c15bdd9ffd82ea9e46ad3cf157eb716a26836e32a2ecb20b0c4ffc71b3b",
+        "sha256": "df5e64a87b0dbc6952337c92b01106943e27a6acfaedc19a3b765f5dca1dec27",
         "log": "native/entry_return/enter_without_yield/compatibility/analysis.log",
         "negative_log": "native/entry_return/enter_without_yield/compatibility/negative-analysis.log"
       },
       "negative": {
         "log": "native/entry_return/enter_without_yield/compatibility/negative-analysis.log"
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "12bf253b5b374e3689261ff5d73401a267b1467ee6c4df5377378e99c94d8c2e",
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C213851__LVMC-11-20-060__motor_vehicle_driver/native/entry_return/entry-offline-manifest.json --case training__C213851__LVMC-11-20-060__motor_vehicle_driver__enter_without_yield --output .runtime-work/c213851-entry-offline-enter_without_yield-caseconfig --python $PWD/.venv-cpu/bin/python",
+        "log": "native/entry_return/enter_without_yield/offline.log",
+        "log_sha256": "a95815e3992e850837b63f9ac7a9e17bd6e4ad761a81dc37b1fcf068d492ce9d"
+      },
+      "physical_preparation": {
+        "receipt": "native/entry_return/enter_without_yield/physical-proof/receipt.json",
+        "sha256": "20afc9b9407365bebbed5eb13f6fc3f1ff760159182713f5594ad299b6b7e57b"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C213851__LVMC-11-20-060__motor_vehicle_driver/entry-return-compat-manifest.json --case training__C213851__LVMC-11-20-060__motor_vehicle_driver__enter_without_yield --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C213851__LVMC-11-20-060__motor_vehicle_driver/entry-return-compat-manifest.json --case training__C213851__LVMC-11-20-060__motor_vehicle_driver__enter_without_yield --attempt \"$SAVED_ATTEMPT\" --output \"$FEEDBACK_OUT\" --library runtime/library --validator \"$VALIDATOR\"",
+        "proof": "native/entry_return/enter_without_yield/saved-proof/positive-processing.json",
+        "proof_sha256": "dd96f7411f082c9ba0a7530e44bada9a7d23bd3dbaeb31e6c400c578919c4885",
+        "missing_source_negative": "native/entry_return/enter_without_yield/saved-proof/negative-processing.json",
+        "missing_source_negative_sha256": "3573bbe0cb35b1e560a15abd7c7ecd9b2bea65bcd3060a78990e00e6257c0871",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "native/entry_return/enter_without_yield/saved-proof/positive-saved.log",
+        "test_log_sha256": "7a8e2a3cfcee3746fabdfade7ac3edae298fad71dfe47f78dad1b8c37f05f483"
+      },
+      "kind": "delivery",
+      "candidate_risk": {
+        "status": "none",
+        "reason": "No original Native physical failure measured; source-shaped CPU diagnostic only."
+      },
+      "candidates": [],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "delivery_readiness": "incomplete",
+      "acquisition": {
+        "ru.motor_vehicle": {
+          "entrypoint": "native/runner_entry_return.py",
+          "method": "original 20 Hz Native/Core frame and source join",
+          "evidence": "sealed ego, approaching vehicle, pedestrian and four camera histories"
+        },
+        "kin.position": {
+          "entrypoint": "native/runner_entry_return.py",
+          "method": "original 20 Hz Native/Core frame and source join",
+          "evidence": "sealed ego, approaching vehicle, pedestrian and four camera histories"
+        },
+        "kin.speed": {
+          "entrypoint": "native/runner_entry_return.py",
+          "method": "original 20 Hz Native/Core frame and source join",
+          "evidence": "sealed ego, approaching vehicle, pedestrian and four camera histories"
+        },
+        "ego_pose_speed_footprint": {
+          "entrypoint": "native/runner_entry_return.py",
+          "method": "original 20 Hz Native/Core frame and source join",
+          "evidence": "sealed ego, approaching vehicle, pedestrian and four camera histories"
+        },
+        "approaching_vehicle_trace": {
+          "entrypoint": "native/runner_entry_return.py",
+          "method": "original 20 Hz Native/Core frame and source join",
+          "evidence": "sealed ego, approaching vehicle, pedestrian and four camera histories"
+        },
+        "pedestrian_trace": {
+          "entrypoint": "native/runner_entry_return.py",
+          "method": "original 20 Hz Native/Core frame and source join",
+          "evidence": "sealed ego, approaching vehicle, pedestrian and four camera histories"
+        }
+      },
+      "diagnostic_delivery_audit": {
+        "script": "native/audit_entry_delivery.py",
+        "script_sha256": "679deef5ea052a9f798d834942e3f028d99c2afd7eb788cc80677c56ca198f8e",
+        "result": "native/entry_return/enter_without_yield/saved-proof/delivery-audit.json",
+        "result_sha256": "ca5f347de86a837a428b4f3aa2c73b5a829ea808d46b3d4daf84f70156fffad8",
+        "positive_log": "native/entry_return/enter_without_yield/saved-proof/delivery-audit.log",
+        "positive_log_sha256": "6a8f73aabe4af6dbd2ba1f783aa62abd8013a03963e16d0560b7b98cd408b739",
+        "negative_log": "native/entry_return/enter_without_yield/saved-proof/delivery-negative.log",
+        "negative_log_sha256": "318951adac8b66204d9277e5795296262945d56117bb8dddfdedb3ddb05afe03",
+        "missing_source_rejected": true,
+        "actual_native_pixels_reviewed": false,
+        "delivery_accepted": false
       }
     }
   ],
