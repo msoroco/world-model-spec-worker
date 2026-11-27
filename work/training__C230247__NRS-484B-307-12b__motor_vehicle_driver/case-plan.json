@@ -31,23 +31,29 @@
         "training__C230247__NRS-484B-307-12b__motor_vehicle_driver__probe_1",
         "training__C230247__NRS-484B-307-12b__motor_vehicle_driver__probe_2"
       ],
-      "evidence_or_gap": "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
+      "evidence_or_gap": "Exact source-bound red-X pair prepared for independent physical review; no accepted original evidence exists."
     },
     {
       "requirement": "NRS-484B-307-12b",
       "source": "NRS 484B.307(12)(b)",
       "branch": "signal directly over individual lane",
-      "status": "alternative_pending",
-      "case_ids": [],
-      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
+      "status": "selected_required",
+      "case_ids": [
+        "training__C230247__NRS-484B-307-12b__motor_vehicle_driver__probe_1",
+        "training__C230247__NRS-484B-307-12b__motor_vehicle_driver__probe_2"
+      ],
+      "evidence_or_gap": "Exact source-bound red-X pair prepared for independent physical review; no accepted original evidence exists."
     },
     {
       "requirement": "NRS-484B-307-12b",
       "source": "NRS 484B.307(12)(b)",
       "branch": "facing driver",
-      "status": "alternative_pending",
-      "case_ids": [],
-      "evidence_or_gap": "This statutory alternative or exception needs a separate compatible controlled case or explicit physical-unsupported disposition; current frozen-cell feasibility is unproven."
+      "status": "selected_required",
+      "case_ids": [
+        "training__C230247__NRS-484B-307-12b__motor_vehicle_driver__probe_1",
+        "training__C230247__NRS-484B-307-12b__motor_vehicle_driver__probe_2"
+      ],
+      "evidence_or_gap": "Exact source-bound red-X pair prepared for independent physical review; no accepted original evidence exists."
     }
   ],
   "neutral_baseline": {
@@ -58,7 +64,7 @@
     {
       "case_id": "training__C230247__NRS-484B-307-12b__motor_vehicle_driver__probe_1",
       "target_law_id": "NRS-484B-307-12b",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "below",
       "physical_target": "driver stays outside red-X-governed lane",
       "comparison_variable": "red_x_lane_occupancy",
@@ -66,12 +72,16 @@
       "requested_not_measured": true,
       "selection_targets": [
         "full-train"
-      ]
+      ],
+      "gap_ids": [
+        "red_x_lane_occupancy"
+      ],
+      "construction": "construction.json"
     },
     {
       "case_id": "training__C230247__NRS-484B-307-12b__motor_vehicle_driver__probe_2",
       "target_law_id": "NRS-484B-307-12b",
-      "kind": "planned_only",
+      "kind": "delivery",
       "target_type": "controlled_attempt",
       "physical_target": "driver enters red-X-governed lane",
       "comparison_variable": "red_x_lane_occupancy",
@@ -79,7 +89,11 @@
       "requested_not_measured": true,
       "selection_targets": [
         "full-train"
-      ]
+      ],
+      "gap_ids": [
+        "red_x_lane_occupancy"
+      ],
+      "construction": "cases/probe_2/construction.json"
     }
   ],
   "comparisons": [
@@ -102,35 +116,46 @@
     {
       "term": "dev.lane_control_signal",
       "purpose": "state red_x",
-      "status": "measurement_mapping_pending"
+      "status": "source_bound_measurement"
     },
     {
       "term": "dev.governs",
       "purpose": "the lane the signal is over",
-      "status": "measurement_mapping_pending"
+      "status": "source_bound_measurement"
     },
     {
       "term": "st.lane",
       "purpose": "that lane",
-      "status": "measurement_mapping_pending"
+      "status": "source_bound_measurement"
     },
     {
       "term": "rel.occupies",
       "purpose": "the subject's footprint in it",
-      "status": "measurement_mapping_pending"
+      "status": "source_bound_measurement"
     },
     {
       "term": "drv.lane_change",
       "purpose": "entering the lane",
-      "status": "measurement_mapping_pending"
+      "status": "source_bound_measurement"
     },
     {
       "term": "kin.velocity",
       "purpose": "'or drive in' — remaining in it while moving",
-      "status": "measurement_mapping_pending"
+      "status": "source_bound_measurement"
     }
   ],
-  "candidate_plans": [],
+  "candidate_plans": [
+    {
+      "case_id": "training__C230247__NRS-484B-307-12b__motor_vehicle_driver__probe_1",
+      "primary": "construction.json",
+      "risk": "Native red-X asset and original physical lane crossing require local confirmation"
+    },
+    {
+      "case_id": "training__C230247__NRS-484B-307-12b__motor_vehicle_driver__probe_2",
+      "primary": "cases/probe_2/construction.json",
+      "risk": "Native red-X asset and original physical lane crossing require local confirmation"
+    }
+  ],
   "existing_evidence": [],
   "sources": [
     {
@@ -144,9 +169,9 @@
     "Cameras can inspect the decisive physical distinction"
   ],
   "blockers": [
-    "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
+    "Public compatibility, saved-only processing, semantic proposals and independent audits remain unfinished."
   ],
-  "selected_branch": null,
+  "selected_branch": "individual-lane red-X facing driver, outside versus entering governed lane",
   "observations": [
     {
       "name": "dev.lane_control_signal",
@@ -184,5 +209,80 @@
     "Actor blueprint and route can realize each requested target",
     "Cameras can inspect the decisive physical distinction",
     "No executable Native construction, four distinct source-preserving candidates, offline/compatibility proofs, measured-result contract, positive/negative saved fixtures, independent audit, or verified source-hashed reuse receipt has been produced. Physical realization and legal outcome are unverified."
-  ]
+  ],
+  "evidence_review": {
+    "reviewer": "worker",
+    "method": "Frozen evidence inventory and exact assignment membership reviewed; both contain no accepted recordings.",
+    "facts": [],
+    "gaps": [
+      {
+        "id": "red_x_lane_occupancy",
+        "requirement": "Facing driver approach and movement relative to individual-lane red X",
+        "source": "NRS 484B.307(12)(b)",
+        "why_existing_insufficient": "No accepted recording IDs in frozen membership."
+      }
+    ]
+  },
+  "source_observation_mapping": {
+    "dev.lane_control_signal": {
+      "evidence": "Original per-frame signal, map, body and trace sources joined in saved finalizer",
+      "channels": [
+        "dev.lane_control_signal"
+      ],
+      "source_refs": [
+        "inputs/training__C230247__NRS-484B-307-12b__motor_vehicle_driver/assignment.json",
+        "measurement.json"
+      ]
+    },
+    "dev.governs": {
+      "evidence": "Original per-frame signal, map, body and trace sources joined in saved finalizer",
+      "channels": [
+        "dev.governs"
+      ],
+      "source_refs": [
+        "inputs/training__C230247__NRS-484B-307-12b__motor_vehicle_driver/assignment.json",
+        "measurement.json"
+      ]
+    },
+    "st.lane": {
+      "evidence": "Original per-frame signal, map, body and trace sources joined in saved finalizer",
+      "channels": [
+        "st.lane"
+      ],
+      "source_refs": [
+        "inputs/training__C230247__NRS-484B-307-12b__motor_vehicle_driver/assignment.json",
+        "measurement.json"
+      ]
+    },
+    "rel.occupies": {
+      "evidence": "Original per-frame signal, map, body and trace sources joined in saved finalizer",
+      "channels": [
+        "rel.occupies"
+      ],
+      "source_refs": [
+        "inputs/training__C230247__NRS-484B-307-12b__motor_vehicle_driver/assignment.json",
+        "measurement.json"
+      ]
+    },
+    "drv.lane_change": {
+      "evidence": "Original per-frame signal, map, body and trace sources joined in saved finalizer",
+      "channels": [
+        "drv.lane_change"
+      ],
+      "source_refs": [
+        "inputs/training__C230247__NRS-484B-307-12b__motor_vehicle_driver/assignment.json",
+        "measurement.json"
+      ]
+    },
+    "kin.velocity": {
+      "evidence": "Original per-frame signal, map, body and trace sources joined in saved finalizer",
+      "channels": [
+        "kin.velocity"
+      ],
+      "source_refs": [
+        "inputs/training__C230247__NRS-484B-307-12b__motor_vehicle_driver/assignment.json",
+        "measurement.json"
+      ]
+    }
+  }
 }

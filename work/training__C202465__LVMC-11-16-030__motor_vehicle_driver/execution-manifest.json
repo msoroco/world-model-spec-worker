@@ -65,6 +65,126 @@
       },
       "negative": {
         "log": "selected-public-proofs/condition_a/primary/negative.log"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "st.railway_crossing": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; st.railway_crossing",
+          "evidence": [
+            "road.xodr",
+            "rail-body.jsonl",
+            "original-source-review/railway.json"
+          ]
+        },
+        "drv.approaching": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; drv.approaching",
+          "evidence": [
+            "rail-body.jsonl",
+            "trace.jsonl"
+          ]
+        },
+        "st.sight_distance": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; st.sight_distance",
+          "evidence": [
+            "rail-rays.jsonl",
+            "rail-body.jsonl",
+            "original-source-review/approach.json"
+          ]
+        },
+        "rel.visible": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; rel.visible",
+          "evidence": [
+            "rail-rays.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; kin.speed",
+          "evidence": [
+            "rail-body.jsonl",
+            "trace.jsonl"
+          ]
+        },
+        "ru.rail_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; ru.rail_vehicle",
+          "evidence": [
+            "rail-rays.jsonl",
+            "original-source-review/railway.json"
+          ]
+        },
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; dev.human_direction",
+          "evidence": [
+            "reviewed-exceptions.jsonl",
+            "original-source-review/flagman.json"
+          ]
+        },
+        "dev.railway_signal_or_gate": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; dev.railway_signal_or_gate",
+          "evidence": [
+            "reviewed-exceptions.jsonl",
+            "original-source-review/signal.json"
+          ]
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; rel.centre_distance",
+          "evidence": [
+            "rail-body.jsonl",
+            "road.xodr"
+          ]
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C202465__LVMC-11-16-030__motor_vehicle_driver/execution-manifest.json --case training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__condition_a --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__condition_a",
+        "test_log": "saved-proofs/condition_a/positive.log",
+        "test_log_sha256": "8e39aa5e3e1d74a436792a5fe6fba8ec2552c214743d2c4c3cad3603e9541576",
+        "test_exit_code": 0
+      },
+      "saved_proof": {
+        "processing": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/condition_a/saved/v0001/processing.json",
+        "processing_sha256": "8e39aa5e3e1d74a436792a5fe6fba8ec2552c214743d2c4c3cad3603e9541576",
+        "attempt": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/condition_a/attempt"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__condition_a",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "two_direction_rail_sight_and_exception_source_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "2c5144af048e43ec9db5d223da210805acc0488fe8e9d489dd6f629ec6ebcdd8",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C202465__LVMC-11-16-030__motor_vehicle_driver/delivery_audit.py --case training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__condition_a --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/condition_a/attempt --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/condition_a/saved/v0001/processing.json --diagnostic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-delivery-audit-1795808360934045351/condition_a-positive.json",
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/condition_a/positive.log",
+        "test_log_sha256": "03fdc82e7f641cae4e32e1842c203a0edae701387d60f09e04358230dd767abc",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C202465__LVMC-11-16-030__motor_vehicle_driver/delivery_audit.py --case training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__condition_a --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/condition_a/attempt --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/condition_a/saved/v0001/processing.json --diagnostic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-delivery-audit-1795808360934045351/condition_a-negative.json --omit-source rail-rays.jsonl",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: rail-rays.jsonl",
+        "negative_log": "delivery-proofs/condition_a/negative.log",
+        "negative_log_sha256": "0340739193a31354e9c576ba6ea583e536ea9414ecb827554465dac8cd59f538"
       }
     },
     {
@@ -128,6 +248,126 @@
       },
       "negative": {
         "log": "selected-public-proofs/condition_at/primary/negative.log"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "st.railway_crossing": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; st.railway_crossing",
+          "evidence": [
+            "road.xodr",
+            "rail-body.jsonl",
+            "original-source-review/railway.json"
+          ]
+        },
+        "drv.approaching": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; drv.approaching",
+          "evidence": [
+            "rail-body.jsonl",
+            "trace.jsonl"
+          ]
+        },
+        "st.sight_distance": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; st.sight_distance",
+          "evidence": [
+            "rail-rays.jsonl",
+            "rail-body.jsonl",
+            "original-source-review/approach.json"
+          ]
+        },
+        "rel.visible": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; rel.visible",
+          "evidence": [
+            "rail-rays.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; kin.speed",
+          "evidence": [
+            "rail-body.jsonl",
+            "trace.jsonl"
+          ]
+        },
+        "ru.rail_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; ru.rail_vehicle",
+          "evidence": [
+            "rail-rays.jsonl",
+            "original-source-review/railway.json"
+          ]
+        },
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; dev.human_direction",
+          "evidence": [
+            "reviewed-exceptions.jsonl",
+            "original-source-review/flagman.json"
+          ]
+        },
+        "dev.railway_signal_or_gate": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; dev.railway_signal_or_gate",
+          "evidence": [
+            "reviewed-exceptions.jsonl",
+            "original-source-review/signal.json"
+          ]
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; rel.centre_distance",
+          "evidence": [
+            "rail-body.jsonl",
+            "road.xodr"
+          ]
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C202465__LVMC-11-16-030__motor_vehicle_driver/execution-manifest.json --case training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__condition_at --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__condition_at",
+        "test_log": "saved-proofs/condition_at/positive.log",
+        "test_log_sha256": "9ba46338d23cddc7447ad944ee443f2977110ff5f2dec0bb78514d6de1c4bf12",
+        "test_exit_code": 0
+      },
+      "saved_proof": {
+        "processing": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/condition_at/saved/v0001/processing.json",
+        "processing_sha256": "9ba46338d23cddc7447ad944ee443f2977110ff5f2dec0bb78514d6de1c4bf12",
+        "attempt": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/condition_at/attempt"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__condition_at",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "two_direction_rail_sight_and_exception_source_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "2c5144af048e43ec9db5d223da210805acc0488fe8e9d489dd6f629ec6ebcdd8",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C202465__LVMC-11-16-030__motor_vehicle_driver/delivery_audit.py --case training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__condition_at --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/condition_at/attempt --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/condition_at/saved/v0001/processing.json --diagnostic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-delivery-audit-1795808360934045351/condition_at-positive.json",
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/condition_at/positive.log",
+        "test_log_sha256": "bc7fc0ff029afbc6cfbfe0cfeef1bd7a8c2a962d050c4ed4396c6cff6d99c144",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C202465__LVMC-11-16-030__motor_vehicle_driver/delivery_audit.py --case training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__condition_at --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/condition_at/attempt --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/condition_at/saved/v0001/processing.json --diagnostic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-delivery-audit-1795808360934045351/condition_at-negative.json --omit-source rail-rays.jsonl",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: rail-rays.jsonl",
+        "negative_log": "delivery-proofs/condition_at/negative.log",
+        "negative_log_sha256": "0340739193a31354e9c576ba6ea583e536ea9414ecb827554465dac8cd59f538"
       }
     },
     {
@@ -191,6 +431,126 @@
       },
       "negative": {
         "log": "selected-public-proofs/condition_b/primary/negative.log"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "st.railway_crossing": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; st.railway_crossing",
+          "evidence": [
+            "road.xodr",
+            "rail-body.jsonl",
+            "original-source-review/railway.json"
+          ]
+        },
+        "drv.approaching": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; drv.approaching",
+          "evidence": [
+            "rail-body.jsonl",
+            "trace.jsonl"
+          ]
+        },
+        "st.sight_distance": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; st.sight_distance",
+          "evidence": [
+            "rail-rays.jsonl",
+            "rail-body.jsonl",
+            "original-source-review/approach.json"
+          ]
+        },
+        "rel.visible": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; rel.visible",
+          "evidence": [
+            "rail-rays.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; kin.speed",
+          "evidence": [
+            "rail-body.jsonl",
+            "trace.jsonl"
+          ]
+        },
+        "ru.rail_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; ru.rail_vehicle",
+          "evidence": [
+            "rail-rays.jsonl",
+            "original-source-review/railway.json"
+          ]
+        },
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; dev.human_direction",
+          "evidence": [
+            "reviewed-exceptions.jsonl",
+            "original-source-review/flagman.json"
+          ]
+        },
+        "dev.railway_signal_or_gate": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; dev.railway_signal_or_gate",
+          "evidence": [
+            "reviewed-exceptions.jsonl",
+            "original-source-review/signal.json"
+          ]
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; rel.centre_distance",
+          "evidence": [
+            "rail-body.jsonl",
+            "road.xodr"
+          ]
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C202465__LVMC-11-16-030__motor_vehicle_driver/execution-manifest.json --case training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__condition_b --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__condition_b",
+        "test_log": "saved-proofs/condition_b/positive.log",
+        "test_log_sha256": "6f98caa9906871ef831426b4da4834f31e3cf31a48065d2d775abf436dedd21f",
+        "test_exit_code": 0
+      },
+      "saved_proof": {
+        "processing": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/condition_b/saved/v0001/processing.json",
+        "processing_sha256": "6f98caa9906871ef831426b4da4834f31e3cf31a48065d2d775abf436dedd21f",
+        "attempt": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/condition_b/attempt"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__condition_b",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "two_direction_rail_sight_and_exception_source_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "2c5144af048e43ec9db5d223da210805acc0488fe8e9d489dd6f629ec6ebcdd8",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C202465__LVMC-11-16-030__motor_vehicle_driver/delivery_audit.py --case training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__condition_b --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/condition_b/attempt --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/condition_b/saved/v0001/processing.json --diagnostic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-delivery-audit-1795808360934045351/condition_b-positive.json",
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/condition_b/positive.log",
+        "test_log_sha256": "1ac98f036d47bf57f5bed4a54ffa1df2fbc006defe65afce228851e51d0a2c68",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C202465__LVMC-11-16-030__motor_vehicle_driver/delivery_audit.py --case training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__condition_b --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/condition_b/attempt --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/condition_b/saved/v0001/processing.json --diagnostic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-delivery-audit-1795808360934045351/condition_b-negative.json --omit-source rail-rays.jsonl",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: rail-rays.jsonl",
+        "negative_log": "delivery-proofs/condition_b/negative.log",
+        "negative_log_sha256": "0340739193a31354e9c576ba6ea583e536ea9414ecb827554465dac8cd59f538"
       }
     },
     {
@@ -254,6 +614,126 @@
       },
       "negative": {
         "log": "selected-public-proofs/clear_both/primary/negative.log"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "st.railway_crossing": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; st.railway_crossing",
+          "evidence": [
+            "road.xodr",
+            "rail-body.jsonl",
+            "original-source-review/railway.json"
+          ]
+        },
+        "drv.approaching": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; drv.approaching",
+          "evidence": [
+            "rail-body.jsonl",
+            "trace.jsonl"
+          ]
+        },
+        "st.sight_distance": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; st.sight_distance",
+          "evidence": [
+            "rail-rays.jsonl",
+            "rail-body.jsonl",
+            "original-source-review/approach.json"
+          ]
+        },
+        "rel.visible": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; rel.visible",
+          "evidence": [
+            "rail-rays.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; kin.speed",
+          "evidence": [
+            "rail-body.jsonl",
+            "trace.jsonl"
+          ]
+        },
+        "ru.rail_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; ru.rail_vehicle",
+          "evidence": [
+            "rail-rays.jsonl",
+            "original-source-review/railway.json"
+          ]
+        },
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; dev.human_direction",
+          "evidence": [
+            "reviewed-exceptions.jsonl",
+            "original-source-review/flagman.json"
+          ]
+        },
+        "dev.railway_signal_or_gate": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; dev.railway_signal_or_gate",
+          "evidence": [
+            "reviewed-exceptions.jsonl",
+            "original-source-review/signal.json"
+          ]
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; rel.centre_distance",
+          "evidence": [
+            "rail-body.jsonl",
+            "road.xodr"
+          ]
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C202465__LVMC-11-16-030__motor_vehicle_driver/execution-manifest.json --case training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__clear_both --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__clear_both",
+        "test_log": "saved-proofs/clear_both/positive.log",
+        "test_log_sha256": "c175f958104ee9c2cd24c72835e6bb055341cdb6103ad1f1690dcd40d27db3f8",
+        "test_exit_code": 0
+      },
+      "saved_proof": {
+        "processing": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/clear_both/saved/v0001/processing.json",
+        "processing_sha256": "c175f958104ee9c2cd24c72835e6bb055341cdb6103ad1f1690dcd40d27db3f8",
+        "attempt": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/clear_both/attempt"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__clear_both",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "two_direction_rail_sight_and_exception_source_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "2c5144af048e43ec9db5d223da210805acc0488fe8e9d489dd6f629ec6ebcdd8",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C202465__LVMC-11-16-030__motor_vehicle_driver/delivery_audit.py --case training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__clear_both --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/clear_both/attempt --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/clear_both/saved/v0001/processing.json --diagnostic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-delivery-audit-1795808360934045351/clear_both-positive.json",
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/clear_both/positive.log",
+        "test_log_sha256": "e7bebfac755bf038fcd6970e04c52321c5b80c51b1f53c51c25b79b82f822ef6",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C202465__LVMC-11-16-030__motor_vehicle_driver/delivery_audit.py --case training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__clear_both --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/clear_both/attempt --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/clear_both/saved/v0001/processing.json --diagnostic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-delivery-audit-1795808360934045351/clear_both-negative.json --omit-source rail-rays.jsonl",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: rail-rays.jsonl",
+        "negative_log": "delivery-proofs/clear_both/negative.log",
+        "negative_log_sha256": "0340739193a31354e9c576ba6ea583e536ea9414ecb827554465dac8cd59f538"
       }
     },
     {
@@ -317,6 +797,126 @@
       },
       "negative": {
         "log": "selected-public-proofs/right_obscured/primary/negative.log"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "st.railway_crossing": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; st.railway_crossing",
+          "evidence": [
+            "road.xodr",
+            "rail-body.jsonl",
+            "original-source-review/railway.json"
+          ]
+        },
+        "drv.approaching": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; drv.approaching",
+          "evidence": [
+            "rail-body.jsonl",
+            "trace.jsonl"
+          ]
+        },
+        "st.sight_distance": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; st.sight_distance",
+          "evidence": [
+            "rail-rays.jsonl",
+            "rail-body.jsonl",
+            "original-source-review/approach.json"
+          ]
+        },
+        "rel.visible": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; rel.visible",
+          "evidence": [
+            "rail-rays.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; kin.speed",
+          "evidence": [
+            "rail-body.jsonl",
+            "trace.jsonl"
+          ]
+        },
+        "ru.rail_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; ru.rail_vehicle",
+          "evidence": [
+            "rail-rays.jsonl",
+            "original-source-review/railway.json"
+          ]
+        },
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; dev.human_direction",
+          "evidence": [
+            "reviewed-exceptions.jsonl",
+            "original-source-review/flagman.json"
+          ]
+        },
+        "dev.railway_signal_or_gate": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; dev.railway_signal_or_gate",
+          "evidence": [
+            "reviewed-exceptions.jsonl",
+            "original-source-review/signal.json"
+          ]
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; rel.centre_distance",
+          "evidence": [
+            "rail-body.jsonl",
+            "road.xodr"
+          ]
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C202465__LVMC-11-16-030__motor_vehicle_driver/execution-manifest.json --case training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__right_obscured --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__right_obscured",
+        "test_log": "saved-proofs/right_obscured/positive.log",
+        "test_log_sha256": "3a11eda1eb74f6f09e6c9937d8c84965941a73b79c385a127d2dffb4a2968a7d",
+        "test_exit_code": 0
+      },
+      "saved_proof": {
+        "processing": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/right_obscured/saved/v0001/processing.json",
+        "processing_sha256": "3a11eda1eb74f6f09e6c9937d8c84965941a73b79c385a127d2dffb4a2968a7d",
+        "attempt": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/right_obscured/attempt"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__right_obscured",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "two_direction_rail_sight_and_exception_source_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "2c5144af048e43ec9db5d223da210805acc0488fe8e9d489dd6f629ec6ebcdd8",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C202465__LVMC-11-16-030__motor_vehicle_driver/delivery_audit.py --case training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__right_obscured --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/right_obscured/attempt --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/right_obscured/saved/v0001/processing.json --diagnostic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-delivery-audit-1795808360934045351/right_obscured-positive.json",
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/right_obscured/positive.log",
+        "test_log_sha256": "b217f8086c8ee15f618aeb3686a004b3d054e4642f0f572b9aec05c85d1950ab",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C202465__LVMC-11-16-030__motor_vehicle_driver/delivery_audit.py --case training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__right_obscured --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/right_obscured/attempt --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/right_obscured/saved/v0001/processing.json --diagnostic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-delivery-audit-1795808360934045351/right_obscured-negative.json --omit-source rail-rays.jsonl",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: rail-rays.jsonl",
+        "negative_log": "delivery-proofs/right_obscured/negative.log",
+        "negative_log_sha256": "0340739193a31354e9c576ba6ea583e536ea9414ecb827554465dac8cd59f538"
       }
     },
     {
@@ -380,6 +980,126 @@
       },
       "negative": {
         "log": "selected-public-proofs/crossing_obscured/primary/negative.log"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "st.railway_crossing": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; st.railway_crossing",
+          "evidence": [
+            "road.xodr",
+            "rail-body.jsonl",
+            "original-source-review/railway.json"
+          ]
+        },
+        "drv.approaching": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; drv.approaching",
+          "evidence": [
+            "rail-body.jsonl",
+            "trace.jsonl"
+          ]
+        },
+        "st.sight_distance": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; st.sight_distance",
+          "evidence": [
+            "rail-rays.jsonl",
+            "rail-body.jsonl",
+            "original-source-review/approach.json"
+          ]
+        },
+        "rel.visible": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; rel.visible",
+          "evidence": [
+            "rail-rays.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; kin.speed",
+          "evidence": [
+            "rail-body.jsonl",
+            "trace.jsonl"
+          ]
+        },
+        "ru.rail_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; ru.rail_vehicle",
+          "evidence": [
+            "rail-rays.jsonl",
+            "original-source-review/railway.json"
+          ]
+        },
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; dev.human_direction",
+          "evidence": [
+            "reviewed-exceptions.jsonl",
+            "original-source-review/flagman.json"
+          ]
+        },
+        "dev.railway_signal_or_gate": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; dev.railway_signal_or_gate",
+          "evidence": [
+            "reviewed-exceptions.jsonl",
+            "original-source-review/signal.json"
+          ]
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; rel.centre_distance",
+          "evidence": [
+            "rail-body.jsonl",
+            "road.xodr"
+          ]
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C202465__LVMC-11-16-030__motor_vehicle_driver/execution-manifest.json --case training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__crossing_obscured --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__crossing_obscured",
+        "test_log": "saved-proofs/crossing_obscured/positive.log",
+        "test_log_sha256": "98b34704584946c6953695c730076c04d5ee987574344b525e68c653b2432ad3",
+        "test_exit_code": 0
+      },
+      "saved_proof": {
+        "processing": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/crossing_obscured/saved/v0001/processing.json",
+        "processing_sha256": "98b34704584946c6953695c730076c04d5ee987574344b525e68c653b2432ad3",
+        "attempt": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/crossing_obscured/attempt"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__crossing_obscured",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "two_direction_rail_sight_and_exception_source_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "2c5144af048e43ec9db5d223da210805acc0488fe8e9d489dd6f629ec6ebcdd8",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C202465__LVMC-11-16-030__motor_vehicle_driver/delivery_audit.py --case training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__crossing_obscured --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/crossing_obscured/attempt --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/crossing_obscured/saved/v0001/processing.json --diagnostic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-delivery-audit-1795808360934045351/crossing_obscured-positive.json",
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/crossing_obscured/positive.log",
+        "test_log_sha256": "382e338c004f4d8b09a4b0448631ae474c0d13091d06f770d400a68fe94aa074",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C202465__LVMC-11-16-030__motor_vehicle_driver/delivery_audit.py --case training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__crossing_obscured --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/crossing_obscured/attempt --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/crossing_obscured/saved/v0001/processing.json --diagnostic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-delivery-audit-1795808360934045351/crossing_obscured-negative.json --omit-source rail-rays.jsonl",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: rail-rays.jsonl",
+        "negative_log": "delivery-proofs/crossing_obscured/negative.log",
+        "negative_log_sha256": "0340739193a31354e9c576ba6ea583e536ea9414ecb827554465dac8cd59f538"
       }
     },
     {
@@ -415,6 +1135,12 @@
             "exit_code": 0,
             "log": "selected-offline-logs/flagman_duty/fallback1.log",
             "log_sha256": "4d6ead281a343c4bc997a1c682fa4d72621b9e392aeb69b032583fe03ccf90a1"
+          },
+          "compatibility": {
+            "receipt": "selected-public-proofs/flagman_duty/fallback1/receipt.json",
+            "sha256": "9da0534f7cb4c1af0e8c9c6743d310b25e57979dfbf756cba4f30726a8278f06",
+            "log": "selected-public-proofs/flagman_duty/fallback1/analysis.log",
+            "negative_log": "selected-public-proofs/flagman_duty/fallback1/negative.log"
           }
         }
       ],
@@ -437,6 +1163,126 @@
       },
       "negative": {
         "log": "selected-public-proofs/flagman_duty/primary/negative.log"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "st.railway_crossing": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; st.railway_crossing",
+          "evidence": [
+            "road.xodr",
+            "rail-body.jsonl",
+            "original-source-review/railway.json"
+          ]
+        },
+        "drv.approaching": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; drv.approaching",
+          "evidence": [
+            "rail-body.jsonl",
+            "trace.jsonl"
+          ]
+        },
+        "st.sight_distance": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; st.sight_distance",
+          "evidence": [
+            "rail-rays.jsonl",
+            "rail-body.jsonl",
+            "original-source-review/approach.json"
+          ]
+        },
+        "rel.visible": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; rel.visible",
+          "evidence": [
+            "rail-rays.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; kin.speed",
+          "evidence": [
+            "rail-body.jsonl",
+            "trace.jsonl"
+          ]
+        },
+        "ru.rail_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; ru.rail_vehicle",
+          "evidence": [
+            "rail-rays.jsonl",
+            "original-source-review/railway.json"
+          ]
+        },
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; dev.human_direction",
+          "evidence": [
+            "reviewed-exceptions.jsonl",
+            "original-source-review/flagman.json"
+          ]
+        },
+        "dev.railway_signal_or_gate": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; dev.railway_signal_or_gate",
+          "evidence": [
+            "reviewed-exceptions.jsonl",
+            "original-source-review/signal.json"
+          ]
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; rel.centre_distance",
+          "evidence": [
+            "rail-body.jsonl",
+            "road.xodr"
+          ]
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C202465__LVMC-11-16-030__motor_vehicle_driver/execution-manifest.json --case training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__flagman_duty --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__flagman_duty",
+        "test_log": "saved-proofs/flagman_duty/positive.log",
+        "test_log_sha256": "136dcbfb0a6f343a8a958c0472a2211662b4b232e622e8dfeddcd49a23c6547c",
+        "test_exit_code": 0
+      },
+      "saved_proof": {
+        "processing": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/flagman_duty/saved/v0001/processing.json",
+        "processing_sha256": "136dcbfb0a6f343a8a958c0472a2211662b4b232e622e8dfeddcd49a23c6547c",
+        "attempt": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/flagman_duty/attempt"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__flagman_duty",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "two_direction_rail_sight_and_exception_source_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "2c5144af048e43ec9db5d223da210805acc0488fe8e9d489dd6f629ec6ebcdd8",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C202465__LVMC-11-16-030__motor_vehicle_driver/delivery_audit.py --case training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__flagman_duty --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/flagman_duty/attempt --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/flagman_duty/saved/v0001/processing.json --diagnostic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-delivery-audit-1795808360934045351/flagman_duty-positive.json",
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/flagman_duty/positive.log",
+        "test_log_sha256": "a9987d6fe8f5fa0933178a203e55b43c7ec6f46c747ed01777d43a926f932987",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C202465__LVMC-11-16-030__motor_vehicle_driver/delivery_audit.py --case training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__flagman_duty --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/flagman_duty/attempt --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/flagman_duty/saved/v0001/processing.json --diagnostic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-delivery-audit-1795808360934045351/flagman_duty-negative.json --omit-source rail-rays.jsonl",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: rail-rays.jsonl",
+        "negative_log": "delivery-proofs/flagman_duty/negative.log",
+        "negative_log_sha256": "0340739193a31354e9c576ba6ea583e536ea9414ecb827554465dac8cd59f538"
       }
     },
     {
@@ -472,6 +1318,12 @@
             "exit_code": 0,
             "log": "selected-offline-logs/signal_inactive/fallback1.log",
             "log_sha256": "5b19940ced6e43ba4991a1338c598032e893c8e9d9c04720d264cccafa4af261"
+          },
+          "compatibility": {
+            "receipt": "selected-public-proofs/signal_inactive/fallback1/receipt.json",
+            "sha256": "1834e5c9b44f796476ae511f982c73c5fa5a02f82ea5eba7c1cbdacd83aaf132",
+            "log": "selected-public-proofs/signal_inactive/fallback1/analysis.log",
+            "negative_log": "selected-public-proofs/signal_inactive/fallback1/negative.log"
           }
         }
       ],
@@ -485,6 +1337,135 @@
       "physical_preparation": {
         "receipt": "physical-proofs/signal_inactive/proof.json",
         "sha256": "56b457ae9bf44e6c3bb30517fab8a610b77c228c7ab9c0e782bcf22c60e72664"
+      },
+      "compatibility": {
+        "receipt": "selected-public-proofs/signal_inactive/primary/receipt.json",
+        "sha256": "6ecdcf3faf960b440d137cc05a00ba759d399d82b7bb203d2259aa04b17efa61",
+        "log": "selected-public-proofs/signal_inactive/primary/analysis.log",
+        "negative_log": "selected-public-proofs/signal_inactive/primary/negative.log"
+      },
+      "negative": {
+        "log": "selected-public-proofs/signal_inactive/primary/negative.log"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "st.railway_crossing": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; st.railway_crossing",
+          "evidence": [
+            "road.xodr",
+            "rail-body.jsonl",
+            "original-source-review/railway.json"
+          ]
+        },
+        "drv.approaching": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; drv.approaching",
+          "evidence": [
+            "rail-body.jsonl",
+            "trace.jsonl"
+          ]
+        },
+        "st.sight_distance": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; st.sight_distance",
+          "evidence": [
+            "rail-rays.jsonl",
+            "rail-body.jsonl",
+            "original-source-review/approach.json"
+          ]
+        },
+        "rel.visible": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; rel.visible",
+          "evidence": [
+            "rail-rays.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; kin.speed",
+          "evidence": [
+            "rail-body.jsonl",
+            "trace.jsonl"
+          ]
+        },
+        "ru.rail_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; ru.rail_vehicle",
+          "evidence": [
+            "rail-rays.jsonl",
+            "original-source-review/railway.json"
+          ]
+        },
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; dev.human_direction",
+          "evidence": [
+            "reviewed-exceptions.jsonl",
+            "original-source-review/flagman.json"
+          ]
+        },
+        "dev.railway_signal_or_gate": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; dev.railway_signal_or_gate",
+          "evidence": [
+            "reviewed-exceptions.jsonl",
+            "original-source-review/signal.json"
+          ]
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; rel.centre_distance",
+          "evidence": [
+            "rail-body.jsonl",
+            "road.xodr"
+          ]
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C202465__LVMC-11-16-030__motor_vehicle_driver/execution-manifest.json --case training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__signal_inactive --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__signal_inactive",
+        "test_log": "saved-proofs/signal_inactive/positive.log",
+        "test_log_sha256": "61215fb8c3a9a89ee69e7047f0eb93fa26f7353d669e424fbc3c61a816e3f72e",
+        "test_exit_code": 0
+      },
+      "saved_proof": {
+        "processing": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/signal_inactive/saved/v0001/processing.json",
+        "processing_sha256": "61215fb8c3a9a89ee69e7047f0eb93fa26f7353d669e424fbc3c61a816e3f72e",
+        "attempt": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/signal_inactive/attempt"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__signal_inactive",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "two_direction_rail_sight_and_exception_source_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "2c5144af048e43ec9db5d223da210805acc0488fe8e9d489dd6f629ec6ebcdd8",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C202465__LVMC-11-16-030__motor_vehicle_driver/delivery_audit.py --case training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__signal_inactive --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/signal_inactive/attempt --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/signal_inactive/saved/v0001/processing.json --diagnostic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-delivery-audit-1795808360934045351/signal_inactive-positive.json",
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/signal_inactive/positive.log",
+        "test_log_sha256": "dd69123a1dc41e665c98800cdbe18a9c11c6bcf337959ab887b2c7d41ad6172a",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C202465__LVMC-11-16-030__motor_vehicle_driver/delivery_audit.py --case training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__signal_inactive --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/signal_inactive/attempt --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/signal_inactive/saved/v0001/processing.json --diagnostic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-delivery-audit-1795808360934045351/signal_inactive-negative.json --omit-source rail-rays.jsonl",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: rail-rays.jsonl",
+        "negative_log": "delivery-proofs/signal_inactive/negative.log",
+        "negative_log_sha256": "0340739193a31354e9c576ba6ea583e536ea9414ecb827554465dac8cd59f538"
       }
     },
     {
@@ -520,6 +1501,12 @@
             "exit_code": 0,
             "log": "selected-offline-logs/signal_active/fallback1.log",
             "log_sha256": "3fff05ad0f47de0b27d39a46fb25f39c8fcdf2e5699173af6b31eee7401bdee4"
+          },
+          "compatibility": {
+            "receipt": "selected-public-proofs/signal_active/fallback1/receipt.json",
+            "sha256": "8a909f727e83c093fcafe79de370e3953998532f3080a8f0f20db4ea386ae6bb",
+            "log": "selected-public-proofs/signal_active/fallback1/analysis.log",
+            "negative_log": "selected-public-proofs/signal_active/fallback1/negative.log"
           }
         }
       ],
@@ -533,6 +1520,135 @@
       "physical_preparation": {
         "receipt": "physical-proofs/signal_active/proof.json",
         "sha256": "cb304ce429f64921a58e471f452d34111dadfb4dbde7b06bcebf2b670463eff4"
+      },
+      "compatibility": {
+        "receipt": "selected-public-proofs/signal_active/primary/receipt.json",
+        "sha256": "58b7a901bf1a92859e5063b5a7c96a8716fa76242817702cd49f660370a9e445",
+        "log": "selected-public-proofs/signal_active/primary/analysis.log",
+        "negative_log": "selected-public-proofs/signal_active/primary/negative.log"
+      },
+      "negative": {
+        "log": "selected-public-proofs/signal_active/primary/negative.log"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "st.railway_crossing": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; st.railway_crossing",
+          "evidence": [
+            "road.xodr",
+            "rail-body.jsonl",
+            "original-source-review/railway.json"
+          ]
+        },
+        "drv.approaching": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; drv.approaching",
+          "evidence": [
+            "rail-body.jsonl",
+            "trace.jsonl"
+          ]
+        },
+        "st.sight_distance": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; st.sight_distance",
+          "evidence": [
+            "rail-rays.jsonl",
+            "rail-body.jsonl",
+            "original-source-review/approach.json"
+          ]
+        },
+        "rel.visible": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; rel.visible",
+          "evidence": [
+            "rail-rays.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; kin.speed",
+          "evidence": [
+            "rail-body.jsonl",
+            "trace.jsonl"
+          ]
+        },
+        "ru.rail_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; ru.rail_vehicle",
+          "evidence": [
+            "rail-rays.jsonl",
+            "original-source-review/railway.json"
+          ]
+        },
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; dev.human_direction",
+          "evidence": [
+            "reviewed-exceptions.jsonl",
+            "original-source-review/flagman.json"
+          ]
+        },
+        "dev.railway_signal_or_gate": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; dev.railway_signal_or_gate",
+          "evidence": [
+            "reviewed-exceptions.jsonl",
+            "original-source-review/signal.json"
+          ]
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; rel.centre_distance",
+          "evidence": [
+            "rail-body.jsonl",
+            "road.xodr"
+          ]
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C202465__LVMC-11-16-030__motor_vehicle_driver/execution-manifest.json --case training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__signal_active --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__signal_active",
+        "test_log": "saved-proofs/signal_active/positive.log",
+        "test_log_sha256": "2c9a77a676eef95dea33a7ae4847768f59a7a2429f8ec9a5d83eb4ffbcf36095",
+        "test_exit_code": 0
+      },
+      "saved_proof": {
+        "processing": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/signal_active/saved/v0001/processing.json",
+        "processing_sha256": "2c9a77a676eef95dea33a7ae4847768f59a7a2429f8ec9a5d83eb4ffbcf36095",
+        "attempt": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/signal_active/attempt"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__signal_active",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "two_direction_rail_sight_and_exception_source_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "2c5144af048e43ec9db5d223da210805acc0488fe8e9d489dd6f629ec6ebcdd8",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C202465__LVMC-11-16-030__motor_vehicle_driver/delivery_audit.py --case training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__signal_active --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/signal_active/attempt --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/signal_active/saved/v0001/processing.json --diagnostic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-delivery-audit-1795808360934045351/signal_active-positive.json",
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/signal_active/positive.log",
+        "test_log_sha256": "57183fd2c285a11a2fd32b5caed8b65e35dddcf7fa994e489fdf8b29a8ff47b1",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C202465__LVMC-11-16-030__motor_vehicle_driver/delivery_audit.py --case training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__signal_active --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/signal_active/attempt --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/signal_active/saved/v0001/processing.json --diagnostic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-delivery-audit-1795808360934045351/signal_active-negative.json --omit-source rail-rays.jsonl",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: rail-rays.jsonl",
+        "negative_log": "delivery-proofs/signal_active/negative.log",
+        "negative_log_sha256": "0340739193a31354e9c576ba6ea583e536ea9414ecb827554465dac8cd59f538"
       }
     },
     {
@@ -568,6 +1684,12 @@
             "exit_code": 0,
             "log": "selected-offline-logs/signal_not_visible/fallback1.log",
             "log_sha256": "6c4f5acc70229366ec889873d0849bd4da72dd87ac08a8e9f7e82a6758e41c5c"
+          },
+          "compatibility": {
+            "receipt": "selected-public-proofs/signal_not_visible/fallback1/receipt.json",
+            "sha256": "ec50e814541e1b285711beb870c8a900a0dc968290f0ecf29feaffe3560d13b6",
+            "log": "selected-public-proofs/signal_not_visible/fallback1/analysis.log",
+            "negative_log": "selected-public-proofs/signal_not_visible/fallback1/negative.log"
           }
         }
       ],
@@ -581,6 +1703,135 @@
       "physical_preparation": {
         "receipt": "physical-proofs/signal_not_visible/proof.json",
         "sha256": "ade84ad20ad89e5e96a44c12eab13fbec986fbbede7ebb6bfaaf4d55aaef1e97"
+      },
+      "compatibility": {
+        "receipt": "selected-public-proofs/signal_not_visible/primary/receipt.json",
+        "sha256": "6d763a4bc1d54850594d603ca045419dc95f5ae50c6537a720931c212826de10",
+        "log": "selected-public-proofs/signal_not_visible/primary/analysis.log",
+        "negative_log": "selected-public-proofs/signal_not_visible/primary/negative.log"
+      },
+      "negative": {
+        "log": "selected-public-proofs/signal_not_visible/primary/negative.log"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "st.railway_crossing": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; st.railway_crossing",
+          "evidence": [
+            "road.xodr",
+            "rail-body.jsonl",
+            "original-source-review/railway.json"
+          ]
+        },
+        "drv.approaching": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; drv.approaching",
+          "evidence": [
+            "rail-body.jsonl",
+            "trace.jsonl"
+          ]
+        },
+        "st.sight_distance": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; st.sight_distance",
+          "evidence": [
+            "rail-rays.jsonl",
+            "rail-body.jsonl",
+            "original-source-review/approach.json"
+          ]
+        },
+        "rel.visible": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; rel.visible",
+          "evidence": [
+            "rail-rays.jsonl",
+            "video_frames.jsonl"
+          ]
+        },
+        "kin.speed": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; kin.speed",
+          "evidence": [
+            "rail-body.jsonl",
+            "trace.jsonl"
+          ]
+        },
+        "ru.rail_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; ru.rail_vehicle",
+          "evidence": [
+            "rail-rays.jsonl",
+            "original-source-review/railway.json"
+          ]
+        },
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; dev.human_direction",
+          "evidence": [
+            "reviewed-exceptions.jsonl",
+            "original-source-review/flagman.json"
+          ]
+        },
+        "dev.railway_signal_or_gate": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; dev.railway_signal_or_gate",
+          "evidence": [
+            "reviewed-exceptions.jsonl",
+            "original-source-review/signal.json"
+          ]
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "method": "original Native frame acquisition and independent source review; rel.centre_distance",
+          "evidence": [
+            "rail-body.jsonl",
+            "road.xodr"
+          ]
+        }
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C202465__LVMC-11-16-030__motor_vehicle_driver/execution-manifest.json --case training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__signal_not_visible --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "cat $SAVED_OUTPUT/feedback.json # training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__signal_not_visible",
+        "test_log": "saved-proofs/signal_not_visible/positive.log",
+        "test_log_sha256": "2c6126c378718130baa2de098b3f1e004db0966d6ff0d6aa6e765f434631d7be",
+        "test_exit_code": 0
+      },
+      "saved_proof": {
+        "processing": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/signal_not_visible/saved/v0001/processing.json",
+        "processing_sha256": "2c6126c378718130baa2de098b3f1e004db0966d6ff0d6aa6e765f434631d7be",
+        "attempt": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/signal_not_visible/attempt"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__signal_not_visible",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion",
+          "two_direction_rail_sight_and_exception_source_review"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "2c5144af048e43ec9db5d223da210805acc0488fe8e9d489dd6f629ec6ebcdd8",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C202465__LVMC-11-16-030__motor_vehicle_driver/delivery_audit.py --case training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__signal_not_visible --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/signal_not_visible/attempt --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/signal_not_visible/saved/v0001/processing.json --diagnostic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-delivery-audit-1795808360934045351/signal_not_visible-positive.json",
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/signal_not_visible/positive.log",
+        "test_log_sha256": "436dfc7dbca40ae40479861f9a6fbb5af337415fa8261dffd2ca0785df7451f1",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C202465__LVMC-11-16-030__motor_vehicle_driver/delivery_audit.py --case training__C202465__LVMC-11-16-030__motor_vehicle_driver__selected_bd9b70e5__signal_not_visible --candidate primary --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/signal_not_visible/attempt --processing /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-saved-1795807780279992261/signal_not_visible/saved/v0001/processing.json --diagnostic --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c202465-lvmc-delivery-audit-1795808360934045351/signal_not_visible-negative.json --omit-source rail-rays.jsonl",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing source: rail-rays.jsonl",
+        "negative_log": "delivery-proofs/signal_not_visible/negative.log",
+        "negative_log_sha256": "0340739193a31354e9c576ba6ea583e536ea9414ecb827554465dac8cd59f538"
       }
     }
   ]

@@ -1,0 +1,50 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "NRS-484B-307-12b",
+      "source": "NRS 484B.307(12)(b)",
+      "output_key": "overhead_red_x",
+      "method": "overhead_red_x",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native-signal-rows.jsonl",
+        "native-map-readback.xodr"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "NRS-484B-307-12b",
+      "source": "NRS 484B.307(12)(b)",
+      "output_key": "lane_occupancy",
+      "method": "lane_occupancy",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native-signal-rows.jsonl",
+        "trace.jsonl",
+        "capture/evidence.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "NRS-484B-307-12b",
+      "source": "NRS 484B.307(12)(b)",
+      "output_key": "facing_driver",
+      "method": "facing_driver",
+      "value_type": "number",
+      "kind": "measured",
+      "inputs": [
+        "native-signal-rows.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "native-signal-rows.jsonl"
+    ],
+    "error_contains": "Missing required source: native-signal-rows.jsonl"
+  }
+}

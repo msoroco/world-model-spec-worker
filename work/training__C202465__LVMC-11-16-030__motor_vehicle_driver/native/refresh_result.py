@@ -28,7 +28,7 @@ def main():
         if not source.is_file():
             return
         tests.append({"command": command, "exit_code": 0,
-                      "log": str(source.relative_to(ROOT)), "sha256": sha(source)})
+                      "log": str(source.relative_to(WORK)), "sha256": sha(source)})
 
     for name in unit_names:
         add(".venv-cpu/bin/python -B work/" + WORK.name + "/native/prove_" + name + ".py",
