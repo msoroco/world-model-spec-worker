@@ -1,0 +1,905 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C405341__NRS-484B-267-1a__motor_vehicle_driver",
+  "status": "source_gated_draft",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "case_id": "testing__C405341__NRS-484B-267-1a__motor_vehicle_driver__immediate_approach_yield",
+      "kind": "delivery",
+      "construction": "construction-immediate_approach_yield.json",
+      "construction_sha256": "396b027af72441c5c017e6d16e69ab6a22ea2505364a03cb7495bf944c90cf01",
+      "fixture_recipe": "work/testing__C405341__NRS-484B-267-1a__motor_vehicle_driver/diagnostics/immediate_approach_yield-recipe.json",
+      "measurement_contract": "diagnostics/immediate_approach_yield-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed Native authority, emergency lighting and siren equipment, relative approach routes, officer context and four camera poses required",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "sealed_native_original_frames": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "unit_motion": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "qualifying_flashing_lights": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "front_visible_red_lamp": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "siren_equipment": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "target_authorization": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "relative_approach": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "right_of_way_order": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "ego_approach": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "ego_response": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "officer_direction": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "video_four_views": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native approach, front-visible flashing lamp or subject yielding may not realize on a reviewed route"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-immediate_approach_yield-fallback1.json",
+          "construction_sha256": "a70440ec33406f0749537d91ce7b8ba7e8c5beb1a8475b1bec27a40a4b3739cb",
+          "trigger": {
+            "source": "original Native map and actor route readbacks",
+            "metric": "unit route connectedness, direction and approach realization",
+            "failure_condition": "primary route is unavailable or does not realize the requested relative approach"
+          },
+          "changed_knobs": [
+            "require a separately reviewed connected alternate unit route with identical direction and immediacy"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C405341__NRS-484B-267-1a__motor_vehicle_driver/execution-manifest.json --case testing__C405341__NRS-484B-267-1a__motor_vehicle_driver__immediate_approach_yield --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c405341-1a/fallback-offline/immediate_approach_yield --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "a70440ec33406f0749537d91ce7b8ba7e8c5beb1a8475b1bec27a40a4b3739cb",
+            "log": "cpu-offline-immediate_approach_yield-fallback1.log",
+            "log_sha256": "9c4070a32a5438352eb7f2980000b7c1e1981bea4ef439289f9d554ffea991a8"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C405341__NRS-484B-267-1a__motor_vehicle_driver/execution-manifest.json --case testing__C405341__NRS-484B-267-1a__motor_vehicle_driver__immediate_approach_yield --output $OUTPUT --python $CPU_PYTHON",
+        "exit_code": 0,
+        "construction_sha256": "396b027af72441c5c017e6d16e69ab6a22ea2505364a03cb7495bf944c90cf01",
+        "log": "cpu-offline-immediate_approach_yield.log",
+        "log_sha256": "4f0f632aa5820a88016b4da7b0e39e40af87343695742f246b5d782b8b5af6ea"
+      }
+    },
+    {
+      "case_id": "testing__C405341__NRS-484B-267-1a__motor_vehicle_driver__immediate_approach_no_yield",
+      "kind": "delivery",
+      "construction": "construction-immediate_approach_no_yield.json",
+      "construction_sha256": "602f025a818a823001508b306d0a5fc1051125e077336dc3bc6e991dd6e7d28e",
+      "fixture_recipe": "work/testing__C405341__NRS-484B-267-1a__motor_vehicle_driver/diagnostics/immediate_approach_no_yield-recipe.json",
+      "measurement_contract": "diagnostics/immediate_approach_no_yield-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed Native authority, emergency lighting and siren equipment, relative approach routes, officer context and four camera poses required",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "sealed_native_original_frames": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "unit_motion": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "qualifying_flashing_lights": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "front_visible_red_lamp": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "siren_equipment": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "target_authorization": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "relative_approach": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "right_of_way_order": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "ego_approach": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "ego_response": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "officer_direction": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "video_four_views": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native approach, front-visible flashing lamp or subject yielding may not realize on a reviewed route"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-immediate_approach_no_yield-fallback1.json",
+          "construction_sha256": "d8b99ff99a2eb3fbad10aca05a7646955340dc80abf4ccedcd37b986de048bf6",
+          "trigger": {
+            "source": "original Native map and actor route readbacks",
+            "metric": "unit route connectedness, direction and approach realization",
+            "failure_condition": "primary route is unavailable or does not realize the requested relative approach"
+          },
+          "changed_knobs": [
+            "require a separately reviewed connected alternate unit route with identical direction and immediacy"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C405341__NRS-484B-267-1a__motor_vehicle_driver/execution-manifest.json --case testing__C405341__NRS-484B-267-1a__motor_vehicle_driver__immediate_approach_no_yield --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c405341-1a/fallback-offline/immediate_approach_no_yield --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "d8b99ff99a2eb3fbad10aca05a7646955340dc80abf4ccedcd37b986de048bf6",
+            "log": "cpu-offline-immediate_approach_no_yield-fallback1.log",
+            "log_sha256": "06d0239e2eab9f1047e13f2d5e361e2733006720356bf50308de03388785282d"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C405341__NRS-484B-267-1a__motor_vehicle_driver/execution-manifest.json --case testing__C405341__NRS-484B-267-1a__motor_vehicle_driver__immediate_approach_no_yield --output $OUTPUT --python $CPU_PYTHON",
+        "exit_code": 0,
+        "construction_sha256": "602f025a818a823001508b306d0a5fc1051125e077336dc3bc6e991dd6e7d28e",
+        "log": "cpu-offline-immediate_approach_no_yield.log",
+        "log_sha256": "052867ba7db0a5ec8612c812ccbed9fc20ec3080d13ae71462c11fb894358776"
+      }
+    },
+    {
+      "case_id": "testing__C405341__NRS-484B-267-1a__motor_vehicle_driver__no_immediate_approach",
+      "kind": "delivery",
+      "construction": "construction-no_immediate_approach.json",
+      "construction_sha256": "2e2d2c8f933a4d2cf5a5dcdc9cf3f0d113f1a63ef8c0fbcf9d4cb4d5575e5d7f",
+      "fixture_recipe": "work/testing__C405341__NRS-484B-267-1a__motor_vehicle_driver/diagnostics/no_immediate_approach-recipe.json",
+      "measurement_contract": "diagnostics/no_immediate_approach-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed Native authority, emergency lighting and siren equipment, relative approach routes, officer context and four camera poses required",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "sealed_native_original_frames": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "unit_motion": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "qualifying_flashing_lights": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "front_visible_red_lamp": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "siren_equipment": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "target_authorization": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "relative_approach": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "right_of_way_order": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "ego_approach": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "ego_response": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "officer_direction": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "video_four_views": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native approach, front-visible flashing lamp or subject yielding may not realize on a reviewed route"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-no_immediate_approach-fallback1.json",
+          "construction_sha256": "58c47e40d627c3b1a9f1d48d4bd5fb4045a9371c9cf4fa3dbd4d6b94bdbc3274",
+          "trigger": {
+            "source": "original Native map and actor route readbacks",
+            "metric": "unit route connectedness, direction and approach realization",
+            "failure_condition": "primary route is unavailable or does not realize the requested relative approach"
+          },
+          "changed_knobs": [
+            "require a separately reviewed connected alternate unit route with identical direction and immediacy"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C405341__NRS-484B-267-1a__motor_vehicle_driver/execution-manifest.json --case testing__C405341__NRS-484B-267-1a__motor_vehicle_driver__no_immediate_approach --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c405341-1a/fallback-offline/no_immediate_approach --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "58c47e40d627c3b1a9f1d48d4bd5fb4045a9371c9cf4fa3dbd4d6b94bdbc3274",
+            "log": "cpu-offline-no_immediate_approach-fallback1.log",
+            "log_sha256": "9df13d046d2682403996312c08252dd6eee353101f6e97a935ebfac8131fffc1"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C405341__NRS-484B-267-1a__motor_vehicle_driver/execution-manifest.json --case testing__C405341__NRS-484B-267-1a__motor_vehicle_driver__no_immediate_approach --output $OUTPUT --python $CPU_PYTHON",
+        "exit_code": 0,
+        "construction_sha256": "2e2d2c8f933a4d2cf5a5dcdc9cf3f0d113f1a63ef8c0fbcf9d4cb4d5575e5d7f",
+        "log": "cpu-offline-no_immediate_approach.log",
+        "log_sha256": "8eccb4438c6332e65e82e8b10b4412d8ffa0231ede4800bd8b560b01773d4f9c"
+      }
+    },
+    {
+      "case_id": "testing__C405341__NRS-484B-267-1a__motor_vehicle_driver__lights_inactive",
+      "kind": "delivery",
+      "construction": "construction-lights_inactive.json",
+      "construction_sha256": "ae51590ad0097d4c0a7fa37514f5ae9e474b611bf61a35da387070bdad3cfd2a",
+      "fixture_recipe": "work/testing__C405341__NRS-484B-267-1a__motor_vehicle_driver/diagnostics/lights_inactive-recipe.json",
+      "measurement_contract": "diagnostics/lights_inactive-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed Native authority, emergency lighting and siren equipment, relative approach routes, officer context and four camera poses required",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "sealed_native_original_frames": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "unit_motion": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "qualifying_flashing_lights": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "front_visible_red_lamp": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "siren_equipment": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "target_authorization": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "relative_approach": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "right_of_way_order": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "ego_approach": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "ego_response": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "officer_direction": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "video_four_views": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native approach, front-visible flashing lamp or subject yielding may not realize on a reviewed route"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-lights_inactive-fallback1.json",
+          "construction_sha256": "57942e7726db286d12a8d4ee9554a1d66249f52975831c3bfd5af52702b1c655",
+          "trigger": {
+            "source": "original Native map and actor route readbacks",
+            "metric": "unit route connectedness, direction and approach realization",
+            "failure_condition": "primary route is unavailable or does not realize the requested relative approach"
+          },
+          "changed_knobs": [
+            "require a separately reviewed connected alternate unit route with identical direction and immediacy"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C405341__NRS-484B-267-1a__motor_vehicle_driver/execution-manifest.json --case testing__C405341__NRS-484B-267-1a__motor_vehicle_driver__lights_inactive --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c405341-1a/fallback-offline/lights_inactive --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "57942e7726db286d12a8d4ee9554a1d66249f52975831c3bfd5af52702b1c655",
+            "log": "cpu-offline-lights_inactive-fallback1.log",
+            "log_sha256": "34dc591641a64629a9209cef99d3ae857b07ca3744040f3ae650965f17767eae"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C405341__NRS-484B-267-1a__motor_vehicle_driver/execution-manifest.json --case testing__C405341__NRS-484B-267-1a__motor_vehicle_driver__lights_inactive --output $OUTPUT --python $CPU_PYTHON",
+        "exit_code": 0,
+        "construction_sha256": "ae51590ad0097d4c0a7fa37514f5ae9e474b611bf61a35da387070bdad3cfd2a",
+        "log": "cpu-offline-lights_inactive.log",
+        "log_sha256": "4a2161ad746c115dbef238728d9b0e390052eecd2a0ee725a17805363dea6adf"
+      }
+    },
+    {
+      "case_id": "testing__C405341__NRS-484B-267-1a__motor_vehicle_driver__lights_unqualified",
+      "kind": "delivery",
+      "construction": "construction-lights_unqualified.json",
+      "construction_sha256": "7e215fefea98b872462e5fea343fc33a94a83a2725ed5c0c8985edb496b28fa2",
+      "fixture_recipe": "work/testing__C405341__NRS-484B-267-1a__motor_vehicle_driver/diagnostics/lights_unqualified-recipe.json",
+      "measurement_contract": "diagnostics/lights_unqualified-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed Native authority, emergency lighting and siren equipment, relative approach routes, officer context and four camera poses required",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "sealed_native_original_frames": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "unit_motion": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "qualifying_flashing_lights": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "front_visible_red_lamp": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "siren_equipment": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "target_authorization": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "relative_approach": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "right_of_way_order": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "ego_approach": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "ego_response": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "officer_direction": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "video_four_views": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native approach, front-visible flashing lamp or subject yielding may not realize on a reviewed route"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-lights_unqualified-fallback1.json",
+          "construction_sha256": "3ebdf889e1cb7b1423d567f02d38b7b89b6feb77298a7330310663498a7e4745",
+          "trigger": {
+            "source": "original Native map and actor route readbacks",
+            "metric": "unit route connectedness, direction and approach realization",
+            "failure_condition": "primary route is unavailable or does not realize the requested relative approach"
+          },
+          "changed_knobs": [
+            "require a separately reviewed connected alternate unit route with identical direction and immediacy"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C405341__NRS-484B-267-1a__motor_vehicle_driver/execution-manifest.json --case testing__C405341__NRS-484B-267-1a__motor_vehicle_driver__lights_unqualified --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c405341-1a/fallback-offline/lights_unqualified --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "3ebdf889e1cb7b1423d567f02d38b7b89b6feb77298a7330310663498a7e4745",
+            "log": "cpu-offline-lights_unqualified-fallback1.log",
+            "log_sha256": "1d6b95af7415dccf475725a2ffaaf8433960163503fce4e16627bb58ebdf2a17"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C405341__NRS-484B-267-1a__motor_vehicle_driver/execution-manifest.json --case testing__C405341__NRS-484B-267-1a__motor_vehicle_driver__lights_unqualified --output $OUTPUT --python $CPU_PYTHON",
+        "exit_code": 0,
+        "construction_sha256": "7e215fefea98b872462e5fea343fc33a94a83a2725ed5c0c8985edb496b28fa2",
+        "log": "cpu-offline-lights_unqualified.log",
+        "log_sha256": "5f2440b269191c24a3c1418f69b677989cdc8e1bc092f54820044de500d3483b"
+      }
+    },
+    {
+      "case_id": "testing__C405341__NRS-484B-267-1a__motor_vehicle_driver__officer_directs_otherwise",
+      "kind": "delivery",
+      "construction": "construction-officer_directs_otherwise.json",
+      "construction_sha256": "9a6998e04a95619999270d3b22ab8aa4413443f402788fce42af220e9d926329",
+      "fixture_recipe": "work/testing__C405341__NRS-484B-267-1a__motor_vehicle_driver/diagnostics/officer_directs_otherwise-recipe.json",
+      "measurement_contract": "diagnostics/officer_directs_otherwise-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed Native authority, emergency lighting and siren equipment, relative approach routes, officer context and four camera poses required",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "sealed_native_original_frames": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "unit_motion": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "qualifying_flashing_lights": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "front_visible_red_lamp": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "siren_equipment": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "target_authorization": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "relative_approach": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "right_of_way_order": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "ego_approach": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "ego_response": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "officer_direction": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "video_four_views": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native approach, front-visible flashing lamp or subject yielding may not realize on a reviewed route"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-officer_directs_otherwise-fallback1.json",
+          "construction_sha256": "de645066732aea5b86e00caf83b644eed6ee505b181df9e3154076365c4e9a74",
+          "trigger": {
+            "source": "original Native map and actor route readbacks",
+            "metric": "unit route connectedness, direction and approach realization",
+            "failure_condition": "primary route is unavailable or does not realize the requested relative approach"
+          },
+          "changed_knobs": [
+            "require a separately reviewed connected alternate unit route with identical direction and immediacy"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C405341__NRS-484B-267-1a__motor_vehicle_driver/execution-manifest.json --case testing__C405341__NRS-484B-267-1a__motor_vehicle_driver__officer_directs_otherwise --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c405341-1a/fallback-offline/officer_directs_otherwise --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "de645066732aea5b86e00caf83b644eed6ee505b181df9e3154076365c4e9a74",
+            "log": "cpu-offline-officer_directs_otherwise-fallback1.log",
+            "log_sha256": "0553f93c0f00eb87dd92beaa412884c82124562465fd3dba3b5f801ade4b2d24"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C405341__NRS-484B-267-1a__motor_vehicle_driver/execution-manifest.json --case testing__C405341__NRS-484B-267-1a__motor_vehicle_driver__officer_directs_otherwise --output $OUTPUT --python $CPU_PYTHON",
+        "exit_code": 0,
+        "construction_sha256": "9a6998e04a95619999270d3b22ab8aa4413443f402788fce42af220e9d926329",
+        "log": "cpu-offline-officer_directs_otherwise.log",
+        "log_sha256": "be434f25983fa67438d38f92f554243b77746ccfc97572a77846b78d7c8cdea8"
+      }
+    },
+    {
+      "case_id": "testing__C405341__NRS-484B-267-1a__motor_vehicle_driver__regulatory_official_yield",
+      "kind": "delivery",
+      "construction": "construction-regulatory_official_yield.json",
+      "construction_sha256": "10bc7be10a2fecb6d338c161082d2b00bc9fe030868bccad76f3176be7f46065",
+      "fixture_recipe": "work/testing__C405341__NRS-484B-267-1a__motor_vehicle_driver/diagnostics/regulatory_official_yield-recipe.json",
+      "measurement_contract": "diagnostics/regulatory_official_yield-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed Native authority, emergency lighting and siren equipment, relative approach routes, officer context and four camera poses required",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "sealed_native_original_frames": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "unit_motion": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "qualifying_flashing_lights": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "front_visible_red_lamp": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "siren_equipment": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "target_authorization": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "relative_approach": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "right_of_way_order": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "ego_approach": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "ego_response": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "officer_direction": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "video_four_views": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native approach, front-visible flashing lamp or subject yielding may not realize on a reviewed route"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-regulatory_official_yield-fallback1.json",
+          "construction_sha256": "f970ea8d231f82c5718ef4894abdfeb1253047b2d971c4ace791906240638d49",
+          "trigger": {
+            "source": "original Native map and actor route readbacks",
+            "metric": "unit route connectedness, direction and approach realization",
+            "failure_condition": "primary route is unavailable or does not realize the requested relative approach"
+          },
+          "changed_knobs": [
+            "require a separately reviewed connected alternate unit route with identical direction and immediacy"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C405341__NRS-484B-267-1a__motor_vehicle_driver/execution-manifest.json --case testing__C405341__NRS-484B-267-1a__motor_vehicle_driver__regulatory_official_yield --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c405341-1a/fallback-offline/regulatory_official_yield --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "f970ea8d231f82c5718ef4894abdfeb1253047b2d971c4ace791906240638d49",
+            "log": "cpu-offline-regulatory_official_yield-fallback1.log",
+            "log_sha256": "a297f4238b2a0f2eb5e8b638022e6f61946d2bded79cd89f514ac987d8fd5ac8"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C405341__NRS-484B-267-1a__motor_vehicle_driver/execution-manifest.json --case testing__C405341__NRS-484B-267-1a__motor_vehicle_driver__regulatory_official_yield --output $OUTPUT --python $CPU_PYTHON",
+        "exit_code": 0,
+        "construction_sha256": "10bc7be10a2fecb6d338c161082d2b00bc9fe030868bccad76f3176be7f46065",
+        "log": "cpu-offline-regulatory_official_yield.log",
+        "log_sha256": "04552ff767a1bb35f3cf22a43c65b7c36be0aea1ad0411b514fa3560ae71054f"
+      }
+    },
+    {
+      "case_id": "testing__C405341__NRS-484B-267-1a__motor_vehicle_driver__same_direction_approach_yield",
+      "kind": "delivery",
+      "construction": "construction-same_direction_approach_yield.json",
+      "construction_sha256": "6c8163e488b49ed925488d28e9940ae6ea2f7d39e50ab335c71ca35478e5fe13",
+      "fixture_recipe": "work/testing__C405341__NRS-484B-267-1a__motor_vehicle_driver/diagnostics/same_direction_approach_yield-recipe.json",
+      "measurement_contract": "diagnostics/same_direction_approach_yield-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "source_gate": "reviewed Native authority, emergency lighting and siren equipment, relative approach routes, officer context and four camera poses required",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "sealed_native_original_frames": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "unit_motion": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "qualifying_flashing_lights": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "front_visible_red_lamp": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "siren_equipment": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "target_authorization": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "relative_approach": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "right_of_way_order": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "ego_approach": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "ego_response": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "officer_direction": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        },
+        "video_four_views": {
+          "entrypoint": "runner.py",
+          "method": "capture_original",
+          "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."
+        }
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native approach, front-visible flashing lamp or subject yielding may not realize on a reviewed route"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "construction-same_direction_approach_yield-fallback1.json",
+          "construction_sha256": "ac9a050c1b19635e01c3eeeb4736afe5bafdb28dd91108e30d0e3ddb6da82e66",
+          "trigger": {
+            "source": "original Native map and actor route readbacks",
+            "metric": "unit route connectedness, direction and approach realization",
+            "failure_condition": "primary route is unavailable or does not realize the requested relative approach"
+          },
+          "changed_knobs": [
+            "require a separately reviewed connected alternate unit route with identical direction and immediacy"
+          ],
+          "offline": {
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C405341__NRS-484B-267-1a__motor_vehicle_driver/execution-manifest.json --case testing__C405341__NRS-484B-267-1a__motor_vehicle_driver__same_direction_approach_yield --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c405341-1a/fallback-offline/same_direction_approach_yield --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "construction_sha256": "ac9a050c1b19635e01c3eeeb4736afe5bafdb28dd91108e30d0e3ddb6da82e66",
+            "log": "cpu-offline-same_direction_approach_yield-fallback1.log",
+            "log_sha256": "b6895c26ff2f314077fc03665363ad40bfc57da6e951cc4a069d25954c13ff01"
+          }
+        }
+      ],
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C405341__NRS-484B-267-1a__motor_vehicle_driver/execution-manifest.json --case testing__C405341__NRS-484B-267-1a__motor_vehicle_driver__same_direction_approach_yield --output $OUTPUT --python $CPU_PYTHON",
+        "exit_code": 0,
+        "construction_sha256": "6c8163e488b49ed925488d28e9940ae6ea2f7d39e50ab335c71ca35478e5fe13",
+        "log": "cpu-offline-same_direction_approach_yield.log",
+        "log_sha256": "7d40ee7b636ad0dada9579a05bea1cd95c78d6462862482198f428197c824f1c"
+      }
+    }
+  ],
+  "comparisons": []
+}

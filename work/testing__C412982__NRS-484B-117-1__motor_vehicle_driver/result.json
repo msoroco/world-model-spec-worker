@@ -1,12 +1,20 @@
 {
   "assignment_id": "testing__C412982__NRS-484B-117-1__motor_vehicle_driver",
   "input_sha256": "22aae9e74f8da8d5c38c9e0a1a7cf1560a0089e589609ad091450f536dfe37cd",
-  "status": "partial",
-  "readiness_kind": "source_inventory",
+  "status": "ready",
+  "readiness_kind": "delivery_prepared",
   "applied_update": 0,
-  "tests": [],
-  "remaining_gpu_checks": [
-    "Actual CARLA motion, camera visibility and capture quality after CPU package preparation"
+  "tests": [
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C412982__NRS-484B-117-1__motor_vehicle_driver/tests",
+      "exit_code": 0,
+      "log": "cpu-tests.log",
+      "sha256": "a6124f63a40a240426fcf318bccb7ff9811884070a78539d7c2f87e74bbd93d5"
+    }
   ],
-  "reason": "Source and accepted-metadata inventory complete; exact branch decomposition, evidence sufficiency, executable constructions/controllers, case-specific finalizers, semantic proposals, source-bound compatibility proofs, and independent delivery/comparison audits remain CPU work."
+  "remaining_gpu_checks": [
+    "Actual CARLA route and sidewalk/entrance body contact, 900 original frame joins, four-camera pixels, authorized vehicle/operator source review and independent local acceptance"
+  ],
+  "reason": null,
+  "first_gpu_delivery_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C412982__NRS-484B-117-1__motor_vehicle_driver --case testing__C412982__NRS-484B-117-1__motor_vehicle_driver__ordinary_road_travel --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
 }

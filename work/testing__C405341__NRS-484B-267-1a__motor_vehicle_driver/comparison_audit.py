@@ -1,4 +1,4 @@
-"""Independent source-bound emergency movement comparison audit."""
+"""Independent source-bound emergency approach/yield comparison audit."""
 
 import argparse
 import hashlib
@@ -38,28 +38,36 @@ def audit(attempts, comparison_id, plan):
     if spec is None or len(attempts) != 2:
         raise ValueError("exact emergency comparison absent")
     first, second = [observed(path, cid) for path, cid in zip(attempts, spec["case_ids"])]
-    if first[0].suffix != "visible_movement_preparation":
+    if first[0].suffix != "immediate_approach_yield":
         raise ValueError("emergency comparison baseline differs")
     suffix = second[0].suffix
     # Source context is fixed except the one deliberately changed construction field.
-    allowed = {"regulatory_official": {"emergency_class", "target_vehicle_class"},
+    allowed = {"regulatory_official_yield": {"emergency_class", "target_vehicle_class"},
                "lights_inactive": {"light_request"},
-               "lights_unqualified": {"light_request"}}.get(suffix, set())
+               "lights_unqualified": {"light_request"},
+               "immediate_approach_no_yield": {"yield_response_request"},
+               "officer_directs_otherwise": {"yield_response_request"},
+               "no_immediate_approach": {"immediate_approach_request"},
+               "same_direction_approach_yield": {"approach_direction"}}.get(suffix, set())
     for key in set(first[1]) | set(second[1]):
         if key not in allowed and first[1].get(key) != second[1].get(key):
             raise ValueError("emergency comparison fixed site context differs: " + key)
     a, b = first[3], second[3]
     fa, fb = first[2], second[2]
-    if suffix == "no_movement":
-        valid = bool(a["movement_original_frames"]) and not b["movement_original_frames"]
-    elif suffix == "movement_occluded":
-        valid = bool(a["visible_movement_original_frames"]) and \
-            bool(b["movement_original_frames"]) and not b["visible_movement_original_frames"]
-    elif suffix == "visible_hand_signal":
-        valid = bool(b["visible_hand_original_frames"]) and not b["movement_original_frames"]
-    elif suffix == "already_moving":
-        valid = bool(a["movement_original_frames"]) and bool(b["movement_original_frames"]) and \
-            b["movement_original_frames"][0] < a["movement_original_frames"][0]
+    if len(fa) != len(fb) or any(x["original_frame"] != y["original_frame"] or
+                                    x["time_s"] != y["time_s"] for x, y in zip(fa, fb)):
+        raise ValueError("original frame clock differs across comparison")
+    if suffix not in {"no_immediate_approach", "same_direction_approach_yield"} and any(
+            x["emergency_xy"] != y["emergency_xy"] for x, y in zip(fa, fb)):
+        raise ValueError("unit trajectory changed outside declared comparison")
+    if suffix not in {"immediate_approach_no_yield", "officer_directs_otherwise"} and any(
+            x["ego_xy"] != y["ego_xy"] or x["ego_brake"] != y["ego_brake"]
+            for x, y in zip(fa, fb)):
+        raise ValueError("subject trajectory or response changed outside declared comparison")
+    if suffix == "immediate_approach_no_yield":
+        valid = a["first_brake_original_frame"] is not None and b["first_brake_original_frame"] is None
+    elif suffix == "no_immediate_approach":
+        valid = b["minimum_early_center_distance_m"] > a["minimum_early_center_distance_m"]
     elif suffix == "lights_inactive":
         valid = any(r["flashing_light_on"] for r in fa) and \
             not any(r["flashing_light_on"] for r in fb)
@@ -68,22 +76,22 @@ def audit(attempts, comparison_id, plan):
             second[1]["light_request"] == "unqualified_active"
     elif suffix == "officer_directs_otherwise":
         valid = not any(r["officer_direction"] for r in fa) and \
-            any(r["officer_direction"] for r in fb)
-    elif suffix == "not_approaching":
-        distance_a = hypot(fa[-1]["ego_xy"][0] - fa[-1]["emergency_xy"][0],
-                           fa[-1]["ego_xy"][1] - fa[-1]["emergency_xy"][1])
-        distance_b = hypot(fb[-1]["ego_xy"][0] - fb[-1]["emergency_xy"][0],
-                           fb[-1]["ego_xy"][1] - fb[-1]["emergency_xy"][1])
-        valid = distance_a < distance_b
-    elif suffix == "regulatory_official":
+            any(r["officer_direction"] for r in fb) and \
+            a["first_brake_original_frame"] is not None and \
+            b["first_brake_original_frame"] is None
+    elif suffix == "regulatory_official_yield":
         valid = first[1]["target_vehicle_class"] == "authorized_emergency" and \
             second[1]["target_vehicle_class"] == "regulatory_official"
+    elif suffix == "same_direction_approach_yield":
+        valid = first[1]["approach_direction"] == "opposing" and \
+            second[1]["approach_direction"] == "same_direction" and \
+            b["minimum_early_center_distance_m"] < b["initial_center_distance_m"]
     else:
         raise ValueError("unknown emergency contrast")
     if not valid:
         raise ValueError("emergency contrast not present in original-frame sources: " + suffix)
-    if any(row[3]["about_to_move_judgment"] != "unresolved" or
-           row[3]["proceed_with_caution_judgment"] != "unresolved" for row in (first, second)):
+    if any(row[3]["immediate_approach_judgment"] != "unresolved" or
+           row[3]["right_of_way_yield_judgment"] != "unresolved" for row in (first, second)):
         raise ValueError("comparison invented legal judgment")
     return {"format": "c405341-1a-independent-emergency-comparison-v1",
             "comparison_id": comparison_id, "case_ids": spec["case_ids"],

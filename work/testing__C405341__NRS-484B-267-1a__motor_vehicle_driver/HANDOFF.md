@@ -1,22 +1,11 @@
-# testing__C405341__NRS-484B-267-1a__motor_vehicle_driver
+# C405341 NRS 484B.267(1)(a) handoff
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: partial while exact source-bound CPU proofs and strict gate run. No physical or legal acceptance is claimed.
 
-Exact law: NRS 484B.267(1)(a) — Upon the immediate approach of an authorized emergency vehicle or an official vehicle of a regulatory agency, making use of flashing lights meeting the requirements of subsection 3 of NRS 484A.480 [DEF-NRS-484A-480-3], the driver of every other vehicle shall, except when otherwise directed by a law enforcement officer: Yield the right-of-way.
-Assigned branch(es): authorized_emergency_vehicle_approach_on_paved_road.
-Cell: C405341 (paved_road, travel, emergency_vehicle); actor: motor_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+The frozen evidence inventory contains zero accepted recordings for this exact branch. Eight selected original-capture cases and seven baseline comparisons cover immediate authorized-emergency approach with subject yielding, a no-yield subject response, a non-immediate approach, inactive and unqualified lights, contrary law-enforcement direction, a regulatory official vehicle, and same-direction approach. No statutory numeric distance or timing threshold is invented. The original law and DEF-NRS-484A-480-3 witness require source review of authorization, front-visible red flashing lamp, siren equipment, the unit route, officer context, subject response, and original pixels.
 
-## Next CPU actions
+The Native construction code requests two reviewed vehicle actors, connected and direction-bound routes, unit movement, flashing equipment and the subject response controller. It rejects missing authority, equipment or route sources before spawning actors; its alternate route fallback preserves direction and immediacy. Capture remains 20 Hz for 900 frames with four synchronized views, original source seal and world restoration. The saved finalizer records relative positions, light use, brake/speed history and original frame joins while retaining immediate-approach and right-of-way judgments as unresolved.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C405341__NRS-484B-267-1a__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+Primary and fallback offline construction checks passed for eight cases each. Four focused construction tests passed. Compatibility, saved-only, physical/lifecycle and independent audit proofs are in progress. Synthetic fixtures establish software behavior only; local Native capture and independent original-source review remain subsequent GPU checks.
 
-## Proven checks and dependency boundary
-
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
-
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+Next CPU actions: complete the compatibility sweep, regenerate final construction hashes with the front lamp/siren source gates, rerun bound offline/compatibility proofs, run saved-only/physical/delivery/comparison audits, build exact GPU queue proposal, then pass `.venv-cpu/bin/python worker_check.py --assignment testing__C405341__NRS-484B-267-1a__motor_vehicle_driver --complete --require-delivery-ready` before changing result.json to ready.

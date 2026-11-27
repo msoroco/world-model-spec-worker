@@ -25,7 +25,7 @@ def build():
                    ' --host "$CARLA_HOST" --port "$CARLA_PORT"')
         accept = (PREFIX + " accept-delivery " + fixed +
                   ' --run "$RUN" --job "$JOB_ID" --attempt "$ATTEMPT"' +
-                  ' --audit "$AUDIT" --review-archive "$REVIEW_ARCHIVE"')
+                  ' --audit "$AUDIT" --review-archive /external/archive')
         owner = (f'CASE_ID={case_id} .venv-cpu/bin/python runtime.py owner-released '
                  '--attempt "$ATTEMPT" --receipt "$OWNER_RELEASE_RECEIPT" '
                  '--acknowledge-owner-released')

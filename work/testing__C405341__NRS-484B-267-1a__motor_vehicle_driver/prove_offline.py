@@ -1,4 +1,4 @@
-"""Run pinned exact offline checks for ten emergency-unit cases."""
+"""Run pinned exact offline checks for eight immediate-approach cases."""
 
 from __future__ import annotations
 
@@ -38,17 +38,18 @@ def proof():
             "fixture_recipe": "work/" + AID + "/diagnostics/" + name + "-recipe.json",
             "measurement_contract": "diagnostics/" + name + "-measurement-contract.json",
             "measurement_procedure": {"entrypoint": "analysis.py"},
-            "source_gate": "reviewed Native authority, qualified or deliberately unqualified emergency lighting, unit and ego routes and four camera poses required",
+            "source_gate": "reviewed Native authority, emergency lighting and siren equipment, relative approach routes, officer context and four camera poses required",
             "native_handoff": {"python_env_var": "CARLA_PYTHON", "host_env_var": "CARLA_HOST",
                                "port_env_var": "CARLA_PORT"},
             "acquisition": {channel: {"entrypoint": "runner.py", "method": "capture_original",
                 "evidence": "Post-tick unit pose, light, cue, ego control and four joined camera frame IDs."}
                 for channel in ("sealed_native_original_frames", "unit_motion",
-                                "qualifying_flashing_lights", "target_authorization",
-                                "driver_view_movement_cue", "driver_hand_signal",
+                                "qualifying_flashing_lights", "front_visible_red_lamp",
+                                "siren_equipment", "target_authorization",
+                                "relative_approach", "right_of_way_order",
                                 "ego_approach", "ego_response", "officer_direction", "video_four_views")},
             "candidate_risk": {"status": "physical", "reason":
-                "Native movement, visibility, hand signal or emergency equipment may not realize on reviewed route"},
+                "Native approach, front-visible flashing lamp or subject yielding may not realize on a reviewed route"},
             "candidates": []}
         entries.append(entry)
     manifest = {"format": "worker-execution-manifest", "assignment_id": AID,

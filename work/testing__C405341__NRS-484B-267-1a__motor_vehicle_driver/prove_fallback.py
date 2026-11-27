@@ -36,17 +36,15 @@ def main():
         config_row = next(row for row in candidate["files"] if row["path"] == "config.json")
         config = json.loads(config_row["content"])
         config["engineering"]["alternate_unit_route"] = True
-        config["engineering"]["movement_start_s"] = 0.0 if case.cue == "already_moving" else 16.5
         config_row["content"] = json.dumps(config, indent=2) + "\n"
         path = HERE / ("construction-" + case.suffix + "-fallback1.json")
         write(path, candidate)
         entry["candidates"] = [{"id": "fallback1", "construction": path.name,
             "construction_sha256": sha(path),
-            "trigger": {"source": "original unit route and driver-view pixels",
-                        "metric": "route connectedness and cue visibility on original frames",
-                        "failure_condition": "primary route or view does not realize the requested cue"},
-            "changed_knobs": ["require a separately reviewed connected alternate unit route",
-                              "start movement 0.5 s earlier for additional view opportunity"]}]
+            "trigger": {"source": "original Native map and actor route readbacks",
+                        "metric": "unit route connectedness, direction and approach realization",
+                        "failure_condition": "primary route is unavailable or does not realize the requested relative approach"},
+            "changed_knobs": ["require a separately reviewed connected alternate unit route with identical direction and immediacy"]}]
     write(manifest_path, manifest)
     environment = dict(os.environ,
         SCENARIO_PIPELINE_OUTPUT_ROOT=str(ROOT / ".runtime-work/c405341-1a/output-root"),

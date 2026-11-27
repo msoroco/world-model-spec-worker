@@ -58,6 +58,16 @@ def audit(attempt, case_id, plan):
             trace[i].get("frame") != mapping[i]["carla_frame"]
             for i in range(len(trace))):
         raise ValueError("trace/video original-frame join differs")
+    for row, emergency in zip(trace, history):
+        position = row.get("position_m")
+        control = row.get("control")
+        if (not isinstance(position, list) or len(position) < 2 or
+                not isinstance(control, dict) or
+                abs(position[0] - emergency["ego_xy"][0]) > 0.05 or
+                abs(position[1] - emergency["ego_xy"][1]) > 0.05 or
+                abs(row.get("speed_mps", -1) - emergency["ego_speed_mps"]) > 0.05 or
+                abs(control.get("brake", -1) - emergency["ego_brake"]) > 0.02):
+            raise ValueError("subject motion/control differs between original trace and emergency history")
     videos = {view: decode(attempt / (view + ".mkv"), len(mapping)) for view in VIEWS}
     return {"format": "c405341-1a-independent-emergency-delivery-v1",
             "case_id": case_id, "source_hashes": sources, "measured": measured,

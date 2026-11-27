@@ -15,17 +15,18 @@ OUT = HERE / "proposals"
 LAW = "NRS-484B-267-1a"
 ACTOR = "motor_vehicle_driver"
 TEMPLATE = LAW + "@" + ACTOR
-TEXT = ("Upon approaching an authorized emergency vehicle or an official vehicle of a regulatory agency which is moving or preparing to move in any direction, including, without limitation, arriving at or leaving the scene of a crash or other incident, and making use of flashing lights meeting the requirements of subsection 3 of NRS 484A.480 [DEF-NRS-484A-480-3], the driver of any other vehicle shall, except when otherwise directed by a law enforcement officer: Proceed with caution. As used in this section, “preparing to move” means any indication that is visible to an approaching driver that an authorized emergency vehicle or an official vehicle of a regulatory agency is about to move, including, without limitation: (a) A movement of the vehicle; or (b) The use of hand signals by the driver of the vehicle.")
+TEXT = 'Upon the immediate approach of an authorized emergency vehicle or an official vehicle of a regulatory agency, making use of flashing lights meeting the requirements of subsection 3 of NRS 484A.480 [DEF-NRS-484A-480-3], the driver of every other vehicle shall, except when otherwise directed by a law enforcement officer: Yield the right-of-way.'
 JUDGMENTS = (
-    ("Proceed with caution", "Record original ego approach, speed, controls, target movement and separation; do not infer a legal numeric cutoff.", "ego_response"),
-    ("any indication that is visible to an approaching driver", "Review actual driver-view original pixels and movement or hand signal timing.", "driver_view_movement_cue"),
+    ("immediate approach", "Observe original relative routes, positions and motion without a numeric legal cutoff.", "relative_approach"),
+    ("Yield the right-of-way", "Observe original subject speed, brake and passage order, retaining legal judgment for original review.", "right_of_way_order"),
 )
 PARAMS = (
     ("unit_class", "world_setup", "authorized emergency or regulatory official", "class"),
-    ("cue_kind", "world_setup", "vehicle movement, driver hand signal or none", "kind"),
     ("light_request", "world_setup", "qualified active, qualified inactive or unqualified active", "class"),
-    ("approaching_requested", "controller", "false or true", "boolean"),
+    ("immediate_requested", "controller", "false or true", "boolean"),
+    ("yield_requested", "controller", "false or true", "boolean"),
     ("officer_direction_requested", "world_setup", "false or true", "boolean"),
+    ("approach_direction", "world_setup", "opposing or same_direction", "class"),
 )
 
 
@@ -38,8 +39,8 @@ def write(name, value):
 
 
 def assignments(case):
-    values = (case.unit_class, case.cue, case.light_request, case.approaching,
-              case.officer_direction)
+    values = (case.unit_class, case.light_request, case.immediate, case.yielding,
+              case.officer_direction, case.direction)
     return {name: {"kind": kind, "value": value, "unit": unit}
             for (name, kind, _, unit), value in zip(PARAMS, values)}
 
@@ -56,13 +57,13 @@ def build():
         "status": "draft", "quote": TEXT,
         "structure": {
             "law_id": LAW,
-            "activation": {"condition": "Approach an authorized emergency or regulatory official vehicle moving or preparing to move, with qualifying flashing lights.",
+            "activation": {"condition": "Immediate approach of an authorized emergency or regulatory official vehicle using qualifying flashing lights.",
                            "numeric_conditions": []},
-            "obligation": {"description": "Proceed with caution.", "type": "must",
+            "obligation": {"description": "Yield the right-of-way.", "type": "must",
                            "numeric_conditions": []},
             "exceptions": [{"source_clause": "except when otherwise directed by a law enforcement officer",
                             "description": "Source-bound law-enforcement direction can alter the driver's response."}],
-            "timing": {"description": "Observe the approach, visible movement or hand signal and response over the original 45 seconds.",
+            "timing": {"description": "Observe the immediate approach and response over the original 45 seconds.",
                        "numeric_conditions": []},
             "judgment_calls_needed": judgments},
         "parameter_refs": [{"name": name, "kind": kind, "range_or_domain": domain,
@@ -76,7 +77,7 @@ def build():
             "template_id": TEMPLATE, "phrase": phrase, "note": note, "status": "draft",
             "observable_requirements": {"observables": [evidence], "context_inputs": [],
                 "sweep_dimensions": [], "landmarks": [], "recording_needs": [evidence],
-                "limitations": ["Original movement and driver-view source review remains required; no new legal cutoff is supplied."]}}))
+                "limitations": ["Original approach, yielding and driver-view source review remains required; no new legal cutoff is supplied."]}}))
     binding_ref = write("bindings.json", {"cell_id": "C405341", "actor": ACTOR,
         "status": "draft", "law_refs": [{"template_id": TEMPLATE, "binding_kind": "direct"}],
         "context_refs": [], "fixed_parameters": [],
@@ -93,23 +94,23 @@ def build():
     for case in CASES:
         cases.append({"case_id": AID + "__" + case.suffix,
             "target_law_id": LAW, "target_type": "boundary_probe", "status": "draft",
-            "rationale": "Exact movement, visibility, response, officer direction or statutory alternative; no legal verdict.",
-            "paired_probe_id": "emergency_movement_and_visibility",
+            "rationale": "Exact approach, light use, yielding, officer direction or statutory alternative; no legal verdict.",
+            "paired_probe_id": "emergency_approach_and_yield_response",
             "deliberate_differences": [name for name, _, _, _ in PARAMS],
-            "probe": {"primary_variable": "cue_kind",
-                      "comparison_or_standard": "Compare sealed original unit motion, driver-view cue and ego response with the clause.",
+            "probe": {"primary_variable": "yield_requested",
+                      "comparison_or_standard": "Compare sealed original approach, flashing lights, officer context and subject response with the clause.",
                       "target_value_or_branch": case.suffix},
             "variable_assignments": assignments(case),
             "unresolved_judgment_calls": [phrase for phrase, _, _ in JUDGMENTS],
             "recording_description": description()})
     cases_ref = write("cases.json", {"cell_id": "C405341", "actor": ACTOR,
         "status": "draft", "sweep_specs": [{
-            "sweep_id": "caution_review", "target_law_id": LAW,
+            "sweep_id": "right_of_way_review", "target_law_id": LAW,
             "judgment_refs": judgments, "status": "incomplete", "mode": "joint",
             "axes": [], "landmarks": [],
-            "rationale": "Movement and response alternatives are prepared; cautious response requires source review.",
-            "missing_inputs": ["original unit motion and driver-view camera histories",
-                               "independent legal judgment of caution"],
+            "rationale": "Approach and yielding alternatives are prepared; right-of-way judgment requires source review.",
+            "missing_inputs": ["original approach and driver-view camera histories",
+                               "independent legal judgment of yielding"],
             "variable_assignments": assignments(CASES[0]),
             "recording_description": description()}],
         "sweeps_expanded": True, "cases": cases})

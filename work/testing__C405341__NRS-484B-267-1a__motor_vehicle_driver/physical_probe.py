@@ -1,4 +1,4 @@
-"""Synthetic outcome and Native ownership-closure checks for each exact 2b case."""
+"""Synthetic motion outcome and Native ownership closure for each 1a case."""
 
 import argparse
 import hashlib

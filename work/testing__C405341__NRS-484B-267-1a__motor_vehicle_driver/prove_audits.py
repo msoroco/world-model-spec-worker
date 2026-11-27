@@ -44,7 +44,7 @@ def main():
     for entry in manifest["cases"]:
         case_id = entry["case_id"]
         name = case_id.removeprefix(AID + "__")
-        attempt = ROOT / ".runtime-work/c405341-1a" / ("compat-" + name + "-v5")
+        attempt = ROOT / ".runtime-work/c405341-1a" / ("compat-" + name + "-v6")
         output = SCRATCH / (name + "-delivery.json")
         if output.exists():
             output.unlink()
@@ -93,7 +93,7 @@ def main():
         for case_id in comparison["case_ids"]:
             suffix = case_id.removeprefix(AID + "__")
             command += ["--attempt", str(ROOT / ".runtime-work/c405341-1a" /
-                                         ("compat-" + suffix + "-v5"))]
+                                         ("compat-" + suffix + "-v6"))]
         output = SCRATCH / (name + "-comparison.json")
         if output.exists():
             output.unlink()

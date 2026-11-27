@@ -40,7 +40,8 @@ def check_source(root, case_id):
                 seal.get("restoration", {}).get("restored") is not True):
             raise ValueError("sealed original Native emergency capture required")
         files = seal.get("sources")
-        mandatory = {HISTORY, "camera-frame-map.jsonl", "video_frames.jsonl",
+        mandatory = {HISTORY, "emergency-site.json", "config.json", "trace.jsonl",
+                     "camera-frame-map.jsonl", "video_frames.jsonl",
                      *[view + ".mkv" for view in VIEWS]}
         if not isinstance(files, dict) or not mandatory <= set(files):
             raise ValueError("sealed original emergency source inventory incomplete")
@@ -69,9 +70,10 @@ def check_source(root, case_id):
 def check_joins(root, history):
     cameras = rows(required(root, "camera-frame-map.jsonl"))
     videos = rows(required(root, "video_frames.jsonl"))
-    if len(history) != 900 or len(cameras) != 900 or len(videos) != 900:
+    trace = rows(required(root, "trace.jsonl"))
+    if len(history) != 900 or len(cameras) != 900 or len(videos) != 900 or len(trace) != 900:
         raise ValueError("full original emergency and camera history required")
-    for index, (row, camera, video) in enumerate(zip(history, cameras, videos)):
+    for index, (row, camera, video, motion) in enumerate(zip(history, cameras, videos, trace)):
         native = row["native_frame"]
         if (row["frame"] != index or camera.get("frame_index") != index
                 or camera.get("native_frame") != native
@@ -80,43 +82,67 @@ def check_joins(root, history):
                 or abs(camera.get("time_s", -100) - row["time_s"]) > 1e-5
                 or abs(video.get("time_s", -100) - row["time_s"]) > 1e-5):
             raise ValueError("emergency/camera/native frame join changed")
+        pose = motion.get("position_m")
+        control = motion.get("control")
+        if (motion.get("frame") != native or
+                abs(motion.get("time_s", -100) - row["time_s"]) > 1e-5 or
+                not isinstance(pose, list) or len(pose) < 2 or
+                not isinstance(control, dict) or
+                abs(pose[0] - row["ego_xy"][0]) > 0.05 or
+                abs(pose[1] - row["ego_xy"][1]) > 0.05 or
+                abs(motion.get("speed_mps", -100) - row["ego_speed_mps"]) > 0.05 or
+                abs(control.get("brake", -100) - row["ego_brake"]) > 0.02):
+            raise ValueError("emergency/subject trace source join changed")
 
 
 def measure_case(case, site, frames):
-    """Observe cues without turning motion or response into a legal cutoff."""
+    """Observe approach and response without imposing a legal distance cutoff."""
     if len(frames) != 900:
         raise ValueError("complete emergency motion history required")
     if site.get("target_vehicle_class") != case.unit_class:
         raise ValueError("target vehicle source differs from exact case")
     if site.get("light_request") != case.light_request:
         raise ValueError("flashing equipment/use source differs from exact case")
+    for key in ("authorization_source", "qualifying_lights_source", "light_rule_source",
+                "front_visible_red_lamp_source", "siren_equipment_source", "route_source"):
+        if not site.get(key):
+            raise ValueError("missing original authority or equipment source: " + key)
+    if case.light_request != "unqualified_active" and site.get("front_visible_red_lamp_qualified") is not True:
+        raise ValueError("qualified front-visible red lamp source missing")
+    if site.get("immediate_approach_request") is not case.immediate:
+        raise ValueError("immediate approach request differs from exact case")
+    if site.get("yield_response_request") is not case.yielding:
+        raise ValueError("yield response request differs from exact case")
+    if site.get("approach_direction") != case.direction:
+        raise ValueError("approach direction differs from exact case")
     moving = [i for i in range(1, len(frames)) if
               hypot(frames[i]["emergency_xy"][0] - frames[i-1]["emergency_xy"][0],
                     frames[i]["emergency_xy"][1] - frames[i-1]["emergency_xy"][1]) > 0]
     visible_movement = [f["original_frame"] for f in frames if f["movement_visible"]]
-    visible_hand = [f["original_frame"] for f in frames if
-                    f["driver_hand_signal_visible"] and f["hand_signal_source"]]
-    if case.cue == "none" and moving:
-        raise ValueError("no-movement comparison has actual target motion")
-    if case.cue == "visible_hand_signal" and not visible_hand:
-        raise ValueError("source-bound driver hand signal missing")
-    if case.cue == "occluded_movement" and visible_movement:
-        raise ValueError("occluded movement case has visible movement")
-    if case.cue in {"visible_movement", "already_moving"} and not visible_movement:
-        raise ValueError("visible movement source missing")
-    if case.cue in {"visible_movement", "occluded_movement", "already_moving"} and not moving:
-        raise ValueError("movement comparison has no actual target motion")
+    if not moving:
+        raise ValueError("emergency approach has no actual target motion")
     if case.light_request == "qualified_inactive" and any(f["flashing_light_on"] for f in frames):
         raise ValueError("inactive flashing-light comparison has active lights")
     if case.light_request != "qualified_inactive" and not any(f["flashing_light_on"] for f in frames):
         raise ValueError("active flashing-light comparison has no active lights")
     if case.officer_direction and not any(f["officer_direction"] for f in frames):
         raise ValueError("officer-direction comparison lacks original direction")
+    early = [hypot(f["ego_xy"][0] - f["emergency_xy"][0],
+                   f["ego_xy"][1] - f["emergency_xy"][1]) for f in frames[:400]]
+    if case.immediate and not min(early[1:]) < early[0]:
+        raise ValueError("unit does not approach subject in original frames")
+    brakes = [f["original_frame"] for f in frames if f["ego_brake"] > 0]
+    if case.yielding and not brakes:
+        raise ValueError("requested yielding has no brake response")
+    if not case.yielding and brakes:
+        raise ValueError("no-yield contrast has brake response")
     return {"movement_original_frames": [frames[i]["original_frame"] for i in moving],
             "visible_movement_original_frames": visible_movement,
-            "visible_hand_original_frames": visible_hand,
-            "about_to_move_judgment": "unresolved",
-            "proceed_with_caution_judgment": "unresolved"}
+            "first_brake_original_frame": brakes[0] if brakes else None,
+            "initial_center_distance_m": early[0],
+            "minimum_early_center_distance_m": min(early),
+            "immediate_approach_judgment": "unresolved",
+            "right_of_way_yield_judgment": "unresolved"}
 
 
 def analyze(root):
@@ -136,9 +162,12 @@ def analyze(root):
         "sealed_native_original_frames": lambda row: row["frame"],
         "unit_motion": lambda row: row["emergency_xy"],
         "qualifying_flashing_lights": lambda row: row["flashing_light_on"],
+        "front_visible_red_lamp": lambda row: site["front_visible_red_lamp_source"],
+        "siren_equipment": lambda row: site["siren_equipment_source"],
         "target_authorization": lambda row: site["target_vehicle_class"],
         "driver_view_movement_cue": lambda row: row["movement_visible"],
-        "driver_hand_signal": lambda row: row["driver_hand_signal_visible"],
+        "relative_approach": lambda row: {"ego_xy": row["ego_xy"], "unit_xy": row["emergency_xy"]},
+        "right_of_way_order": lambda row: {"ego_brake": row["ego_brake"], "ego_speed_mps": row["ego_speed_mps"]},
         "ego_approach": lambda row: {"xy": row["ego_xy"], "speed_mps": row["ego_speed_mps"]},
         "ego_response": lambda row: {"brake": row["ego_brake"], "speed_mps": row["ego_speed_mps"]},
         "officer_direction": lambda row: row["officer_direction"] or "none",
@@ -159,12 +188,12 @@ def analyze(root):
     movement_m = hypot(history[-1]["emergency_xy"][0] - history[0]["emergency_xy"][0],
                        history[-1]["emergency_xy"][1] - history[0]["emergency_xy"][1])
     result = {"case_id": case_id, "measured_values": {"unit_displacement_m": movement_m},
-        "target_checks": [{"target": "observed emergency unit displacement",
-            "requested": 0.0 if matches[0].cue in {"none", "visible_hand_signal"} else 2.0,
-            "measured": movement_m,
+        "target_checks": [{"target": "observed emergency unit movement",
+            "requested": True,
+            "measured": movement_m > 0,
             "method": "900 sealed original Native frames" if not diagnostic else "900 synthetic diagnostic frames",
-            "tolerance": 0.5,
-            "matched": abs(movement_m - (0.0 if matches[0].cue in {"none", "visible_hand_signal"} else 2.0)) <= 0.5,
+            "tolerance": None,
+            "matched": movement_m > 0,
             "physical_cause_confirmed": False, "cause_evidence": source}],
         "setup_confirmed": False, "behavior_attempted": False, "maneuver_completed": False,
         "termination_reason": "saved measurement pending independent physical review",
@@ -179,11 +208,11 @@ def analyze(root):
     return {"format": "worker-analysis-report", "case_id": case_id,
         "analysis_complete": True, "diagnostic_fixture": diagnostic,
         "physical_acceptance_claimed": False, "legal_verdict_claimed": False,
-        "measurements": {"emergency_movement_and_visibility": {
+        "measurements": {"emergency_approach_and_yield_response": {
             "method": "measure_case", "value": measured, "sources": source}},
         "physical_checks": result["physical_checks"],
         "realized_observables": result["realized_observables"],
-        "limitations": ["Original physical motion, pixels and preparedness judgment require independent review."]}
+        "limitations": ["Original physical approach, light pixels and right-of-way yielding require independent review."]}
 
 
 if __name__ == "__main__":

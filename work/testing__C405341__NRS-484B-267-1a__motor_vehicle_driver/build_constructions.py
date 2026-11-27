@@ -1,4 +1,4 @@
-"""Materialize ten exact emergency-unit construction bundles."""
+"""Materialize eight exact immediate-approach construction bundles."""
 
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ from emergency_construction import CASES
 from native_packet import AID, VIEWS
 
 HERE = Path(__file__).resolve().parent
-SCRIPTS = ("runner.py", "native_packet.py", "emergency_construction.py", "emergency_movement_observations.py", "analysis.py")
+SCRIPTS = ("runner.py", "native_packet.py", "emergency_construction.py", "analysis.py")
 SIZES = ((1920, 1080), (1280, 720), (1280, 720), (1280, 720))
 
 
@@ -25,9 +25,11 @@ def description():
         ("sealed_native_original_frames", "frame identity", "byte-sealed 20 Hz Native source"),
         ("unit_motion", "metres", "original vehicle pose difference"),
         ("qualifying_flashing_lights", "on/off", "original emergency light state"),
+        ("front_visible_red_lamp", "source", "reviewed front-visible red lamp installation and original pixels"),
+        ("siren_equipment", "source", "reviewed required siren equipment"),
         ("target_authorization", "source", "reviewed authorized emergency or regulatory official status"),
-        ("driver_view_movement_cue", "visible/occluded", "reviewed driver-view original pixels and pose"),
-        ("driver_hand_signal", "visible/absent", "original driver signal and reviewed view pixels"),
+        ("relative_approach", "metres and m/s", "original ego/unit positions and route direction"),
+        ("right_of_way_order", "original frames", "source-bound crossing and brake chronology"),
         ("ego_approach", "metres and m/s", "original ego/unit positions and speed"),
         ("ego_response", "control", "original brake and speed history"),
         ("officer_direction", "direction", "source-bound original direction if any"),
@@ -35,12 +37,12 @@ def description():
     return {"channels": [{"name": name, "unit": unit, "method": method,
                           "sampling_rate_hz": 20, "time_window": "all 900 original frames",
                           "reference_frame": "reviewed Native route and source packet",
-                          "uncertainty": "physical realization and preparedness judgment remain unverified"}
+                          "uncertainty": "physical realization and yielding judgment remain unverified"}
                          for name, unit, method in channels],
             "context_inputs": [], "limitations": [
-                "About-to-move and proceed-with-caution are judgment phrases with no invented numeric threshold.",
+                "Immediate approach and yielding are judgment phrases with no invented numeric threshold.",
                 "Equipment qualification and target authorization need independent source review.",
-                "Actual driver-view cue visibility requires original pixels and independent review."]}
+                "Actual light visibility, approach and yielding require original pixels and independent review."]}
 
 
 def config(case):
@@ -49,12 +51,12 @@ def config(case):
             "actor": "motor_vehicle_driver", "selected_case_id": AID + "__" + case.suffix,
             "supported_case_ids": ids, "rate_hz": 20, "duration_s": 45, "frame_count": 900,
             "required_atoms": [], "source_packets": [],
-            "engineering": {"movement_start_s": 17.0, "movement_end_s": 19.0,
-                            "movement_cue": case.cue,
+            "engineering": {"response_start_s": 19.0, "approach_direction": case.direction,
+                            "yield_requested": case.yielding,
                             "light_request": case.light_request,
-                            "occluder_requested": case.cue == "occluded_movement",
+                            "immediate_requested": case.immediate,
                             "officer_requested": case.officer_direction,
-                            "approaching_requested": case.approaching},
+                            "approaching_requested": case.immediate},
             "cameras": [{"name": name, "width": width, "height": height,
                          "pose_strategy": "reviewed Native route and four-view source survey", "fov_deg": 90}
                         for name, (width, height) in zip(VIEWS, SIZES)],
@@ -67,14 +69,14 @@ def build():
     plan = json.loads(plan_path.read_text(encoding="utf-8"))
     ids = [AID + "__" + case.suffix for case in CASES]
     if [row["case_id"] for row in plan["cases"]] != ids:
-        raise ValueError("exact ten-case plan changed")
+        raise ValueError("exact eight-case plan changed")
     branch = plan["selected_branches"][0]
     plan["selected_branch"] = branch["branch"]
     plan["requirement_dispositions"] = [{
         "requirement": branch["requirement"], "source": branch["source"],
         "status": "selected_required", "case_ids": ids,
         "evidence_or_gap": "Frozen evidence inventory has no accepted recordings.",
-        "reason": "Original emergency-unit motion, visible cue, light use and cautious response needed."}]
+        "reason": "Original emergency-unit approach, qualifying lights, officer context and subject yielding needed."}]
     plan["observations"] = [{"name": row["name"], "mandatory": True}
                             for row in description()["channels"]]
     plan["source_observation_mapping"] = {}
@@ -83,7 +85,7 @@ def build():
         "coverage": [{"view": view, "subject": subject, "interval": "all original 900 frames"}
                      for view, subject in zip(VIEWS, (
                          "ego approach and emergency unit", "unit flashing lights and movement",
-                         "occluder, officer and unit route", "driver-view movement and hand-signal cues"))]}
+                         "officer and unit route", "driver-view light and yielding cues"))]}
     for row in plan["cases"]:
         row["new_capture_selected"] = True
         row["construction_status"] = "source_gated_exact_bundle"
@@ -105,12 +107,12 @@ def build():
             "actor": "motor_vehicle_driver", "case_id": case_id,
             "entrypoint": "runner.py", "diagnostic_only": True,
             "recording_description": description(), "files": files,
-            "measurement_plan": "900 original unit poses, driver-view pixels, light and ego controls",
+            "measurement_plan": "900 original unit and subject poses, light, yielding and ego controls",
             "static_checks": ["reviewed Native map, authority, equipment and blueprint hashes",
-                              "occluder geometry for hidden cue", "four camera frame joins"],
+                              "connected and approaching unit route", "four camera frame joins"],
             "termination_rules": ["900 synchronized Native ticks", "restore and read back world"],
             "mechanisms": ["source-gated emergency/regulatory unit and paved road",
-                           "flashing light, movement, hand signal and ego response controllers",
+                           "flashing light, approach motion and ego yield-response controllers",
                            "sealed original histories and four-view capture"]}
         write(HERE / ("construction-" + case.suffix + ".json"), construction)
         if index == 0:

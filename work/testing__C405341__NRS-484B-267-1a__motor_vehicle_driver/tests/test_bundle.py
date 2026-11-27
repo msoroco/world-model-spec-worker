@@ -7,4 +7,4 @@ from runner import check
 
 class ExactBundleTest(unittest.TestCase):
     def test_selected_identity(self):
-        self.assertTrue(check().endswith("__visible_movement_preparation"))
+        self.assertTrue(check().endswith("__immediate_approach_yield"))

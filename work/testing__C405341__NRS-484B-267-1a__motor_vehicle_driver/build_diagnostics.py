@@ -1,4 +1,4 @@
-"""Generate ten explicit synthetic sources for software compatibility only."""
+"""Generate eight explicit synthetic sources for software compatibility only."""
 
 from __future__ import annotations
 
@@ -17,7 +17,7 @@ DONOR = ROOT / "work/testing__C24751__NRS-484B-310-1__heavy_vehicle_driver/diagn
 DONOR_CASE = DONOR / "_shared"
 DONOR_GENERATOR = DONOR / "crosswalk_stop-generator.json"
 SHARED = HERE / "diagnostics/_shared"
-SOURCE_FILES = ("trace.jsonl", "video_frames.jsonl",
+SOURCE_FILES = ("video_frames.jsonl",
                 "capture/native/frames.jsonl", "capture/evidence.jsonl")
 
 
@@ -36,23 +36,18 @@ def write(path, obj, compact=False):
 
 def frame(index, case):
     time_s = index / 20
-    if case.cue in {"none", "visible_hand_signal"}:
-        unit_x = 0.0
-    elif case.cue == "already_moving":
-        unit_x = min(2.0, time_s * 0.1)
-    else:
-        unit_x = min(2.0, max(0.0, (time_s - 17.0) * 1.0))
-    ego_x = (-180.0 + time_s * 7.5) if case.approaching else (180.0 + time_s * 7.5)
-    movement_visible = case.cue in {"visible_movement", "already_moving"} and 17.0 <= time_s <= 19.5
-    hand_visible = case.cue == "visible_hand_signal" and 16.5 <= time_s <= 19.0
+    unit_x = (180.0 - 7.0 * time_s) if case.immediate else (400.0 - 2.0 * time_s)
+    if case.direction == "same_direction":
+        unit_x = -220.0 + 9.0 * time_s
+    ego_x = (-180.0 + 7.5 * time_s if not case.yielding else
+             -180.0 + 7.5 * min(time_s, 19.0) + 5.0 * max(0.0, time_s - 19.0))
+    movement_visible = True
     return {"frame": index, "native_frame": index + 100, "original_frame": index + 100,
             "time_s": time_s, "ego_xy": [ego_x, 0.0], "emergency_xy": [unit_x, 4.0],
             "flashing_light_on": case.light_request != "qualified_inactive" and index % 8 < 4,
             "movement_visible": movement_visible,
-            "driver_hand_signal_visible": hand_visible,
-            "hand_signal_source": "synthetic-driver-camera" if hand_visible else None,
-            "ego_speed_mps": 7.5 if time_s < 19.0 else 5.0,
-            "ego_brake": 0.5 if time_s >= 19.0 else 0.0,
+            "ego_speed_mps": 7.5 if not case.yielding or time_s < 19.0 else 5.0,
+            "ego_brake": 0.5 if case.yielding and time_s >= 19.0 else 0.0,
             "officer_direction": "proceed" if case.officer_direction and 18 <= time_s < 20 else None,
             "motion_source": "synthetic-native-pose", "light_source": "synthetic-light-state",
             "visibility_source": "synthetic-driver-camera", "control_source": "synthetic-ego-controls"}
@@ -80,8 +75,14 @@ def build():
         write(folder / "emergency-site.json", {
             "ego_id": "ego", "emergency_id": "unit", "emergency_class": case.unit_class,
             "target_vehicle_class": case.unit_class, "light_request": case.light_request,
+            "immediate_approach_request": case.immediate,
+            "yield_response_request": case.yielding,
+            "approach_direction": case.direction,
             "authorization_source": "synthetic-authority", "qualifying_lights_source": "synthetic-equipment",
             "light_rule_source": "DEF-NRS-484A-480-3", "route_source": "synthetic-native-map",
+            "front_visible_red_lamp_source": "synthetic-front-view-lamp",
+            "front_visible_red_lamp_qualified": case.light_request != "unqualified_active",
+            "siren_equipment_source": "synthetic-siren-installation",
             "officer_direction_source": "synthetic-officer-context"})
         camera_rows = [dict(frame_index=i, native_frame=100 + i, time_s=i / 20,
                             camera_frames={view: 100 + i for view in VIEWS})
@@ -96,15 +97,29 @@ def build():
         generator_path = HERE / "diagnostics" / (name + "-generator.json")
         write(generator_path, generator, compact=True)
         history_path = folder / "original-emergency-movement-history.jsonl"
-        history_path.write_text("".join(json.dumps(frame(i, case), separators=(",", ":")) + "\n"
-                                        for i in range(900)), encoding="utf-8")
+        history = [frame(i, case) for i in range(900)]
+        history_path.write_text("".join(json.dumps(row, separators=(",", ":")) + "\n"
+                                        for row in history), encoding="utf-8")
         if history_path.stat().st_size > 2 * 1024 * 1024:
             raise ValueError("case history exceeds 2 MiB")
+        trace_path = folder / "trace.jsonl"
+        trace_path.write_text("".join(json.dumps({
+            "frame": row["native_frame"], "time_s": row["time_s"],
+            "position": {"x": row["ego_xy"][0], "y": row["ego_xy"][1], "z": 0.0},
+            "position_m": [*row["ego_xy"], 0.0], "heading_deg": 0.0,
+            "speed_mps": row["ego_speed_mps"],
+            "speed_mph": row["ego_speed_mps"] * 2.2369362921,
+            "velocity_mps": [row["ego_speed_mps"], 0.0, 0.0],
+            "control": {"brake": row["ego_brake"], "hand_brake": False,
+                        "throttle": 0.0 if row["ego_brake"] else 0.3}
+        }, separators=(",", ":")) + "\n" for row in history), encoding="utf-8")
+        if trace_path.stat().st_size > 2 * 1024 * 1024:
+            raise ValueError("case trace exceeds 2 MiB")
         write(HERE / "diagnostics" / (name + "-measurement-contract.json"), {
             "format": "worker-measurement-contract", "case_id": case_id,
             "requirements": [{"disposition_index": 0,
                 "requirement": branch["requirement"], "source": branch["source"],
-                "output_key": "emergency_movement_and_visibility",
+                "output_key": "emergency_approach_and_yield_response",
                 "method": "measure_case", "value_type": "object", "kind": "measured",
                 "inputs": ["original-emergency-movement-history.jsonl", "emergency-site.json",
                            "camera-frame-map.jsonl"]}],
@@ -114,7 +129,7 @@ def build():
         for relative in SOURCE_FILES:
             source = SHARED / relative
             sources.append({"path": relative, "source": str(source.relative_to(ROOT)), "sha256": sha(source)})
-        for relative in ("diagnostic-source-note.json", "emergency-site.json",
+        for relative in ("diagnostic-source-note.json", "emergency-site.json", "trace.jsonl",
                          "camera-frame-map.jsonl", "original-emergency-movement-history.jsonl"):
             source = folder / relative
             sources.append({"path": relative, "source": str(source.relative_to(ROOT)), "sha256": sha(source)})
