@@ -41,7 +41,8 @@ def apply_controls(carla, scene, bus, passenger, tick):
         bus.apply_control(carla.VehicleControl(throttle=max(0, min(.55, .2 * error)),
                                                brake=max(0, min(1, -.4 * error)), steer=0))
     elif tick < policy["resume_request_frame"]:
-        bus.apply_control(carla.VehicleControl(throttle=0, brake=1, steer=0))
+        bus.apply_control(carla.VehicleControl(throttle=0, brake=1, steer=0,
+                                               hand_brake=policy["mechanical_fault_requested"]))
     else:
         bus.apply_control(carla.VehicleControl(throttle=.35, brake=0, steer=0))
     if tick == policy["door_open_request_frame"]:
@@ -138,6 +139,7 @@ def capture(zone_kind, output, host="127.0.0.1", port=2000, *, vehicle_class="ro
                         "bus_center_m": xyz(bus.get_location()),
                         "passenger_center_m": xyz(passenger.get_location()),
                         "door_open_request_active": 140 <= i < 420,
+                        "mechanical_fault_request_active": emergency and 90 <= i < 480,
                         "actual_door_state_observed": False,
                         "actual_passenger_transfer_observed": False,
                         "emergency_requested": emergency}, allow_nan=False) + "\n")

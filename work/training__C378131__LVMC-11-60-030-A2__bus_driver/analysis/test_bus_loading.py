@@ -12,7 +12,7 @@ from bus_loading import measure
 def fixture():
     frames = [{
         "frame_id": i, "sim_time_s": i / 20,
-        "camera_frames": {name: i for name in ("front", "rear", "left", "right")},
+        "camera_frames": {name: i for name in ("overview", "approach", "reference_corner", "driver_reference")},
         "bus_speed_mps": 0.0 if 100 <= i < 200 else 5.0,
         "passenger_door_open": 120 <= i < 180,
         "boardings": 1 if i == 130 else 0,
@@ -34,7 +34,7 @@ assert result["legal_judgment"] == "unresolved"
 print("positive", json.dumps(result, sort_keys=True))
 
 for name, mutate, error in [
-    ("camera", lambda f, c: f[130]["camera_frames"].pop("right"), "four source-camera"),
+    ("camera", lambda f, c: f[130]["camera_frames"].pop("driver_reference"), "four source-camera"),
     ("door", lambda f, c: f[130].pop("passenger_door_open"), "passenger-door"),
     ("authority", lambda f, c: c["zone"].pop("designation_source"), "designation authority"),
     ("route", lambda f, c: c["zone"].update(route_id="R-2"), "assigned route"),

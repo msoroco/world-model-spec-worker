@@ -58,6 +58,7 @@ def audit(directory, condition):
     if len(observed) != FRAMES or len(frames) != FRAMES:
         raise ValueError("Original Native and video frame counts must be 600")
     previous_native, previous_actor_time = -1, None
+    indication_actor_id = None
     for i, (row, frame) in enumerate(zip(observed, frames)):
         native = frame.get("native_frame")
         if (row.get("frame") != i or frame.get("video_frame") != i or
@@ -99,6 +100,13 @@ def audit(directory, condition):
                 raise ValueError("Native indication pose readback missing")
             if i == interval[1] + 1 and readback.get("pose_hidden") is not True:
                 raise ValueError("Native indication pose was not hidden")
+            if interval[0] <= i <= interval[1] + 1:
+                actor_id = readback.get("native_actor_id")
+                if type(actor_id) is not int or actor_id <= 0:
+                    raise ValueError("Native indication actor identity missing")
+                if indication_actor_id is not None and actor_id != indication_actor_id:
+                    raise ValueError("Native indication actor identity changed")
+                indication_actor_id = actor_id
             if (field == "source_driver_proxy" and interval[0] <= i <= interval[1] and
                     row["actors"]["emergency"]["native_speed_mps"] > .25):
                 raise ValueError("Hand-signal source moved during requested stationary interval")

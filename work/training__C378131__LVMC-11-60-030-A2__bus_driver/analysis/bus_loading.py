@@ -6,7 +6,7 @@ whether a location was legally designated or whether an emergency existed.
 from math import isfinite
 import re
 
-CAMERAS = ("front", "rear", "left", "right")
+CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 ZONE_KINDS = ("bus_stop", "bus_stand", "passenger_loading_zone", "route_origin", "route_destination", "other_street")
 
 

@@ -1,0 +1,38 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C230254__NRS-486-341__motor_vehicle_driver__full_lane_available",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "text-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "lane_use_geometry",
+      "method": "lane_use_geometry",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "lane-use-source.jsonl",
+        "video_frames.jsonl"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/coverage/branch-sources.json",
+      "output_key": "chapter_486_context",
+      "method": "chapter_486_context",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "lane-use-context.json",
+        "road-authority.json"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "lane-use-source.jsonl"
+    ],
+    "error_contains": "Missing required source: lane-use-source.jsonl"
+  }
+}

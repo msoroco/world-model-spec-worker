@@ -9,12 +9,16 @@ from pathlib import Path
 
 from measure_readiness import ASSIGNMENT, lines, measure, sha
 from scene import CASES, request
+from branch_variants import VARIANTS, variant_request
 
 
-def audit(roots, reported):
+def audit(roots, reported, variant=None):
     if set(roots) != set(CASES) or set(reported) != set(CASES):
         raise ValueError("Both exact comparison conditions are required")
-    plans = {condition: request(condition) for condition in CASES}
+    if variant is not None and variant not in VARIANTS:
+        raise ValueError("Unknown exact comparison branch")
+    plans = {condition: (request(condition) if variant is None else
+                         variant_request(variant, condition)) for condition in CASES}
     fixed = set(plans[CASES[0]]) - {"case_id", "ego_response_policy", "requested_setting"}
     for key in fixed:
         if plans[CASES[0]][key] != plans[CASES[1]][key]:
@@ -49,8 +53,15 @@ def audit(roots, reported):
                 raise ValueError("Comparison changed emergency trajectory or indication: " + key)
     review_a, review_b = (json.loads((path / "emergency_review.json").read_text())
                           for path in (path_a, path_b))
-    for key in ("vehicle_class", "lights_meet_484A_480_3",
-                "visible_to_approaching_driver", "officer_direction_present"):
+    review_keys = ["vehicle_class", "lights_meet_484A_480_3",
+                   "visible_to_approaching_driver", "officer_direction_present"]
+    if variant == "visible_driver_hand_signal":
+        review_keys += ["source_driver_identity", "source_driver_identity_source",
+                        "hand_signal_source"]
+    if variant == "officer_directed_otherwise":
+        review_keys += ["officer_identity", "officer_identity_source",
+                        "officer_direction_source", "officer_direction_applies_to_ego"]
+    for key in review_keys:
         if review_a[key] != review_b[key]:
             raise ValueError("Comparison changed reviewed legal context: " + key)
     if a["source_kind"] != b["source_kind"]:
@@ -62,12 +73,20 @@ def audit(roots, reported):
                 "officer_direction_present_reviewed", "sample_count", "sample_span_s"):
         if a[key] != b[key]:
             raise ValueError("Comparison changed measured trigger context: " + key)
-    if a["officer_direction_present_reviewed"]:
+    if variant == "visible_driver_hand_signal" and (
+            a["emergency_moving_at_trigger"] or not a["hand_signal_visible_at_trigger"]):
+        raise ValueError("Hand-signal branch lacks stationary visible indication at trigger")
+    if variant == "officer_directed_otherwise" and (
+            not a["officer_direction_present_reviewed"] or
+            not review_a["officer_direction_applies_to_ego"]):
+        raise ValueError("Officer-direction branch lacks applicable reviewed direction")
+    if variant != "officer_directed_otherwise" and a["officer_direction_present_reviewed"]:
         raise ValueError("Officer-direction exception requires a separate branch")
     if a["first_brake_frame"] is None or b["first_brake_frame"] is not None:
         raise ValueError("Measured brake-response contrast absent")
     return {"format": "emergency-readiness-comparison-audit",
             "assignment_id": ASSIGNMENT, "case_ids": [plans[x]["case_id"] for x in CASES],
+            "branch": variant if variant is not None else "already_moving",
             "source_hashes": {x: observed[x]["sources"] for x in CASES},
             "native_request_sha256": request_hashes,
             "fixed_trigger_context_checked": True,

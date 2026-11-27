@@ -1,102 +1,84 @@
-"""Survey-gated 30-second Native bus terminus capture. CPU check avoids CARLA import."""
+"""Exact two-location Native bus capture; `--check` stays CARLA-free.
+
+Original velocity, control, pose, frame identities and pixels are retained. The
+route designation and human operator require later independent source review.
+"""
 import argparse
 import hashlib
 import json
+import math
+import os
+from pathlib import Path
 import queue
 import subprocess
 import sys
-import xml.etree.ElementTree as ET
-from pathlib import Path
+
 from geometry import check as geometry_check, open_drive
 
-RATE = 20
-FRAMES = 600
+ASSIGNMENT = 'training__C386410__LVMC-11-60-030-A1__bus_driver'
+TARGET_X = {'designated_terminus': 5.0, 'undesignated_street': 40.0}
 CAMERAS = (
-    ('overview', 1920, 1080, 10, -22, 18, -42, False),
-    ('approach', 1280, 720, -8, -13, 6, -18, False),
-    ('reference_corner', 1280, 720, 12, -15, 8, -35, False),
-    ('driver_reference', 1280, 720, -8, 0, 5, -10, True),
+    ('overview', 1920, 1080, 15, -12, 18, -45),
+    ('approach', 1280, 720, -15, -12, 8, -25),
+    ('reference_corner', 1280, 720, 5, -20, 7, -30),
+    ('driver_reference', 1280, 720, 25, 1, 7, -30),
 )
-DWELL_TARGET_S = {'probe_01': 8.0, 'probe_02': 18.0}
+FRAMES = 600
 
-def sha_file(path):
-    digest = hashlib.sha256()
-    with Path(path).open('rb') as stream:
-        for block in iter(lambda: stream.read(1024 * 1024), b''):
-            digest.update(block)
-    return digest.hexdigest()
+
+def sha(path):
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
 
 def check():
-    geo = geometry_check()
-    if FRAMES / RATE != 30 or len(CAMERAS) != 4 or len({c[0] for c in CAMERAS}) != 4:
-        raise ValueError('four-camera 30-second capture required')
-    if not (0 < DWELL_TARGET_S['probe_01'] < DWELL_TARGET_S['probe_02'] < 25):
-        raise ValueError('dwell comparison changed')
-    return {'passed': True, 'frames': FRAMES, 'rate_hz': RATE, 'cameras': [c[0] for c in CAMERAS], 'geometry': geo, 'native_imported': False, 'physical_acceptance_claimed': False}
+    geometry = geometry_check()
+    if (len(CAMERAS) != 4 or FRAMES / 20 != 30 or
+            not geometry['zone_x_m'][0] < TARGET_X['designated_terminus'] < geometry['zone_x_m'][1] or
+            not TARGET_X['undesignated_street'] > geometry['zone_x_m'][1]):
+        raise ValueError('Two-location one-way capture geometry differs')
+    return {'passed': True, 'geometry': geometry, 'cases': list(TARGET_X),
+            'frames': FRAMES, 'native_imported': False, 'physical_acceptance_claimed': False}
 
-def materialized_case(output_dir):
-    output = Path(output_dir).resolve()
-    config = json.loads((output / 'config.json').read_text())
-    selection = json.loads((output / 'candidate-selection.json').read_text())
-    case_id = config.get('selected_case_id')
-    if (case_id != config.get('case_id') or case_id != config.get('case', {}).get('case_id')
-            or case_id != selection.get('case_id') or selection.get('candidate_id') != 'primary'
-            or case_id.rsplit('__', 1)[-1] not in DWELL_TARGET_S):
-        raise ValueError('materialized exact case identity differs')
-    return case_id
-
-def survey(world, carla):
-    mapping = world.get_map()
-    root = ET.fromstring(mapping.to_opendrive())
-    signs = root.findall('.//signal')
-    if len(signs) != 1 or signs[0].attrib.get('name') != 'BUS ROUTE TERMINUS':
-        raise RuntimeError('Native route terminus marker readback differs')
-    if signs[0].attrib.get('unit') != 'none':
-        raise RuntimeError('Native marker unexpectedly declares a duration')
-    samples = []
-    for x in (-12, 0, 10, 20):
-        loc = carla.Location(x=x, y=-5.25, z=1)
-        wp = mapping.get_waypoint(loc, project_to_road=True, lane_type=carla.LaneType.Parking)
-        if wp is None or wp.road_id != 1 or wp.lane_id != -2:
-            raise RuntimeError(f'Native parking-zone lane readback differs at x={x}')
-        p = wp.transform.location
-        if abs(p.x - x) > 1 or abs(p.y + 5.25) > 1:
-            raise RuntimeError(f'Native parking-zone geometry differs at x={x}')
-        samples.append({'requested_x_m': x, 'native_xyz_m': [p.x, p.y, p.z], 'road_id': wp.road_id, 'lane_id': wp.lane_id})
-    return {'terminus_signal': signs[0].attrib, 'parking_lane_samples': samples, 'sign_pixels_verified': False, 'official_designation_verified': False}
 
 def execute(case_id, output_dir, host, port):
+    check()
+    if not case_id.startswith(ASSIGNMENT + '__') or case_id.split('__')[-1] not in TARGET_X:
+        raise ValueError('Unknown exact bus case')
+    output = Path(output_dir).resolve()
+    if not output.is_dir() or any((output / name).exists() for name in ('bus-history.jsonl', 'result.json')):
+        raise ValueError('Fresh materialized Native attempt required')
+    config = json.loads((output / 'config.json').read_text())
+    selection = json.loads((output / 'candidate-selection.json').read_text())
+    if (config.get('case_id') != case_id or config.get('selected_case_id') != case_id or
+            config.get('case', {}).get('case_id') != case_id or
+            selection.get('case_id') != case_id or selection.get('candidate_id') != 'primary'):
+        raise ValueError('Materialized exact bus case identity differs')
     repo = next((p for p in Path(__file__).resolve().parents if (p / 'batch.json').is_file()), None)
     if repo is None:
-        raise RuntimeError('Worker runtime root unavailable')
+        raise ValueError('Worker repository root absent')
+    # Guard direct runtime imports so path defaults never point outside this attempt.
+    os.environ['SCENARIO_PIPELINE_OUTPUT_ROOT'] = str(output)
     sys.path.insert(0, str(repo / 'runtime' / 'scenario_pipeline'))
     sys.path.insert(1, str(repo / 'runtime' / 'python'))
     import carla
     from pipeline_capture import PipelineCapture
-    from worker_exchange.native_output import FrameMap
-    from worker_exchange.native_output import seal_capture
+    from worker_exchange.native_output import FrameMap, seal_capture
     from worker_exchange.world_restore import snapshot, restore
-    from measure import measure
-    check()
-    suffix = case_id.rsplit('__', 1)[-1]
-    if suffix not in DWELL_TARGET_S:
-        raise ValueError('unknown exact case')
-    output = Path(output_dir).resolve()
-    if not output.is_dir() or materialized_case(output) != case_id:
-        raise ValueError('Native capture requires the exact materialized attempt')
+
     client = carla.Client(host, port)
     client.set_timeout(180)
     saved = snapshot(client)
     old = client.get_world()
     if saved['settings'].synchronous_mode or any(a.type_id.startswith(('vehicle.', 'walker.', 'sensor.', 'controller.')) for a in old.get_actors()):
-        raise RuntimeError('requires exclusive idle asynchronous Native world')
-    owned = []
-    queues = {}
-    encoders = {}
+        raise RuntimeError('Exclusive idle asynchronous Native world required')
+    owned, queues, encoders = [], {}, {}
     changed = False
     restoration = None
     try:
-        world = client.generate_opendrive_world(open_drive(), carla.OpendriveGenerationParameters(vertex_distance=.5, max_road_length=25, wall_height=0, additional_width=0, smooth_junctions=False, enable_mesh_visibility=True, enable_pedestrian_navigation=False))
+        world = client.generate_opendrive_world(open_drive(), carla.OpendriveGenerationParameters(
+            vertex_distance=.5, max_road_length=25, wall_height=0,
+            additional_width=0, smooth_junctions=False,
+            enable_mesh_visibility=True, enable_pedestrian_navigation=False))
         changed = True
         settings = world.get_settings()
         settings.synchronous_mode = True
@@ -105,102 +87,113 @@ def execute(case_id, output_dir, host, port):
         settings.max_substep_delta_time = .01
         settings.max_substeps = 10
         world.apply_settings(settings)
-        seen = survey(world, carla)
-        output.mkdir(parents=True)
-        (output / 'road.xodr').write_text(world.get_map().to_opendrive())
-        context = {'zone_x_m': [-2.0, 20.0], 'parking_lane_id': -2,
-                   'endpoint_id': 'native_road_1_parking_-2_terminus',
-                   'native_survey': seen, 'covered_non_tour_bus_claim': 'vehicle.mitsubishi.fusorosa',
-                   'operator_id': 'authored-bus-controller',
-                   'designation_authority_source': {'status': 'unverified', 'source': None},
-                   'designated_period_s': None,
-                   'designation_verified': False, 'actual_loading_activity_verified': False,
-                   'physical_sign_pixels_verified': False}
-        (output / 'terminus-context.json').write_text(json.dumps(context, indent=2) + '\n')
-        library = world.get_blueprint_library()
-        bp = library.find('vehicle.mitsubishi.fusorosa')
-        bp.set_attribute('role_name', 'c393261_route_bus')
-        bus = world.spawn_actor(bp, carla.Transform(carla.Location(x=-12, y=-5.25, z=1), carla.Rotation(yaw=0)))
+        world.set_weather(carla.WeatherParameters.ClearNoon)
+        road = world.get_map().to_opendrive()
+        (output / 'road.xodr').write_text(road)
+        if 'BUS ROUTE TERMINUS' not in road:
+            raise RuntimeError('Native terminus map marker readback absent')
+        zone_kind = 'route_destination' if case_id.endswith('designated_terminus') else 'other_street'
+        zone_id = 'route-destination-R1' if zone_kind == 'route_destination' else 'other-street-R1'
+        zone = {'kind': zone_kind, 'id': zone_id, 'route_id': 'R1'}
+        target = TARGET_X[case_id.split('__')[-1]]
+        lane_readback = []
+        for x in (target - 20, target):
+            waypoint = world.get_map().get_waypoint(carla.Location(x=x, y=-5.25, z=1),
+                project_to_road=True, lane_type=carla.LaneType.Parking)
+            if waypoint is None or waypoint.road_id != 1 or waypoint.lane_id != -2:
+                raise RuntimeError('Native one-way parking lane readback failed')
+            lane_readback.append({'requested_x_m': x, 'road_id': waypoint.road_id,
+                                  'lane_id': waypoint.lane_id,
+                                  'native_xy_m': [waypoint.transform.location.x,
+                                                  waypoint.transform.location.y]})
+        if zone_kind != 'other_street':
+            zone['designation_source'] = {'path': 'road.xodr', 'sha256': sha(output / 'road.xodr')}
+        context = {'vehicle_class': 'route_bus_non_tour', 'vehicle_class_verified': False,
+                   'route_id': 'R1', 'route_assignment_verified': False,
+                   'street_id': 'native-road-1', 'street_status_verified': False,
+                   'controller_policy': 'approach_then_stationary_brake_v1',
+                   'weather_policy': 'ClearNoon',
+                   'capture_profile': {'rate_hz': 20, 'frames': FRAMES,
+                                       'cameras': {name: [width, height] for name, width, height, *_ in CAMERAS}},
+                   'zone': zone, 'official_designation_verified': False,
+                   'route_designation_source': {'candidate_reference': zone.get('designation_source'),
+                                                'official_authority_verified': False},
+                   'native_lane_readback': lane_readback,
+                   'driver_presence_verified': False,
+                   'source_note': 'Authored OpenDRIVE marker is only a source candidate, not administrative designation.'}
+        (output / 'bus-context.json').write_text(json.dumps(context, indent=2) + '\n')
+        bp = world.get_blueprint_library().find('vehicle.mitsubishi.fusorosa')
+        bp.set_attribute('role_name', 'c386410_route_bus')
+        bus = world.try_spawn_actor(bp, carla.Transform(carla.Location(x=target - 20, y=-5.25, z=1), carla.Rotation(yaw=0)))
+        if bus is None:
+            raise RuntimeError('Native route bus spawn failed')
         owned.append(bus)
-        for name, width, height, x, y, z, pitch, attached in CAMERAS:
-            sensor_bp = library.find('sensor.camera.rgb')
-            sensor_bp.set_attribute('image_size_x', str(width))
-            sensor_bp.set_attribute('image_size_y', str(height))
-            sensor_bp.set_attribute('fov', '85')
-            sensor_bp.set_attribute('sensor_tick', '.05')
-            transform = carla.Transform(carla.Location(x=x, y=y, z=z), carla.Rotation(pitch=pitch))
-            camera = world.spawn_actor(sensor_bp, transform, attach_to=bus) if attached else world.spawn_actor(sensor_bp, transform)
+        for name, width, height, x, y, z, pitch in CAMERAS:
+            camera_bp = world.get_blueprint_library().find('sensor.camera.rgb')
+            for key, value in (('image_size_x', width), ('image_size_y', height),
+                               ('fov', 85), ('sensor_tick', .05)):
+                camera_bp.set_attribute(key, str(value))
+            camera = world.spawn_actor(camera_bp, carla.Transform(
+                carla.Location(x=target + x - 5, y=y, z=z), carla.Rotation(pitch=pitch)))
             owned.append(camera)
-            q = queue.Queue()
-            camera.listen(q.put)
-            queues[name] = q
-            encoders[name] = subprocess.Popen(['ffmpeg', '-nostdin', '-hide_banner', '-loglevel', 'error', '-y', '-f', 'rawvideo', '-pix_fmt', 'bgra', '-s', f'{width}x{height}', '-r', '20', '-i', '-', '-frames:v', '600', '-c:v', 'ffv1', '-level', '1', str(output / (name + '.mkv'))], stdin=subprocess.PIPE, stderr=subprocess.PIPE)
-        state = 'approach'
-        parked_since = None
+            received = queue.Queue()
+            camera.listen(received.put)
+            queues[name] = received
+            encoders[name] = subprocess.Popen(['ffmpeg', '-nostdin', '-hide_banner',
+                '-loglevel', 'error', '-n', '-f', 'rawvideo', '-pix_fmt', 'bgra',
+                '-s', f'{width}x{height}', '-r', '20', '-i', '-', '-frames:v',
+                str(FRAMES), '-c:v', 'ffv1', str(output / (name + '.mkv'))],
+                stdin=subprocess.PIPE, stderr=subprocess.PIPE)
         with PipelineCapture(client, bus, output, case_id, required_observations=[]) as capture, \
                 FrameMap(output / 'video_frames.jsonl') as frame_map, \
-                (output / 'terminus-history.jsonl').open('x') as history:
-            first_time = None
+                (output / 'bus-history.jsonl').open('x') as history:
+            first = None
             for index in range(FRAMES):
-                pose_before = bus.get_transform()
+                before = bus.get_transform().location.x
                 speed_before = bus.get_velocity().length()
-                if state == 'approach':
-                    if pose_before.location.x >= -1 and speed_before < .25:
-                        state = 'parked'
-                    control = carla.VehicleControl(throttle=.23 if pose_before.location.x < -1 else 0, brake=1 if pose_before.location.x >= -1 else 0, hand_brake=False)
-                elif state == 'parked':
-                    control = carla.VehicleControl(throttle=0, brake=1, hand_brake=True)
+                remaining = target - before
+                if remaining > 4:
+                    control = carla.VehicleControl(throttle=.3, brake=0, hand_brake=False)
+                elif remaining > .4 and speed_before > .2:
+                    control = carla.VehicleControl(throttle=0, brake=.7, hand_brake=False)
                 else:
-                    control = carla.VehicleControl(throttle=.35, brake=0, hand_brake=False)
+                    control = carla.VehicleControl(throttle=0, brake=1,
+                                                   hand_brake=speed_before < .2)
                 bus.apply_control(control)
-                frame = world.tick()
+                native_frame = world.tick()
                 snap = world.get_snapshot()
-                if snap.frame != frame:
-                    raise RuntimeError('Native frame/snapshot identity differs')
-                absolute = snap.timestamp.elapsed_seconds
-                if first_time is None:
-                    first_time = absolute
-                relative = absolute - first_time
-                pose = bus.get_transform()
-                velocity = bus.get_velocity()
-                speed = velocity.length()
-                if state == 'approach' and pose.location.x >= -1 and speed < .25:
-                    state = 'parked'
-                    parked_since = relative
-                if state == 'parked' and parked_since is not None and relative - parked_since >= DWELL_TARGET_S[suffix]:
-                    state = 'depart'
-                mapped = {}
-                for name in queues:
-                    image = queues[name].get(timeout=30)
-                    while image.frame < frame:
-                        image = queues[name].get(timeout=30)
-                    if image.frame != frame:
-                        raise RuntimeError('Original camera frame join failed: ' + name)
+                if snap.frame != native_frame:
+                    raise RuntimeError('Native frame/snapshot mismatch')
+                if first is None:
+                    first = snap.timestamp.elapsed_seconds
+                time_s = snap.timestamp.elapsed_seconds - first
+                camera_frames = {}
+                for name, received in queues.items():
+                    image = received.get(timeout=30)
+                    while image.frame < native_frame:
+                        image = received.get(timeout=30)
+                    if image.frame != native_frame:
+                        raise RuntimeError('Original camera/frame mismatch: ' + name)
                     encoders[name].stdin.write(image.raw_data)
-                    mapped[name] = image.frame
-                frame_map.append(frame, relative, camera_native_frames=mapped)
-                capture.capture(frame, relative, extra={'video_frame': index,
-                                 'native_bus_actor_id': bus.id})
-                history.write(json.dumps({'video_frame': index, 'native_frame': frame, 'time_s': relative, 'native_elapsed_seconds': absolute, 'subject_id': bus.id, 'blueprint_id': bus.type_id, 'position_xyz_m': [pose.location.x, pose.location.y, pose.location.z], 'velocity_xyz_mps': [velocity.x, velocity.y, velocity.z], 'controller_state': state, 'control': {'throttle': control.throttle, 'brake': control.brake, 'hand_brake': control.hand_brake}}) + '\n')
+                    camera_frames[name] = image.frame
+                frame_map.append(native_frame, time_s, camera_native_frames=camera_frames)
+                capture.capture(native_frame, time_s, extra={'video_frame': index,
+                                'native_bus_actor_id': bus.id})
+                pose, velocity = bus.get_transform(), bus.get_velocity()
+                occupied = zone_id if abs(pose.location.x - target) < 5 and abs(pose.location.y + 5.25) < 2 else None
+                history.write(json.dumps({'video_frame': index, 'native_frame': native_frame,
+                    'time_s': time_s, 'bus_speed_mps': math.sqrt(velocity.x**2 + velocity.y**2 + velocity.z**2),
+                    'parking_brake_applied': bool(control.hand_brake),
+                    'driver_present': True, 'driver_presence_source': 'authored_controller_only',
+                    'occupied_zone_id': occupied, 'position_xyz_m': [pose.location.x, pose.location.y, pose.location.z],
+                    'actor_id': bus.id, 'blueprint_id': bus.type_id}) + '\n')
         for name, process in encoders.items():
             process.stdin.close()
             stderr = process.stderr.read()
-            if process.wait(timeout=180) or not (output / (name + '.mkv')).is_file():
-                raise RuntimeError('Original camera encoding failed: ' + name + ': ' + stderr.decode()[-400:])
-        source_names = ['road.xodr', 'terminus-context.json', 'terminus-history.jsonl',
-                        'video_frames.jsonl', 'trace.jsonl', 'capture/manifest.json'] + \
-                       [name + '.mkv' for name in queues]
-        review = {'assignment_id': case_id.rsplit('__', 1)[0], 'case_id': case_id,
-                  'review_kind': 'original_native_source',
-                  'source_sha256': {name: sha_file(output / name) for name in source_names},
-                  'official_designation_verified': False,
-                  'physical_acceptance_claimed': False}
-        (output / 'terminus-review.json').write_text(json.dumps(review, indent=2) + '\n')
-        measured = measure(output / 'terminus-history.jsonl', output / 'terminus-context.json')
-        (output / 'terminus-measurement.json').write_text(json.dumps(measured, indent=2) + '\n')
-        outcome = {'frames': FRAMES, 'camera_names': list(queues), 'measurement': measured, 'physical_acceptance_claimed': False}
+            if process.wait(timeout=180):
+                raise RuntimeError('Original camera encoder failed: ' + name + ': ' + stderr.decode()[-300:])
     except BaseException as error:
-        (output / 'native-run-status.json').write_text(json.dumps({'errors': [str(error)], 'physical_acceptance_claimed': False}) + '\n')
+        (output / 'native-run-status.json').write_text(json.dumps({'errors': [str(error)]}) + '\n')
         raise
     finally:
         for process in encoders.values():
@@ -221,25 +214,27 @@ def execute(case_id, output_dir, host, port):
         'physical_acceptance_claimed': False}) + '\n')
     seal_capture(output, frames=FRAMES, restoration=restoration, errors=[],
                  encoder_exit_codes={name: process.returncode for name, process in encoders.items()},
-                 context={'assignment_id': case_id.rsplit('__', 1)[0],
-                          'case_id': case_id, 'native_terminus_surveyed': True})
-    return outcome
+                 context={'assignment_id': ASSIGNMENT, 'case_id': case_id})
+    return {'case_id': case_id, 'frames': FRAMES, 'source_joins_retained': True,
+            'official_designation_verified': False, 'physical_acceptance_claimed': False}
 
-def main(argv=None):
-    p = argparse.ArgumentParser()
-    p.add_argument('--check', action='store_true')
-    p.add_argument('--output-dir')
-    p.add_argument('--host', default='127.0.0.1')
-    p.add_argument('--port', type=int, default=2000)
-    a = p.parse_args(argv)
-    if a.check:
-        if a.output_dir:
-            raise SystemExit('--check cannot capture')
-        print(json.dumps(check()))
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--check', action='store_true')
+    parser.add_argument('--case-id')
+    parser.add_argument('--output-dir')
+    parser.add_argument('--host', default='127.0.0.1')
+    parser.add_argument('--port', type=int, default=2000)
+    args = parser.parse_args()
+    if args.check:
+        print(json.dumps(check(), sort_keys=True))
     else:
-        if not a.output_dir:
-            raise SystemExit('--output-dir required')
-        print(json.dumps(execute(materialized_case(a.output_dir), a.output_dir, a.host, a.port)))
+        if not args.output_dir:
+            parser.error('--output-dir required')
+        case_id = args.case_id or json.loads((Path(args.output_dir) / 'config.json').read_text())['case_id']
+        print(json.dumps(execute(case_id, args.output_dir, args.host, args.port)))
+
 
 if __name__ == '__main__':
     main()

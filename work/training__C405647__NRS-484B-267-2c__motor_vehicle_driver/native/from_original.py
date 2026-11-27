@@ -11,6 +11,7 @@ from pathlib import Path
 
 from measure_readiness import ASSIGNMENT, CAMERAS, FRAMES, lines
 from audit_capture import audit as audit_capture
+from branch_source_review import validate as validate_branch_review
 from audit_capture import BRANCH_CASES, exact_request
 from scene import CASES
 
@@ -93,7 +94,9 @@ def process(directory):
     review = json.loads(review_path.read_text())
     if review.get("assignment_id") != ASSIGNMENT or review.get("review_kind") != "original_source_review":
         raise ValueError("Independent original-source review required")
-    trace = convert(lines(frame_path), lines(actor_path), review.get("frame_annotations", []))
+    observed = lines(actor_path)
+    branch_review = validate_branch_review(captured_request, review, observed)
+    trace = convert(lines(frame_path), observed, review.get("frame_annotations", []))
     destination = directory / "approach_trace.jsonl"
     with destination.open("x") as stream:
         for row in trace:
@@ -101,6 +104,7 @@ def process(directory):
     return {"trace": str(destination), "rows": len(trace),
             "case_id": captured_request["case_id"],
             "capture_audit_sources": capture_audit["source_sha256"],
+            "branch_review": branch_review,
             "source_kind": "original_native_motion", "legal_verdict": None}
 
 

@@ -6,8 +6,8 @@ ZONE_X_M = [-2.0, 20.0]
 
 def open_drive():
     root = ET.Element('OpenDRIVE')
-    ET.SubElement(root, 'header', revMajor='1', revMinor='4', name='C393261-residential-terminus', version='1', date='2026-11-23', north='20', south='-20', east='100', west='-100', vendor='full-train-worker')
-    road = ET.SubElement(root, 'road', id='1', name='residential-route-endpoint', length='200', junction='-1')
+    ET.SubElement(root, 'header', revMajor='1', revMinor='4', name='C386410-route-standing', version='1', date='2026-11-23', north='20', south='-20', east='100', west='-100', vendor='full-train-worker')
+    road = ET.SubElement(root, 'road', id='1', name='one-way-route-street', length='200', junction='-1')
     ET.SubElement(road, 'link')
     geom = ET.SubElement(ET.SubElement(road, 'planView'), 'geometry', s='0', x='-100', y='0', hdg='0', length='200')
     ET.SubElement(geom, 'line')

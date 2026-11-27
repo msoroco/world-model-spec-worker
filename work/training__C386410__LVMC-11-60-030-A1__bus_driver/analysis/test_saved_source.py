@@ -46,7 +46,7 @@ with tempfile.TemporaryDirectory() as directory:
     print("positive saved-source join")
     for label, name, data, expected in (
         ("designation", "authority/route-R-1.json", b"changed", "hash differs"),
-        ("camera", "right.mkv", None, "missing required source"),
+        ("camera", "driver_reference.mkv", None, "missing required source"),
         ("frame", "video_frames.jsonl", ("\n".join(map(json.dumps, [dict(maps[0], native_frame=9), *maps[1:]])) + "\n").encode(), "identities differ"),
     ):
         original = (root / name).read_bytes()

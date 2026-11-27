@@ -1,0 +1,94 @@
+{
+  "format": "c405647-native-branch-request-v1",
+  "assignment_id": "training__C405647__NRS-484B-267-2c__motor_vehicle_driver",
+  "case_id": "training__C405647__NRS-484B-267-2c__motor_vehicle_driver__officer_directed_otherwise__braking_capacity_available",
+  "law_id": "NRS-484B-267-2c",
+  "cell_id": "C405647",
+  "actor": "motor_vehicle_driver",
+  "layout": "road",
+  "maneuver": "travel",
+  "control": "emergency_vehicle",
+  "source_map": "<OpenDRIVE><header revMajor=\"1\" revMinor=\"4\" name=\"C405647-emergency-approach\" version=\"1\" north=\"20\" south=\"-20\" east=\"110\" west=\"-110\" vendor=\"worker-authored\" /><road id=\"405647\" name=\"travel-and-shoulder\" length=\"200\" junction=\"-1\"><link /><planView><geometry s=\"0\" x=\"-100\" y=\"0\" hdg=\"0\" length=\"200\"><line /></geometry></planView><elevationProfile><elevation s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /></elevationProfile><lanes><laneOffset s=\"0\" a=\"0\" b=\"0\" c=\"0\" d=\"0\" /><laneSection s=\"0\"><left /><center><lane id=\"0\" type=\"none\" level=\"false\" /></center><right><lane id=\"-1\" type=\"driving\" level=\"false\"><width sOffset=\"0\" a=\"3.5\" b=\"0\" c=\"0\" d=\"0\" /></lane><lane id=\"-2\" type=\"shoulder\" level=\"false\"><width sOffset=\"0\" a=\"3.0\" b=\"0\" c=\"0\" d=\"0\" /></lane></right></laneSection></lanes><objects /><signals /></road></OpenDRIVE>",
+  "road_id": 405647,
+  "ego_blueprint": "vehicle.tesla.model3",
+  "emergency_blueprint": "vehicle.dodge.charger_police",
+  "ego_start_xyz_m": [
+    -80,
+    -1.75,
+    1.5
+  ],
+  "ego_cruise_speed_mps": 5.0,
+  "emergency_start_xyz_m": [
+    15,
+    -5.0,
+    1.5
+  ],
+  "ego_destination_xy_m": [
+    80,
+    -1.75
+  ],
+  "emergency_motion_start_frame": 150,
+  "emergency_target_speed_mps": 0.5,
+  "light_request": "special1_and_special2",
+  "light_qualification": "pending_independent_source_review",
+  "visible_indication": "pending_original_four_camera_review",
+  "officer_direction": "directed_otherwise_pending_original_review",
+  "ego_response_policy": {
+    "trigger_frame": 150,
+    "brake_onset_frame": 180,
+    "brake_command": 0.8
+  },
+  "comparison_variable": "ego_stop_preparedness",
+  "requested_setting": "braking_capacity_available",
+  "physical_risk_assessment": {
+    "road_runoff": "Unbraked contrast may reach the east map edge; requested cruise is bounded to 5 m/s but original trajectory must be checked.",
+    "camera_visibility": "Four requested views may not show qualifying lamp color and motion throughout the approach; original pixels require review.",
+    "subject_qualification": "A CARLA police blueprint and Special1 request do not establish statutory vehicle authorization or lamp compliance.",
+    "response_proxy": "Brake actuation and stopping distance are engineering observations, not a legal threshold for prepared to stop.",
+    "source_indication": "A proxy arm pose is not proof that the source driver or an officer gave a visible, applicable signal; original actor, identity, pixels and timing need review."
+  },
+  "rate_hz": 20,
+  "duration_s": 30,
+  "frames": 600,
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720
+    }
+  ],
+  "physical_acceptance_claimed": false,
+  "legal_verdict": null,
+  "variant": "officer_directed_otherwise",
+  "source_driver_proxy": null,
+  "officer_actor": {
+    "blueprint": "walker.pedestrian.0002",
+    "spawn_xyz_m": [
+      -25,
+      -8.25,
+      1.5
+    ],
+    "direction_frames": [
+      150,
+      199
+    ],
+    "arm_side": "R",
+    "requested_direction": "continue_travel",
+    "readback": "original_native_bone_pose_and_camera_review_required"
+  }
+}

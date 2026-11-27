@@ -10,7 +10,7 @@ import json
 from pathlib import Path
 import re
 
-CAMERAS = ("front", "rear", "left", "right")
+CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 ZONE_KINDS = ("bus_stop", "bus_stand", "route_origin", "route_destination",
               "passenger_loading_zone", "other_street")
 
@@ -101,6 +101,19 @@ def measure_saved(root, *, source_kind="original_native"):
             raise ValueError("missing required source: " + str(name))
         return path.read_bytes()
 
+    seal = None
+    if source_kind == "original_native":
+        provenance = json.loads(read("acquisition-provenance.json"))
+        seal = json.loads(read("capture-seal.json"))
+        if (provenance.get("provenance_kind") != "native" or
+                provenance.get("diagnostic_fixture") is not False or
+                seal.get("format") != "worker-sealed-capture" or
+                seal.get("provenance_kind") != "native" or
+                seal.get("diagnostic_fixture") is not False or
+                seal.get("frames") != 600 or
+                seal.get("restoration", {}).get("restored") is not True):
+            raise ValueError("original Native acquisition seal missing or invalid")
+
     context = json.loads(read("bus-context.json"))
     zone = context.get("zone", {})
     reference = zone.get("designation_source")
@@ -119,6 +132,10 @@ def measure_saved(root, *, source_kind="original_native"):
     maps = lines("video_frames.jsonl")
     camera_hashes = {name + ".mkv": hashlib.sha256(read(name + ".mkv")).hexdigest()
                      for name in CAMERAS}
+    if seal is not None:
+        for name in ("bus-context.json", "bus-history.jsonl", "video_frames.jsonl", *camera_hashes):
+            if seal.get("sources", {}).get(name) != hashlib.sha256(read(name)).hexdigest():
+                raise ValueError("saved source differs from sealed Native capture: " + name)
     if len(history) != len(maps):
         raise ValueError("Native history and camera frame map length differ")
     frames = []
@@ -150,4 +167,7 @@ def measure_saved(root, *, source_kind="original_native"):
     if reference:
         result["source_sha256"][reference["path"]] = reference["sha256"]
     result["designation_authority_verified"] = False
+    result["route_assignment_verified"] = context.get("route_assignment_verified") is True
+    result["vehicle_class_verified"] = context.get("vehicle_class_verified") is True
+    result["driver_presence_verified"] = context.get("driver_presence_verified") is True
     return result

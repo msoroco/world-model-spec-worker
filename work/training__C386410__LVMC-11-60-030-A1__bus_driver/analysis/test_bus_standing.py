@@ -12,7 +12,7 @@ from bus_standing import measure
 def fixture():
     frames = [{
         "frame_id": i, "sim_time_s": i / 20,
-        "camera_frames": {name: i for name in ("front", "rear", "left", "right")},
+        "camera_frames": {name: i for name in ("overview", "approach", "reference_corner", "driver_reference")},
         "bus_speed_mps": 0.0 if 100 <= i < 200 else 5.0,
         "parking_brake_applied": 120 <= i < 200,
         "driver_present": i < 150 or i >= 180,
@@ -33,7 +33,7 @@ assert result["standing_or_parking_judgment"] == "unresolved"
 print("positive", json.dumps(result, sort_keys=True))
 
 for name, mutate, expected in [
-    ("camera", lambda f, c: f[130]["camera_frames"].pop("right"), "four source-camera"),
+    ("camera", lambda f, c: f[130]["camera_frames"].pop("driver_reference"), "four source-camera"),
     ("brake", lambda f, c: f[130].pop("parking_brake_applied"), "brake or driver-presence"),
     ("driver", lambda f, c: f[130].pop("driver_present"), "brake or driver-presence"),
     ("designation", lambda f, c: c["zone"].pop("designation_source"), "designation reference"),

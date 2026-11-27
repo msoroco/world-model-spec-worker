@@ -7,6 +7,8 @@ from pathlib import Path
 from measure_readiness import CAMERAS, FRAMES, lines, measure
 from scene import CASES, request
 from audit_capture import audit as audit_capture
+from audit_capture import BRANCH_CASES, exact_request
+from branch_source_review import validate as validate_branch_review
 
 CHANNELS = ('ego_motion', 'emergency_motion', 'flashing_lights',
             'visible_indication', 'officer_direction', 'braking_response')
@@ -80,7 +82,10 @@ def finalize(attempt, output):
     construction = json.loads((attempt / 'construction.json').read_text())
     captured_request = json.loads((attempt / 'native-request.json').read_text())
     condition = captured_request.get('requested_setting')
-    if (condition not in CASES or captured_request != request(condition)
+    case_key = (captured_request['variant'] + '__' + condition
+                if captured_request.get('variant') is not None and isinstance(condition, str)
+                else condition)
+    if (case_key not in CASES + BRANCH_CASES or captured_request != exact_request(case_key)
             or config.get('case_id') != captured_request['case_id']
             or construction.get('case_id') != captured_request['case_id']
             or config.get('candidate_id') not in ('primary', 'fallback1')):
@@ -91,11 +96,19 @@ def finalize(attempt, output):
     observed = measure(attempt)
     capture_audit = None
     if observed['source_kind'] != 'synthetic_diagnostic':
-        capture_audit = audit_capture(attempt, condition)
+        capture_audit = audit_capture(attempt, case_key)
     frames, trace = lines(attempt / 'video_frames.jsonl'), lines(attempt / 'approach_trace.jsonl')
     review = json.loads((attempt / 'emergency_review.json').read_text())
     if len(frames) != FRAMES or len(trace) != FRAMES:
         raise ValueError('Full saved source span required')
+    branch_review = None
+    if captured_request.get('variant') is not None and observed['source_kind'] != 'synthetic_diagnostic':
+        actor_path = attempt / 'observed-actors.jsonl'
+        if not actor_path.is_file():
+            raise ValueError('Missing original branch actor source')
+        branch_review = validate_branch_review(captured_request, review, lines(actor_path))
+        if observed['source_kind'] != 'original_source_review':
+            raise ValueError('Branch finalization requires original source review')
     values = {
         'ego_motion': lambda row: {'speed_mps': row['ego_speed_mps'], 'surface_gap_m': row['surface_gap_m']},
         'emergency_motion': lambda row: {'speed_mps': row['emergency_speed_mps']},
@@ -127,6 +140,7 @@ def finalize(attempt, output):
     report = {'format': 'c405647-2c-saved-analysis-v1', 'case_id': captured_request['case_id'],
               'measurements': measurements,
               'original_capture_audit': capture_audit,
+              'branch_source_review': branch_review,
               'physical_acceptance_claimed': False, 'legal_verdict_claimed': False}
     requested_brake = int(condition == 'braking_capacity_available')
     observed_brake = int(observed['first_brake_frame'] is not None)

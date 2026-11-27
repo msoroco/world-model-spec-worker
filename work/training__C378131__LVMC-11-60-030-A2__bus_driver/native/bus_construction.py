@@ -41,6 +41,10 @@ def constructed_scene(client, carla, scene):
         blueprint = library.find(scene["ego"]["blueprint"])
         if blueprint is None:
             raise RuntimeError("bus blueprint unavailable")
+        if blueprint.has_attribute("role_name"):
+            blueprint.set_attribute("role_name", "tour_bus_requested" if
+                                    scene["vehicle_class_requested"] == "tour_bus" else
+                                    "route_bus_requested")
         ego = world.try_spawn_actor(blueprint, transform(carla, scene["ego"]["start_xyz"],
                                                        yaw=scene["ego"]["heading_deg"]))
         if ego is None:

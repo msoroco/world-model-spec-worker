@@ -4,7 +4,7 @@ import xml.etree.ElementTree as ET
 
 ZONE_KINDS = ("bus_stop", "bus_stand", "passenger_loading_zone",
               "route_origin", "route_destination", "other_street")
-CAMERAS = ("front", "rear", "left", "right")
+CAMERAS = ("overview", "approach", "reference_corner", "driver_reference")
 RATE_HZ = 20
 FRAMES = 600
 
@@ -56,15 +56,16 @@ def request(zone_kind, *, vehicle_class="route_bus_non_tour", emergency=False):
                       "start_xyz": [-10, -5.5, .5], "target_door_xyz": [-12, -3.2, .5]},
         "controller": {"halt_request_frame": 90, "door_open_request_frame": 140,
                        "passenger_walk_request_frame": 170, "door_close_request_frame": 420,
-                       "resume_request_frame": 480},
+                       "resume_request_frame": 480,
+                       "mechanical_fault_requested": emergency},
         "cameras": [
-            {"name": "front", "xyz": [-2, -11, 8], "pitch": -24, "yaw": 160,
+            {"name": "overview", "xyz": [-12, -17, 18], "pitch": -42, "yaw": 40,
              "size": [1920, 1080]},
-            {"name": "rear", "xyz": [-12, -17, 18], "pitch": -42, "yaw": 40,
+            {"name": "approach", "xyz": [-2, -11, 8], "pitch": -24, "yaw": 160,
              "size": [1280, 720]},
-            {"name": "left", "xyz": [-12, -9, 6], "pitch": -24, "yaw": 70,
+            {"name": "reference_corner", "xyz": [-12, -9, 6], "pitch": -24, "yaw": 70,
              "size": [1280, 720]},
-            {"name": "right", "xyz": [1, 0, 2], "pitch": -8, "yaw": 0,
+            {"name": "driver_reference", "xyz": [1, 0, 2], "pitch": -8, "yaw": 0,
              "attach_to_ego": True, "size": [1280, 720]}],
         "rate_hz": RATE_HZ, "planned_frames": FRAMES, "duration_s": 30,
         "designation_authority_confirmed": False,
@@ -82,9 +83,11 @@ def validate(scene):
         raise ValueError("loading-place marker missing")
     if scene["zone_kind"] not in ZONE_KINDS or not scene["route_id"]:
         raise ValueError("route or loading location missing")
+    if scene["controller"]["mechanical_fault_requested"] is not scene["emergency_requested"]:
+        raise ValueError("emergency trigger and case differ")
     if {item["name"] for item in scene["cameras"]} != set(CAMERAS):
         raise ValueError("four source cameras missing")
-    if any(tuple(item["size"]) != ((1920, 1080) if item["name"] == "front" else
+    if any(tuple(item["size"]) != ((1920, 1080) if item["name"] == "overview" else
                                     (1280, 720)) for item in scene["cameras"]):
         raise ValueError("capture profile differs")
     if (scene["rate_hz"], scene["planned_frames"], scene["duration_s"]) != (20, 600, 30):

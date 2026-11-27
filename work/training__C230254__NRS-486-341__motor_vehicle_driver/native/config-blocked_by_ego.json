@@ -1,0 +1,175 @@
+{
+  "case_id": "training__C230254__NRS-486-341__motor_vehicle_driver__blocked_by_ego",
+  "selected_case_id": "training__C230254__NRS-486-341__motor_vehicle_driver__blocked_by_ego",
+  "law_id": "NRS-486-341",
+  "cell_id": "C230254",
+  "actor": "motor_vehicle_driver",
+  "frozen_cell": {
+    "layout": "road",
+    "maneuver": "travel",
+    "control": "motorcycle"
+  },
+  "requested_setting": "blocked_by_ego",
+  "rate_hz": 20,
+  "duration_s": 30,
+  "frames": 600,
+  "subject_blueprint": "vehicle.tesla.model3",
+  "protected_blueprint": "vehicle.kawasaki.ninja",
+  "subject_lateral_offset_m": 2.5,
+  "subject_behind_m": 8.0,
+  "subject_throttle": 0.26,
+  "subject_steer": 0.0,
+  "protected_throttle": 0.2,
+  "subject_controller": "constant_lane_progress_with_lateral_target",
+  "protected_controller": "constant_lane_progress",
+  "required_atoms": [
+    "kin.position",
+    "kin.speed"
+  ],
+  "physical_completion": {},
+  "legal_verdict": null,
+  "cameras": [
+    {
+      "name": "overview",
+      "width": 1920,
+      "height": 1080,
+      "fps": 20,
+      "fov_deg": 95,
+      "location_xyz_m": [
+        -7,
+        0,
+        5
+      ],
+      "rotation_pyr_deg": [
+        -20,
+        0,
+        0
+      ],
+      "pose_strategy": "ego_relative_source_camera"
+    },
+    {
+      "name": "approach",
+      "width": 1280,
+      "height": 720,
+      "fps": 20,
+      "fov_deg": 85,
+      "location_xyz_m": [
+        3,
+        0,
+        2
+      ],
+      "rotation_pyr_deg": [
+        -4,
+        0,
+        0
+      ],
+      "pose_strategy": "ego_relative_source_camera"
+    },
+    {
+      "name": "reference_corner",
+      "width": 1280,
+      "height": 720,
+      "fps": 20,
+      "fov_deg": 90,
+      "location_xyz_m": [
+        -3,
+        3,
+        2
+      ],
+      "rotation_pyr_deg": [
+        -5,
+        -35,
+        0
+      ],
+      "pose_strategy": "ego_relative_source_camera"
+    },
+    {
+      "name": "driver_reference",
+      "width": 1280,
+      "height": 720,
+      "fps": 20,
+      "fov_deg": 95,
+      "location_xyz_m": [
+        -7,
+        0,
+        2
+      ],
+      "rotation_pyr_deg": [
+        0,
+        180,
+        0
+      ],
+      "pose_strategy": "ego_relative_source_camera"
+    }
+  ],
+  "recording_description": {
+    "channels": [
+      {
+        "name": "lane_use_original_geometry",
+        "method": "Original CARLA actor bounding boxes and map waypoint lane polygon at 20 Hz",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames",
+        "unit": "structured",
+        "reference_frame": "common Native world XY and synchronized source frame",
+        "uncertainty": "local lane strip and unreviewed chapter 486 context do not decide full use"
+      },
+      {
+        "name": "four_camera_video",
+        "method": "four synchronized original RGB cameras",
+        "sampling_rate_hz": 20,
+        "time_window": "600 frames",
+        "unit": "structured",
+        "reference_frame": "Native frame map",
+        "uncertainty": "fixture pixels do not establish physical visibility"
+      }
+    ],
+    "context_inputs": [
+      {
+        "name": "chapter_486_context",
+        "unit": "structured",
+        "method": "Original survey and cited public maintenance/access and vehicle classification source packet"
+      }
+    ],
+    "limitations": [
+      "Motorcycle classification and chapter 486 highway status require operator original-source review",
+      "Full use and deprivation remain unresolved qualitative standards"
+    ]
+  },
+  "map_name": "Town01",
+  "case": {
+    "case_id": "training__C230254__NRS-486-341__motor_vehicle_driver__blocked_by_ego",
+    "recording_description": {
+      "channels": [
+        {
+          "name": "lane_use_original_geometry",
+          "method": "Original CARLA actor bounding boxes and map waypoint lane polygon at 20 Hz",
+          "sampling_rate_hz": 20,
+          "time_window": "600 frames",
+          "unit": "structured",
+          "reference_frame": "common Native world XY and synchronized source frame",
+          "uncertainty": "local lane strip and unreviewed chapter 486 context do not decide full use"
+        },
+        {
+          "name": "four_camera_video",
+          "method": "four synchronized original RGB cameras",
+          "sampling_rate_hz": 20,
+          "time_window": "600 frames",
+          "unit": "structured",
+          "reference_frame": "Native frame map",
+          "uncertainty": "fixture pixels do not establish physical visibility"
+        }
+      ],
+      "context_inputs": [
+        {
+          "name": "chapter_486_context",
+          "unit": "structured",
+          "method": "Original survey and cited public maintenance/access and vehicle classification source packet"
+        }
+      ],
+      "limitations": [
+        "Motorcycle classification and chapter 486 highway status require operator original-source review",
+        "Full use and deprivation remain unresolved qualitative standards"
+      ]
+    }
+  }
+}

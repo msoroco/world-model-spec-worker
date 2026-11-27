@@ -155,6 +155,8 @@ def branch_indication(carla, item, built, index):
             rows[field] = {"native_bones_read_back": True,
                            "original_pixel_visibility_verified": False,
                            "source_identity_verified": False}
+        if field in rows:
+            rows[field]["native_actor_id"] = actor.id
     return rows
 
 
