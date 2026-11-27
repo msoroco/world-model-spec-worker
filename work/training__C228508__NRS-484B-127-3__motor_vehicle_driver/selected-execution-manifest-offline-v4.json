@@ -1,0 +1,342 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "training__C228508__NRS-484B-127-3__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "status": "partial",
+  "cases": [
+    {
+      "case_id": "training__C228508__NRS-484B-127-3__motor_vehicle_driver__probe_a",
+      "kind": "delivery",
+      "construction": "selected/primary/construction.json",
+      "construction_sha256": "7c4744c59a7a88d3097f1238b796eaca5cd7c4a2630429161716778139f0fdcb",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native group spacing and entrant lane transition may drift under velocity control"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected/fallback1/construction.json",
+          "construction_sha256": "027ad47ae67e84941a2bd9d656e8293a94a41050dc18838d13c7e1ced9a954bc",
+          "trigger": {
+            "source": "native_samples.jsonl",
+            "metric": "minimum original consecutive-body clearance",
+            "failure_condition": "Primary clearance or entrant transition misses its predeclared engineering target"
+          },
+          "changed_knobs": [
+            "group speed 6 m/s to 5 m/s"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "027ad47ae67e84941a2bd9d656e8293a94a41050dc18838d13c7e1ced9a954bc",
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C228508__NRS-484B-127-3__motor_vehicle_driver/selected-execution-manifest.json --case training__C228508__NRS-484B-127-3__motor_vehicle_driver__probe_a --candidate fallback1 --output .runtime-work/c228508-offline/v4-probe_a-fallback1 --python $PWD/.venv-cpu/bin/python",
+            "log": "selected/probe_a/fallback1/offline.log",
+            "log_sha256": "d160dc9a8afafbdace47d1cd6f2ad76ebe6e6b56414663a3d4ef8e3f832ce932"
+          }
+        }
+      ],
+      "measurement_contract": "selected-probe_a-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-analysis-report"
+      },
+      "fixture_recipe": "work/training__C228508__NRS-484B-127-3__motor_vehicle_driver/selected-probe_a-fixture-recipe.json",
+      "delivery_readiness": "incomplete",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "drv.following": {
+          "entrypoint": "finalize.py",
+          "method": "Frame-joined original actor body, lane and velocity readback; no legal safety inference",
+          "evidence": [
+            "native_samples.jsonl",
+            "native-source-inventory.json",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "caravan_history.jsonl",
+            "authored-context.json"
+          ]
+        },
+        "rel.surface_gap": {
+          "entrypoint": "finalize.py",
+          "method": "Frame-joined original actor body, lane and velocity readback; no legal safety inference",
+          "evidence": [
+            "native_samples.jsonl",
+            "native-source-inventory.json",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "caravan_history.jsonl",
+            "authored-context.json"
+          ]
+        },
+        "drv.queue_behind": {
+          "entrypoint": "finalize.py",
+          "method": "Frame-joined original actor body, lane and velocity readback; no legal safety inference",
+          "evidence": [
+            "native_samples.jsonl",
+            "native-source-inventory.json",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "caravan_history.jsonl",
+            "authored-context.json"
+          ]
+        },
+        "rel.same_direction": {
+          "entrypoint": "finalize.py",
+          "method": "Frame-joined original actor body, lane and velocity readback; no legal safety inference",
+          "evidence": [
+            "native_samples.jsonl",
+            "native-source-inventory.json",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "caravan_history.jsonl",
+            "authored-context.json"
+          ]
+        },
+        "ru.trailer_or_combination": {
+          "entrypoint": "finalize.py",
+          "method": "Frame-joined original actor body, lane and velocity readback; no legal safety inference",
+          "evidence": [
+            "native_samples.jsonl",
+            "native-source-inventory.json",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "caravan_history.jsonl",
+            "authored-context.json"
+          ]
+        },
+        "drv.lane_change_feasible": {
+          "entrypoint": "finalize.py",
+          "method": "Frame-joined original actor body, lane and velocity readback; no legal safety inference",
+          "evidence": [
+            "native_samples.jsonl",
+            "native-source-inventory.json",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "caravan_history.jsonl",
+            "authored-context.json"
+          ]
+        },
+        "kin.speed": {
+          "entrypoint": "finalize.py",
+          "method": "Frame-joined original actor body, lane and velocity readback; no legal safety inference",
+          "evidence": [
+            "native_samples.jsonl",
+            "native-source-inventory.json",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "caravan_history.jsonl",
+            "authored-context.json"
+          ]
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C228508__NRS-484B-127-3__motor_vehicle_driver__probe_a",
+        "sets": [
+          "demo-train",
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "9c222e20adfe2759d6397a775d2ac36a13a95c0cfc7a3cfced1b4937a0ed0e03",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C228508__NRS-484B-127-3__motor_vehicle_driver/delivery_audit.py --case training__C228508__NRS-484B-127-3__motor_vehicle_driver__probe_a --self-test",
+        "test_exit_code": 0,
+        "test_log": "selected/probe_a/delivery-positive.log",
+        "test_log_sha256": "80e6f7af45047719178874d9bdca19aed92772f8becbf6b4196ee93779b83259",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C228508__NRS-484B-127-3__motor_vehicle_driver/delivery_audit.py --case training__C228508__NRS-484B-127-3__motor_vehicle_driver__probe_a --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Exact original Native result missing",
+        "negative_log": "selected/probe_a/delivery-negative.log",
+        "negative_log_sha256": "fc882b3487fc6bd43d39fb2074b2f4be58b798357900acf67518183617f5af36"
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "7c4744c59a7a88d3097f1238b796eaca5cd7c4a2630429161716778139f0fdcb",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C228508__NRS-484B-127-3__motor_vehicle_driver/selected-execution-manifest.json --case training__C228508__NRS-484B-127-3__motor_vehicle_driver__probe_a --candidate primary --output .runtime-work/c228508-offline/v4-probe_a-primary --python $PWD/.venv-cpu/bin/python",
+        "log": "selected/probe_a/primary/offline.log",
+        "log_sha256": "cac80b17b9e65b1db361b3b9fc8f837db793c31c1faa08750b8e637541cf1404"
+      },
+      "physical_preparation": {
+        "receipt": "selected/probe_a/physical/physical-preparation.json",
+        "sha256": "8e651d31a07268583dbde5fc59e00649c84a3feeb91b45a1250021d9dab82fb8"
+      }
+    },
+    {
+      "case_id": "training__C228508__NRS-484B-127-3__motor_vehicle_driver__probe_b",
+      "kind": "delivery",
+      "construction": "selected/probe_b/primary/construction.json",
+      "construction_sha256": "03918dd9e9ae931ff1480a42679a85b3822f1f45e375a5e2683c30065e92424c",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Native group spacing and entrant lane transition may drift under velocity control"
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "selected/probe_b/fallback1/construction.json",
+          "construction_sha256": "8ad834874510e8ba7abf502c9c5cfa8a3b06efba27cde9d10101325489844713",
+          "trigger": {
+            "source": "native_samples.jsonl",
+            "metric": "minimum original consecutive-body clearance",
+            "failure_condition": "Primary clearance or entrant transition misses its predeclared engineering target"
+          },
+          "changed_knobs": [
+            "group speed 6 m/s to 5 m/s"
+          ],
+          "offline": {
+            "exit_code": 0,
+            "construction_sha256": "8ad834874510e8ba7abf502c9c5cfa8a3b06efba27cde9d10101325489844713",
+            "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C228508__NRS-484B-127-3__motor_vehicle_driver/selected-execution-manifest.json --case training__C228508__NRS-484B-127-3__motor_vehicle_driver__probe_b --candidate fallback1 --output .runtime-work/c228508-offline/v4-probe_b-fallback1 --python $PWD/.venv-cpu/bin/python",
+            "log": "selected/probe_b/fallback1/offline.log",
+            "log_sha256": "8f818dbebb2322603129acd58545b861b257da886034299d1b1ccc70a8df4e87"
+          }
+        }
+      ],
+      "measurement_contract": "selected-probe_b-measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-analysis-report"
+      },
+      "fixture_recipe": "work/training__C228508__NRS-484B-127-3__motor_vehicle_driver/selected-probe_b-fixture-recipe.json",
+      "delivery_readiness": "incomplete",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "acquisition": {
+        "drv.following": {
+          "entrypoint": "finalize.py",
+          "method": "Frame-joined original actor body, lane and velocity readback; no legal safety inference",
+          "evidence": [
+            "native_samples.jsonl",
+            "native-source-inventory.json",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "caravan_history.jsonl",
+            "authored-context.json"
+          ]
+        },
+        "rel.surface_gap": {
+          "entrypoint": "finalize.py",
+          "method": "Frame-joined original actor body, lane and velocity readback; no legal safety inference",
+          "evidence": [
+            "native_samples.jsonl",
+            "native-source-inventory.json",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "caravan_history.jsonl",
+            "authored-context.json"
+          ]
+        },
+        "drv.queue_behind": {
+          "entrypoint": "finalize.py",
+          "method": "Frame-joined original actor body, lane and velocity readback; no legal safety inference",
+          "evidence": [
+            "native_samples.jsonl",
+            "native-source-inventory.json",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "caravan_history.jsonl",
+            "authored-context.json"
+          ]
+        },
+        "rel.same_direction": {
+          "entrypoint": "finalize.py",
+          "method": "Frame-joined original actor body, lane and velocity readback; no legal safety inference",
+          "evidence": [
+            "native_samples.jsonl",
+            "native-source-inventory.json",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "caravan_history.jsonl",
+            "authored-context.json"
+          ]
+        },
+        "ru.trailer_or_combination": {
+          "entrypoint": "finalize.py",
+          "method": "Frame-joined original actor body, lane and velocity readback; no legal safety inference",
+          "evidence": [
+            "native_samples.jsonl",
+            "native-source-inventory.json",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "caravan_history.jsonl",
+            "authored-context.json"
+          ]
+        },
+        "drv.lane_change_feasible": {
+          "entrypoint": "finalize.py",
+          "method": "Frame-joined original actor body, lane and velocity readback; no legal safety inference",
+          "evidence": [
+            "native_samples.jsonl",
+            "native-source-inventory.json",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "caravan_history.jsonl",
+            "authored-context.json"
+          ]
+        },
+        "kin.speed": {
+          "entrypoint": "finalize.py",
+          "method": "Frame-joined original actor body, lane and velocity readback; no legal safety inference",
+          "evidence": [
+            "native_samples.jsonl",
+            "native-source-inventory.json",
+            "video_frames.jsonl",
+            "trace.jsonl",
+            "caravan_history.jsonl",
+            "authored-context.json"
+          ]
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C228508__NRS-484B-127-3__motor_vehicle_driver__probe_b",
+        "sets": [
+          "demo-train",
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "9c222e20adfe2759d6397a775d2ac36a13a95c0cfc7a3cfced1b4937a0ed0e03",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C228508__NRS-484B-127-3__motor_vehicle_driver/delivery_audit.py --case training__C228508__NRS-484B-127-3__motor_vehicle_driver__probe_b --self-test",
+        "test_exit_code": 0,
+        "test_log": "selected/probe_b/delivery-positive.log",
+        "test_log_sha256": "98e27321e2201624a9c5392d92718fbf691973fe5724dd269b0be12fc4aa0a3b",
+        "negative_command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/training__C228508__NRS-484B-127-3__motor_vehicle_driver/delivery_audit.py --case training__C228508__NRS-484B-127-3__motor_vehicle_driver__probe_b --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Exact original Native result missing",
+        "negative_log": "selected/probe_b/delivery-negative.log",
+        "negative_log_sha256": "fc882b3487fc6bd43d39fb2074b2f4be58b798357900acf67518183617f5af36"
+      },
+      "offline": {
+        "exit_code": 0,
+        "construction_sha256": "03918dd9e9ae931ff1480a42679a85b3822f1f45e375a5e2683c30065e92424c",
+        "command": "PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python runtime.py offline --manifest work/training__C228508__NRS-484B-127-3__motor_vehicle_driver/selected-execution-manifest.json --case training__C228508__NRS-484B-127-3__motor_vehicle_driver__probe_b --candidate primary --output .runtime-work/c228508-offline/v4-probe_b-primary --python $PWD/.venv-cpu/bin/python",
+        "log": "selected/probe_b/primary/offline.log",
+        "log_sha256": "2d876ae3ecfa67fde826857cc56d383b40cf91163d57b32d2910da092934aa3e"
+      },
+      "physical_preparation": {
+        "receipt": "selected/probe_b/physical/physical-preparation.json",
+        "sha256": "4a86968515c9fefccf8bc2c0db94c461a175bae7c6c6d4563517484d2dc6f35d"
+      }
+    }
+  ]
+}

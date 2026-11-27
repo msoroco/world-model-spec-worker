@@ -16,6 +16,13 @@ def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def validate_capture_closure(capture):
+    if (capture.get('closed') is not True or
+            capture.get('world_restored') is not True or
+            capture.get('frame_count') != 600):
+        raise ValueError('Diagnostic capture lifecycle incomplete')
+
+
 def evaluate(case, kind):
     if kind not in KINDS or case not in ('witness_1', 'witness_2', 'exception_1_1', 'exception_1_2', 'stop_only', 'stand_only'):
         raise ValueError('Unsupported physical diagnostic')
@@ -23,6 +30,7 @@ def evaluate(case, kind):
     actor = source / 'actor-frames.jsonl'
     zone = source / 'zone-survey.json'
     capture = source / 'capture-manifest.json'
+    validate_capture_closure(json.loads(capture.read_text()))
     bounds = json.loads(zone.read_text())['bounds_m']
     rows = [json.loads(line) for line in actor.read_text().splitlines()]
     if len(rows) != 600 or any(r['frame'] != i for i, r in enumerate(rows)):
@@ -49,6 +57,9 @@ def evaluate(case, kind):
         'diagnostic_fixture': True,
         'original_native_observed': False,
         'legal_verdict': None,
+        'fixture_perturbation': ('none' if kind == 'complete_motion' else
+                                 'in-memory ego body moved outside zone' if kind == 'incomplete_motion' else
+                                 'in-memory actor rows omitted'),
         'maneuver_completed': complete,
         'physical_checks': {'maneuver': {
             'status': status,

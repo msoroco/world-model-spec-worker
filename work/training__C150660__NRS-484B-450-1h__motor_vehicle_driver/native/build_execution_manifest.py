@@ -56,10 +56,12 @@ def post_capture(suffix, case, construction_sha):
             proof.get("missing_evidence") is not False or
             proof.get("analysis_revision", {}).get("construction_sha256") != construction_sha):
         raise ValueError("Stale exact saved-only processing: " + case)
-    return {"command": ".venv-cpu/bin/python runtime.py process-saved --case " + case +
-            " --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
-            "feedback_command": ".venv-cpu/bin/python runtime.py feedback-saved --case " + case +
-            " --attempt $ATTEMPT --output $SAVED_OUTPUT",
+    command = (".venv-cpu/bin/python runtime.py process-saved --manifest work/" +
+               FOLDER.name + "/execution-manifest.json --case " + case +
+               " --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library" +
+               " --validator $DECODER --owner-release-receipt $ATTEMPT/owner-release.json")
+    return {"command": command,
+            "feedback_command": command,
             "recorded_only": True, "test_exit_code": 0,
             "test_log": relative(log), "test_log_sha256": sha(log),
             "processing_receipt": relative(receipt), "processing_receipt_sha256": sha(receipt)}

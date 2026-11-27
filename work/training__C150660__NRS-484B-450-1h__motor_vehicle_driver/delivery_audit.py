@@ -3,6 +3,7 @@
 import argparse
 import hashlib
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -80,6 +81,8 @@ def audit(args):
                 abs(row["time_s"] - frame["time_s"]) > 1e-6):
             raise ValueError("Original zone trace and camera time join differs")
     runtime = Path(__file__).resolve().parents[2] / "runtime"
+    os.environ.setdefault("SCENARIO_PIPELINE_OUTPUT_ROOT",
+                          str(runtime.parent / ".runtime-work/c150660-delivery-audit"))
     sys.path[:0] = [str(runtime), str(runtime / "scenario_pipeline")]
     from scenario_pipeline.worker_exchange import media
     receipts = {}

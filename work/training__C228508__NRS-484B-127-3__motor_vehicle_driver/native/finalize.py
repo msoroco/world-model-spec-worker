@@ -28,7 +28,7 @@ def bounds(actor):
 
 def measure(folder):
     folder = Path(folder)
-    source = json.loads((folder / 'source-manifest.json').read_text())
+    source = json.loads((folder / 'native-source-inventory.json').read_text())
     if source.get('format') != 'c228508-original-native-draft-sources-v1':
         raise ValueError('Original Native source manifest differs')
     expected = {'authored-context.json', 'native_samples.jsonl'}

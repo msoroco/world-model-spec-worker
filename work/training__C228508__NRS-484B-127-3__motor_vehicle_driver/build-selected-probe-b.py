@@ -45,6 +45,9 @@ for candidate in ('primary','fallback1'):
               {'path':'finalize.py','source':str(ROOT/'native/selected_finalize.py'),
                'content':(ROOT/'native/selected_finalize.py').read_text()},
               {'path':'config.json','content':json.dumps(config,indent=2)+'\n'}]
+    for item in files:
+        if item.get('source'):
+            item['source']=str(Path(item['source']).resolve().relative_to(ROOT.parents[1]))
     proposal['files']=files
     proposal['recording_description']=description
     proposal['status']='selected_cpu_package_in_progress'

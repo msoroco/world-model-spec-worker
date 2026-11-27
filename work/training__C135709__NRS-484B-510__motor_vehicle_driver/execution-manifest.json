@@ -2,7 +2,7 @@
   "format": "worker-execution-manifest",
   "assignment_id": "training__C135709__NRS-484B-510__motor_vehicle_driver",
   "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
-  "status": "partial",
+  "status": "selected_cpu_prepared_original_native_pending",
   "cases": [
     {
       "case_id": "training__C135709__NRS-484B-510__motor_vehicle_driver__witness_1",
@@ -41,7 +41,7 @@
           }
         }
       ],
-      "delivery_readiness": "incomplete",
+      "delivery_readiness": "cpu_prepared_original_native_pending",
       "measurement_contract": "measurement-witness_1.json",
       "measurement_procedure": {
         "entrypoint": "finalize.py",
@@ -78,6 +78,88 @@
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C135709__NRS-484B-510__motor_vehicle_driver/execution-manifest.json --case training__C135709__NRS-484B-510__motor_vehicle_driver__witness_1 --output $OFFLINE_OUTPUT",
         "log": "offline/witness_1-primary.log",
         "log_sha256": "e61c2fd42a80ae420e1f5b8b95aad0d33ecc79cdeeb88d6d8961f33aa069f044"
+      },
+      "physical_preparation": {
+        "case_id": "training__C135709__NRS-484B-510__motor_vehicle_driver__witness_1",
+        "receipt": "physical-proof/witness_1/proof.json",
+        "sha256": "035bb0c7eef38a30d01439c23852ed932c6d58191cb9fd895ce2f2e5bee7d4a2"
+      },
+      "acquisition": {
+        "st.curb_zone": {
+          "entrypoint": "finalize.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original road.xodr and zone-survey.json are source hashed; sign authority remains separate review."
+        },
+        "dev.regulatory_sign": {
+          "entrypoint": "runner.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Authored OpenDRIVE sign ID and four original camera frames; official authority and pixels require independent review."
+        },
+        "drv.condition_in_effect": {
+          "entrypoint": "finalize.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original zone survey and original-review.json; condition is unverified until cited review."
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "finalize.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original actor-frames.jsonl body and ego_speed_mps joined to trace.jsonl."
+        },
+        "kin.time": {
+          "entrypoint": "runner.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original Native frame and elapsed_s in actor-frames.jsonl joined to camera-frames.jsonl."
+        },
+        "ru.occupant_count": {
+          "entrypoint": "runner.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Nearby passenger actor IDs in original actor-frames.jsonl; not a verified occupant count."
+        },
+        "sig.door_open": {
+          "entrypoint": "runner.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original actor-frames.jsonl retains door_open_request; actual door state and loading remain independent review."
+        },
+        "ru.pedestrian": {
+          "entrypoint": "runner.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original nearby pedestrian actor IDs and four camera frame joins."
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original other-vehicle body, actor ID and speed in actor-frames.jsonl."
+        },
+        "drv.approaching": {
+          "entrypoint": "finalize.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original other-vehicle zone-entry request, body and speed; actual restricted parking purpose remains independent review."
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C135709__NRS-484B-510__motor_vehicle_driver__witness_1",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "8b1d7800e44b909432b768c2fa1ff030a26908bdef8315c6089b9f7d1bcff69d",
+        "command": ".venv-cpu/bin/python work/training__C135709__NRS-484B-510__motor_vehicle_driver/delivery_audit.py --case training__C135709__NRS-484B-510__motor_vehicle_driver__witness_1 --diagnostic",
+        "negative_command": ".venv-cpu/bin/python work/training__C135709__NRS-484B-510__motor_vehicle_driver/delivery_audit.py --case training__C135709__NRS-484B-510__motor_vehicle_driver__witness_1",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original Native source required for delivery acceptance",
+        "test_log": "delivery-proof/witness_1-positive.log",
+        "test_log_sha256": "2dcb246917ccf77170c04e0c2b780e4ccd1a0d29b70fb867e44c653c74090bfe",
+        "negative_log": "delivery-proof/witness_1-negative.log",
+        "negative_log_sha256": "e5511c3a5f1bf3f2e979f598570659c10d356e5f71fece64b0f953a516de0bdb"
       }
     },
     {
@@ -117,7 +199,7 @@
           }
         }
       ],
-      "delivery_readiness": "incomplete",
+      "delivery_readiness": "cpu_prepared_original_native_pending",
       "measurement_contract": "measurement-witness_2.json",
       "measurement_procedure": {
         "entrypoint": "finalize.py",
@@ -144,6 +226,98 @@
       },
       "negative": {
         "log": "compatibility/witness_2-primary-negative.log"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C135709__NRS-484B-510__motor_vehicle_driver/execution-manifest.json --case training__C135709__NRS-484B-510__motor_vehicle_driver__witness_2 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C135709__NRS-484B-510__motor_vehicle_driver/execution-manifest.json --case training__C135709__NRS-484B-510__motor_vehicle_driver__witness_2 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/witness_2-processing.log",
+        "test_log_sha256": "af5908aba53f514674d1e3baff0ea0e2c757586b7cc74d1bef82af4825b88678",
+        "processing_receipt": "saved/witness_2-processing.json",
+        "processing_receipt_sha256": "52326b69be40b4922dd990a76aba0b817bb68018b109a4381a0836228bac57d6"
+      },
+      "physical_preparation": {
+        "case_id": "training__C135709__NRS-484B-510__motor_vehicle_driver__witness_2",
+        "receipt": "physical-proof/witness_2/proof.json",
+        "sha256": "32ea9953aa719438e6fc57b579f71e5899fe36c5d3cd6558a155e446a9b9709e"
+      },
+      "acquisition": {
+        "st.curb_zone": {
+          "entrypoint": "finalize.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original road.xodr and zone-survey.json are source hashed; sign authority remains separate review."
+        },
+        "dev.regulatory_sign": {
+          "entrypoint": "runner.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Authored OpenDRIVE sign ID and four original camera frames; official authority and pixels require independent review."
+        },
+        "drv.condition_in_effect": {
+          "entrypoint": "finalize.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original zone survey and original-review.json; condition is unverified until cited review."
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "finalize.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original actor-frames.jsonl body and ego_speed_mps joined to trace.jsonl."
+        },
+        "kin.time": {
+          "entrypoint": "runner.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original Native frame and elapsed_s in actor-frames.jsonl joined to camera-frames.jsonl."
+        },
+        "ru.occupant_count": {
+          "entrypoint": "runner.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Nearby passenger actor IDs in original actor-frames.jsonl; not a verified occupant count."
+        },
+        "sig.door_open": {
+          "entrypoint": "runner.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original actor-frames.jsonl retains door_open_request; actual door state and loading remain independent review."
+        },
+        "ru.pedestrian": {
+          "entrypoint": "runner.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original nearby pedestrian actor IDs and four camera frame joins."
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original other-vehicle body, actor ID and speed in actor-frames.jsonl."
+        },
+        "drv.approaching": {
+          "entrypoint": "finalize.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original other-vehicle zone-entry request, body and speed; actual restricted parking purpose remains independent review."
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C135709__NRS-484B-510__motor_vehicle_driver__witness_2",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "8b1d7800e44b909432b768c2fa1ff030a26908bdef8315c6089b9f7d1bcff69d",
+        "command": ".venv-cpu/bin/python work/training__C135709__NRS-484B-510__motor_vehicle_driver/delivery_audit.py --case training__C135709__NRS-484B-510__motor_vehicle_driver__witness_2 --diagnostic",
+        "negative_command": ".venv-cpu/bin/python work/training__C135709__NRS-484B-510__motor_vehicle_driver/delivery_audit.py --case training__C135709__NRS-484B-510__motor_vehicle_driver__witness_2",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original Native source required for delivery acceptance",
+        "test_log": "delivery-proof/witness_2-positive.log",
+        "test_log_sha256": "9cdd61a747291fa83b7a878d25eb63a305cda5c64df2f9aee255b483f66f37aa",
+        "negative_log": "delivery-proof/witness_2-negative.log",
+        "negative_log_sha256": "e5511c3a5f1bf3f2e979f598570659c10d356e5f71fece64b0f953a516de0bdb"
       }
     },
     {
@@ -183,7 +357,7 @@
           }
         }
       ],
-      "delivery_readiness": "incomplete",
+      "delivery_readiness": "cpu_prepared_original_native_pending",
       "measurement_contract": "measurement-exception_1_1.json",
       "measurement_procedure": {
         "entrypoint": "finalize.py",
@@ -210,6 +384,98 @@
       },
       "negative": {
         "log": "compatibility/exception_1_1-primary-negative.log"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C135709__NRS-484B-510__motor_vehicle_driver/execution-manifest.json --case training__C135709__NRS-484B-510__motor_vehicle_driver__exception_1_1 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C135709__NRS-484B-510__motor_vehicle_driver/execution-manifest.json --case training__C135709__NRS-484B-510__motor_vehicle_driver__exception_1_1 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/exception_1_1-processing.log",
+        "test_log_sha256": "d3d1b08398a64a365a612aea45124a752c77c28dab88e93959e432e8efabeb09",
+        "processing_receipt": "saved/exception_1_1-processing.json",
+        "processing_receipt_sha256": "4aeae5c559da74c05b0cf8d0b7950ce9d70c0a36cd8115cf4a67d9cc9db7181c"
+      },
+      "physical_preparation": {
+        "case_id": "training__C135709__NRS-484B-510__motor_vehicle_driver__exception_1_1",
+        "receipt": "physical-proof/exception_1_1/proof.json",
+        "sha256": "a4b572c93d395d34a635db0b3b4dfd7c3477acdfbe554d834f3115224075af04"
+      },
+      "acquisition": {
+        "st.curb_zone": {
+          "entrypoint": "finalize.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original road.xodr and zone-survey.json are source hashed; sign authority remains separate review."
+        },
+        "dev.regulatory_sign": {
+          "entrypoint": "runner.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Authored OpenDRIVE sign ID and four original camera frames; official authority and pixels require independent review."
+        },
+        "drv.condition_in_effect": {
+          "entrypoint": "finalize.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original zone survey and original-review.json; condition is unverified until cited review."
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "finalize.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original actor-frames.jsonl body and ego_speed_mps joined to trace.jsonl."
+        },
+        "kin.time": {
+          "entrypoint": "runner.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original Native frame and elapsed_s in actor-frames.jsonl joined to camera-frames.jsonl."
+        },
+        "ru.occupant_count": {
+          "entrypoint": "runner.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Nearby passenger actor IDs in original actor-frames.jsonl; not a verified occupant count."
+        },
+        "sig.door_open": {
+          "entrypoint": "runner.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original actor-frames.jsonl retains door_open_request; actual door state and loading remain independent review."
+        },
+        "ru.pedestrian": {
+          "entrypoint": "runner.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original nearby pedestrian actor IDs and four camera frame joins."
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original other-vehicle body, actor ID and speed in actor-frames.jsonl."
+        },
+        "drv.approaching": {
+          "entrypoint": "finalize.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original other-vehicle zone-entry request, body and speed; actual restricted parking purpose remains independent review."
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C135709__NRS-484B-510__motor_vehicle_driver__exception_1_1",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "8b1d7800e44b909432b768c2fa1ff030a26908bdef8315c6089b9f7d1bcff69d",
+        "command": ".venv-cpu/bin/python work/training__C135709__NRS-484B-510__motor_vehicle_driver/delivery_audit.py --case training__C135709__NRS-484B-510__motor_vehicle_driver__exception_1_1 --diagnostic",
+        "negative_command": ".venv-cpu/bin/python work/training__C135709__NRS-484B-510__motor_vehicle_driver/delivery_audit.py --case training__C135709__NRS-484B-510__motor_vehicle_driver__exception_1_1",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original Native source required for delivery acceptance",
+        "test_log": "delivery-proof/exception_1_1-positive.log",
+        "test_log_sha256": "f27a01bd1b2515ae0b9b1370a91eb3512ad3436731dffda5dbee7bce08d7800e",
+        "negative_log": "delivery-proof/exception_1_1-negative.log",
+        "negative_log_sha256": "e5511c3a5f1bf3f2e979f598570659c10d356e5f71fece64b0f953a516de0bdb"
       }
     },
     {
@@ -240,10 +506,16 @@
             "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C135709__NRS-484B-510__motor_vehicle_driver/execution-manifest.json --case training__C135709__NRS-484B-510__motor_vehicle_driver__exception_1_2 --output $OFFLINE_OUTPUT --candidate fallback1",
             "log": "offline/exception_1_2-fallback1.log",
             "log_sha256": "e1a94a7a03fbb0fda86126661fbb50ad391a3d71abaae4c388fedda89e8fe1c2"
+          },
+          "compatibility": {
+            "receipt": "compatibility/exception_1_2-fallback1-compatibility.json",
+            "sha256": "4d1872f4435ad85693855a6e64485c8031e5b5aa75e7fb454b3ee8afa14e53ca",
+            "log": "compatibility/exception_1_2-fallback1-analysis.log",
+            "negative_log": "compatibility/exception_1_2-fallback1-negative.log"
           }
         }
       ],
-      "delivery_readiness": "incomplete",
+      "delivery_readiness": "cpu_prepared_original_native_pending",
       "measurement_contract": "measurement-exception_1_2.json",
       "measurement_procedure": {
         "entrypoint": "finalize.py",
@@ -270,6 +542,98 @@
       },
       "negative": {
         "log": "compatibility/exception_1_2-primary-negative.log"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C135709__NRS-484B-510__motor_vehicle_driver/execution-manifest.json --case training__C135709__NRS-484B-510__motor_vehicle_driver__exception_1_2 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C135709__NRS-484B-510__motor_vehicle_driver/execution-manifest.json --case training__C135709__NRS-484B-510__motor_vehicle_driver__exception_1_2 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/exception_1_2-processing.log",
+        "test_log_sha256": "3ddd399f75931a19d4847f668927098d9ca8ed16bbcf6e802e9a222a38a449dc",
+        "processing_receipt": "saved/exception_1_2-processing.json",
+        "processing_receipt_sha256": "359b2c9f61c721d4f6c9626f67dfbac4340e5186516eba0755689969bbfd63a4"
+      },
+      "physical_preparation": {
+        "case_id": "training__C135709__NRS-484B-510__motor_vehicle_driver__exception_1_2",
+        "receipt": "physical-proof/exception_1_2/proof.json",
+        "sha256": "6221bd629611b0a88189b3eb814e3300978f812778e8c08bc7cd7c9110b232a9"
+      },
+      "acquisition": {
+        "st.curb_zone": {
+          "entrypoint": "finalize.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original road.xodr and zone-survey.json are source hashed; sign authority remains separate review."
+        },
+        "dev.regulatory_sign": {
+          "entrypoint": "runner.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Authored OpenDRIVE sign ID and four original camera frames; official authority and pixels require independent review."
+        },
+        "drv.condition_in_effect": {
+          "entrypoint": "finalize.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original zone survey and original-review.json; condition is unverified until cited review."
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "finalize.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original actor-frames.jsonl body and ego_speed_mps joined to trace.jsonl."
+        },
+        "kin.time": {
+          "entrypoint": "runner.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original Native frame and elapsed_s in actor-frames.jsonl joined to camera-frames.jsonl."
+        },
+        "ru.occupant_count": {
+          "entrypoint": "runner.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Nearby passenger actor IDs in original actor-frames.jsonl; not a verified occupant count."
+        },
+        "sig.door_open": {
+          "entrypoint": "runner.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original actor-frames.jsonl retains door_open_request; actual door state and loading remain independent review."
+        },
+        "ru.pedestrian": {
+          "entrypoint": "runner.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original nearby pedestrian actor IDs and four camera frame joins."
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original other-vehicle body, actor ID and speed in actor-frames.jsonl."
+        },
+        "drv.approaching": {
+          "entrypoint": "finalize.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original other-vehicle zone-entry request, body and speed; actual restricted parking purpose remains independent review."
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C135709__NRS-484B-510__motor_vehicle_driver__exception_1_2",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "8b1d7800e44b909432b768c2fa1ff030a26908bdef8315c6089b9f7d1bcff69d",
+        "command": ".venv-cpu/bin/python work/training__C135709__NRS-484B-510__motor_vehicle_driver/delivery_audit.py --case training__C135709__NRS-484B-510__motor_vehicle_driver__exception_1_2 --diagnostic",
+        "negative_command": ".venv-cpu/bin/python work/training__C135709__NRS-484B-510__motor_vehicle_driver/delivery_audit.py --case training__C135709__NRS-484B-510__motor_vehicle_driver__exception_1_2",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original Native source required for delivery acceptance",
+        "test_log": "delivery-proof/exception_1_2-positive.log",
+        "test_log_sha256": "4c58dfd8032d8193511b0700999a959c07e9bf79ac7c0a777e144261002e2e44",
+        "negative_log": "delivery-proof/exception_1_2-negative.log",
+        "negative_log_sha256": "e5511c3a5f1bf3f2e979f598570659c10d356e5f71fece64b0f953a516de0bdb"
       }
     },
     {
@@ -300,10 +664,16 @@
             "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C135709__NRS-484B-510__motor_vehicle_driver/execution-manifest.json --case training__C135709__NRS-484B-510__motor_vehicle_driver__stop_only --output $OFFLINE_OUTPUT --candidate fallback1",
             "log": "offline/stop_only-fallback1.log",
             "log_sha256": "df8ee50d27f4bfae772901f6255c5ac7157fc4fc7f4b9d721b4709e42135e619"
+          },
+          "compatibility": {
+            "receipt": "compatibility/stop_only-fallback1-compatibility.json",
+            "sha256": "93f06603062d52cdea7e7f753958759ec6d758aa00135d98b04678c05fbd6b67",
+            "log": "compatibility/stop_only-fallback1-analysis.log",
+            "negative_log": "compatibility/stop_only-fallback1-negative.log"
           }
         }
       ],
-      "delivery_readiness": "incomplete",
+      "delivery_readiness": "cpu_prepared_original_native_pending",
       "measurement_contract": "measurement-stop_only.json",
       "measurement_procedure": {
         "entrypoint": "finalize.py",
@@ -321,6 +691,107 @@
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C135709__NRS-484B-510__motor_vehicle_driver/execution-manifest.json --case training__C135709__NRS-484B-510__motor_vehicle_driver__stop_only --output $OFFLINE_OUTPUT",
         "log": "offline/stop_only-primary.log",
         "log_sha256": "9b374f573d1f37d25c7aed04746eaa2ca957faddcbda5ac68c13fec7ba9284b5"
+      },
+      "compatibility": {
+        "receipt": "compatibility/stop_only-primary-compatibility.json",
+        "sha256": "dbded105df85b8d538810ce0370089ebaa9a79a0e128a89e12a446f911920a32",
+        "log": "compatibility/stop_only-primary-analysis.log",
+        "negative_log": "compatibility/stop_only-primary-negative.log"
+      },
+      "negative": {
+        "log": "compatibility/stop_only-primary-negative.log"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C135709__NRS-484B-510__motor_vehicle_driver/execution-manifest.json --case training__C135709__NRS-484B-510__motor_vehicle_driver__stop_only --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C135709__NRS-484B-510__motor_vehicle_driver/execution-manifest.json --case training__C135709__NRS-484B-510__motor_vehicle_driver__stop_only --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/stop_only-processing.log",
+        "test_log_sha256": "6b2882521357204122f7a987b41bbe743ea650f7115432a362eaf683262d8dac",
+        "processing_receipt": "saved/stop_only-processing.json",
+        "processing_receipt_sha256": "b664871ad3368ff2e5d836ff0792a9f060eeeca14aa4bf3fe8600e188bc554a8"
+      },
+      "physical_preparation": {
+        "case_id": "training__C135709__NRS-484B-510__motor_vehicle_driver__stop_only",
+        "receipt": "physical-proof/stop_only/proof.json",
+        "sha256": "f62615d6c7aaa78c9bd5c1462b68b7211a84e86396a0f28d209391ad60fa9d03"
+      },
+      "acquisition": {
+        "st.curb_zone": {
+          "entrypoint": "finalize.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original road.xodr and zone-survey.json are source hashed; sign authority remains separate review."
+        },
+        "dev.regulatory_sign": {
+          "entrypoint": "runner.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Authored OpenDRIVE sign ID and four original camera frames; official authority and pixels require independent review."
+        },
+        "drv.condition_in_effect": {
+          "entrypoint": "finalize.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original zone survey and original-review.json; condition is unverified until cited review."
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "finalize.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original actor-frames.jsonl body and ego_speed_mps joined to trace.jsonl."
+        },
+        "kin.time": {
+          "entrypoint": "runner.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original Native frame and elapsed_s in actor-frames.jsonl joined to camera-frames.jsonl."
+        },
+        "ru.occupant_count": {
+          "entrypoint": "runner.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Nearby passenger actor IDs in original actor-frames.jsonl; not a verified occupant count."
+        },
+        "sig.door_open": {
+          "entrypoint": "runner.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original actor-frames.jsonl retains door_open_request; actual door state and loading remain independent review."
+        },
+        "ru.pedestrian": {
+          "entrypoint": "runner.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original nearby pedestrian actor IDs and four camera frame joins."
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original other-vehicle body, actor ID and speed in actor-frames.jsonl."
+        },
+        "drv.approaching": {
+          "entrypoint": "finalize.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original other-vehicle zone-entry request, body and speed; actual restricted parking purpose remains independent review."
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C135709__NRS-484B-510__motor_vehicle_driver__stop_only",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "8b1d7800e44b909432b768c2fa1ff030a26908bdef8315c6089b9f7d1bcff69d",
+        "command": ".venv-cpu/bin/python work/training__C135709__NRS-484B-510__motor_vehicle_driver/delivery_audit.py --case training__C135709__NRS-484B-510__motor_vehicle_driver__stop_only --diagnostic",
+        "negative_command": ".venv-cpu/bin/python work/training__C135709__NRS-484B-510__motor_vehicle_driver/delivery_audit.py --case training__C135709__NRS-484B-510__motor_vehicle_driver__stop_only",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original Native source required for delivery acceptance",
+        "test_log": "delivery-proof/stop_only-positive.log",
+        "test_log_sha256": "114601e8fd0193dcb83505d3d37b18150339e8c8686ffa16fb4f58346f67a636",
+        "negative_log": "delivery-proof/stop_only-negative.log",
+        "negative_log_sha256": "e5511c3a5f1bf3f2e979f598570659c10d356e5f71fece64b0f953a516de0bdb"
       }
     },
     {
@@ -351,10 +822,16 @@
             "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C135709__NRS-484B-510__motor_vehicle_driver/execution-manifest.json --case training__C135709__NRS-484B-510__motor_vehicle_driver__stand_only --output $OFFLINE_OUTPUT --candidate fallback1",
             "log": "offline/stand_only-fallback1.log",
             "log_sha256": "0e67784032e24e4bbab9cf2ed27817a2b64cd3a0b0987a2c2b79dd045e7f367c"
+          },
+          "compatibility": {
+            "receipt": "compatibility/stand_only-fallback1-compatibility.json",
+            "sha256": "8ec10524b7da2c58ddd7c84168b9e183dac27133b0426e07b9044f7a565bb3c7",
+            "log": "compatibility/stand_only-fallback1-analysis.log",
+            "negative_log": "compatibility/stand_only-fallback1-negative.log"
           }
         }
       ],
-      "delivery_readiness": "incomplete",
+      "delivery_readiness": "cpu_prepared_original_native_pending",
       "measurement_contract": "measurement-stand_only.json",
       "measurement_procedure": {
         "entrypoint": "finalize.py",
@@ -372,6 +849,107 @@
         "command": ".venv-cpu/bin/python runtime.py offline --manifest work/training__C135709__NRS-484B-510__motor_vehicle_driver/execution-manifest.json --case training__C135709__NRS-484B-510__motor_vehicle_driver__stand_only --output $OFFLINE_OUTPUT",
         "log": "offline/stand_only-primary.log",
         "log_sha256": "b3991b5cf5126e4ba21697a90209686df618a0b2a7775739be688311162c5687"
+      },
+      "compatibility": {
+        "receipt": "compatibility/stand_only-primary-compatibility.json",
+        "sha256": "ed95e5b056f65a8666eb4a14a293c53cc074f6e74f24113d50e16c0f2861368b",
+        "log": "compatibility/stand_only-primary-analysis.log",
+        "negative_log": "compatibility/stand_only-primary-negative.log"
+      },
+      "negative": {
+        "log": "compatibility/stand_only-primary-negative.log"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C135709__NRS-484B-510__motor_vehicle_driver/execution-manifest.json --case training__C135709__NRS-484B-510__motor_vehicle_driver__stand_only --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": ".venv-cpu/bin/python -B runtime.py process-saved --manifest work/training__C135709__NRS-484B-510__motor_vehicle_driver/execution-manifest.json --case training__C135709__NRS-484B-510__motor_vehicle_driver__stand_only --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/stand_only-processing.log",
+        "test_log_sha256": "983cda7d43a885b47364d8151329196034392bb7677f736faaf9b1d9257cc918",
+        "processing_receipt": "saved/stand_only-processing.json",
+        "processing_receipt_sha256": "616ee123bc1d38280826bdf0fa38a5e2b73bfb484656abda1f8b8d1c0d52300b"
+      },
+      "physical_preparation": {
+        "case_id": "training__C135709__NRS-484B-510__motor_vehicle_driver__stand_only",
+        "receipt": "physical-proof/stand_only/proof.json",
+        "sha256": "1ea306efb6d4ffab615f72231e857b0570410b1561171d5c8e79dc24f4858cd5"
+      },
+      "acquisition": {
+        "st.curb_zone": {
+          "entrypoint": "finalize.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original road.xodr and zone-survey.json are source hashed; sign authority remains separate review."
+        },
+        "dev.regulatory_sign": {
+          "entrypoint": "runner.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Authored OpenDRIVE sign ID and four original camera frames; official authority and pixels require independent review."
+        },
+        "drv.condition_in_effect": {
+          "entrypoint": "finalize.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original zone survey and original-review.json; condition is unverified until cited review."
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "finalize.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original actor-frames.jsonl body and ego_speed_mps joined to trace.jsonl."
+        },
+        "kin.time": {
+          "entrypoint": "runner.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original Native frame and elapsed_s in actor-frames.jsonl joined to camera-frames.jsonl."
+        },
+        "ru.occupant_count": {
+          "entrypoint": "runner.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Nearby passenger actor IDs in original actor-frames.jsonl; not a verified occupant count."
+        },
+        "sig.door_open": {
+          "entrypoint": "runner.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original actor-frames.jsonl retains door_open_request; actual door state and loading remain independent review."
+        },
+        "ru.pedestrian": {
+          "entrypoint": "runner.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original nearby pedestrian actor IDs and four camera frame joins."
+        },
+        "ru.motor_vehicle": {
+          "entrypoint": "runner.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original other-vehicle body, actor ID and speed in actor-frames.jsonl."
+        },
+        "drv.approaching": {
+          "entrypoint": "finalize.py",
+          "method": "Original Native source acquisition plus separately cited review; diagnostic fixture exercises software contract only",
+          "evidence": "Original other-vehicle zone-entry request, body and speed; actual restricted parking purpose remains independent review."
+        }
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C135709__NRS-484B-510__motor_vehicle_driver__stand_only",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "8b1d7800e44b909432b768c2fa1ff030a26908bdef8315c6089b9f7d1bcff69d",
+        "command": ".venv-cpu/bin/python work/training__C135709__NRS-484B-510__motor_vehicle_driver/delivery_audit.py --case training__C135709__NRS-484B-510__motor_vehicle_driver__stand_only --diagnostic",
+        "negative_command": ".venv-cpu/bin/python work/training__C135709__NRS-484B-510__motor_vehicle_driver/delivery_audit.py --case training__C135709__NRS-484B-510__motor_vehicle_driver__stand_only",
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Original Native source required for delivery acceptance",
+        "test_log": "delivery-proof/stand_only-positive.log",
+        "test_log_sha256": "8e14c53eb42df87b26a68b73f8e11a95ac5d297c0ca133a6d115233c9b84fa27",
+        "negative_log": "delivery-proof/stand_only-negative.log",
+        "negative_log_sha256": "e5511c3a5f1bf3f2e979f598570659c10d356e5f71fece64b0f953a516de0bdb"
       }
     }
   ]

@@ -1,0 +1,3410 @@
+{
+  "format": "worker-execution-manifest",
+  "status": "draft",
+  "assignment_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "id": "selected_6214a61f__condition_a",
+      "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__selected_6214a61f__condition_a",
+      "kind": "delivery",
+      "construction": "cases/selected_6214a61f__condition_a/primary/construction.json",
+      "construction_sha256": "9249e18b4f1c35dd2419f9d8015f59cd626083fe4e86d50ea7bb09c350b9744f",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "boolean proxy",
+            "method": "Native 20 Hz velocity and stop control",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "st.safety_zone",
+            "unit": "source geometry",
+            "method": "authored and Native map plus independent zone designation review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "st.road_edge",
+            "unit": "m",
+            "method": "Native shoulder edge and independent curb review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "boolean geometry",
+            "method": "four-corner body footprint between zone and curb",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "m",
+            "method": "footprint distance to both opposite curb-end points",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "kin.position",
+            "unit": "m",
+            "method": "original Native four-corner body footprint",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "drv.forced_halt",
+            "unit": "review source",
+            "method": "original traffic-conflict and halt-purpose review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "dev.human_direction",
+            "unit": "review source",
+            "method": "original officer-direction review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "exception_context",
+            "unit": "review source",
+            "method": "original law, traffic, officer and device review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Requested position is not realized distance; measure original footprint",
+          "Authored markers do not establish an official safety zone or adjacent curb",
+          "Every statutory exception and actual camera pixels require independent original-source review",
+          "CPU fixtures do not establish physical or legal acceptance"
+        ]
+      },
+      "measurement_contract": "cases/selected_6214a61f__condition_a/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/native/diagnostic/selected_6214a61f__condition_a/fixture-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/draft-construction-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__selected_6214a61f__condition_a --output .runtime-work/c150660-offline-selected_6214a61f__condition_a-primary --python .venv-cpu/bin/python",
+        "construction_sha256": "9249e18b4f1c35dd2419f9d8015f59cd626083fe4e86d50ea7bb09c350b9744f",
+        "exit_code": 0,
+        "log": "native/selected_6214a61f__condition_a-primary-offline.log",
+        "log_sha256": "b183019a0bd191a094413f22e4925f392634eb849d6477173aa5d99027a678e6"
+      },
+      "compatibility": {
+        "receipt": "compatibility/selected_6214a61f__condition_a/primary/compatibility.json",
+        "sha256": "389320813a18588fab893cd8334745cb045edccab7c00949141f4300dbc9dba9",
+        "log": "compatibility/selected_6214a61f__condition_a/primary/analysis.log",
+        "negative_log": "compatibility/selected_6214a61f__condition_a/primary/negative.log"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/execution-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__selected_6214a61f__condition_a --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $ATTEMPT/owner-release.json",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/execution-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__selected_6214a61f__condition_a --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $ATTEMPT/owner-release.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/selected_6214a61f__condition_a-processing.log",
+        "test_log_sha256": "2a4122b759914fd59e5e3a97ad0e47b299723e30fbbc86b47b0f8365df0d1271",
+        "processing_receipt": "saved/selected_6214a61f__condition_a-processing.json",
+        "processing_receipt_sha256": "2a4122b759914fd59e5e3a97ad0e47b299723e30fbbc86b47b0f8365df0d1271"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__selected_6214a61f__condition_a",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: exact Native result",
+        "command": ".venv-cpu/bin/python work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/delivery_audit.py --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__selected_6214a61f__condition_a --self-test",
+        "negative_command": ".venv-cpu/bin/python work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/delivery_audit.py --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__selected_6214a61f__condition_a --self-test --negative",
+        "script": "delivery_audit.py",
+        "script_sha256": "380e2fde2698cfeb7ae57897e7cc7bc2b27453557b784b540768551d2481cbc7",
+        "test_log": "delivery-proof/selected_6214a61f__condition_a-positive.log",
+        "test_log_sha256": "3a6ee853426c325d70732dc0893022d12b293456d6509926cd2a5c75c7f12db5",
+        "negative_log": "delivery-proof/selected_6214a61f__condition_a-negative.log",
+        "negative_log_sha256": "0a25749452305925348b12cb02cc5efdec9324f0f39308f65145e5a559224ec1"
+      },
+      "negative": {
+        "log": "compatibility/selected_6214a61f__condition_a/primary/negative.log"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Open-loop primary brake timing can miss the requested safety-zone footprint position on Native dynamics."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/selected_6214a61f__condition_a/fallback1/construction.json",
+          "construction_sha256": "ef3a8711cab3a569e449cd48315e327303bbe3d68752ed8520a520df06ce74bc",
+          "changed_knobs": [
+            "brake_lead_seconds: 1.4 to 2.0; exact case, cameras and observations fixed"
+          ],
+          "trigger": {
+            "source": "original zone_raw.json and trace.jsonl",
+            "metric": "observed final footprint distance or between-zone occupancy",
+            "failure_condition": "Primary final rest misses its engineering target by more than 0.25 m"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/draft-construction-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__selected_6214a61f__condition_a --output .runtime-work/c150660-offline-selected_6214a61f__condition_a-fallback1 --python .venv-cpu/bin/python --candidate fallback1",
+            "construction_sha256": "ef3a8711cab3a569e449cd48315e327303bbe3d68752ed8520a520df06ce74bc",
+            "exit_code": 0,
+            "log": "native/selected_6214a61f__condition_a-fallback1-offline.log",
+            "log_sha256": "86636a289ff15a620997cd1e12131cc20640ee0358e7762a0371689f1147b780"
+          },
+          "compatibility": {
+            "receipt": "compatibility/selected_6214a61f__condition_a/fallback1/compatibility.json",
+            "sha256": "8c63f5be08d2f48181a313fc1f680dd66a20d72bb726cb887b93ad0106e8cf82",
+            "log": "compatibility/selected_6214a61f__condition_a/fallback1/analysis.log",
+            "negative_log": "compatibility/selected_6214a61f__condition_a/fallback1/negative.log"
+          }
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/selected_6214a61f__condition_a/proof.json",
+        "sha256": "765ed9a0678cd51dac3502b4fb1e8cc90eea641e04d4d599fcaa607dd68187a9"
+      },
+      "acquisition": {
+        "drv.standing_or_parked": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "st.safety_zone": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "st.road_edge": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "drv.forced_halt": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "exception_context": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        }
+      }
+    },
+    {
+      "id": "selected_6214a61f__condition_b",
+      "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__selected_6214a61f__condition_b",
+      "kind": "delivery",
+      "construction": "cases/selected_6214a61f__condition_b/primary/construction.json",
+      "construction_sha256": "a2ea6a976f53b2516a7d906107c88b028d387425a3d0460b8a096b4f53ccca7f",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "boolean proxy",
+            "method": "Native 20 Hz velocity and stop control",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "st.safety_zone",
+            "unit": "source geometry",
+            "method": "authored and Native map plus independent zone designation review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "st.road_edge",
+            "unit": "m",
+            "method": "Native shoulder edge and independent curb review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "boolean geometry",
+            "method": "four-corner body footprint between zone and curb",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "m",
+            "method": "footprint distance to both opposite curb-end points",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "kin.position",
+            "unit": "m",
+            "method": "original Native four-corner body footprint",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "drv.forced_halt",
+            "unit": "review source",
+            "method": "original traffic-conflict and halt-purpose review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "dev.human_direction",
+            "unit": "review source",
+            "method": "original officer-direction review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "exception_context",
+            "unit": "review source",
+            "method": "original law, traffic, officer and device review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Requested position is not realized distance; measure original footprint",
+          "Authored markers do not establish an official safety zone or adjacent curb",
+          "Every statutory exception and actual camera pixels require independent original-source review",
+          "CPU fixtures do not establish physical or legal acceptance"
+        ]
+      },
+      "measurement_contract": "cases/selected_6214a61f__condition_b/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/native/diagnostic/selected_6214a61f__condition_b/fixture-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/draft-construction-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__selected_6214a61f__condition_b --output .runtime-work/c150660-offline-selected_6214a61f__condition_b-primary --python .venv-cpu/bin/python",
+        "construction_sha256": "a2ea6a976f53b2516a7d906107c88b028d387425a3d0460b8a096b4f53ccca7f",
+        "exit_code": 0,
+        "log": "native/selected_6214a61f__condition_b-primary-offline.log",
+        "log_sha256": "86636a289ff15a620997cd1e12131cc20640ee0358e7762a0371689f1147b780"
+      },
+      "compatibility": {
+        "receipt": "compatibility/selected_6214a61f__condition_b/primary/compatibility.json",
+        "sha256": "a555a2fd79f4dea7ac2b802076e7741a27f6ab6798037435fc0c1992e97e4a33",
+        "log": "compatibility/selected_6214a61f__condition_b/primary/analysis.log",
+        "negative_log": "compatibility/selected_6214a61f__condition_b/primary/negative.log"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/execution-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__selected_6214a61f__condition_b --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $ATTEMPT/owner-release.json",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/execution-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__selected_6214a61f__condition_b --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $ATTEMPT/owner-release.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/selected_6214a61f__condition_b-processing.log",
+        "test_log_sha256": "3e3525362eccf7a3983ce7bcdd04cc80c8b59f05da9d9f2f69ccfbc68a125a06",
+        "processing_receipt": "saved/selected_6214a61f__condition_b-processing.json",
+        "processing_receipt_sha256": "3e3525362eccf7a3983ce7bcdd04cc80c8b59f05da9d9f2f69ccfbc68a125a06"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__selected_6214a61f__condition_b",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: exact Native result",
+        "command": ".venv-cpu/bin/python work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/delivery_audit.py --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__selected_6214a61f__condition_b --self-test",
+        "negative_command": ".venv-cpu/bin/python work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/delivery_audit.py --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__selected_6214a61f__condition_b --self-test --negative",
+        "script": "delivery_audit.py",
+        "script_sha256": "380e2fde2698cfeb7ae57897e7cc7bc2b27453557b784b540768551d2481cbc7",
+        "test_log": "delivery-proof/selected_6214a61f__condition_b-positive.log",
+        "test_log_sha256": "2471430f9336355f33ef1939b5a6f06ca5df3ae1917da69b721cae84de1ad954",
+        "negative_log": "delivery-proof/selected_6214a61f__condition_b-negative.log",
+        "negative_log_sha256": "0a25749452305925348b12cb02cc5efdec9324f0f39308f65145e5a559224ec1"
+      },
+      "negative": {
+        "log": "compatibility/selected_6214a61f__condition_b/primary/negative.log"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Open-loop primary brake timing can miss the requested safety-zone footprint position on Native dynamics."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/selected_6214a61f__condition_b/fallback1/construction.json",
+          "construction_sha256": "97f902889481a4db5adc821610c1020a29429603f826af56181945e44fefcfeb",
+          "changed_knobs": [
+            "brake_lead_seconds: 1.4 to 2.0; exact case, cameras and observations fixed"
+          ],
+          "trigger": {
+            "source": "original zone_raw.json and trace.jsonl",
+            "metric": "observed final footprint distance or between-zone occupancy",
+            "failure_condition": "Primary final rest misses its engineering target by more than 0.25 m"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/draft-construction-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__selected_6214a61f__condition_b --output .runtime-work/c150660-offline-selected_6214a61f__condition_b-fallback1 --python .venv-cpu/bin/python --candidate fallback1",
+            "construction_sha256": "97f902889481a4db5adc821610c1020a29429603f826af56181945e44fefcfeb",
+            "exit_code": 0,
+            "log": "native/selected_6214a61f__condition_b-fallback1-offline.log",
+            "log_sha256": "86636a289ff15a620997cd1e12131cc20640ee0358e7762a0371689f1147b780"
+          },
+          "compatibility": {
+            "receipt": "compatibility/selected_6214a61f__condition_b/fallback1/compatibility.json",
+            "sha256": "6f491a3512aa01dc002e1d233fe4a128d39119b6068a4a2b4d364ee261e278f3",
+            "log": "compatibility/selected_6214a61f__condition_b/fallback1/analysis.log",
+            "negative_log": "compatibility/selected_6214a61f__condition_b/fallback1/negative.log"
+          }
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/selected_6214a61f__condition_b/proof.json",
+        "sha256": "e1eea67408cd417d4b9c81bbdce917adc42dc8d0163f7facb08719538743d8dc"
+      },
+      "acquisition": {
+        "drv.standing_or_parked": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "st.safety_zone": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "st.road_edge": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "drv.forced_halt": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "exception_context": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        }
+      }
+    },
+    {
+      "id": "end_25",
+      "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__end_25",
+      "kind": "delivery",
+      "construction": "cases/end_25/primary/construction.json",
+      "construction_sha256": "44825ee6fd36bddedffec3d9ae9109f360bb498428b973ab29591ba1a9fe9687",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "boolean proxy",
+            "method": "Native 20 Hz velocity and stop control",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "st.safety_zone",
+            "unit": "source geometry",
+            "method": "authored and Native map plus independent zone designation review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "st.road_edge",
+            "unit": "m",
+            "method": "Native shoulder edge and independent curb review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "boolean geometry",
+            "method": "four-corner body footprint between zone and curb",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "m",
+            "method": "footprint distance to both opposite curb-end points",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "kin.position",
+            "unit": "m",
+            "method": "original Native four-corner body footprint",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "drv.forced_halt",
+            "unit": "review source",
+            "method": "original traffic-conflict and halt-purpose review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "dev.human_direction",
+            "unit": "review source",
+            "method": "original officer-direction review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "exception_context",
+            "unit": "review source",
+            "method": "original law, traffic, officer and device review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Requested position is not realized distance; measure original footprint",
+          "Authored markers do not establish an official safety zone or adjacent curb",
+          "Every statutory exception and actual camera pixels require independent original-source review",
+          "CPU fixtures do not establish physical or legal acceptance"
+        ]
+      },
+      "measurement_contract": "cases/end_25/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/native/diagnostic/end_25/fixture-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/draft-construction-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__end_25 --output .runtime-work/c150660-offline-end_25-primary --python .venv-cpu/bin/python",
+        "construction_sha256": "44825ee6fd36bddedffec3d9ae9109f360bb498428b973ab29591ba1a9fe9687",
+        "exit_code": 0,
+        "log": "native/end_25-primary-offline.log",
+        "log_sha256": "f428ded7556d19a8697abe2be6c21da6b56e42a9a82242d5a0abe4d99c8080e5"
+      },
+      "compatibility": {
+        "receipt": "compatibility/end_25/primary/compatibility.json",
+        "sha256": "db3c34edebbe890cfb77efd672df57bda8fedfd220d6b1f4e7cd8c2c76e6f35c",
+        "log": "compatibility/end_25/primary/analysis.log",
+        "negative_log": "compatibility/end_25/primary/negative.log"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/execution-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__end_25 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $ATTEMPT/owner-release.json",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/execution-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__end_25 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $ATTEMPT/owner-release.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/end_25-processing.log",
+        "test_log_sha256": "6083d6d70b29e432ea5e4cbc3ae62007ca27a953af8405a636bf0e1220130b79",
+        "processing_receipt": "saved/end_25-processing.json",
+        "processing_receipt_sha256": "6083d6d70b29e432ea5e4cbc3ae62007ca27a953af8405a636bf0e1220130b79"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__end_25",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: exact Native result",
+        "command": ".venv-cpu/bin/python work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/delivery_audit.py --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__end_25 --self-test",
+        "negative_command": ".venv-cpu/bin/python work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/delivery_audit.py --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__end_25 --self-test --negative",
+        "script": "delivery_audit.py",
+        "script_sha256": "380e2fde2698cfeb7ae57897e7cc7bc2b27453557b784b540768551d2481cbc7",
+        "test_log": "delivery-proof/end_25-positive.log",
+        "test_log_sha256": "84feb6cd06dd477481f479388893a6ae0d11fdf9464c4794f50de104c31ddcb0",
+        "negative_log": "delivery-proof/end_25-negative.log",
+        "negative_log_sha256": "0a25749452305925348b12cb02cc5efdec9324f0f39308f65145e5a559224ec1"
+      },
+      "negative": {
+        "log": "compatibility/end_25/primary/negative.log"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Open-loop primary brake timing can miss the requested safety-zone footprint position on Native dynamics."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/end_25/fallback1/construction.json",
+          "construction_sha256": "5588e3f9cde2647d3205ca1b4ae42abe983ec6dede58bab7bffaf068c945a57d",
+          "changed_knobs": [
+            "brake_lead_seconds: 1.4 to 2.0; exact case, cameras and observations fixed"
+          ],
+          "trigger": {
+            "source": "original zone_raw.json and trace.jsonl",
+            "metric": "observed final footprint distance or between-zone occupancy",
+            "failure_condition": "Primary final rest misses its engineering target by more than 0.25 m"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/draft-construction-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__end_25 --output .runtime-work/c150660-offline-end_25-fallback1 --python .venv-cpu/bin/python --candidate fallback1",
+            "construction_sha256": "5588e3f9cde2647d3205ca1b4ae42abe983ec6dede58bab7bffaf068c945a57d",
+            "exit_code": 0,
+            "log": "native/end_25-fallback1-offline.log",
+            "log_sha256": "86636a289ff15a620997cd1e12131cc20640ee0358e7762a0371689f1147b780"
+          },
+          "compatibility": {
+            "receipt": "compatibility/end_25/fallback1/compatibility.json",
+            "sha256": "c90dd05f66a05ac82772617b19fa8886faea9ce1ee1582a28c105e7270ef9431",
+            "log": "compatibility/end_25/fallback1/analysis.log",
+            "negative_log": "compatibility/end_25/fallback1/negative.log"
+          }
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/end_25/proof.json",
+        "sha256": "82038be23e385501dd98bb9e2342ecd475fb0f5e8437d9ca8c62a130b1725c74"
+      },
+      "acquisition": {
+        "drv.standing_or_parked": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "st.safety_zone": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "st.road_edge": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "drv.forced_halt": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "exception_context": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        }
+      }
+    },
+    {
+      "id": "end_30",
+      "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__end_30",
+      "kind": "delivery",
+      "construction": "cases/end_30/primary/construction.json",
+      "construction_sha256": "78c3e052ccb5ca1f19c4e450d94b44fb8fd87725d493fcd103cd7bf95bc8a91c",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "boolean proxy",
+            "method": "Native 20 Hz velocity and stop control",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "st.safety_zone",
+            "unit": "source geometry",
+            "method": "authored and Native map plus independent zone designation review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "st.road_edge",
+            "unit": "m",
+            "method": "Native shoulder edge and independent curb review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "boolean geometry",
+            "method": "four-corner body footprint between zone and curb",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "m",
+            "method": "footprint distance to both opposite curb-end points",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "kin.position",
+            "unit": "m",
+            "method": "original Native four-corner body footprint",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "drv.forced_halt",
+            "unit": "review source",
+            "method": "original traffic-conflict and halt-purpose review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "dev.human_direction",
+            "unit": "review source",
+            "method": "original officer-direction review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "exception_context",
+            "unit": "review source",
+            "method": "original law, traffic, officer and device review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Requested position is not realized distance; measure original footprint",
+          "Authored markers do not establish an official safety zone or adjacent curb",
+          "Every statutory exception and actual camera pixels require independent original-source review",
+          "CPU fixtures do not establish physical or legal acceptance"
+        ]
+      },
+      "measurement_contract": "cases/end_30/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/native/diagnostic/end_30/fixture-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/draft-construction-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__end_30 --output .runtime-work/c150660-offline-end_30-primary --python .venv-cpu/bin/python",
+        "construction_sha256": "78c3e052ccb5ca1f19c4e450d94b44fb8fd87725d493fcd103cd7bf95bc8a91c",
+        "exit_code": 0,
+        "log": "native/end_30-primary-offline.log",
+        "log_sha256": "86636a289ff15a620997cd1e12131cc20640ee0358e7762a0371689f1147b780"
+      },
+      "compatibility": {
+        "receipt": "compatibility/end_30/primary/compatibility.json",
+        "sha256": "a7bf6ca03b266ed76c39087aca993aab6e013627022d9044f4e008d5215e2708",
+        "log": "compatibility/end_30/primary/analysis.log",
+        "negative_log": "compatibility/end_30/primary/negative.log"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/execution-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__end_30 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $ATTEMPT/owner-release.json",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/execution-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__end_30 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $ATTEMPT/owner-release.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/end_30-processing.log",
+        "test_log_sha256": "07cbc3a8c94c13b8c6b246dffe67797f5cf5f31003caca0545c3a325222460e2",
+        "processing_receipt": "saved/end_30-processing.json",
+        "processing_receipt_sha256": "07cbc3a8c94c13b8c6b246dffe67797f5cf5f31003caca0545c3a325222460e2"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__end_30",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: exact Native result",
+        "command": ".venv-cpu/bin/python work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/delivery_audit.py --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__end_30 --self-test",
+        "negative_command": ".venv-cpu/bin/python work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/delivery_audit.py --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__end_30 --self-test --negative",
+        "script": "delivery_audit.py",
+        "script_sha256": "380e2fde2698cfeb7ae57897e7cc7bc2b27453557b784b540768551d2481cbc7",
+        "test_log": "delivery-proof/end_30-positive.log",
+        "test_log_sha256": "78a24cbd255329efd77baa0a0a012acea6ee34a29298b3fbd761471bc26aa692",
+        "negative_log": "delivery-proof/end_30-negative.log",
+        "negative_log_sha256": "0a25749452305925348b12cb02cc5efdec9324f0f39308f65145e5a559224ec1"
+      },
+      "negative": {
+        "log": "compatibility/end_30/primary/negative.log"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Open-loop primary brake timing can miss the requested safety-zone footprint position on Native dynamics."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/end_30/fallback1/construction.json",
+          "construction_sha256": "6c69e404186f4f8cbab252969f7dae07395db05f35be9ee2c56a5891e630b17e",
+          "changed_knobs": [
+            "brake_lead_seconds: 1.4 to 2.0; exact case, cameras and observations fixed"
+          ],
+          "trigger": {
+            "source": "original zone_raw.json and trace.jsonl",
+            "metric": "observed final footprint distance or between-zone occupancy",
+            "failure_condition": "Primary final rest misses its engineering target by more than 0.25 m"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/draft-construction-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__end_30 --output .runtime-work/c150660-offline-end_30-fallback1 --python .venv-cpu/bin/python --candidate fallback1",
+            "construction_sha256": "6c69e404186f4f8cbab252969f7dae07395db05f35be9ee2c56a5891e630b17e",
+            "exit_code": 0,
+            "log": "native/end_30-fallback1-offline.log",
+            "log_sha256": "86636a289ff15a620997cd1e12131cc20640ee0358e7762a0371689f1147b780"
+          },
+          "compatibility": {
+            "receipt": "compatibility/end_30/fallback1/compatibility.json",
+            "sha256": "c549d83480f8e3c867c3f55d4ac7404887806421751eccffd589b7088f41b8a9",
+            "log": "compatibility/end_30/fallback1/analysis.log",
+            "negative_log": "compatibility/end_30/fallback1/negative.log"
+          }
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/end_30/proof.json",
+        "sha256": "32ac184aa5614fdaf77561cebe588f044ba1b18c821f582da8641538e61e820f"
+      },
+      "acquisition": {
+        "drv.standing_or_parked": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "st.safety_zone": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "st.road_edge": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "drv.forced_halt": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "exception_context": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        }
+      }
+    },
+    {
+      "id": "end_35",
+      "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__end_35",
+      "kind": "delivery",
+      "construction": "cases/end_35/primary/construction.json",
+      "construction_sha256": "0c7e49b5a30d43d592a0815ee10aaea43e3e1c437a530ac5f47c8b2e516f0a9f",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "boolean proxy",
+            "method": "Native 20 Hz velocity and stop control",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "st.safety_zone",
+            "unit": "source geometry",
+            "method": "authored and Native map plus independent zone designation review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "st.road_edge",
+            "unit": "m",
+            "method": "Native shoulder edge and independent curb review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "boolean geometry",
+            "method": "four-corner body footprint between zone and curb",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "m",
+            "method": "footprint distance to both opposite curb-end points",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "kin.position",
+            "unit": "m",
+            "method": "original Native four-corner body footprint",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "drv.forced_halt",
+            "unit": "review source",
+            "method": "original traffic-conflict and halt-purpose review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "dev.human_direction",
+            "unit": "review source",
+            "method": "original officer-direction review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "exception_context",
+            "unit": "review source",
+            "method": "original law, traffic, officer and device review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Requested position is not realized distance; measure original footprint",
+          "Authored markers do not establish an official safety zone or adjacent curb",
+          "Every statutory exception and actual camera pixels require independent original-source review",
+          "CPU fixtures do not establish physical or legal acceptance"
+        ]
+      },
+      "measurement_contract": "cases/end_35/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/native/diagnostic/end_35/fixture-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/draft-construction-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__end_35 --output .runtime-work/c150660-offline-end_35-primary --python .venv-cpu/bin/python",
+        "construction_sha256": "0c7e49b5a30d43d592a0815ee10aaea43e3e1c437a530ac5f47c8b2e516f0a9f",
+        "exit_code": 0,
+        "log": "native/end_35-primary-offline.log",
+        "log_sha256": "86636a289ff15a620997cd1e12131cc20640ee0358e7762a0371689f1147b780"
+      },
+      "compatibility": {
+        "receipt": "compatibility/end_35/primary/compatibility.json",
+        "sha256": "fbed803690c22c7e5a2dd1233e8137983b73b693773edcef89369bd8171906b4",
+        "log": "compatibility/end_35/primary/analysis.log",
+        "negative_log": "compatibility/end_35/primary/negative.log"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/execution-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__end_35 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $ATTEMPT/owner-release.json",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/execution-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__end_35 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $ATTEMPT/owner-release.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/end_35-processing.log",
+        "test_log_sha256": "07055b0633affbc899ec7ed0ff403c727e86dec5d0ba25c6b317e81ff2be4fe5",
+        "processing_receipt": "saved/end_35-processing.json",
+        "processing_receipt_sha256": "07055b0633affbc899ec7ed0ff403c727e86dec5d0ba25c6b317e81ff2be4fe5"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__end_35",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: exact Native result",
+        "command": ".venv-cpu/bin/python work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/delivery_audit.py --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__end_35 --self-test",
+        "negative_command": ".venv-cpu/bin/python work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/delivery_audit.py --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__end_35 --self-test --negative",
+        "script": "delivery_audit.py",
+        "script_sha256": "380e2fde2698cfeb7ae57897e7cc7bc2b27453557b784b540768551d2481cbc7",
+        "test_log": "delivery-proof/end_35-positive.log",
+        "test_log_sha256": "9bd65c399a95dfa36b021f0c04d7137cfc02d8588005f89c231f451ac952a41f",
+        "negative_log": "delivery-proof/end_35-negative.log",
+        "negative_log_sha256": "0a25749452305925348b12cb02cc5efdec9324f0f39308f65145e5a559224ec1"
+      },
+      "negative": {
+        "log": "compatibility/end_35/primary/negative.log"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Open-loop primary brake timing can miss the requested safety-zone footprint position on Native dynamics."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/end_35/fallback1/construction.json",
+          "construction_sha256": "a4f689743368b615052a03aeb3631037c3d7673da05072d0e5e9371b2c70f238",
+          "changed_knobs": [
+            "brake_lead_seconds: 1.4 to 2.0; exact case, cameras and observations fixed"
+          ],
+          "trigger": {
+            "source": "original zone_raw.json and trace.jsonl",
+            "metric": "observed final footprint distance or between-zone occupancy",
+            "failure_condition": "Primary final rest misses its engineering target by more than 0.25 m"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/draft-construction-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__end_35 --output .runtime-work/c150660-offline-end_35-fallback1 --python .venv-cpu/bin/python --candidate fallback1",
+            "construction_sha256": "a4f689743368b615052a03aeb3631037c3d7673da05072d0e5e9371b2c70f238",
+            "exit_code": 0,
+            "log": "native/end_35-fallback1-offline.log",
+            "log_sha256": "86636a289ff15a620997cd1e12131cc20640ee0358e7762a0371689f1147b780"
+          },
+          "compatibility": {
+            "receipt": "compatibility/end_35/fallback1/compatibility.json",
+            "sha256": "58a585ef2bcea8c9eb81aa46cf067d6bb7d773aac27b1d982be0070b9c3dc100",
+            "log": "compatibility/end_35/fallback1/analysis.log",
+            "negative_log": "compatibility/end_35/fallback1/negative.log"
+          }
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/end_35/proof.json",
+        "sha256": "879c23d247af7c8fb18697d37010b367fb43ccc9856537e56292fe2336bd750d"
+      },
+      "acquisition": {
+        "drv.standing_or_parked": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "st.safety_zone": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "st.road_edge": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "drv.forced_halt": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "exception_context": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        }
+      }
+    },
+    {
+      "id": "start_25",
+      "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__start_25",
+      "kind": "delivery",
+      "construction": "cases/start_25/primary/construction.json",
+      "construction_sha256": "135e23ce7e3c5995f4a2d4d307ecdef04ec4895598bc13fb35ae1fa4dc09d280",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "boolean proxy",
+            "method": "Native 20 Hz velocity and stop control",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "st.safety_zone",
+            "unit": "source geometry",
+            "method": "authored and Native map plus independent zone designation review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "st.road_edge",
+            "unit": "m",
+            "method": "Native shoulder edge and independent curb review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "boolean geometry",
+            "method": "four-corner body footprint between zone and curb",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "m",
+            "method": "footprint distance to both opposite curb-end points",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "kin.position",
+            "unit": "m",
+            "method": "original Native four-corner body footprint",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "drv.forced_halt",
+            "unit": "review source",
+            "method": "original traffic-conflict and halt-purpose review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "dev.human_direction",
+            "unit": "review source",
+            "method": "original officer-direction review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "exception_context",
+            "unit": "review source",
+            "method": "original law, traffic, officer and device review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Requested position is not realized distance; measure original footprint",
+          "Authored markers do not establish an official safety zone or adjacent curb",
+          "Every statutory exception and actual camera pixels require independent original-source review",
+          "CPU fixtures do not establish physical or legal acceptance"
+        ]
+      },
+      "measurement_contract": "cases/start_25/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/native/diagnostic/start_25/fixture-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/draft-construction-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__start_25 --output .runtime-work/c150660-offline-start_25-primary --python .venv-cpu/bin/python",
+        "construction_sha256": "135e23ce7e3c5995f4a2d4d307ecdef04ec4895598bc13fb35ae1fa4dc09d280",
+        "exit_code": 0,
+        "log": "native/start_25-primary-offline.log",
+        "log_sha256": "86636a289ff15a620997cd1e12131cc20640ee0358e7762a0371689f1147b780"
+      },
+      "compatibility": {
+        "receipt": "compatibility/start_25/primary/compatibility.json",
+        "sha256": "7d389f504f60caa76b83dac5b18c267047385bf85cc148b2fea19a8186e37c93",
+        "log": "compatibility/start_25/primary/analysis.log",
+        "negative_log": "compatibility/start_25/primary/negative.log"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/execution-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__start_25 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $ATTEMPT/owner-release.json",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/execution-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__start_25 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $ATTEMPT/owner-release.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/start_25-processing.log",
+        "test_log_sha256": "84863dc41c66ba402ab8919103c14a18f1297b38f05c024faf0490e146a95f51",
+        "processing_receipt": "saved/start_25-processing.json",
+        "processing_receipt_sha256": "84863dc41c66ba402ab8919103c14a18f1297b38f05c024faf0490e146a95f51"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__start_25",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: exact Native result",
+        "command": ".venv-cpu/bin/python work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/delivery_audit.py --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__start_25 --self-test",
+        "negative_command": ".venv-cpu/bin/python work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/delivery_audit.py --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__start_25 --self-test --negative",
+        "script": "delivery_audit.py",
+        "script_sha256": "380e2fde2698cfeb7ae57897e7cc7bc2b27453557b784b540768551d2481cbc7",
+        "test_log": "delivery-proof/start_25-positive.log",
+        "test_log_sha256": "7f52eed15362bdc971a83ebda99cb50659b4048f4d92373a2ecaa729f80f4a51",
+        "negative_log": "delivery-proof/start_25-negative.log",
+        "negative_log_sha256": "0a25749452305925348b12cb02cc5efdec9324f0f39308f65145e5a559224ec1"
+      },
+      "negative": {
+        "log": "compatibility/start_25/primary/negative.log"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Open-loop primary brake timing can miss the requested safety-zone footprint position on Native dynamics."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/start_25/fallback1/construction.json",
+          "construction_sha256": "54488eb77b6e721d129ed66c6700c066c532e562578e4612f58c336cde47fef9",
+          "changed_knobs": [
+            "brake_lead_seconds: 1.4 to 2.0; exact case, cameras and observations fixed"
+          ],
+          "trigger": {
+            "source": "original zone_raw.json and trace.jsonl",
+            "metric": "observed final footprint distance or between-zone occupancy",
+            "failure_condition": "Primary final rest misses its engineering target by more than 0.25 m"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/draft-construction-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__start_25 --output .runtime-work/c150660-offline-start_25-fallback1 --python .venv-cpu/bin/python --candidate fallback1",
+            "construction_sha256": "54488eb77b6e721d129ed66c6700c066c532e562578e4612f58c336cde47fef9",
+            "exit_code": 0,
+            "log": "native/start_25-fallback1-offline.log",
+            "log_sha256": "86636a289ff15a620997cd1e12131cc20640ee0358e7762a0371689f1147b780"
+          },
+          "compatibility": {
+            "receipt": "compatibility/start_25/fallback1/compatibility.json",
+            "sha256": "86d7565e1eea1b96bc75fa6bec963dcee54bae023da447f64f94ca2e7b0374fd",
+            "log": "compatibility/start_25/fallback1/analysis.log",
+            "negative_log": "compatibility/start_25/fallback1/negative.log"
+          }
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/start_25/proof.json",
+        "sha256": "9a5ed3ae307aef605a841037747212e1a682a29304b2d903b7b00e9e4f31850c"
+      },
+      "acquisition": {
+        "drv.standing_or_parked": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "st.safety_zone": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "st.road_edge": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "drv.forced_halt": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "exception_context": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        }
+      }
+    },
+    {
+      "id": "start_30",
+      "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__start_30",
+      "kind": "delivery",
+      "construction": "cases/start_30/primary/construction.json",
+      "construction_sha256": "30901430045310cc2bcbb043e43fe4251a04e02e6c27d3091ad3a69dbf98efe2",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "boolean proxy",
+            "method": "Native 20 Hz velocity and stop control",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "st.safety_zone",
+            "unit": "source geometry",
+            "method": "authored and Native map plus independent zone designation review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "st.road_edge",
+            "unit": "m",
+            "method": "Native shoulder edge and independent curb review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "boolean geometry",
+            "method": "four-corner body footprint between zone and curb",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "m",
+            "method": "footprint distance to both opposite curb-end points",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "kin.position",
+            "unit": "m",
+            "method": "original Native four-corner body footprint",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "drv.forced_halt",
+            "unit": "review source",
+            "method": "original traffic-conflict and halt-purpose review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "dev.human_direction",
+            "unit": "review source",
+            "method": "original officer-direction review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "exception_context",
+            "unit": "review source",
+            "method": "original law, traffic, officer and device review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Requested position is not realized distance; measure original footprint",
+          "Authored markers do not establish an official safety zone or adjacent curb",
+          "Every statutory exception and actual camera pixels require independent original-source review",
+          "CPU fixtures do not establish physical or legal acceptance"
+        ]
+      },
+      "measurement_contract": "cases/start_30/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/native/diagnostic/start_30/fixture-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/draft-construction-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__start_30 --output .runtime-work/c150660-offline-start_30-primary --python .venv-cpu/bin/python",
+        "construction_sha256": "30901430045310cc2bcbb043e43fe4251a04e02e6c27d3091ad3a69dbf98efe2",
+        "exit_code": 0,
+        "log": "native/start_30-primary-offline.log",
+        "log_sha256": "86636a289ff15a620997cd1e12131cc20640ee0358e7762a0371689f1147b780"
+      },
+      "compatibility": {
+        "receipt": "compatibility/start_30/primary/compatibility.json",
+        "sha256": "fbd13c0ff62bd15e8a515f1768329ac5f295e4a732643b373ccb004fe74a9d87",
+        "log": "compatibility/start_30/primary/analysis.log",
+        "negative_log": "compatibility/start_30/primary/negative.log"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/execution-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__start_30 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $ATTEMPT/owner-release.json",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/execution-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__start_30 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $ATTEMPT/owner-release.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/start_30-processing.log",
+        "test_log_sha256": "2b0e6d9b34a3853dd7f0e09d4d0495c6f0b27ee6cd79330b729f48550bbac543",
+        "processing_receipt": "saved/start_30-processing.json",
+        "processing_receipt_sha256": "2b0e6d9b34a3853dd7f0e09d4d0495c6f0b27ee6cd79330b729f48550bbac543"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__start_30",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: exact Native result",
+        "command": ".venv-cpu/bin/python work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/delivery_audit.py --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__start_30 --self-test",
+        "negative_command": ".venv-cpu/bin/python work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/delivery_audit.py --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__start_30 --self-test --negative",
+        "script": "delivery_audit.py",
+        "script_sha256": "380e2fde2698cfeb7ae57897e7cc7bc2b27453557b784b540768551d2481cbc7",
+        "test_log": "delivery-proof/start_30-positive.log",
+        "test_log_sha256": "c186d7e1880a1ebc4a1001a7776268c5bbbd36ff03996012ba144b488729a48d",
+        "negative_log": "delivery-proof/start_30-negative.log",
+        "negative_log_sha256": "0a25749452305925348b12cb02cc5efdec9324f0f39308f65145e5a559224ec1"
+      },
+      "negative": {
+        "log": "compatibility/start_30/primary/negative.log"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Open-loop primary brake timing can miss the requested safety-zone footprint position on Native dynamics."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/start_30/fallback1/construction.json",
+          "construction_sha256": "2578b93e6e53e7028653da583bafa7e7d140381701b98b54f72b596315b3e91d",
+          "changed_knobs": [
+            "brake_lead_seconds: 1.4 to 2.0; exact case, cameras and observations fixed"
+          ],
+          "trigger": {
+            "source": "original zone_raw.json and trace.jsonl",
+            "metric": "observed final footprint distance or between-zone occupancy",
+            "failure_condition": "Primary final rest misses its engineering target by more than 0.25 m"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/draft-construction-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__start_30 --output .runtime-work/c150660-offline-start_30-fallback1 --python .venv-cpu/bin/python --candidate fallback1",
+            "construction_sha256": "2578b93e6e53e7028653da583bafa7e7d140381701b98b54f72b596315b3e91d",
+            "exit_code": 0,
+            "log": "native/start_30-fallback1-offline.log",
+            "log_sha256": "b183019a0bd191a094413f22e4925f392634eb849d6477173aa5d99027a678e6"
+          },
+          "compatibility": {
+            "receipt": "compatibility/start_30/fallback1/compatibility.json",
+            "sha256": "77db23010bc11c4acbeea73d6ba9c0c64fad0d3649b6dedcacb5f4b4912cb5e5",
+            "log": "compatibility/start_30/fallback1/analysis.log",
+            "negative_log": "compatibility/start_30/fallback1/negative.log"
+          }
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/start_30/proof.json",
+        "sha256": "d7ff485f9b896e7d45ec1636d4ba76ebab13e1569d607db8509fdb264930e1f2"
+      },
+      "acquisition": {
+        "drv.standing_or_parked": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "st.safety_zone": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "st.road_edge": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "drv.forced_halt": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "exception_context": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        }
+      }
+    },
+    {
+      "id": "start_35",
+      "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__start_35",
+      "kind": "delivery",
+      "construction": "cases/start_35/primary/construction.json",
+      "construction_sha256": "57c55bd4051117cc0c6431adb89698bc8cb9634412b5091a80ae242d47b95c82",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "boolean proxy",
+            "method": "Native 20 Hz velocity and stop control",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "st.safety_zone",
+            "unit": "source geometry",
+            "method": "authored and Native map plus independent zone designation review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "st.road_edge",
+            "unit": "m",
+            "method": "Native shoulder edge and independent curb review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "boolean geometry",
+            "method": "four-corner body footprint between zone and curb",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "m",
+            "method": "footprint distance to both opposite curb-end points",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "kin.position",
+            "unit": "m",
+            "method": "original Native four-corner body footprint",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "drv.forced_halt",
+            "unit": "review source",
+            "method": "original traffic-conflict and halt-purpose review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "dev.human_direction",
+            "unit": "review source",
+            "method": "original officer-direction review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "exception_context",
+            "unit": "review source",
+            "method": "original law, traffic, officer and device review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Requested position is not realized distance; measure original footprint",
+          "Authored markers do not establish an official safety zone or adjacent curb",
+          "Every statutory exception and actual camera pixels require independent original-source review",
+          "CPU fixtures do not establish physical or legal acceptance"
+        ]
+      },
+      "measurement_contract": "cases/start_35/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/native/diagnostic/start_35/fixture-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/draft-construction-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__start_35 --output .runtime-work/c150660-offline-start_35-primary --python .venv-cpu/bin/python",
+        "construction_sha256": "57c55bd4051117cc0c6431adb89698bc8cb9634412b5091a80ae242d47b95c82",
+        "exit_code": 0,
+        "log": "native/start_35-primary-offline.log",
+        "log_sha256": "b183019a0bd191a094413f22e4925f392634eb849d6477173aa5d99027a678e6"
+      },
+      "compatibility": {
+        "receipt": "compatibility/start_35/primary/compatibility.json",
+        "sha256": "11eee55ac632e88f83a43d73c018ba4dba40ac0e9bef92d0772b5445cdd776e0",
+        "log": "compatibility/start_35/primary/analysis.log",
+        "negative_log": "compatibility/start_35/primary/negative.log"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/execution-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__start_35 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $ATTEMPT/owner-release.json",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/execution-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__start_35 --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $ATTEMPT/owner-release.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/start_35-processing.log",
+        "test_log_sha256": "5e1224e13bed8a4d62aca07502fa16d9c420abb031ee8fea22e24a4a9bfda59d",
+        "processing_receipt": "saved/start_35-processing.json",
+        "processing_receipt_sha256": "5e1224e13bed8a4d62aca07502fa16d9c420abb031ee8fea22e24a4a9bfda59d"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__start_35",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: exact Native result",
+        "command": ".venv-cpu/bin/python work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/delivery_audit.py --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__start_35 --self-test",
+        "negative_command": ".venv-cpu/bin/python work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/delivery_audit.py --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__start_35 --self-test --negative",
+        "script": "delivery_audit.py",
+        "script_sha256": "380e2fde2698cfeb7ae57897e7cc7bc2b27453557b784b540768551d2481cbc7",
+        "test_log": "delivery-proof/start_35-positive.log",
+        "test_log_sha256": "80797e6b6989c1c96101ab5295d50752cfd52a66232058be6b5fa2090e617fef",
+        "negative_log": "delivery-proof/start_35-negative.log",
+        "negative_log_sha256": "0a25749452305925348b12cb02cc5efdec9324f0f39308f65145e5a559224ec1"
+      },
+      "negative": {
+        "log": "compatibility/start_35/primary/negative.log"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Open-loop primary brake timing can miss the requested safety-zone footprint position on Native dynamics."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/start_35/fallback1/construction.json",
+          "construction_sha256": "4fb0f3f59920643f1e7b8fd78eea82f1645a376e6c53101937f8c807784acd2f",
+          "changed_knobs": [
+            "brake_lead_seconds: 1.4 to 2.0; exact case, cameras and observations fixed"
+          ],
+          "trigger": {
+            "source": "original zone_raw.json and trace.jsonl",
+            "metric": "observed final footprint distance or between-zone occupancy",
+            "failure_condition": "Primary final rest misses its engineering target by more than 0.25 m"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/draft-construction-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__start_35 --output .runtime-work/c150660-offline-start_35-fallback1 --python .venv-cpu/bin/python --candidate fallback1",
+            "construction_sha256": "4fb0f3f59920643f1e7b8fd78eea82f1645a376e6c53101937f8c807784acd2f",
+            "exit_code": 0,
+            "log": "native/start_35-fallback1-offline.log",
+            "log_sha256": "b183019a0bd191a094413f22e4925f392634eb849d6477173aa5d99027a678e6"
+          },
+          "compatibility": {
+            "receipt": "compatibility/start_35/fallback1/compatibility.json",
+            "sha256": "95560c3425ddf1ba5b9cd49bcc304c8b9d2a1c4a60d2c6e70752fc44997cd726",
+            "log": "compatibility/start_35/fallback1/analysis.log",
+            "negative_log": "compatibility/start_35/fallback1/negative.log"
+          }
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/start_35/proof.json",
+        "sha256": "4dcfc993de2c1051a01ece90b15e50bbfee0515517ca91175bf996260aaba5d4"
+      },
+      "acquisition": {
+        "drv.standing_or_parked": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "st.safety_zone": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "st.road_edge": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "drv.forced_halt": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "exception_context": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        }
+      }
+    },
+    {
+      "id": "stand_between",
+      "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__stand_between",
+      "kind": "delivery",
+      "construction": "cases/stand_between/primary/construction.json",
+      "construction_sha256": "79e624c0feb3efee4c138eff8d0ae9b5977de5fad43f252e1f7b8d8281a8a5ca",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "boolean proxy",
+            "method": "Native 20 Hz velocity and stop control",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "st.safety_zone",
+            "unit": "source geometry",
+            "method": "authored and Native map plus independent zone designation review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "st.road_edge",
+            "unit": "m",
+            "method": "Native shoulder edge and independent curb review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "boolean geometry",
+            "method": "four-corner body footprint between zone and curb",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "m",
+            "method": "footprint distance to both opposite curb-end points",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "kin.position",
+            "unit": "m",
+            "method": "original Native four-corner body footprint",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "drv.forced_halt",
+            "unit": "review source",
+            "method": "original traffic-conflict and halt-purpose review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "dev.human_direction",
+            "unit": "review source",
+            "method": "original officer-direction review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "exception_context",
+            "unit": "review source",
+            "method": "original law, traffic, officer and device review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Requested position is not realized distance; measure original footprint",
+          "Authored markers do not establish an official safety zone or adjacent curb",
+          "Every statutory exception and actual camera pixels require independent original-source review",
+          "CPU fixtures do not establish physical or legal acceptance"
+        ]
+      },
+      "measurement_contract": "cases/stand_between/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/native/diagnostic/stand_between/fixture-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/draft-construction-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__stand_between --output .runtime-work/c150660-offline-stand_between-primary --python .venv-cpu/bin/python",
+        "construction_sha256": "79e624c0feb3efee4c138eff8d0ae9b5977de5fad43f252e1f7b8d8281a8a5ca",
+        "exit_code": 0,
+        "log": "native/stand_between-primary-offline.log",
+        "log_sha256": "b183019a0bd191a094413f22e4925f392634eb849d6477173aa5d99027a678e6"
+      },
+      "compatibility": {
+        "receipt": "compatibility/stand_between/primary/compatibility.json",
+        "sha256": "14f2f69e44b93f7965db0e7bbce4b52a124491b33c652c060e55799750b49ef4",
+        "log": "compatibility/stand_between/primary/analysis.log",
+        "negative_log": "compatibility/stand_between/primary/negative.log"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/execution-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__stand_between --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $ATTEMPT/owner-release.json",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/execution-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__stand_between --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $ATTEMPT/owner-release.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/stand_between-processing.log",
+        "test_log_sha256": "8102b52bfeeade42a2c6c0cfbbdca098b4d9060f917173e3240a73eb7391d5fc",
+        "processing_receipt": "saved/stand_between-processing.json",
+        "processing_receipt_sha256": "8102b52bfeeade42a2c6c0cfbbdca098b4d9060f917173e3240a73eb7391d5fc"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__stand_between",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: exact Native result",
+        "command": ".venv-cpu/bin/python work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/delivery_audit.py --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__stand_between --self-test",
+        "negative_command": ".venv-cpu/bin/python work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/delivery_audit.py --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__stand_between --self-test --negative",
+        "script": "delivery_audit.py",
+        "script_sha256": "380e2fde2698cfeb7ae57897e7cc7bc2b27453557b784b540768551d2481cbc7",
+        "test_log": "delivery-proof/stand_between-positive.log",
+        "test_log_sha256": "dcadf53d14f902bf1eb2da0e520053049e7a79c13fe289af6c5d44a5fcef1ac2",
+        "negative_log": "delivery-proof/stand_between-negative.log",
+        "negative_log_sha256": "0a25749452305925348b12cb02cc5efdec9324f0f39308f65145e5a559224ec1"
+      },
+      "negative": {
+        "log": "compatibility/stand_between/primary/negative.log"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Open-loop primary brake timing can miss the requested safety-zone footprint position on Native dynamics."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/stand_between/fallback1/construction.json",
+          "construction_sha256": "800c6b91c923f2ac13dbd52658537fedb217979402c2035d783b467415ab6bed",
+          "changed_knobs": [
+            "brake_lead_seconds: 1.4 to 2.0; exact case, cameras and observations fixed"
+          ],
+          "trigger": {
+            "source": "original zone_raw.json and trace.jsonl",
+            "metric": "observed final footprint distance or between-zone occupancy",
+            "failure_condition": "Primary final rest misses its engineering target by more than 0.25 m"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/draft-construction-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__stand_between --output .runtime-work/c150660-offline-stand_between-fallback1 --python .venv-cpu/bin/python --candidate fallback1",
+            "construction_sha256": "800c6b91c923f2ac13dbd52658537fedb217979402c2035d783b467415ab6bed",
+            "exit_code": 0,
+            "log": "native/stand_between-fallback1-offline.log",
+            "log_sha256": "f428ded7556d19a8697abe2be6c21da6b56e42a9a82242d5a0abe4d99c8080e5"
+          },
+          "compatibility": {
+            "receipt": "compatibility/stand_between/fallback1/compatibility.json",
+            "sha256": "37ef5b2d1521ac95b4eadecc7aa960dffd9c0a9485a3d6879ebb0e1322a51274",
+            "log": "compatibility/stand_between/fallback1/analysis.log",
+            "negative_log": "compatibility/stand_between/fallback1/negative.log"
+          }
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/stand_between/proof.json",
+        "sha256": "e0fdb50b93d2e5dd35c2c5607e1971962caa0dbc193231b9da1911f016a28eff"
+      },
+      "acquisition": {
+        "drv.standing_or_parked": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "st.safety_zone": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "st.road_edge": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "drv.forced_halt": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "exception_context": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        }
+      }
+    },
+    {
+      "id": "park_between",
+      "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__park_between",
+      "kind": "delivery",
+      "construction": "cases/park_between/primary/construction.json",
+      "construction_sha256": "3ea1bc92b49f9ef9d523d57cdfc2fb76f36c2600a55162c7e6dfd638beabfef3",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "boolean proxy",
+            "method": "Native 20 Hz velocity and stop control",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "st.safety_zone",
+            "unit": "source geometry",
+            "method": "authored and Native map plus independent zone designation review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "st.road_edge",
+            "unit": "m",
+            "method": "Native shoulder edge and independent curb review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "boolean geometry",
+            "method": "four-corner body footprint between zone and curb",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "m",
+            "method": "footprint distance to both opposite curb-end points",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "kin.position",
+            "unit": "m",
+            "method": "original Native four-corner body footprint",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "drv.forced_halt",
+            "unit": "review source",
+            "method": "original traffic-conflict and halt-purpose review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "dev.human_direction",
+            "unit": "review source",
+            "method": "original officer-direction review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "exception_context",
+            "unit": "review source",
+            "method": "original law, traffic, officer and device review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Requested position is not realized distance; measure original footprint",
+          "Authored markers do not establish an official safety zone or adjacent curb",
+          "Every statutory exception and actual camera pixels require independent original-source review",
+          "CPU fixtures do not establish physical or legal acceptance"
+        ]
+      },
+      "measurement_contract": "cases/park_between/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/native/diagnostic/park_between/fixture-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/draft-construction-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__park_between --output .runtime-work/c150660-offline-park_between-primary --python .venv-cpu/bin/python",
+        "construction_sha256": "3ea1bc92b49f9ef9d523d57cdfc2fb76f36c2600a55162c7e6dfd638beabfef3",
+        "exit_code": 0,
+        "log": "native/park_between-primary-offline.log",
+        "log_sha256": "b183019a0bd191a094413f22e4925f392634eb849d6477173aa5d99027a678e6"
+      },
+      "compatibility": {
+        "receipt": "compatibility/park_between/primary/compatibility.json",
+        "sha256": "b84c3aa4e2eb9b5d81b37daf01166a5956c3c5b5ff88a50bf4e0508aa9f95eab",
+        "log": "compatibility/park_between/primary/analysis.log",
+        "negative_log": "compatibility/park_between/primary/negative.log"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/execution-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__park_between --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $ATTEMPT/owner-release.json",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/execution-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__park_between --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $ATTEMPT/owner-release.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/park_between-processing.log",
+        "test_log_sha256": "be4b795f34d0f4f3362e48308cb345f2811ca389d4e6324f4f42e2299ce8f518",
+        "processing_receipt": "saved/park_between-processing.json",
+        "processing_receipt_sha256": "be4b795f34d0f4f3362e48308cb345f2811ca389d4e6324f4f42e2299ce8f518"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__park_between",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: exact Native result",
+        "command": ".venv-cpu/bin/python work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/delivery_audit.py --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__park_between --self-test",
+        "negative_command": ".venv-cpu/bin/python work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/delivery_audit.py --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__park_between --self-test --negative",
+        "script": "delivery_audit.py",
+        "script_sha256": "380e2fde2698cfeb7ae57897e7cc7bc2b27453557b784b540768551d2481cbc7",
+        "test_log": "delivery-proof/park_between-positive.log",
+        "test_log_sha256": "d19b88d7f63c67fac5908a2c38fa90b35d808bdcd2dcfcc77a776a314f02e189",
+        "negative_log": "delivery-proof/park_between-negative.log",
+        "negative_log_sha256": "0a25749452305925348b12cb02cc5efdec9324f0f39308f65145e5a559224ec1"
+      },
+      "negative": {
+        "log": "compatibility/park_between/primary/negative.log"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Open-loop primary brake timing can miss the requested safety-zone footprint position on Native dynamics."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/park_between/fallback1/construction.json",
+          "construction_sha256": "074ef8255c79b03593f7ed28b7e03ff00af29bfced10bf0c50a5aa376a6af7fb",
+          "changed_knobs": [
+            "brake_lead_seconds: 1.4 to 2.0; exact case, cameras and observations fixed"
+          ],
+          "trigger": {
+            "source": "original zone_raw.json and trace.jsonl",
+            "metric": "observed final footprint distance or between-zone occupancy",
+            "failure_condition": "Primary final rest misses its engineering target by more than 0.25 m"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/draft-construction-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__park_between --output .runtime-work/c150660-offline-park_between-fallback1 --python .venv-cpu/bin/python --candidate fallback1",
+            "construction_sha256": "074ef8255c79b03593f7ed28b7e03ff00af29bfced10bf0c50a5aa376a6af7fb",
+            "exit_code": 0,
+            "log": "native/park_between-fallback1-offline.log",
+            "log_sha256": "b183019a0bd191a094413f22e4925f392634eb849d6477173aa5d99027a678e6"
+          },
+          "compatibility": {
+            "receipt": "compatibility/park_between/fallback1/compatibility.json",
+            "sha256": "4f30c7739885821f50784b12c4408b064b3c6fb9a4186908285484918ee32168",
+            "log": "compatibility/park_between/fallback1/analysis.log",
+            "negative_log": "compatibility/park_between/fallback1/negative.log"
+          }
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/park_between/proof.json",
+        "sha256": "3719d18d51cedcba143c4cb9df7806a7f1611aba397f454ee221ad499755f18f"
+      },
+      "acquisition": {
+        "drv.standing_or_parked": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "st.safety_zone": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "st.road_edge": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "drv.forced_halt": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "exception_context": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        }
+      }
+    },
+    {
+      "id": "conflict_between",
+      "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__conflict_between",
+      "kind": "delivery",
+      "construction": "cases/conflict_between/primary/construction.json",
+      "construction_sha256": "0537b14074f3596a13d7798883adb9d981a935906c8b9f6a2b89d3fff251a93a",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "boolean proxy",
+            "method": "Native 20 Hz velocity and stop control",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "st.safety_zone",
+            "unit": "source geometry",
+            "method": "authored and Native map plus independent zone designation review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "st.road_edge",
+            "unit": "m",
+            "method": "Native shoulder edge and independent curb review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "boolean geometry",
+            "method": "four-corner body footprint between zone and curb",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "m",
+            "method": "footprint distance to both opposite curb-end points",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "kin.position",
+            "unit": "m",
+            "method": "original Native four-corner body footprint",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "drv.forced_halt",
+            "unit": "review source",
+            "method": "original traffic-conflict and halt-purpose review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "dev.human_direction",
+            "unit": "review source",
+            "method": "original officer-direction review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "exception_context",
+            "unit": "review source",
+            "method": "original law, traffic, officer and device review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Requested position is not realized distance; measure original footprint",
+          "Authored markers do not establish an official safety zone or adjacent curb",
+          "Every statutory exception and actual camera pixels require independent original-source review",
+          "CPU fixtures do not establish physical or legal acceptance"
+        ]
+      },
+      "measurement_contract": "cases/conflict_between/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/native/diagnostic/conflict_between/fixture-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/draft-construction-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__conflict_between --output .runtime-work/c150660-offline-conflict_between-primary --python .venv-cpu/bin/python",
+        "construction_sha256": "0537b14074f3596a13d7798883adb9d981a935906c8b9f6a2b89d3fff251a93a",
+        "exit_code": 0,
+        "log": "native/conflict_between-primary-offline.log",
+        "log_sha256": "b183019a0bd191a094413f22e4925f392634eb849d6477173aa5d99027a678e6"
+      },
+      "compatibility": {
+        "receipt": "compatibility/conflict_between/primary/compatibility.json",
+        "sha256": "d9fa2f5068e6f1156fcdd299cc87661dec4631df969ead8e187a77c24af39625",
+        "log": "compatibility/conflict_between/primary/analysis.log",
+        "negative_log": "compatibility/conflict_between/primary/negative.log"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/execution-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__conflict_between --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $ATTEMPT/owner-release.json",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/execution-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__conflict_between --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $ATTEMPT/owner-release.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/conflict_between-processing.log",
+        "test_log_sha256": "667023d25817ea3332d5ce0d9afd1e6212414e67ba2090d39e6febb1c50bf7f9",
+        "processing_receipt": "saved/conflict_between-processing.json",
+        "processing_receipt_sha256": "667023d25817ea3332d5ce0d9afd1e6212414e67ba2090d39e6febb1c50bf7f9"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__conflict_between",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: exact Native result",
+        "command": ".venv-cpu/bin/python work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/delivery_audit.py --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__conflict_between --self-test",
+        "negative_command": ".venv-cpu/bin/python work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/delivery_audit.py --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__conflict_between --self-test --negative",
+        "script": "delivery_audit.py",
+        "script_sha256": "380e2fde2698cfeb7ae57897e7cc7bc2b27453557b784b540768551d2481cbc7",
+        "test_log": "delivery-proof/conflict_between-positive.log",
+        "test_log_sha256": "baefd458ca1b768b05f279d8f6d40d4696837a3f327b54125fcf37aa61889fcc",
+        "negative_log": "delivery-proof/conflict_between-negative.log",
+        "negative_log_sha256": "0a25749452305925348b12cb02cc5efdec9324f0f39308f65145e5a559224ec1"
+      },
+      "negative": {
+        "log": "compatibility/conflict_between/primary/negative.log"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Open-loop primary brake timing can miss the requested safety-zone footprint position on Native dynamics."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/conflict_between/fallback1/construction.json",
+          "construction_sha256": "d53328608c16f929be800daa3bde9a58347266189cd6ab72cb09c3c1f3e4f1fa",
+          "changed_knobs": [
+            "brake_lead_seconds: 1.4 to 2.0; exact case, cameras and observations fixed"
+          ],
+          "trigger": {
+            "source": "original zone_raw.json and trace.jsonl",
+            "metric": "observed final footprint distance or between-zone occupancy",
+            "failure_condition": "Primary final rest misses its engineering target by more than 0.25 m"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/draft-construction-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__conflict_between --output .runtime-work/c150660-offline-conflict_between-fallback1 --python .venv-cpu/bin/python --candidate fallback1",
+            "construction_sha256": "d53328608c16f929be800daa3bde9a58347266189cd6ab72cb09c3c1f3e4f1fa",
+            "exit_code": 0,
+            "log": "native/conflict_between-fallback1-offline.log",
+            "log_sha256": "86636a289ff15a620997cd1e12131cc20640ee0358e7762a0371689f1147b780"
+          },
+          "compatibility": {
+            "receipt": "compatibility/conflict_between/fallback1/compatibility.json",
+            "sha256": "87663a216fb21cfa3aa227d52cb0b31bde6c03c53f5aeda0910b1acfcb4f0477",
+            "log": "compatibility/conflict_between/fallback1/analysis.log",
+            "negative_log": "compatibility/conflict_between/fallback1/negative.log"
+          }
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/conflict_between/proof.json",
+        "sha256": "6146ae336e00b0ae40247ba92c7766918f02b31dc3d011c6e9c166e91f851681"
+      },
+      "acquisition": {
+        "drv.standing_or_parked": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "st.safety_zone": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "st.road_edge": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "drv.forced_halt": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "exception_context": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        }
+      }
+    },
+    {
+      "id": "law_between",
+      "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__law_between",
+      "kind": "delivery",
+      "construction": "cases/law_between/primary/construction.json",
+      "construction_sha256": "65ca04fe22b61d902a741a20586d3ed462200f5859205f9f0c1f0c96c0a554be",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "boolean proxy",
+            "method": "Native 20 Hz velocity and stop control",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "st.safety_zone",
+            "unit": "source geometry",
+            "method": "authored and Native map plus independent zone designation review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "st.road_edge",
+            "unit": "m",
+            "method": "Native shoulder edge and independent curb review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "boolean geometry",
+            "method": "four-corner body footprint between zone and curb",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "m",
+            "method": "footprint distance to both opposite curb-end points",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "kin.position",
+            "unit": "m",
+            "method": "original Native four-corner body footprint",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "drv.forced_halt",
+            "unit": "review source",
+            "method": "original traffic-conflict and halt-purpose review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "dev.human_direction",
+            "unit": "review source",
+            "method": "original officer-direction review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "exception_context",
+            "unit": "review source",
+            "method": "original law, traffic, officer and device review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Requested position is not realized distance; measure original footprint",
+          "Authored markers do not establish an official safety zone or adjacent curb",
+          "Every statutory exception and actual camera pixels require independent original-source review",
+          "CPU fixtures do not establish physical or legal acceptance"
+        ]
+      },
+      "measurement_contract": "cases/law_between/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/native/diagnostic/law_between/fixture-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/draft-construction-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__law_between --output .runtime-work/c150660-offline-law_between-primary --python .venv-cpu/bin/python",
+        "construction_sha256": "65ca04fe22b61d902a741a20586d3ed462200f5859205f9f0c1f0c96c0a554be",
+        "exit_code": 0,
+        "log": "native/law_between-primary-offline.log",
+        "log_sha256": "86636a289ff15a620997cd1e12131cc20640ee0358e7762a0371689f1147b780"
+      },
+      "compatibility": {
+        "receipt": "compatibility/law_between/primary/compatibility.json",
+        "sha256": "ae55271bbc2bdc67f368c4adb4ff073272a6b243e995386509b215b5a29a966f",
+        "log": "compatibility/law_between/primary/analysis.log",
+        "negative_log": "compatibility/law_between/primary/negative.log"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/execution-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__law_between --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $ATTEMPT/owner-release.json",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/execution-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__law_between --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $ATTEMPT/owner-release.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/law_between-processing.log",
+        "test_log_sha256": "a73da6238b5ea47ea3449c3cc3b7df2afa65455161861687be88ae0a74966396",
+        "processing_receipt": "saved/law_between-processing.json",
+        "processing_receipt_sha256": "a73da6238b5ea47ea3449c3cc3b7df2afa65455161861687be88ae0a74966396"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__law_between",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: exact Native result",
+        "command": ".venv-cpu/bin/python work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/delivery_audit.py --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__law_between --self-test",
+        "negative_command": ".venv-cpu/bin/python work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/delivery_audit.py --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__law_between --self-test --negative",
+        "script": "delivery_audit.py",
+        "script_sha256": "380e2fde2698cfeb7ae57897e7cc7bc2b27453557b784b540768551d2481cbc7",
+        "test_log": "delivery-proof/law_between-positive.log",
+        "test_log_sha256": "93cab72cab6e3b14d8d4e42f7628f25c0d5d9e89853e69b1ab488276b514106f",
+        "negative_log": "delivery-proof/law_between-negative.log",
+        "negative_log_sha256": "0a25749452305925348b12cb02cc5efdec9324f0f39308f65145e5a559224ec1"
+      },
+      "negative": {
+        "log": "compatibility/law_between/primary/negative.log"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Open-loop primary brake timing can miss the requested safety-zone footprint position on Native dynamics."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/law_between/fallback1/construction.json",
+          "construction_sha256": "03f3fe999d569c8be7bc5c645ba8aae596902f3705294b7f5dc173950bac1d94",
+          "changed_knobs": [
+            "brake_lead_seconds: 1.4 to 2.0; exact case, cameras and observations fixed"
+          ],
+          "trigger": {
+            "source": "original zone_raw.json and trace.jsonl",
+            "metric": "observed final footprint distance or between-zone occupancy",
+            "failure_condition": "Primary final rest misses its engineering target by more than 0.25 m"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/draft-construction-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__law_between --output .runtime-work/c150660-offline-law_between-fallback1 --python .venv-cpu/bin/python --candidate fallback1",
+            "construction_sha256": "03f3fe999d569c8be7bc5c645ba8aae596902f3705294b7f5dc173950bac1d94",
+            "exit_code": 0,
+            "log": "native/law_between-fallback1-offline.log",
+            "log_sha256": "b183019a0bd191a094413f22e4925f392634eb849d6477173aa5d99027a678e6"
+          },
+          "compatibility": {
+            "receipt": "compatibility/law_between/fallback1/compatibility.json",
+            "sha256": "b299139e1b0115c71eb9874cacef0a3ca32fe219c41d4317c11dbef7972cb301",
+            "log": "compatibility/law_between/fallback1/analysis.log",
+            "negative_log": "compatibility/law_between/fallback1/negative.log"
+          }
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/law_between/proof.json",
+        "sha256": "43ef4a6b798f2527a4c35db0a3f3d9e6854404f1637decf3cb9343d663e55523"
+      },
+      "acquisition": {
+        "drv.standing_or_parked": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "st.safety_zone": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "st.road_edge": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "drv.forced_halt": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "exception_context": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        }
+      }
+    },
+    {
+      "id": "officer_between",
+      "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__officer_between",
+      "kind": "delivery",
+      "construction": "cases/officer_between/primary/construction.json",
+      "construction_sha256": "50d309b4f1fe0a1c79ab0d52f29da9cbfc768d0000460b89f7fca4d435304a08",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "boolean proxy",
+            "method": "Native 20 Hz velocity and stop control",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "st.safety_zone",
+            "unit": "source geometry",
+            "method": "authored and Native map plus independent zone designation review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "st.road_edge",
+            "unit": "m",
+            "method": "Native shoulder edge and independent curb review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "boolean geometry",
+            "method": "four-corner body footprint between zone and curb",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "m",
+            "method": "footprint distance to both opposite curb-end points",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "kin.position",
+            "unit": "m",
+            "method": "original Native four-corner body footprint",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "drv.forced_halt",
+            "unit": "review source",
+            "method": "original traffic-conflict and halt-purpose review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "dev.human_direction",
+            "unit": "review source",
+            "method": "original officer-direction review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "exception_context",
+            "unit": "review source",
+            "method": "original law, traffic, officer and device review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Requested position is not realized distance; measure original footprint",
+          "Authored markers do not establish an official safety zone or adjacent curb",
+          "Every statutory exception and actual camera pixels require independent original-source review",
+          "CPU fixtures do not establish physical or legal acceptance"
+        ]
+      },
+      "measurement_contract": "cases/officer_between/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/native/diagnostic/officer_between/fixture-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/draft-construction-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__officer_between --output .runtime-work/c150660-offline-officer_between-primary --python .venv-cpu/bin/python",
+        "construction_sha256": "50d309b4f1fe0a1c79ab0d52f29da9cbfc768d0000460b89f7fca4d435304a08",
+        "exit_code": 0,
+        "log": "native/officer_between-primary-offline.log",
+        "log_sha256": "86636a289ff15a620997cd1e12131cc20640ee0358e7762a0371689f1147b780"
+      },
+      "compatibility": {
+        "receipt": "compatibility/officer_between/primary/compatibility.json",
+        "sha256": "987bd51c89b27c6a197f25554e86350647349a9ae66a7296d79bf8e362ce0de9",
+        "log": "compatibility/officer_between/primary/analysis.log",
+        "negative_log": "compatibility/officer_between/primary/negative.log"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/execution-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__officer_between --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $ATTEMPT/owner-release.json",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/execution-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__officer_between --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $ATTEMPT/owner-release.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/officer_between-processing.log",
+        "test_log_sha256": "91cded46cf34b019398134c445db5e31eee1f8252c0cb9a94273200f0cff7aa9",
+        "processing_receipt": "saved/officer_between-processing.json",
+        "processing_receipt_sha256": "91cded46cf34b019398134c445db5e31eee1f8252c0cb9a94273200f0cff7aa9"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__officer_between",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: exact Native result",
+        "command": ".venv-cpu/bin/python work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/delivery_audit.py --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__officer_between --self-test",
+        "negative_command": ".venv-cpu/bin/python work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/delivery_audit.py --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__officer_between --self-test --negative",
+        "script": "delivery_audit.py",
+        "script_sha256": "380e2fde2698cfeb7ae57897e7cc7bc2b27453557b784b540768551d2481cbc7",
+        "test_log": "delivery-proof/officer_between-positive.log",
+        "test_log_sha256": "e9c8219334f0387dc5e2cac0f511064c0211f41f90b0d1efa0cf5a893b5c6208",
+        "negative_log": "delivery-proof/officer_between-negative.log",
+        "negative_log_sha256": "0a25749452305925348b12cb02cc5efdec9324f0f39308f65145e5a559224ec1"
+      },
+      "negative": {
+        "log": "compatibility/officer_between/primary/negative.log"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Open-loop primary brake timing can miss the requested safety-zone footprint position on Native dynamics."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/officer_between/fallback1/construction.json",
+          "construction_sha256": "bf6a3951da57d3b46087d020fa2a271fcd8f49bf462afbc93e70f0a90704fc22",
+          "changed_knobs": [
+            "brake_lead_seconds: 1.4 to 2.0; exact case, cameras and observations fixed"
+          ],
+          "trigger": {
+            "source": "original zone_raw.json and trace.jsonl",
+            "metric": "observed final footprint distance or between-zone occupancy",
+            "failure_condition": "Primary final rest misses its engineering target by more than 0.25 m"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/draft-construction-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__officer_between --output .runtime-work/c150660-offline-officer_between-fallback1 --python .venv-cpu/bin/python --candidate fallback1",
+            "construction_sha256": "bf6a3951da57d3b46087d020fa2a271fcd8f49bf462afbc93e70f0a90704fc22",
+            "exit_code": 0,
+            "log": "native/officer_between-fallback1-offline.log",
+            "log_sha256": "86636a289ff15a620997cd1e12131cc20640ee0358e7762a0371689f1147b780"
+          },
+          "compatibility": {
+            "receipt": "compatibility/officer_between/fallback1/compatibility.json",
+            "sha256": "a100a6e42678509a6da18d7fad4d5fd19d82a6df99a0639b74ef4aba40490a04",
+            "log": "compatibility/officer_between/fallback1/analysis.log",
+            "negative_log": "compatibility/officer_between/fallback1/negative.log"
+          }
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/officer_between/proof.json",
+        "sha256": "29aa7c281315c079a78ecc7b18b1815399d5bebb67704fca016cf22baec0d0a2"
+      },
+      "acquisition": {
+        "drv.standing_or_parked": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "st.safety_zone": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "st.road_edge": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "drv.forced_halt": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "exception_context": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        }
+      }
+    },
+    {
+      "id": "device_between",
+      "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__device_between",
+      "kind": "delivery",
+      "construction": "cases/device_between/primary/construction.json",
+      "construction_sha256": "6dfa99e84050b1147de97702d7bcf629db407116c0b668e3688ca543ea58e370",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "boolean proxy",
+            "method": "Native 20 Hz velocity and stop control",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "st.safety_zone",
+            "unit": "source geometry",
+            "method": "authored and Native map plus independent zone designation review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "st.road_edge",
+            "unit": "m",
+            "method": "Native shoulder edge and independent curb review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "rel.occupies",
+            "unit": "boolean geometry",
+            "method": "four-corner body footprint between zone and curb",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "m",
+            "method": "footprint distance to both opposite curb-end points",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "kin.position",
+            "unit": "m",
+            "method": "original Native four-corner body footprint",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "drv.forced_halt",
+            "unit": "review source",
+            "method": "original traffic-conflict and halt-purpose review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "dev.human_direction",
+            "unit": "review source",
+            "method": "original officer-direction review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          },
+          {
+            "name": "exception_context",
+            "unit": "review source",
+            "method": "original law, traffic, officer and device review",
+            "reference_frame": "authored one-way road with original Native map readback",
+            "sampling_rate_hz": 20,
+            "time_window": "600 frames / 30 s",
+            "uncertainty": "50 ms sampling; geometry tolerance is engineering only"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Requested position is not realized distance; measure original footprint",
+          "Authored markers do not establish an official safety zone or adjacent curb",
+          "Every statutory exception and actual camera pixels require independent original-source review",
+          "CPU fixtures do not establish physical or legal acceptance"
+        ]
+      },
+      "measurement_contract": "cases/device_between/measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py"
+      },
+      "fixture_recipe": "work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/native/diagnostic/device_between/fixture-recipe.json",
+      "offline": {
+        "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/draft-construction-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__device_between --output .runtime-work/c150660-offline-device_between-primary --python .venv-cpu/bin/python",
+        "construction_sha256": "6dfa99e84050b1147de97702d7bcf629db407116c0b668e3688ca543ea58e370",
+        "exit_code": 0,
+        "log": "native/device_between-primary-offline.log",
+        "log_sha256": "86636a289ff15a620997cd1e12131cc20640ee0358e7762a0371689f1147b780"
+      },
+      "compatibility": {
+        "receipt": "compatibility/device_between/primary/compatibility.json",
+        "sha256": "1027dfb82a5eaa7d4fb61e9fab47b54413fcc127ce259af812e3bb505be94ca2",
+        "log": "compatibility/device_between/primary/analysis.log",
+        "negative_log": "compatibility/device_between/primary/negative.log"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/execution-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__device_between --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $ATTEMPT/owner-release.json",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/execution-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__device_between --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER --owner-release-receipt $ATTEMPT/owner-release.json",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/device_between-processing.log",
+        "test_log_sha256": "59c936d7c5fc3e29ec6876ba8b1bf7af3111cbadcc3f4bccbc037f47e6bc04dd",
+        "processing_receipt": "saved/device_between-processing.json",
+        "processing_receipt_sha256": "59c936d7c5fc3e29ec6876ba8b1bf7af3111cbadcc3f4bccbc037f47e6bc04dd"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C150660__NRS-484B-450-1h__motor_vehicle_driver__device_between",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "test_exit_code": 0,
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: exact Native result",
+        "command": ".venv-cpu/bin/python work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/delivery_audit.py --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__device_between --self-test",
+        "negative_command": ".venv-cpu/bin/python work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/delivery_audit.py --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__device_between --self-test --negative",
+        "script": "delivery_audit.py",
+        "script_sha256": "380e2fde2698cfeb7ae57897e7cc7bc2b27453557b784b540768551d2481cbc7",
+        "test_log": "delivery-proof/device_between-positive.log",
+        "test_log_sha256": "24b93af65d639175152759a40425e91841bac5352ebaea3587e1aacde87e5247",
+        "negative_log": "delivery-proof/device_between-negative.log",
+        "negative_log_sha256": "0a25749452305925348b12cb02cc5efdec9324f0f39308f65145e5a559224ec1"
+      },
+      "negative": {
+        "log": "compatibility/device_between/primary/negative.log"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Open-loop primary brake timing can miss the requested safety-zone footprint position on Native dynamics."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "cases/device_between/fallback1/construction.json",
+          "construction_sha256": "f8ddc3e1cd4097f8fdc3698f79be370614ee2953764ce44fb0d5b2dba546eba3",
+          "changed_knobs": [
+            "brake_lead_seconds: 1.4 to 2.0; exact case, cameras and observations fixed"
+          ],
+          "trigger": {
+            "source": "original zone_raw.json and trace.jsonl",
+            "metric": "observed final footprint distance or between-zone occupancy",
+            "failure_condition": "Primary final rest misses its engineering target by more than 0.25 m"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python -B runtime.py offline --manifest work/training__C150660__NRS-484B-450-1h__motor_vehicle_driver/draft-construction-manifest.json --case training__C150660__NRS-484B-450-1h__motor_vehicle_driver__device_between --output .runtime-work/c150660-offline-device_between-fallback1 --python .venv-cpu/bin/python --candidate fallback1",
+            "construction_sha256": "f8ddc3e1cd4097f8fdc3698f79be370614ee2953764ce44fb0d5b2dba546eba3",
+            "exit_code": 0,
+            "log": "native/device_between-fallback1-offline.log",
+            "log_sha256": "86636a289ff15a620997cd1e12131cc20640ee0358e7762a0371689f1147b780"
+          },
+          "compatibility": {
+            "receipt": "compatibility/device_between/fallback1/compatibility.json",
+            "sha256": "5c5e958a7f92f8aceea78769c79d5d9da9ad3a90bf5884ec60cc96a6bf564879",
+            "log": "compatibility/device_between/fallback1/analysis.log",
+            "negative_log": "compatibility/device_between/fallback1/negative.log"
+          }
+        }
+      ],
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/device_between/proof.json",
+        "sha256": "c96fb33c6d8607c51d1c223c8c6e895229c18120c30faff63bbf97c084d77d17"
+      },
+      "acquisition": {
+        "drv.standing_or_parked": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "st.safety_zone": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "st.road_edge": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "rel.occupies": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "rel.centre_distance": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "kin.position": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "drv.forced_halt": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "dev.human_direction": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        },
+        "exception_context": {
+          "entrypoint": "runner.py",
+          "evidence": "zone_raw.json, trace.jsonl, video_frames.jsonl, capture/evidence.jsonl, road.xodr, context-survey.json",
+          "method": "Original Native frame, map and independent source review"
+        }
+      }
+    }
+  ]
+}

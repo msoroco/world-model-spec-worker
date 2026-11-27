@@ -265,7 +265,7 @@ def execute(config, output, host, port):
             except BaseException as exc:
                 error = error or {'world_restore_error': str(exc)}
         if (output / 'authored-context.json').is_file() and (output / 'native_samples.jsonl').is_file():
-            write_new(output / 'source-manifest.json', {
+            write_new(output / 'native-source-inventory.json', {
                 'format': 'c228508-original-native-draft-sources-v1',
                 'case_id': config['case_id'], 'candidate_id': config['candidate_id'],
                 'sha256': {name: hashlib.sha256((output / name).read_bytes()).hexdigest()
