@@ -9,7 +9,9 @@ NATIVE = ROOT / 'native'
 AID = ROOT.name
 FILES = ('rail_capture_runner.py', 'rail_native_geometry.py',
          'rail_source_contract.py', 'rail_footprint_meter.py', 'rail_finalize.py')
-TARGETS = {'condition_a': 12.5, 'condition_b': 16.5}
+TARGETS = {'condition_a': 12.5, 'condition_b': 16.5,
+           'stop_1': 12.5, 'stop_2': 16.5,
+           'stand_1': 12.5, 'stand_2': 16.5}
 
 
 def sha(path):
@@ -17,20 +19,21 @@ def sha(path):
 
 
 def build(suffix, target, candidate_id="primary"):
-    case_id = AID + '__selected_98183a3f__' + suffix
+    case_id = AID + ('__selected_98183a3f__' if suffix.startswith('condition_') else '__') + suffix
     folder = NATIVE / suffix / (candidate_id if candidate_id != 'primary' else '')
     folder.mkdir(exist_ok=True)
-    channels = [{'name': 'rail_footprint', 'method': 'original pose, extent and physical rail survey',
-                 'sampling_rate_hz': 20, 'time_window': '600 frames'},
-                {'name': 'rail_context', 'method': 'original Native rail, road, traffic and authority review',
-                 'sampling_rate_hz': 20, 'time_window': '600 frames'},
-                {'name': 'four_camera_video', 'method': 'four synchronized original RGB streams',
-                 'sampling_rate_hz': 20, 'time_window': '600 frames'}]
+    channels = [{'name': 'rail_footprint', 'unit': 'structured',
+                 'method': 'Original Native pose, extent and physical rail survey',
+                 'sampling_rate_hz': 20, 'time_window': 'all 600 original frames',
+                 'reference_frame': 'C229398 road and both surveyed physical rails',
+                 'uncertainty': 'Physical rail identity, actual event and legal applicability require original review'}]
     config = {'case_id': case_id, 'selected_case_id': case_id,
               'law_id': 'NRS-484B-450-1i', 'cell_id': 'C229398',
               'actor': 'motor_vehicle_driver', 'rate_hz': 20,
               'duration_s': 30, 'duration_frames': 600,
               'target_footprint_gap_m': target,
+              'behavior_variant': 'park' if suffix.startswith('condition_') else
+                  ('stop_depart' if suffix.startswith('stop_') else 'stand_depart'),
               'approach_distance_m': 7.0 if candidate_id == 'fallback1' else 10.0,
               'approach_speed_cap_mps': 1.0 if candidate_id == 'fallback1' else 1.5,
               'rail_source_kind': 'native_survey',
@@ -39,7 +42,7 @@ def build(suffix, target, candidate_id="primary"):
                   'minimum_progress_m': 5.0,
                   'completion_goal_method': 'At least 5 m of source-joined approach motion before independently reviewed parking/rest assessment; engineering only, not legal threshold or full maneuver acceptance'},
               'required_atoms': ['kin.extent', 'kin.velocity'],
-              'recording_description': {'channels': channels,
+              'recording_description': {'channels': channels, 'context_inputs': [],
                   'limitations': ['Physical rail identity, distance, pixels, traffic-conflict necessity, legal or officer/device authority and legal application require original review']},
               'cameras': [{'name': name, 'width': 1920 if name == 'overview' else 1280,
                            'height': 1080 if name == 'overview' else 720,
@@ -92,13 +95,13 @@ if __name__ == '__main__':
         primary = build(suffix, target)
         fallback = build(suffix, target, 'fallback1')
         primary['candidate_risk'] = {'status': 'physical',
-            'reason': 'Ten-meter approach can overshoot or fail to settle in Native motion; a slower seven-meter approach preserves target rail gap and capture contract.'}
+            'reason': 'Ten-meter approach can overshoot or fail to settle at the rail event target; a slower seven-meter approach preserves the exact gap and capture contract.'}
         primary['candidates'] = [{'id': 'fallback1',
             'construction': fallback['construction'],
             'construction_sha256': fallback['construction_sha256'],
             'trigger': {'source': 'original Native speed/pose trace',
-                        'metric': 'target approach overshoot or no sustained rest',
-                        'failure_condition': 'vehicle passes requested parking target or does not remain at rest during hold phase'},
+                        'metric': 'target approach overshoot or no requested rest interval',
+                        'failure_condition': 'vehicle passes requested rail event target or does not remain at rest during its requested hold phase'},
             'changed_knobs': ['approach_distance_m: 10.0 -> 7.0',
                               'approach_speed_cap_mps: 1.5 -> 1.0']} ]
         cases.append(primary)

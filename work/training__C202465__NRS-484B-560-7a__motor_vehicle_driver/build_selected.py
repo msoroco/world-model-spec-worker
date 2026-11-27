@@ -121,6 +121,13 @@ def build():
           {'format': 'worker-execution-manifest', 'assignment_id': AID,
            'runtime_manifest_sha256': batch['runtime']['source_manifest_sha256'],
            'status': 'selected_cpu_source_dependency', 'cases': entries})
+    first = json.loads((HERE / entries[0]['construction']).read_text())
+    for item in first['files']:
+        if not item['path'].startswith('tests/'):
+            target = HERE / item['path']
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(item['content'])
+    write(HERE / 'construction.json', first)
     write(HERE / 'proposals/cases.json', {
         'cell_id': 'C202465', 'actor': 'motor_vehicle_driver',
         'status': 'draft', 'sweep_specs': [], 'sweeps_expanded': True,
@@ -190,6 +197,11 @@ def build():
         'fallback1': entry['candidates'][0]['construction'],
         'risk': entry['candidate_risk']} for entry in entries]
     plan['summary_status'] = 'selected_cpu_original_source_pending'
+    plan['camera_plan'] = {
+        'profile': 'overview1080-capability', 'duration_s': 30,
+        'composition': 'synchronized_four_view_primary',
+        'coverage': [{'view': name, 'subject': 'original rail, subject body and opposite-side space',
+                      'interval': '0-30 seconds'} for name in CAMERAS]}
     plan['blockers'] = [
         'Original Native at-grade rail, reviewed opposite-side queue and grade/undercarriage sources have not been acquired.',
         'Independent stop-cause and trailing-end physical acceptance remain unverified.',

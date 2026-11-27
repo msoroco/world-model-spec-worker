@@ -2,7 +2,7 @@
   "format": "worker-execution-manifest",
   "assignment_id": "training__C202465__NRS-484B-560-7a__motor_vehicle_driver",
   "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
-  "status": "selected_cpu_source_dependency",
+  "status": "cpu_prepared_original_rail_source_pending",
   "cases": [
     {
       "case_id": "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__space_clear",
@@ -25,7 +25,20 @@
           },
           "changed_knobs": [
             "brake_gain 4.0 to 5.0"
-          ]
+          ],
+          "compatibility": {
+            "receipt": "proofs/space_clear/public-fallback1/receipt.json",
+            "sha256": "5d204543a6bc1def02f2fdd1e0c222bd3525fed9fa89aedb9ab920f1212a48c7",
+            "log": "proofs/space_clear/public-fallback1/analysis.log",
+            "negative_log": "proofs/space_clear/public-fallback1/negative.log"
+          },
+          "offline": {
+            "command": "runtime.py offline --case training__C202465__NRS-484B-560-7a__motor_vehicle_driver__space_clear --candidate fallback1",
+            "construction_sha256": "86027b0b225749389db73c737141c49feab7d6a68b6f1eab630e29fc51682fc1",
+            "exit_code": 0,
+            "log": "selected-space_clear-fallback1-offline.log",
+            "log_sha256": "4fba0924cb020f3e513712c3eaab1ae9016fd0c3c30d832bba8cfcd233531072"
+          }
         }
       ],
       "measurement_procedure": {
@@ -33,8 +46,88 @@
       },
       "measurement_contract": "selected-measurements/space_clear/measurement-contract.json",
       "fixture_recipe": "work/training__C202465__NRS-484B-560-7a__motor_vehicle_driver/diagnostic-space_clear-recipe.json",
-      "delivery_readiness": "incomplete_original_rail_source_pending",
-      "id": "primary"
+      "delivery_readiness": "cpu_prepared_original_rail_source_pending",
+      "id": "primary",
+      "compatibility": {
+        "receipt": "proofs/space_clear/public-primary/receipt.json",
+        "sha256": "03a3bcc304dc11a5678d29b1f358f6c8aa133a715a8b81c4fa33122a49c7835b",
+        "log": "proofs/space_clear/public-primary/analysis.log",
+        "negative_log": "proofs/space_clear/public-primary/negative.log"
+      },
+      "offline": {
+        "command": "runtime.py offline --case training__C202465__NRS-484B-560-7a__motor_vehicle_driver__space_clear --candidate primary",
+        "construction_sha256": "5012fba53ec716784991802c0346a1988d8c8eb5569b6a2169ef8b1c6e896fe1",
+        "exit_code": 0,
+        "log": "selected-space_clear-primary-offline.log",
+        "log_sha256": "f1c1da7dcabc4f48a3ed979981c5b9396c8744c1bd92c02c527377d2f8e24596"
+      },
+      "negative": {
+        "log": "proofs/space_clear/public-primary/negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C202465__NRS-484B-560-7a__motor_vehicle_driver/execution-manifest.json --case training__C202465__NRS-484B-560-7a__motor_vehicle_driver__space_clear --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "inspect $OUTPUT/v0001/feedback.json for training__C202465__NRS-484B-560-7a__motor_vehicle_driver__space_clear on failure",
+        "test_exit_code": 0,
+        "test_log": "proofs/space_clear/saved-processing.json",
+        "test_log_sha256": "f3c16f553155dfea6828cb1214f500156d9840adb839b944857caf2fbd9f6fbe"
+      },
+      "acquisition": {
+        "drv.cleared_line": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "drv.crossing_line": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "drv.following": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "drv.stopped": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "kin.extent": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "kin.velocity": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "st.grade": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "st.railway_crossing": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "proofs/physical/space_clear/proof.json",
+        "sha256": "b574eb82e6f7e6451316bd416c9f1ecf247c0eaeb9163b1a330c1192ee7054df"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
     },
     {
       "case_id": "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__space_short",
@@ -57,7 +150,20 @@
           },
           "changed_knobs": [
             "brake_gain 4.0 to 5.0"
-          ]
+          ],
+          "compatibility": {
+            "receipt": "proofs/space_short/public-fallback1/receipt.json",
+            "sha256": "641ec7f311e2147c4aaae4fa0e258a4b5de39af6dc17cb21de4a38215ce6258e",
+            "log": "proofs/space_short/public-fallback1/analysis.log",
+            "negative_log": "proofs/space_short/public-fallback1/negative.log"
+          },
+          "offline": {
+            "command": "runtime.py offline --case training__C202465__NRS-484B-560-7a__motor_vehicle_driver__space_short --candidate fallback1",
+            "construction_sha256": "1d52f89cb939a98d91ab10a66a90f3d1ca9d79d354bd217a07723d79319df173",
+            "exit_code": 0,
+            "log": "selected-space_short-fallback1-offline.log",
+            "log_sha256": "c0f613febd245c303ed8f09648ec4fdbcb0dd41e1d6f37065c7791d0ca2b6be8"
+          }
         }
       ],
       "measurement_procedure": {
@@ -65,8 +171,88 @@
       },
       "measurement_contract": "selected-measurements/space_short/measurement-contract.json",
       "fixture_recipe": "work/training__C202465__NRS-484B-560-7a__motor_vehicle_driver/diagnostic-space_short-recipe.json",
-      "delivery_readiness": "incomplete_original_rail_source_pending",
-      "id": "primary"
+      "delivery_readiness": "cpu_prepared_original_rail_source_pending",
+      "id": "primary",
+      "compatibility": {
+        "receipt": "proofs/space_short/public-primary/receipt.json",
+        "sha256": "126d25edde28b14a690c32557aca2153a8e54a5bec44d10e334f0842244a1e99",
+        "log": "proofs/space_short/public-primary/analysis.log",
+        "negative_log": "proofs/space_short/public-primary/negative.log"
+      },
+      "offline": {
+        "command": "runtime.py offline --case training__C202465__NRS-484B-560-7a__motor_vehicle_driver__space_short --candidate primary",
+        "construction_sha256": "09d24e11049694841720018f53f010ef44328f14872ed0a2e3514cf9f2883dba",
+        "exit_code": 0,
+        "log": "selected-space_short-primary-offline.log",
+        "log_sha256": "80799eef46f17af90159cfacad246cd726ce6abef7312434ec287f770d0d95ec"
+      },
+      "negative": {
+        "log": "proofs/space_short/public-primary/negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C202465__NRS-484B-560-7a__motor_vehicle_driver/execution-manifest.json --case training__C202465__NRS-484B-560-7a__motor_vehicle_driver__space_short --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "inspect $OUTPUT/v0001/feedback.json for training__C202465__NRS-484B-560-7a__motor_vehicle_driver__space_short on failure",
+        "test_exit_code": 0,
+        "test_log": "proofs/space_short/saved-processing.json",
+        "test_log_sha256": "d59426c9694f4b09b1a23663eafd69ca82b7c7db453fcc5e9809b7627c70a561"
+      },
+      "acquisition": {
+        "drv.cleared_line": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "drv.crossing_line": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "drv.following": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "drv.stopped": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "kin.extent": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "kin.velocity": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "st.grade": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "st.railway_crossing": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "proofs/physical/space_short/proof.json",
+        "sha256": "c5289fa8eff8ff45f91bbcd0c603affa4d092baba611277ce8e21247ec7b85a7"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
     },
     {
       "case_id": "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__grade_clear",
@@ -89,7 +275,20 @@
           },
           "changed_knobs": [
             "brake_gain 4.0 to 5.0"
-          ]
+          ],
+          "compatibility": {
+            "receipt": "proofs/grade_clear/public-fallback1/receipt.json",
+            "sha256": "9daeac8cd94ff92ccf006bfc3b3933a947f60e515b561cc53eba759b0709ede4",
+            "log": "proofs/grade_clear/public-fallback1/analysis.log",
+            "negative_log": "proofs/grade_clear/public-fallback1/negative.log"
+          },
+          "offline": {
+            "command": "runtime.py offline --case training__C202465__NRS-484B-560-7a__motor_vehicle_driver__grade_clear --candidate fallback1",
+            "construction_sha256": "5e89ac660ce3155e2e63e31820ba19d7d96d0d08ddad3ebc1c15e4983772f9b3",
+            "exit_code": 0,
+            "log": "selected-grade_clear-fallback1-offline.log",
+            "log_sha256": "4110507b25f43b5da73c9252847517f7a05e1d32625cc56400da7d8e08a808d6"
+          }
         }
       ],
       "measurement_procedure": {
@@ -97,8 +296,88 @@
       },
       "measurement_contract": "selected-measurements/grade_clear/measurement-contract.json",
       "fixture_recipe": "work/training__C202465__NRS-484B-560-7a__motor_vehicle_driver/diagnostic-grade_clear-recipe.json",
-      "delivery_readiness": "incomplete_original_rail_source_pending",
-      "id": "primary"
+      "delivery_readiness": "cpu_prepared_original_rail_source_pending",
+      "id": "primary",
+      "compatibility": {
+        "receipt": "proofs/grade_clear/public-primary/receipt.json",
+        "sha256": "594e43adff2694a30075b40e83a15f090fc74a1e84ede3499eab5b96f2fa22d5",
+        "log": "proofs/grade_clear/public-primary/analysis.log",
+        "negative_log": "proofs/grade_clear/public-primary/negative.log"
+      },
+      "offline": {
+        "command": "runtime.py offline --case training__C202465__NRS-484B-560-7a__motor_vehicle_driver__grade_clear --candidate primary",
+        "construction_sha256": "6eb5d5db88a821849df06114e1abc257affed2b4ca275813ad1ca6c19146b3be",
+        "exit_code": 0,
+        "log": "selected-grade_clear-primary-offline.log",
+        "log_sha256": "8ad402588babe84852095a547a4e38912e64dbbbf300cb541256e827e90a5738"
+      },
+      "negative": {
+        "log": "proofs/grade_clear/public-primary/negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C202465__NRS-484B-560-7a__motor_vehicle_driver/execution-manifest.json --case training__C202465__NRS-484B-560-7a__motor_vehicle_driver__grade_clear --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "inspect $OUTPUT/v0001/feedback.json for training__C202465__NRS-484B-560-7a__motor_vehicle_driver__grade_clear on failure",
+        "test_exit_code": 0,
+        "test_log": "proofs/grade_clear/saved-processing.json",
+        "test_log_sha256": "3e0b12a92ce3852d472fded8231d46dc1707cb260005346c977a9df46a298362"
+      },
+      "acquisition": {
+        "drv.cleared_line": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "drv.crossing_line": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "drv.following": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "drv.stopped": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "kin.extent": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "kin.velocity": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "st.grade": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "st.railway_crossing": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "proofs/physical/grade_clear/proof.json",
+        "sha256": "5c56fe7226dc25c156eadf6034b62a83779daf4d6aadf2defb860e06145dbcd0"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
     },
     {
       "case_id": "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__grade_deficit",
@@ -121,7 +400,20 @@
           },
           "changed_knobs": [
             "brake_gain 4.0 to 5.0"
-          ]
+          ],
+          "compatibility": {
+            "receipt": "proofs/grade_deficit/public-fallback1/receipt.json",
+            "sha256": "3b47fe4775b40d7d2070d26ea8714e28a2e28e103fad3cf10ec835ca3b499444",
+            "log": "proofs/grade_deficit/public-fallback1/analysis.log",
+            "negative_log": "proofs/grade_deficit/public-fallback1/negative.log"
+          },
+          "offline": {
+            "command": "runtime.py offline --case training__C202465__NRS-484B-560-7a__motor_vehicle_driver__grade_deficit --candidate fallback1",
+            "construction_sha256": "2a6d557590e0426364e4ebfd9d356a1f83fbeaeb8df1e3a5e10c95162b9214f2",
+            "exit_code": 0,
+            "log": "selected-grade_deficit-fallback1-offline.log",
+            "log_sha256": "74ee4b1319eab13e1394188bf3991b1a3381f1306785645c80f5b6a03d591401"
+          }
         }
       ],
       "measurement_procedure": {
@@ -129,8 +421,88 @@
       },
       "measurement_contract": "selected-measurements/grade_deficit/measurement-contract.json",
       "fixture_recipe": "work/training__C202465__NRS-484B-560-7a__motor_vehicle_driver/diagnostic-grade_deficit-recipe.json",
-      "delivery_readiness": "incomplete_original_rail_source_pending",
-      "id": "primary"
+      "delivery_readiness": "cpu_prepared_original_rail_source_pending",
+      "id": "primary",
+      "compatibility": {
+        "receipt": "proofs/grade_deficit/public-primary/receipt.json",
+        "sha256": "0b7c0893d009e2f32b9a1784fd96a19650347c569567815a7a5db0a63e5d54a9",
+        "log": "proofs/grade_deficit/public-primary/analysis.log",
+        "negative_log": "proofs/grade_deficit/public-primary/negative.log"
+      },
+      "offline": {
+        "command": "runtime.py offline --case training__C202465__NRS-484B-560-7a__motor_vehicle_driver__grade_deficit --candidate primary",
+        "construction_sha256": "b169b49c286ce17275b5406e0b043896a9062ffea61bd6f250bc9bb65db9ea31",
+        "exit_code": 0,
+        "log": "selected-grade_deficit-primary-offline.log",
+        "log_sha256": "6cc66ccdb63db95a8c538ce30d2c21f7b5a74d47e2f1c6b4e0a838bf7bfe4b70"
+      },
+      "negative": {
+        "log": "proofs/grade_deficit/public-primary/negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C202465__NRS-484B-560-7a__motor_vehicle_driver/execution-manifest.json --case training__C202465__NRS-484B-560-7a__motor_vehicle_driver__grade_deficit --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "inspect $OUTPUT/v0001/feedback.json for training__C202465__NRS-484B-560-7a__motor_vehicle_driver__grade_deficit on failure",
+        "test_exit_code": 0,
+        "test_log": "proofs/grade_deficit/saved-processing.json",
+        "test_log_sha256": "da37756ab57274769f24a1a0834c5cebb2367d37c04f33efe3d955bc9d47c02c"
+      },
+      "acquisition": {
+        "drv.cleared_line": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "drv.crossing_line": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "drv.following": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "drv.stopped": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "kin.extent": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "kin.velocity": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "st.grade": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "st.railway_crossing": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "proofs/physical/grade_deficit/proof.json",
+        "sha256": "5358ddb6ffd891b23f993096f328f394c03eac95990bbcab60abf11574adafe0"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
     },
     {
       "case_id": "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__trailing_exact",
@@ -153,7 +525,20 @@
           },
           "changed_knobs": [
             "brake_gain 4.0 to 5.0"
-          ]
+          ],
+          "compatibility": {
+            "receipt": "proofs/trailing_exact/public-fallback1/receipt.json",
+            "sha256": "5cf6b38580dffa403f1aa60069a68d839e161e7962330063fab89172ec802e6b",
+            "log": "proofs/trailing_exact/public-fallback1/analysis.log",
+            "negative_log": "proofs/trailing_exact/public-fallback1/negative.log"
+          },
+          "offline": {
+            "command": "runtime.py offline --case training__C202465__NRS-484B-560-7a__motor_vehicle_driver__trailing_exact --candidate fallback1",
+            "construction_sha256": "5561cdb669ff761a0674695567b329af15435ed371a551717fda955186dcdf31",
+            "exit_code": 0,
+            "log": "selected-trailing_exact-fallback1-offline.log",
+            "log_sha256": "b026be03784c28a1deca309410a4135fb49e8c2fbf83ce4e43404fada1dba6d1"
+          }
         }
       ],
       "measurement_procedure": {
@@ -161,8 +546,88 @@
       },
       "measurement_contract": "selected-measurements/trailing_exact/measurement-contract.json",
       "fixture_recipe": "work/training__C202465__NRS-484B-560-7a__motor_vehicle_driver/diagnostic-trailing_exact-recipe.json",
-      "delivery_readiness": "incomplete_original_rail_source_pending",
-      "id": "primary"
+      "delivery_readiness": "cpu_prepared_original_rail_source_pending",
+      "id": "primary",
+      "compatibility": {
+        "receipt": "proofs/trailing_exact/public-primary/receipt.json",
+        "sha256": "0651c1ac259fe066e92f288fc3a61be0a17b30aa38239a284fabc7365c9e9f2a",
+        "log": "proofs/trailing_exact/public-primary/analysis.log",
+        "negative_log": "proofs/trailing_exact/public-primary/negative.log"
+      },
+      "offline": {
+        "command": "runtime.py offline --case training__C202465__NRS-484B-560-7a__motor_vehicle_driver__trailing_exact --candidate primary",
+        "construction_sha256": "58ee971f8bec90ca4c6b5891bce6e6d87a4cfd23adb07a0b90fc72060be0c001",
+        "exit_code": 0,
+        "log": "selected-trailing_exact-primary-offline.log",
+        "log_sha256": "45a58de99383eca817b7cb27bbd841717dffc0875c4afba536cdb7b6e59aeb44"
+      },
+      "negative": {
+        "log": "proofs/trailing_exact/public-primary/negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C202465__NRS-484B-560-7a__motor_vehicle_driver/execution-manifest.json --case training__C202465__NRS-484B-560-7a__motor_vehicle_driver__trailing_exact --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "inspect $OUTPUT/v0001/feedback.json for training__C202465__NRS-484B-560-7a__motor_vehicle_driver__trailing_exact on failure",
+        "test_exit_code": 0,
+        "test_log": "proofs/trailing_exact/saved-processing.json",
+        "test_log_sha256": "b6c872437cc625ba4b1988c09b72d6c4a9e6751f3c3ce2ab4d55ff43104929ac"
+      },
+      "acquisition": {
+        "drv.cleared_line": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "drv.crossing_line": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "drv.following": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "drv.stopped": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "kin.extent": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "kin.velocity": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "st.grade": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "st.railway_crossing": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "proofs/physical/trailing_exact/proof.json",
+        "sha256": "9da023510898f77c17163d0ce2824fe12cbf029b40729f54ed4d787eecc697f3"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
     },
     {
       "case_id": "training__C202465__NRS-484B-560-7a__motor_vehicle_driver__trailing_just_short",
@@ -185,7 +650,20 @@
           },
           "changed_knobs": [
             "brake_gain 4.0 to 5.0"
-          ]
+          ],
+          "compatibility": {
+            "receipt": "proofs/trailing_just_short/public-fallback1/receipt.json",
+            "sha256": "4aac9ade6d968ac65098ea8277064c349eb72271c24b969d485fe55d78be0a77",
+            "log": "proofs/trailing_just_short/public-fallback1/analysis.log",
+            "negative_log": "proofs/trailing_just_short/public-fallback1/negative.log"
+          },
+          "offline": {
+            "command": "runtime.py offline --case training__C202465__NRS-484B-560-7a__motor_vehicle_driver__trailing_just_short --candidate fallback1",
+            "construction_sha256": "ce8b2ada8a7d29304d050b22cbf01fd659a8d223b43a4fb6249ebc4156236cb9",
+            "exit_code": 0,
+            "log": "selected-trailing_just_short-fallback1-offline.log",
+            "log_sha256": "ccc52b7d3b321dc804265f7b3bc4d4cb1acd725ecabeff6632fe5ec5c5df6fa1"
+          }
         }
       ],
       "measurement_procedure": {
@@ -193,8 +671,88 @@
       },
       "measurement_contract": "selected-measurements/trailing_just_short/measurement-contract.json",
       "fixture_recipe": "work/training__C202465__NRS-484B-560-7a__motor_vehicle_driver/diagnostic-trailing_just_short-recipe.json",
-      "delivery_readiness": "incomplete_original_rail_source_pending",
-      "id": "primary"
+      "delivery_readiness": "cpu_prepared_original_rail_source_pending",
+      "id": "primary",
+      "compatibility": {
+        "receipt": "proofs/trailing_just_short/public-primary/receipt.json",
+        "sha256": "4446c3837149cf2a3fddaa4e01a89f9708eff163191309f5b4eff70ec54badb2",
+        "log": "proofs/trailing_just_short/public-primary/analysis.log",
+        "negative_log": "proofs/trailing_just_short/public-primary/negative.log"
+      },
+      "offline": {
+        "command": "runtime.py offline --case training__C202465__NRS-484B-560-7a__motor_vehicle_driver__trailing_just_short --candidate primary",
+        "construction_sha256": "64f79bf830ee99be16368a8087a655d334f51bcf64e654008145b896e434cfe6",
+        "exit_code": 0,
+        "log": "selected-trailing_just_short-primary-offline.log",
+        "log_sha256": "0578e86924a51e56760db037d95c477cd11210055f898509240d07b3257d9c42"
+      },
+      "negative": {
+        "log": "proofs/trailing_just_short/public-primary/negative.log"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "runtime.py process-saved --manifest work/training__C202465__NRS-484B-560-7a__motor_vehicle_driver/execution-manifest.json --case training__C202465__NRS-484B-560-7a__motor_vehicle_driver__trailing_just_short --attempt $ATTEMPT --output $OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": "inspect $OUTPUT/v0001/feedback.json for training__C202465__NRS-484B-560-7a__motor_vehicle_driver__trailing_just_short on failure",
+        "test_exit_code": 0,
+        "test_log": "proofs/trailing_just_short/saved-processing.json",
+        "test_log_sha256": "107822dab446c0569bf61569bbf0859a8923babf564a6bed70e45f3cdd433a20"
+      },
+      "acquisition": {
+        "drv.cleared_line": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "drv.crossing_line": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "drv.following": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "drv.stopped": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "kin.extent": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "kin.velocity": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "rel.surface_gap": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "st.grade": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        },
+        "st.railway_crossing": {
+          "entrypoint": "finalize.py",
+          "method": "saved 600-frame original Native actor, rail geometry, vehicle extent, opposite-side space and four-camera frame join",
+          "evidence": "actors.jsonl; rail-actors.jsonl; rail-context.json; rail-review sources; video_frames.jsonl; four source videos"
+        }
+      },
+      "physical_preparation": {
+        "receipt": "proofs/physical/trailing_just_short/proof.json",
+        "sha256": "6cd97539c8990aaf63441c6a6bf3c52fda21c8b6e569bf8aef7a955d4ad450a1"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      }
     }
   ]
 }

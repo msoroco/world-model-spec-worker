@@ -5,15 +5,16 @@ import copy
 import json
 from pathlib import Path
 
-from rail_capture_runner import AID, CAMERAS, TARGETS, check
+from rail_capture_runner import AID, BEHAVIORS, CAMERAS, TARGETS, check
 
 
 def config(suffix):
-    return {'case_id': AID + '__selected_98183a3f__' + suffix,
+    return {'case_id': AID + ('__selected_98183a3f__' if suffix.startswith('condition_') else '__') + suffix,
             'law_id': 'NRS-484B-450-1i', 'cell_id': 'C229398',
             'actor': 'motor_vehicle_driver', 'rate_hz': 20,
             'duration_frames': 600, 'duration_s': 30,
             'target_footprint_gap_m': TARGETS[suffix],
+            'behavior_variant': BEHAVIORS[suffix],
             'approach_distance_m': 10.0, 'approach_speed_cap_mps': 1.5,
             'cameras': [{'name': name, 'width': 1920 if name == 'overview' else 1280,
                          'height': 1080 if name == 'overview' else 720,
@@ -34,7 +35,7 @@ def main():
     path = Path(__file__).with_name('rail_capture_runner.py')
     ast.parse(path.read_text())
     good_a, good_b = config('condition_a'), config('condition_b')
-    assert check(good_a)['frames'] == check(good_b)['frames'] == 600
+    assert all(check(config(suffix))['frames'] == 600 for suffix in TARGETS)
     for key, bad, message in [
         ('case_id', AID + '__wrong', 'Unknown exact'),
         ('target_footprint_gap_m', 14.5, 'target changed'),
@@ -46,7 +47,10 @@ def main():
     altered = copy.deepcopy(good_a)
     altered['cameras'].pop()
     rejection(altered, 'Four exact')
-    print(json.dumps({'exact_cases': 2, 'negative_count': 5,
+    altered = copy.deepcopy(good_a)
+    altered['behavior_variant'] = 'stop_depart'
+    rejection(altered, 'motion variant changed')
+    print(json.dumps({'exact_cases': len(TARGETS), 'negative_count': 6,
                       'carla_imported': False, 'native_rail_observed': False,
                       'physical_or_legal_outcome_claimed': False}))
 

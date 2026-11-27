@@ -21,7 +21,7 @@ def main():
         suffix = case["case_id"].rsplit("__", 1)[-1]
         for candidate in ("primary", "fallback1"):
             construction = case if candidate == "primary" else case["candidates"][0]
-            source = ROOT / ".runtime-work" / f"c229398-{suffix}-{candidate}-offline6" / "attempt" / "offline.log"
+            source = ROOT / ".runtime-work" / f"c229398-{suffix}-{candidate}-offline9" / "attempt" / "offline.log"
             assert source.is_file(), source
             raw = source.read_text().rstrip() + "\n"
             assert '"simulation_started": false' in raw and "Ran 4 tests" in raw and raw.endswith("OK\n")

@@ -19,7 +19,12 @@ from rail_source_contract import CAMERAS
 AID = 'training__C229398__NRS-484B-450-1i__motor_vehicle_driver'
 RATE = 20
 FRAMES = 600
-TARGETS = {'condition_a': 12.5, 'condition_b': 16.5}
+TARGETS = {'condition_a': 12.5, 'condition_b': 16.5,
+           'stop_1': 12.5, 'stop_2': 16.5,
+           'stand_1': 12.5, 'stand_2': 16.5}
+BEHAVIORS = {'condition_a': 'park', 'condition_b': 'park',
+             'stop_1': 'stop_depart', 'stop_2': 'stop_depart',
+             'stand_1': 'stand_depart', 'stand_2': 'stand_depart'}
 
 
 def sha(path):
@@ -41,6 +46,8 @@ def check(config):
             'Exact rail capture window changed')
     require(config.get('target_footprint_gap_m') == TARGETS[suffix],
             'Exact rail comparison target changed')
+    require(config.get('behavior_variant') == BEHAVIORS[suffix],
+            'Exact rail motion variant changed')
     require([c.get('name') for c in config['cameras']] == list(CAMERAS),
             'Four exact rail cameras required')
     dimensions = [(c.get('width'), c.get('height'), c.get('fps')) for c in config['cameras']]
@@ -113,6 +120,9 @@ def execute(config, output_dir, host, port):
     waypoint = target['waypoint']
     previous = waypoint.previous(config['approach_distance_m'])
     require(previous, 'No original road approach to rail parking target')
+    departure = waypoint.next(12.0) if config['behavior_variant'] != 'park' else []
+    if config['behavior_variant'] != 'park':
+        require(departure, 'No original road departure for stop/stand target')
     start = previous[0].transform
     settings = world.get_settings()
     settings.synchronous_mode = True
@@ -158,13 +168,28 @@ def execute(config, output_dir, host, port):
                 str(output / (name + '.mkv'))], stdin=subprocess.PIPE,
                 stderr=subprocess.PIPE)
         goal = target['center_xy_m']
+        exit_goal = None if not departure else (departure[0].transform.location.x,
+                                                departure[0].transform.location.y)
         with FrameMap(output / 'video_frames.jsonl') as frame_map, \
                 (output / 'original-native-rows.jsonl').open('x') as rows:
             for index in range(FRAMES):
                 pose = ego.get_transform()
                 dx, dy = goal[0] - pose.location.x, goal[1] - pose.location.y
                 distance = math.hypot(dx, dy)
-                if index < 200 and distance > .35:
+                leaving = ((config['behavior_variant'] == 'stop_depart' and index >= 240) or
+                           (config['behavior_variant'] == 'stand_depart' and index >= 350))
+                if leaving:
+                    dx, dy = exit_goal[0] - pose.location.x, exit_goal[1] - pose.location.y
+                    distance = math.hypot(dx, dy)
+                    if distance > .35:
+                        speed = min(config['approach_speed_cap_mps'], distance)
+                        ego.set_target_velocity(carla.Vector3D(x=speed * dx / distance,
+                                                               y=speed * dy / distance))
+                        ego.apply_control(carla.VehicleControl(throttle=.25, brake=0))
+                    else:
+                        ego.set_target_velocity(carla.Vector3D())
+                        ego.apply_control(carla.VehicleControl(throttle=0, brake=1, hand_brake=True))
+                elif index < 200 and distance > .35:
                     speed = min(config['approach_speed_cap_mps'], distance)
                     ego.set_target_velocity(carla.Vector3D(x=speed * dx / distance,
                                                            y=speed * dy / distance))

@@ -2,21 +2,38 @@
 
 import argparse
 import json
+import math
 from pathlib import Path
 
 from rail_footprint_meter import measure
 from rail_source_contract import CAMERAS, load_original, sha
 
 
-def original_native_source_contract(packet, measured):
+def original_native_source_contract(packet, measured, behavior='park'):
     """Return measured rail/vehicle facts, retaining diagnostic provenance."""
     rested = [row for row in measured['frames'] if row['at_rest']]
     band = [row for row in rested if row['inside_50ft_band']]
     final_hold = measured['frames'][-100:]
     sustained_rest = all(row['at_rest'] for row in final_hold)
+    if behavior == 'park':
+        event_window = final_hold
+        request_observed = sustained_rest
+    else:
+        beginning, ending = (210, 240) if behavior == 'stop_depart' else (220, 350)
+        event_window = measured['frames'][beginning:ending]
+        first = packet['frames'][ending]['vehicle_footprint_xy_m']
+        last = packet['frames'][-1]['vehicle_footprint_xy_m']
+        departure_m = math.dist(first[0], last[0])
+        request_observed = all(row['at_rest'] for row in event_window) and departure_m >= 2
     return {'frame_count': len(measured['frames']),
             'rested_frame_count': len(rested),
             'rested_inside_50ft_frame_count': len(band),
+            'requested_behavior': behavior,
+            'requested_motion_event_observed': request_observed,
+            'event_window_frames': [event_window[0]['frame'], event_window[-1]['frame']],
+            'rested_nearest_footprint_gap_m': min(
+                (row['footprint_to_nearest_rail_m'] for row in rested),
+                default=None),
             'nearest_observed_footprint_gap_m': min(
                 row['footprint_to_nearest_rail_m'] for row in measured['frames']),
             'final_five_second_rest_observed': sustained_rest,
@@ -30,8 +47,7 @@ def original_native_source_contract(packet, measured):
             'source_seal_sha256': packet['original_source_seal_sha256'],
             'rail_identity_reviewed': False,
             'original_pixels_reviewed': False,
-            'legal_exception_reviewed': False,
-            'legal_verdict': None}
+            'legal_exception_reviewed': False}
 
 
 def run(attempt, output):
@@ -42,14 +58,16 @@ def run(attempt, output):
     case_id = config['case_id']
     packet = load_original(attempt, case_id)
     measured = measure(packet)
-    summary = original_native_source_contract(packet, measured)
+    summary = original_native_source_contract(packet, measured, config['behavior_variant'])
     channels = attempt / 'channels'
     channels.mkdir(exist_ok=False)
     values = [{'time_s': row['sim_time_s'], 'value': row} for row in measured['frames']]
     (channels / 'rail-footprint.jsonl').write_text(
         ''.join(json.dumps(row, allow_nan=False) + '\n' for row in values))
     from worker_exchange.native_output import physical_result, write_result
-    observed_gap = summary['final_hold_nearest_footprint_gap_m']
+    observed_gap = (summary['final_hold_nearest_footprint_gap_m']
+                    if config['behavior_variant'] == 'park' else
+                    summary['rested_nearest_footprint_gap_m'])
     if observed_gap is None:
         observed_gap = summary['nearest_observed_footprint_gap_m']
     result = {'case_id': case_id, 'measured_values': summary,
@@ -69,7 +87,7 @@ def run(attempt, output):
               'video_references': [name + '.mkv' for name in CAMERAS] + ['raw.mkv'],
               'video_frame_map_reference': 'video_frames.jsonl',
               'recording_description': config['recording_description'],
-              'recording_evidence': [{'name': 'rail_footprint', 'unit': 'm',
+              'recording_evidence': [{'name': 'rail_footprint', 'unit': 'structured',
                                       'reference': 'channels/rail-footprint.jsonl'}],
               'realized_observables': {}, 'physical_acceptance_claimed': False,
               'legal_verdict_claimed': False}
@@ -79,7 +97,7 @@ def run(attempt, output):
                 'video_frames.jsonl', 'capture-seal.json')}
     report = {'format': 'worker-analysis-report', 'case_id': case_id,
               'measurements': {
-                  'parking_event_source': {'value': summary,
+                  'event_source': {'value': summary,
                       'method': 'original_native_source_contract', 'sources': sources},
                   'nearest_rail_gap': {'value': summary,
                       'method': 'original_native_source_contract', 'sources': sources},

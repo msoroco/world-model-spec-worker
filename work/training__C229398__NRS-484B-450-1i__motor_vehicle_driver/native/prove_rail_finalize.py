@@ -17,6 +17,7 @@ def main():
             'case_id': CASE, 'selected_case_id': CASE,
             'law_id': 'NRS-484B-450-1i', 'cell_id': 'C229398',
             'actor': 'motor_vehicle_driver', 'target_footprint_gap_m': 12.5,
+            'behavior_variant': 'park',
             'recording_description': {'channels': [{'name': 'rail_footprint',
                 'method': 'original pose, extent and rail survey'}]}}) + '\n')
         report = run(root, root / 'analysis-report.json')
@@ -30,6 +31,7 @@ def main():
             'case_id': CASE, 'selected_case_id': CASE,
             'law_id': 'NRS-484B-450-1i', 'cell_id': 'C229398',
             'actor': 'motor_vehicle_driver', 'target_footprint_gap_m': 12.5,
+            'behavior_variant': 'park',
             'recording_description': {'channels': [{'name': 'rail_footprint'}]}}) + '\n')
         (root / 'original-rail-survey.json').unlink()
         try:
