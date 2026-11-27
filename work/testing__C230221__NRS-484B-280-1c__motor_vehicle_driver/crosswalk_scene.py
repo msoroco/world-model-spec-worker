@@ -128,8 +128,7 @@ def measure(site, sample):
     ego = footprint(sample.get("ego_body_vertices_m"))
     ped = footprint(sample.get("pedestrian_body_vertices_m"))
     center = ((ped[0] + ped[2]) / 2, (ped[1] + ped[3]) / 2)
-    if not _inside(center, polygon(site["crossing_polygon_xy_m"])):
-        raise ValueError("pedestrian body outside reviewed crossing")
+    in_crossing = _inside(center, polygon(site["crossing_polygon_xy_m"]))
     event = sample.get("driver_observation_event")
     if event is not None and (not isinstance(event, dict) or
                               event.get("source") != "original_driver_input" or
@@ -139,7 +138,31 @@ def measure(site, sample):
     if (type(speed) not in (int, float) or not math.isfinite(speed) or speed < 0 or
             type(brake) not in (int, float) or not 0 <= brake <= 1):
         raise ValueError("original control history absent")
-    return {"crosswalk_kind": site["crosswalk_kind"],
+    return {"crosswalk_kind": site["crosswalk_kind"], "pedestrian_in_crossing": in_crossing,
             "longitudinal_gap_m": max(ped[0] - ego[2], 0),
             "driver_observation_event": event, "ego_speed_mps": speed,
             "ego_brake": brake, "legal_proper_caution_verdict": None}
+
+
+def surface_gap(ego_vertices, pedestrian_vertices):
+    """Engineering rectangle distance in the original world plane."""
+    a = footprint(ego_vertices)
+    b = footprint(pedestrian_vertices)
+    dx = max(a[0] - b[2], b[0] - a[2], 0.0)
+    dy = max(a[1] - b[3], b[1] - a[3], 0.0)
+    return math.hypot(dx, dy)
+
+
+def observed_encounter(site, sample):
+    value = measure(site, sample)
+    value['surface_gap_m'] = surface_gap(sample['ego_body_vertices_m'], sample['pedestrian_body_vertices_m'])
+    return value
+
+
+def controller(measurement, policy):
+    """Fixed engineering response; crosswalk kind never selects the controller."""
+    if policy != 'fixed_brake':
+        raise ValueError('crosswalk comparison controller changed')
+    if not measurement.get('driver_observation_event'):
+        return {'throttle': 0.25, 'brake': 0.0, 'steer': 0.0}
+    return {'throttle': 0.0, 'brake': 1.0, 'steer': 0.0}

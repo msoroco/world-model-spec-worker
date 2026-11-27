@@ -122,3 +122,16 @@ The current six frozen accepted rows list metadata but no original signal packet
 | `result.json` | `fe82add6f81b653db6282f969e86b8e455d5274c11139de089fbd4880eba1c3b` |
 
 Resume the historical left-turn review only when original trace, video and an independently frozen signal packet source are present, and correct the selected branch/cell allocation before any C178244 delivery-ready claim. The compatible business right-turn package remains C378304.
+
+## November 27 selected-branch allocation seal
+
+The C178244-to-C378304 allocation audit now verifies that both frozen assignments name the exact selected business-district right-turn branch. It already checked the frozen left-turn versus right-turn maneuvers, compatible target district and actor, all five target selected manifest cases, three controlled comparisons, and the target's CPU-ready result. Two new negative tests reject changed selected branches in either frozen assignment. The full local suite passed 37/37; the audit and scoped `--complete` check passed. The exact scoped strict check exited 1 because C178244 correctly remains partial. No original accepted signal measurement or C178244 right-turn delivery is claimed.
+
+| Current receipt | Exit | SHA256 |
+| --- | ---: | --- |
+| `cpu-nov27c-tests.log` | 0 | `8edbaf70d375e3a42552a5568850011f451cc68050637c35fe8b1db0e106ff78` |
+| `cpu-nov27c-audit.log` | 0 | `7c168f093eb2e3c311b3af0368ccccc2d744d3e9bf914bcc5e663123e526e081` |
+| `cpu-nov27c-static.log` | 0 | `f0d9b4c1febf22e3df2ea98e277eb6dd5767c1433d5b35d13f070446a8e33aec` |
+| `cpu-nov27c-strict.log` | 1 | `0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638` |
+
+The remaining preparation decision is the frozen branch/cell contradiction. Correct the allocation through the authorized source process; preserve C378304 for the selected right-turn branch. If C178244 is assigned a left-turn branch, author its selected construction and exact proofs from that corrected scope. The six historical accepted rows still require their original source bytes and a frozen packet entry before source-bound measurement.

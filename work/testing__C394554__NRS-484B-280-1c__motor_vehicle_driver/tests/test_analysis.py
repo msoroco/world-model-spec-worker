@@ -6,6 +6,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from fixture_sources import write as write_fixture
+
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -23,10 +25,7 @@ class SavedTransitTests(unittest.TestCase):
         self.root = Path(self.tmp.name)
 
     def materialize(self, phase):
-        fixture = json.loads((ROOT / ("diagnostic-" + phase + ".json")).read_text())
-        for name in (*analysis.REQUIRED, "acquisition.json"):
-            path = self.root / name
-            path.write_text(fixture["files"][name])
+        write_fixture(self.root, phase)
 
     def test_waiting_and_boarding_original_motion(self):
         self.materialize("waiting_at_stop")

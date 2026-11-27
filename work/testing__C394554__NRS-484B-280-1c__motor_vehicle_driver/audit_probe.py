@@ -2,6 +2,7 @@
 import argparse
 import importlib.util
 import json
+import sys
 from pathlib import Path
 
 
@@ -18,6 +19,7 @@ def main():
     if args.case != ROOT.name + "__" + phase or phase not in ("waiting_at_stop", "boarding_bus"):
         raise ValueError("wrong exact transit case")
     spec = importlib.util.spec_from_file_location("audit_fixture", ROOT / "tests/test_delivery_comparison_audit.py")
+    sys.path.insert(0, str(ROOT / "tests"))
     fixture = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(fixture)
     output = Path(args.output).resolve()
@@ -29,7 +31,8 @@ def main():
         with (attempt / "encounter-history.jsonl").open("a") as stream:
             stream.write("{}\n")
     value = fixture.delivery.audit(attempt, processing, decode, case,
-                                   media_verify=lambda *a, **k: True)
+                                   media_verify=lambda *a, **k: True,
+                                   fixture_mode=True)
     print(json.dumps(value, indent=2))
 
 

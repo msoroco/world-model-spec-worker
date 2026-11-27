@@ -76,14 +76,22 @@ def validate_site(site_path: str | Path, case_id: str) -> dict:
     if not isinstance(stations, list) or len(stations) < 2:
         raise ValueError("two original nearest-view stations required")
     distances = []
+    station_ids = set()
     for station in stations:
-        if not isinstance(station, dict) or not station.get("station_id"):
+        if (not isinstance(station, dict) or not isinstance(station.get("station_id"), str)
+                or not station["station_id"] or station["station_id"] in station_ids):
             raise ValueError("identified original view station required")
-        distances.append(_finite(station.get("distance_to_intersection_m"), "view-station distance"))
-        if station.get("reviewed_visible") not in (True, False):
+        station_ids.add(station["station_id"])
+        distance = _finite(station.get("distance_to_intersection_m"), "view-station distance")
+        if distance < 0:
+            raise ValueError("nonnegative view-station distance required")
+        distances.append(distance)
+        if type(station.get("reviewed_visible")) is not bool:
             raise ValueError("reviewed through-traffic visibility required")
     if len(set(distances)) != len(distances):
         raise ValueError("distinct nearest-view distances required")
+    if not any(row["reviewed_visible"] for row in stations):
+        raise ValueError("reviewed nearest-view point missing")
     through = site.get("through_vehicle")
     if not isinstance(through, dict) or not through.get("route_source_id"):
         raise ValueError("reviewed through-highway route required")
@@ -110,21 +118,50 @@ def construct(adapter, site_path: str | Path, case_id: str) -> dict:
             or markings.get("near_crosswalk_present") is not False
             or markings.get("sidewalk_derived_crosswalk_present") is not False):
         raise ValueError("Native markings contradict reviewed no-line site")
-    stations = adapter.survey_view_stations(approach)
-    if not isinstance(stations, list) or len(stations) < 2:
-        raise ValueError("Native nearest-view station readback missing")
-    if not any(isinstance(row, dict) and row.get("view_of_through_traffic") is True for row in stations):
-        raise ValueError("Native through-highway view readback missing")
+    def checked_view():
+        stations = adapter.survey_view_stations(approach)
+        reviewed = {row["station_id"]: row for row in site["approach_view_stations"]}
+        if not isinstance(stations, list) or len(stations) != len(reviewed):
+            raise ValueError("Native nearest-view station readback missing")
+        seen = set()
+        visible = []
+        for row in stations:
+            if not isinstance(row, dict) or row.get("station_id") not in reviewed or row["station_id"] in seen:
+                raise ValueError("Native view station identity differs")
+            station_id = row["station_id"]
+            seen.add(station_id)
+            distance = _finite(row.get("distance_to_intersection_m"), "Native view distance")
+            expected = _finite(reviewed[station_id]["distance_to_intersection_m"], "reviewed view distance")
+            if abs(distance - expected) > 0.25 or type(row.get("view_of_through_traffic")) is not bool:
+                raise ValueError("Native view station geometry or visibility differs")
+            if row["view_of_through_traffic"]:
+                visible.append((distance, station_id))
+        if not visible:
+            raise ValueError("Native through-highway view readback missing")
+        return min(visible)[1]
+    reviewed_nearest = min((_finite(row["distance_to_intersection_m"], "reviewed view distance"),
+                            row["station_id"]) for row in site["approach_view_stations"]
+                           if row["reviewed_visible"])[1]
+    if checked_view() != reviewed_nearest:
+        raise ValueError("Native nearest-view point differs from reviewed source")
     plan = site["case_plans"][case_id]
     vehicle_id = adapter.spawn_through_vehicle(site["through_vehicle"], plan["through_start_delay_s"])
     if not vehicle_id:
         raise ValueError("Native through-vehicle spawn failed")
+    try:
+        if checked_view() != reviewed_nearest:
+            raise ValueError("Native through-vehicle sightline differs from reviewed source")
+    except BaseException:
+        if hasattr(adapter, "release_through_vehicle"):
+            adapter.release_through_vehicle(vehicle_id)
+        raise
     return {
         "case_id": case_id,
         "cell_id": "C158190",
         "control": "stop_sign",
         "site_source_sha256": site["_site_sha256"],
         "through_vehicle_actor_id": vehicle_id,
+        "nearest_view_station_id": reviewed_nearest,
         "planned_response": plan["ego_response"],
         "physical_status": "original motion and sightline pending",
     }

@@ -178,3 +178,11 @@ All 48 assignment tests and pinned preflight passed. Scoped `--complete` passed;
 | `cpu-accepted-core-preflight.log` | `6ce02c585708f4b929129452f68c4a5116dcfcd8c9371d49b7cb3fbf9b5811c7` |
 | `cpu-accepted-core-static.log` | `fc15fb1752fad1ac61dffd700aaaea71ef4633cfbcc3965bd69b2e3481373422` |
 | `cpu-accepted-core-strict.log` | `0d28089dee3f920ecd20a6ba1cea1530562eeb871c292d0f8a76c869d4230638` |
+
+## November 27 named nearest-view construction proof
+
+The compatible stop-sign candidate now requires distinct reviewed view-station IDs, finite nonnegative distances, and real Boolean visibility. `construct` compares every named station and its distance to Native readback (0.25 m engineering tolerance), identifies the closest visible reviewed station, then repeats the sightline readback after spawning the through vehicle. A changed post-spawn nearest-view station rejects construction and releases the owned actor through the adapter hook. This closes a CPU construction gap where an unrelated visible station could previously satisfy a generic any-view check. It does not alter the selected yield branch or assign legal significance to the 0.25 m tolerance.
+
+`cpu-current-stop-view-tests.log` passes 11 focused construction tests, including station identity, geometry, visibility type, changed post-spawn sightline and actor release. `cpu-current-all-tests.log` passes 51 assignment tests. `cpu-current-preflight.log` passes pinned runtime preflight. The stop candidate remains unselected because frozen C158190 is `stop_sign` while the selected requirement is a yield sign. Original reviewed site, trace and video bytes remain absent; no Native physical or legal acceptance is claimed. The result remains partial pending corrected immutable binding and source review.
+
+The current scoped `--complete` check passed (`cpu-current-static.log`). The exact scoped `--complete --require-delivery-ready` check failed at the truthful `partial` acceptance condition (`cpu-current-strict.log`); the immutable branch/control and original-source gaps above remain. Final assignment-folder hygiene found 170 UTF-8 files, each at most 2 MiB, with no trailing whitespace, conflict markers, or blank lines at EOF.

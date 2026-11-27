@@ -23,7 +23,8 @@ def rows(path):
     return [json.loads(line) for line in Path(path).read_text().splitlines() if line.strip()]
 
 
-def audit(attempt, processing, decode_receipt, case_id, media_verify=None):
+def audit(attempt, processing, decode_receipt, case_id, media_verify=None,
+          fixture_mode=False):
     attempt, processing, decode_receipt = map(Path, (attempt, processing, decode_receipt))
     phase = case_id.rsplit("__", 1)[-1]
     if phase not in ("waiting_at_stop", "boarding_bus"):
@@ -85,6 +86,8 @@ def audit(attempt, processing, decode_receipt, case_id, media_verify=None):
         raise ValueError("saved primary video absent")
     media_verify(video, decode_receipt, len(mapping), mapping_sha256=sha(attempt / "video_frames.jsonl"))
     pixel = read(attempt / "pixel-review.json")
+    if pixel.get("fixture_only") is True and not fixture_mode:
+        raise ValueError("fixture-only pixel review cannot establish physical acceptance")
     if (pixel.get("format") != "independent-transit-pixel-review" or
             pixel.get("case_id") != case_id or not pixel.get("reviewer") or
             pixel.get("video_sha256") != sha(video) or
@@ -123,6 +126,7 @@ def audit(attempt, processing, decode_receipt, case_id, media_verify=None):
             "frame_count": len(mapping), "frame_map_sha256": sha(attempt / "video_frames.jsonl"),
             "video_sha256": sha(video), "pixel_review_sha256": sha(attempt / "pixel-review.json"),
             "source_decode_receipt_sha256": sha(decode_receipt),
+            "fixture_only": bool(pixel.get("fixture_only")),
             "human_observation_claimed": False, "legal_verdict": None}
 
 

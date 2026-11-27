@@ -6,14 +6,21 @@
   "applied_update": 0,
   "tests": [
     {
-      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c394554/output\" .venv-cpu/bin/python -m unittest discover -s work/testing__C394554__NRS-484B-280-1c__motor_vehicle_driver/tests -q",
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c394554/output\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C394554__NRS-484B-280-1c__motor_vehicle_driver/tests -q",
       "exit_code": 0,
-      "log": "cpu-initial-tests.log",
-      "sha256": "e83de987fbb0eb6573768e705dd14ebadf6249c51d9dec36cbfca086dba399b8"
+      "log": "cpu-tests.log",
+      "sha256": "ae596bf89e15e3bbfe78581756bec690cbd9d25401e89c16716f6dd7e5d25e93"
+    },
+    {
+      "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c394554/output\" PYTHONPATH=\"$PWD/runtime/scenario_pipeline:$PWD/runtime/python\" .venv-cpu/bin/python work/testing__C394554__NRS-484B-280-1c__motor_vehicle_driver/semantic_check.py",
+      "exit_code": 0,
+      "log": "semantic-stage-check.log",
+      "sha256": "c4a35f7f3b3f6402525f800336ac095c82a189c39c0f0da512ed54bb3d88fe79"
     }
   ],
   "remaining_gpu_checks": [
     "Original CARLA road, physical bus-stop prop and public bus placement, pedestrian waiting or ingress motion, actual bus door and pixels, 20 Hz complete capture and independent local acceptance require review. Human observation and statutory proper caution remain unresolved."
   ],
-  "reason": "Two exact transit cases and comparison are being prepared. Road/stop/bus/passenger source gates and Native capture code have CPU fixture tests, but semantic proposals, source-bound compatibility, saved processing, full audits and strict scoped gate remain unfinished."
+  "reason": "CPU package proofs pass and in-memory strict diagnostic passes after supplemental import-path override, but exact scoped strict CLI fails while truthful status is partial; a diagnostic ready status triggers frozen portable.validate_imports FileNotFoundError for inputs/<supplemental-id>/assignment.json. Native physical/pixel and local acceptance remain pending.",
+  "first_gpu_delivery_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c394554/local\" PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --assignment testing__C394554__NRS-484B-280-1c__motor_vehicle_driver --case testing__C394554__NRS-484B-280-1c__motor_vehicle_driver__waiting_at_stop --run \"$RUN\" --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\""
 }

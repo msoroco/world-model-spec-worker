@@ -39,6 +39,11 @@ def audit(repo: Path) -> dict:
         raise ValueError("frozen assignment identity differs")
     if origin["law_id"] != target["law_id"] or origin["actor"] != target["actor"]:
         raise ValueError("law or actor differs")
+    expected_branch = "Business-district right-turn signaling"
+    if [row.get("branch") for row in origin.get("branches", [])] != [expected_branch]:
+        raise ValueError("origin selected branch differs from frozen right-turn allocation")
+    if [row.get("branch") for row in target.get("branches", [])] != [expected_branch]:
+        raise ValueError("target selected branch differs from frozen right-turn allocation")
     if a["maneuver"] != "left_turn" or b["maneuver"] != "right_turn":
         raise ValueError("frozen turn-direction conflict changed")
     if b["layout"] != "business_district" or origin["actor"] not in b["candidate_ego_parties"]:
@@ -66,6 +71,7 @@ def audit(repo: Path) -> dict:
         "target_assignment_id": TARGET,
         "frozen_origin_maneuver": a["maneuver"],
         "target_maneuver": b["maneuver"],
+        "selected_branch": expected_branch,
         "selected_target_case_ids": sorted(required),
         "comparison_ids": list(COMPARISONS),
         "original_physical_evidence": "unverified",

@@ -35,6 +35,32 @@ class BindingAuditTests(unittest.TestCase):
         with patch.object(MODULE, "read", changed), self.assertRaisesRegex(ValueError, "readiness"):
             MODULE.audit(REPO)
 
+    def test_rejects_changed_target_selected_branch(self):
+        original = MODULE.read
+
+        def changed(repo, relative):
+            data, digest = original(repo, relative)
+            if relative.endswith("C378304__NRS-484B-413-2__motor_vehicle_driver/assignment.json"):
+                data = copy.deepcopy(data)
+                data["branches"][0]["branch"] = "Residential-district right-turn signaling"
+            return data, digest
+
+        with patch.object(MODULE, "read", changed), self.assertRaisesRegex(ValueError, "target selected branch"):
+            MODULE.audit(REPO)
+
+    def test_rejects_changed_origin_selected_branch(self):
+        original = MODULE.read
+
+        def changed(repo, relative):
+            data, digest = original(repo, relative)
+            if relative.endswith("C178244__NRS-484B-413-2__motor_vehicle_driver/assignment.json"):
+                data = copy.deepcopy(data)
+                data["branches"][0]["branch"] = "Business-district left-turn signaling"
+            return data, digest
+
+        with patch.object(MODULE, "read", changed), self.assertRaisesRegex(ValueError, "origin selected branch"):
+            MODULE.audit(REPO)
+
     def test_rejects_missing_100_foot_case(self):
         original = MODULE.read
 

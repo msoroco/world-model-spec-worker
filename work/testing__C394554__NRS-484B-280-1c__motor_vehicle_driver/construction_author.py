@@ -42,7 +42,8 @@ def main():
     source_files = ("runner.py", "road_scene.py", "native_capture.py", "analysis.py",
                     "delivery_audit.py", "comparison_audit.py", "audit_probe.py",
                     "tests/test_road_scene.py", "tests/test_native_capture.py",
-                    "tests/test_analysis.py", "tests/test_delivery_comparison_audit.py")
+                    "tests/test_analysis.py", "tests/test_delivery_comparison_audit.py",
+                    "tests/fixture_sources.py")
     for index, phase in enumerate(PHASES):
         cid = ROOT.name + "__" + phase
         proposal = next(item for item in proposals["cases"] if item["case_id"] == cid)

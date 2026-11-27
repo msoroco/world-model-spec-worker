@@ -8,6 +8,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from fixture_sources import write as write_fixture
+
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -46,15 +48,16 @@ class AuditTests(unittest.TestCase):
         attempt.mkdir()
         processed = stage / "processed"
         processed.mkdir()
-        diagnostic = json.loads((ROOT / ("diagnostic-" + phase + ".json")).read_text())
-        for name in delivery.ORIGINAL:
-            if name in diagnostic["files"]:
-                (attempt / name).write_text(diagnostic["files"][name])
-        construction = json.loads((ROOT / ("construction.json" if phase == "waiting_at_stop"
-                                     else "cases/boarding_bus/construction.json")).read_text())
-        for item in construction["files"]:
-            if item["path"] in ("config.json", "scene.json"):
-                (attempt / item["path"]).write_text(item["content"])
+        write_fixture(attempt, phase)
+        config = json.loads((ROOT / "config.json").read_text())
+        scene = json.loads((ROOT / "scene.json").read_text())
+        config["selected_case_id"] = case
+        config["case"]["case_id"] = case
+        config["case"]["passenger_phase"] = phase
+        scene["case_id"] = case
+        scene["passenger_phase"] = phase
+        write(attempt / "config.json", config)
+        write(attempt / "scene.json", scene)
         write(attempt / "capture-seal.json",
               {"events": ["capture_finished", "encoders_closed", "restoration_verified"],
                "sources": {name: sha(attempt / name) for name in delivery.ORIGINAL}})
@@ -86,7 +89,13 @@ class AuditTests(unittest.TestCase):
         return attempt, processing, decode, case
 
     def audit(self, bundle):
-        return delivery.audit(*bundle, media_verify=lambda *a, **k: True)
+        return delivery.audit(*bundle, media_verify=lambda *a, **k: True,
+                              fixture_mode=True)
+
+    def test_fixture_review_rejected_in_production(self):
+        bundle = self.fixture("boarding_bus")
+        with self.assertRaisesRegex(ValueError, "fixture-only pixel review"):
+            delivery.audit(*bundle, media_verify=lambda *a, **k: True)
 
     def test_positive_source_bound_waiting_and_boarding(self):
         waiting = self.audit(self.fixture("waiting_at_stop"))
@@ -95,6 +104,7 @@ class AuditTests(unittest.TestCase):
         self.assertGreater(boarding["measurement"]["door_approach_m"], 0)
         compared = comparison.audit(waiting, boarding)
         self.assertTrue(compared["passed"])
+        self.assertFalse(compared["actual_boarding_reviewed"])
         self.assertIsNone(compared["legal_verdict"])
 
     def test_missing_or_stale_originals_rejected(self):

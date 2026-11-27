@@ -21,7 +21,12 @@ class Adapter:
         self.control = "stop_sign"
         self.markings = {"stop_line_present": False, "near_crosswalk_present": False,
                          "sidewalk_derived_crosswalk_present": False}
-        self.stations = [{"view_of_through_traffic": False}, {"view_of_through_traffic": True}]
+        self.stations = [
+            {"station_id": "far", "distance_to_intersection_m": 12.0,
+             "view_of_through_traffic": False},
+            {"station_id": "near", "distance_to_intersection_m": 3.0,
+             "view_of_through_traffic": True},
+        ]
         self.calls = []
 
     def read_control(self, approach):
@@ -39,6 +44,9 @@ class Adapter:
     def spawn_through_vehicle(self, route, delay):
         self.calls.append(("spawn", route["route_source_id"], delay))
         return "native-through-1"
+
+    def release_through_vehicle(self, actor_id):
+        self.calls.append(("release", actor_id))
 
 
 class StopSignBranchTest(unittest.TestCase):
@@ -87,9 +95,10 @@ class StopSignBranchTest(unittest.TestCase):
         receipt = MODULE.construct(adapter, self.path, self.case)
         self.assertEqual(receipt["control"], "stop_sign")
         self.assertEqual(receipt["cell_id"], "C158190")
-        self.assertEqual([call[0] for call in adapter.calls], ["control", "markings", "view", "spawn"])
+        self.assertEqual([call[0] for call in adapter.calls], ["control", "markings", "view", "spawn", "view"])
         self.assertEqual(adapter.calls[0][1], "one-way-ego")
-        self.assertEqual(adapter.calls[-1], ("spawn", "through-east", 2.0))
+        self.assertEqual(adapter.calls[-2], ("spawn", "through-east", 2.0))
+        self.assertEqual(receipt["nearest_view_station_id"], "near")
 
     def test_second_controlled_response_uses_same_fixed_site(self):
         second = MODULE.ASSIGNMENT + "__stop_nearest_view_uninterrupted"
@@ -98,7 +107,7 @@ class StopSignBranchTest(unittest.TestCase):
         adapter = Adapter()
         receipt = MODULE.construct(adapter, self.path, second)
         self.assertEqual(receipt["planned_response"], "stop_then_cross")
-        self.assertEqual(adapter.calls[-1], ("spawn", "through-east", 9.0))
+        self.assertEqual(adapter.calls[-2], ("spawn", "through-east", 9.0))
 
     def test_yield_relabel_rejected_before_native_calls(self):
         self.site["control"] = "yield_sign"
@@ -138,9 +147,44 @@ class StopSignBranchTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Native markings contradict"):
             MODULE.construct(adapter, self.path, self.case)
         adapter = Adapter()
-        adapter.stations = [{"view_of_through_traffic": False}] * 2
+        adapter.stations = [dict(row, view_of_through_traffic=False) for row in adapter.stations]
         with self.assertRaisesRegex(ValueError, "Native through-highway view"):
             MODULE.construct(adapter, self.path, self.case)
+
+    def test_named_nearest_view_readback_rejects_geometry_and_identity_changes(self):
+        adapter = Adapter()
+        adapter.stations[1]["station_id"] = "other"
+        with self.assertRaisesRegex(ValueError, "Native view station identity differs"):
+            MODULE.construct(adapter, self.path, self.case)
+        adapter = Adapter()
+        adapter.stations[1]["distance_to_intersection_m"] = 8.0
+        with self.assertRaisesRegex(ValueError, "Native view station geometry"):
+            MODULE.construct(adapter, self.path, self.case)
+
+    def test_reviewed_view_station_must_be_real_and_unique(self):
+        self.site["approach_view_stations"][1]["station_id"] = "far"
+        self.save()
+        with self.assertRaisesRegex(ValueError, "identified original view station"):
+            MODULE.validate_site(self.path, self.case)
+        self.site["approach_view_stations"][1]["station_id"] = "near"
+        self.site["approach_view_stations"][1]["reviewed_visible"] = 1
+        self.save()
+        with self.assertRaisesRegex(ValueError, "reviewed through-traffic visibility"):
+            MODULE.validate_site(self.path, self.case)
+
+    def test_post_spawn_sightline_change_releases_owned_actor(self):
+        class ChangedAfterSpawn(Adapter):
+            def spawn_through_vehicle(self, route, delay):
+                actor_id = super().spawn_through_vehicle(route, delay)
+                self.stations = [dict(row, view_of_through_traffic=False)
+                                 for row in self.stations]
+                self.stations[0]["view_of_through_traffic"] = True
+                return actor_id
+
+        adapter = ChangedAfterSpawn()
+        with self.assertRaisesRegex(ValueError, "Native through-vehicle sightline differs"):
+            MODULE.construct(adapter, self.path, self.case)
+        self.assertEqual(adapter.calls[-1], ("release", "native-through-1"))
 
 
 if __name__ == "__main__":

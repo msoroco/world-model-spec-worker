@@ -70,7 +70,11 @@ class NativeTransitTests(unittest.TestCase):
         self.assertEqual(site["bus"]["blueprint_id"], "vehicle.mitsubishi.fusorosa")
         self.assertEqual(site["bus"]["door_region_m"]["y_max"], 4)
         self.assertEqual(site["map_source"]["sha256"], native.sha(self.root / "map.xodr"))
-        self.assertEqual(len(self.map.calls), 11)
+        start, end = round(self.scene["ego_start_xy_m"][0]), round(self.scene["ego_end_xy_m"][0])
+        expected = list(range(start, end + 1, 5))
+        if expected[-1] != end:
+            expected.append(end)
+        self.assertEqual(self.map.calls, expected)
 
     def test_native_missing_bus_stop_asset_rejected(self):
         self.stop.type_id = "static.prop.trafficcone"

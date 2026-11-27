@@ -7,7 +7,7 @@
       "case_id": "testing__C394554__NRS-484B-280-1c__motor_vehicle_driver__waiting_at_stop",
       "kind": "delivery",
       "construction": "construction.json",
-      "construction_sha256": "1f7d7cbe566943e3877f6b29940e7f7d06d4a72e73f4a625a2e9115280ea4d53",
+      "construction_sha256": "cacfc31ba5184cb0b10c81b34833bb4106e3a9723775fcecefde9e3de6f3ec0c",
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -20,9 +20,37 @@
       },
       "candidate_risk": {
         "status": "physical",
-        "reason": "The original Native map may lack a bus-stop prop or public bus blueprint; actual bus door, pedestrian ingress and four-camera pixels need review."
+        "reason": "The primary Native ego spawn can be occupied by an ambient vehicle; a same-road upstream spawn is a paired engineering alternative. Missing stop or bus assets remain source-gated."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback-waiting_at_stop-construction.json",
+          "construction_sha256": "ac083f4e70177644426b83257f16e7915b9b4867d1a89e5c5da936c563d89def",
+          "changed_knobs": [
+            "ego_start_xy_m.x: primary -30 m -> fallback -33 m on same reviewed road"
+          ],
+          "trigger": {
+            "source": "Native CARLA ego spawn result and original actor inventory",
+            "metric": "primary ego spawn availability",
+            "failure_condition": "primary ego spawn occupied or rejected by Native world"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C394554__NRS-484B-280-1c__motor_vehicle_driver/execution-manifest.json --case testing__C394554__NRS-484B-280-1c__motor_vehicle_driver__waiting_at_stop --candidate fallback1 --output .runtime-work/c394554/offline-final7-waiting_at_stop-fallback1",
+            "construction_sha256": "ac083f4e70177644426b83257f16e7915b9b4867d1a89e5c5da936c563d89def",
+            "exit_code": 0,
+            "log": "proof-waiting_at_stop-fallback1.log",
+            "log_sha256": "9ca8dac1eca80c5afac9042c0c5105a505692b92be1cbb210f19a87c098cd801"
+          },
+          "compatibility": {
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C394554__NRS-484B-280-1c__motor_vehicle_driver/execution-manifest.json --case testing__C394554__NRS-484B-280-1c__motor_vehicle_driver__waiting_at_stop --candidate fallback1 --output .runtime-work/c394554/compat-final7-waiting_at_stop-fallback1 --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "log": "compat-waiting_at_stop-fallback1-analysis.log",
+            "negative_log": "compat-waiting_at_stop-fallback1-negative.log",
+            "receipt": "compat-waiting_at_stop-fallback1-receipt.json",
+            "sha256": "2d3b15f76085985a5b7db0bbff0b86aec38931bf106b3d1cb465c83db2faa029"
+          }
+        }
+      ],
       "acquisition": {
         "ego_body_history": {
           "entrypoint": "analysis.py",
@@ -84,13 +112,67 @@
           "method": "Original OpenDRIVE transit site and driver input context projection",
           "evidence": "channels/context.json"
         }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C394554__NRS-484B-280-1c__motor_vehicle_driver/execution-manifest.json --case testing__C394554__NRS-484B-280-1c__motor_vehicle_driver__waiting_at_stop --candidate primary --output .runtime-work/c394554/offline-final7-waiting_at_stop-primary",
+        "construction_sha256": "cacfc31ba5184cb0b10c81b34833bb4106e3a9723775fcecefde9e3de6f3ec0c",
+        "exit_code": 0,
+        "log": "proof-waiting_at_stop-primary.log",
+        "log_sha256": "620c4e0dd3d2a7a63ab37b3c9d5a9cc0a192ee3355b66039aa259d0310ecc531"
+      },
+      "compatibility": {
+        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C394554__NRS-484B-280-1c__motor_vehicle_driver/execution-manifest.json --case testing__C394554__NRS-484B-280-1c__motor_vehicle_driver__waiting_at_stop --candidate primary --output .runtime-work/c394554/compat-final7-waiting_at_stop-primary --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "log": "compat-waiting_at_stop-primary-analysis.log",
+        "negative_log": "compat-waiting_at_stop-primary-negative.log",
+        "receipt": "compat-waiting_at_stop-primary-receipt.json",
+        "sha256": "c53a704d9378bd180f4f05b210bafa27d8ca4bf9de4c485b660f774e473e405f"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C394554__NRS-484B-280-1c__motor_vehicle_driver/execution-manifest.json --case testing__C394554__NRS-484B-280-1c__motor_vehicle_driver__waiting_at_stop --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c394554/saved-final3-waiting_at_stop-attempt --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c394554/saved-final3-waiting_at_stop --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C394554__NRS-484B-280-1c__motor_vehicle_driver/execution-manifest.json --case testing__C394554__NRS-484B-280-1c__motor_vehicle_driver__waiting_at_stop --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c394554/saved-final3-waiting_at_stop-attempt --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c394554/saved-final3-waiting_at_stop --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "test_log": "saved-waiting_at_stop.log",
+        "test_log_sha256": "88e0e506158f2e6a958016dd89851001a6d34927f783120a6308f5ecfbefa193",
+        "test_exit_code": 0
+      },
+      "physical_preparation": {
+        "receipt": "physical-waiting_at_stop-proof.json",
+        "sha256": "9ee90bb40f248d56dc044378e8a3092044d31fb09f9e384dd86d224cdd24cc6b"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C394554__NRS-484B-280-1c__motor_vehicle_driver__waiting_at_stop",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "7b89b9f79469c133e4028014e8fce4ba18070559facc730d1d690f21e132c248",
+        "command": ".venv-cpu/bin/python work/testing__C394554__NRS-484B-280-1c__motor_vehicle_driver/audit_probe.py --case testing__C394554__NRS-484B-280-1c__motor_vehicle_driver__waiting_at_stop --output .runtime-work/c394554/audit-final3-waiting_at_stop-positive",
+        "test_exit_code": 0,
+        "test_log": "audit-waiting_at_stop-positive.log",
+        "test_log_sha256": "c1453def863f36123a7f66c0db3db638b58afdb20a17f8449833093f7e20cc0b",
+        "negative_command": ".venv-cpu/bin/python work/testing__C394554__NRS-484B-280-1c__motor_vehicle_driver/audit_probe.py --case testing__C394554__NRS-484B-280-1c__motor_vehicle_driver__waiting_at_stop --output .runtime-work/c394554/audit-final3-waiting_at_stop-negative --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "sealed original missing or changed",
+        "negative_log": "audit-waiting_at_stop-negative.log",
+        "negative_log_sha256": "0d033ea28f2a5588ec1419d1ab4b33a00ecf844f9cb3fada8273a29bde3b1a89"
+      },
+      "negative": {
+        "log": "compat-waiting_at_stop-primary-negative.log"
       }
     },
     {
       "case_id": "testing__C394554__NRS-484B-280-1c__motor_vehicle_driver__boarding_bus",
       "kind": "delivery",
       "construction": "cases/boarding_bus/construction.json",
-      "construction_sha256": "87c5448cd72ff9c28f8bba47aad6e644bb963405b04090ddd1fef29b2c2043a3",
+      "construction_sha256": "525151c6c38777b3a06761a88953a9dc45d263c2080096f5dbc33d61e3ed57e2",
       "measurement_contract": "measurement-contract.json",
       "measurement_procedure": {
         "entrypoint": "analysis.py"
@@ -103,9 +185,37 @@
       },
       "candidate_risk": {
         "status": "physical",
-        "reason": "The original Native map may lack a bus-stop prop or public bus blueprint; actual bus door, pedestrian ingress and four-camera pixels need review."
+        "reason": "The primary Native ego spawn can be occupied by an ambient vehicle; a same-road upstream spawn is a paired engineering alternative. Missing stop or bus assets remain source-gated."
       },
-      "candidates": [],
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback-boarding_bus-construction.json",
+          "construction_sha256": "00b3c17e2a131e4970bc3314507c00548c85da3014fdd7b83aa6ca651e5ef01e",
+          "changed_knobs": [
+            "ego_start_xy_m.x: primary -30 m -> fallback -33 m on same reviewed road"
+          ],
+          "trigger": {
+            "source": "Native CARLA ego spawn result and original actor inventory",
+            "metric": "primary ego spawn availability",
+            "failure_condition": "primary ego spawn occupied or rejected by Native world"
+          },
+          "offline": {
+            "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C394554__NRS-484B-280-1c__motor_vehicle_driver/execution-manifest.json --case testing__C394554__NRS-484B-280-1c__motor_vehicle_driver__boarding_bus --candidate fallback1 --output .runtime-work/c394554/offline-final7-boarding_bus-fallback1",
+            "construction_sha256": "00b3c17e2a131e4970bc3314507c00548c85da3014fdd7b83aa6ca651e5ef01e",
+            "exit_code": 0,
+            "log": "proof-boarding_bus-fallback1.log",
+            "log_sha256": "5bd2e5441f5c83f308920ccdc8c45a3a70dfb4c7bfc73f7ee696f497e4c3e6c1"
+          },
+          "compatibility": {
+            "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C394554__NRS-484B-280-1c__motor_vehicle_driver/execution-manifest.json --case testing__C394554__NRS-484B-280-1c__motor_vehicle_driver__boarding_bus --candidate fallback1 --output .runtime-work/c394554/compat-final7-boarding_bus-fallback1 --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "log": "compat-boarding_bus-fallback1-analysis.log",
+            "negative_log": "compat-boarding_bus-fallback1-negative.log",
+            "receipt": "compat-boarding_bus-fallback1-receipt.json",
+            "sha256": "0f5d28d4be86ed26095df9218b86796d3b48457f475a97bf961403b0f13edbd0"
+          }
+        }
+      ],
       "acquisition": {
         "ego_body_history": {
           "entrypoint": "analysis.py",
@@ -167,6 +277,60 @@
           "method": "Original OpenDRIVE transit site and driver input context projection",
           "evidence": "channels/context.json"
         }
+      },
+      "offline": {
+        "command": ".venv-cpu/bin/python runtime.py offline --manifest work/testing__C394554__NRS-484B-280-1c__motor_vehicle_driver/execution-manifest.json --case testing__C394554__NRS-484B-280-1c__motor_vehicle_driver__boarding_bus --candidate primary --output .runtime-work/c394554/offline-final7-boarding_bus-primary",
+        "construction_sha256": "525151c6c38777b3a06761a88953a9dc45d263c2080096f5dbc33d61e3ed57e2",
+        "exit_code": 0,
+        "log": "proof-boarding_bus-primary.log",
+        "log_sha256": "008f4c01a8d1dffe027938ecf8d2abdb1a0deeb24f9d75bd75ef3c379e7f359c"
+      },
+      "compatibility": {
+        "command": ".venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C394554__NRS-484B-280-1c__motor_vehicle_driver/execution-manifest.json --case testing__C394554__NRS-484B-280-1c__motor_vehicle_driver__boarding_bus --candidate primary --output .runtime-work/c394554/compat-final7-boarding_bus-primary --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "log": "compat-boarding_bus-primary-analysis.log",
+        "negative_log": "compat-boarding_bus-primary-negative.log",
+        "receipt": "compat-boarding_bus-primary-receipt.json",
+        "sha256": "6dea584c2a6dd047c68ddc5909c638437f50f10cec4f8515e6d75678893c9269"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C394554__NRS-484B-280-1c__motor_vehicle_driver/execution-manifest.json --case testing__C394554__NRS-484B-280-1c__motor_vehicle_driver__boarding_bus --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c394554/saved-final3-boarding_bus-attempt --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c394554/saved-final3-boarding_bus --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C394554__NRS-484B-280-1c__motor_vehicle_driver/execution-manifest.json --case testing__C394554__NRS-484B-280-1c__motor_vehicle_driver__boarding_bus --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c394554/saved-final3-boarding_bus-attempt --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c394554/saved-final3-boarding_bus --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "test_log": "saved-boarding_bus.log",
+        "test_log_sha256": "86c92e139ccfd94e3314255b5510a912e1fecb8bc0dfed57c4514b997c0d668c",
+        "test_exit_code": 0
+      },
+      "physical_preparation": {
+        "receipt": "physical-boarding_bus-proof.json",
+        "sha256": "b90bf018e1ebde0001a9e5b47fa707f26b7464a1b6659daf100a5ba75dbe2028"
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C394554__NRS-484B-280-1c__motor_vehicle_driver__boarding_bus",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "7b89b9f79469c133e4028014e8fce4ba18070559facc730d1d690f21e132c248",
+        "command": ".venv-cpu/bin/python work/testing__C394554__NRS-484B-280-1c__motor_vehicle_driver/audit_probe.py --case testing__C394554__NRS-484B-280-1c__motor_vehicle_driver__boarding_bus --output .runtime-work/c394554/audit-final3-boarding_bus-positive",
+        "test_exit_code": 0,
+        "test_log": "audit-boarding_bus-positive.log",
+        "test_log_sha256": "ac3b4fffee58dd774b98be7ab0cba9eca84578129e132b4a8e1e06e1c47f4217",
+        "negative_command": ".venv-cpu/bin/python work/testing__C394554__NRS-484B-280-1c__motor_vehicle_driver/audit_probe.py --case testing__C394554__NRS-484B-280-1c__motor_vehicle_driver__boarding_bus --output .runtime-work/c394554/audit-final3-boarding_bus-negative --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "sealed original missing or changed",
+        "negative_log": "audit-boarding_bus-negative.log",
+        "negative_log_sha256": "0d033ea28f2a5588ec1419d1ab4b33a00ecf844f9cb3fada8273a29bde3b1a89"
+      },
+      "negative": {
+        "log": "compat-boarding_bus-primary-negative.log"
       }
     }
   ]

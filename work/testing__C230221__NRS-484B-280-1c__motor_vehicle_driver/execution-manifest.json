@@ -1,0 +1,317 @@
+{
+  "format": "worker-execution-manifest",
+  "assignment_id": "testing__C230221__NRS-484B-280-1c__motor_vehicle_driver",
+  "runtime_manifest_sha256": "5e2dd81ac49dd2d9814a10b71ee30cf85323868a8369116020b06a69cbfcc5e3",
+  "cases": [
+    {
+      "case_id": "testing__C230221__NRS-484B-280-1c__motor_vehicle_driver__marked_crosswalk",
+      "kind": "delivery",
+      "construction": "construction.json",
+      "construction_sha256": "994ba39f3110177bb98b4d1f34e466391b19caf770ed92cddd1eb534e0d6ca09",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "fixture_recipe": "work/testing__C230221__NRS-484B-280-1c__motor_vehicle_driver/diagnostic-marked_crosswalk-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The primary Native ego spawn can be occupied by an ambient vehicle; a same-road upstream spawn is an engineering alternative shared across the pair."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback-marked_crosswalk-construction.json",
+          "construction_sha256": "7118d563cce1ec98c87c1b4efb6c93f1ac9299d13b65bbfb444e012d0e3d2eaf",
+          "changed_knobs": [
+            "ego_start_xy_m.x: primary -30 m -> fallback -33 m on the same reviewed road"
+          ],
+          "trigger": {
+            "source": "Native CARLA ego spawn result and original actor inventory",
+            "metric": "primary ego spawn availability",
+            "failure_condition": "primary ego spawn occupied or rejected by the Native world"
+          },
+          "offline": {
+            "command": "SCENARIO_TEST_TMPDIR=\"$PWD/.runtime-work\" .venv-cpu/bin/python runtime.py offline --manifest work/testing__C230221__NRS-484B-280-1c__motor_vehicle_driver/execution-manifest.json --case testing__C230221__NRS-484B-280-1c__motor_vehicle_driver__marked_crosswalk --candidate fallback1 --output .runtime-work/c230221-offline-marked_crosswalk-fallback1-v2",
+            "construction_sha256": "7118d563cce1ec98c87c1b4efb6c93f1ac9299d13b65bbfb444e012d0e3d2eaf",
+            "exit_code": 0,
+            "log": "proof-marked_crosswalk-fallback1.log",
+            "log_sha256": "9a1885bce75a1a546d7b83beeb746c85815ee34845c29f1e7f92826fa6a725e2"
+          },
+          "compatibility": {
+            "command": "SCENARIO_TEST_TMPDIR=\"$PWD/.runtime-work\" .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C230221__NRS-484B-280-1c__motor_vehicle_driver/execution-manifest.json --case testing__C230221__NRS-484B-280-1c__motor_vehicle_driver__marked_crosswalk --candidate fallback1 --output .runtime-work/c230221-compat-marked_crosswalk-fallback1-v1 --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "log": "compat-marked_crosswalk-fallback1-analysis.log",
+            "negative_log": "compat-marked_crosswalk-fallback1-negative.log",
+            "receipt": "compat-marked_crosswalk-fallback1-receipt.json",
+            "sha256": "d860573c8d8cf147962e92463adc8f93dfed108c7f7b42d2e2e0cc2978981f45"
+          }
+        }
+      ],
+      "acquisition": {
+        "ego_body_history": {
+          "entrypoint": "analysis.py",
+          "method": "Original source-hashed crosswalk encounter projected by saved analyzer",
+          "evidence": "channels/ego_body_history.jsonl"
+        },
+        "pedestrian_body_history": {
+          "entrypoint": "analysis.py",
+          "method": "Original source-hashed crosswalk encounter projected by saved analyzer",
+          "evidence": "channels/pedestrian_body_history.jsonl"
+        },
+        "ego_speed_and_brake_history": {
+          "entrypoint": "analysis.py",
+          "method": "Original source-hashed crosswalk encounter projected by saved analyzer",
+          "evidence": "channels/ego_speed_and_brake_history.jsonl"
+        },
+        "driver_observation_input_history": {
+          "entrypoint": "analysis.py",
+          "method": "Original source-hashed crosswalk encounter projected by saved analyzer",
+          "evidence": "channels/driver_observation_input_history.jsonl"
+        },
+        "crosswalk_context": {
+          "entrypoint": "analysis.py",
+          "method": "Original source-hashed crosswalk encounter projected by saved analyzer",
+          "evidence": "channels/crosswalk_context.jsonl"
+        },
+        "participant_classification_context": {
+          "entrypoint": "analysis.py",
+          "method": "Original source-hashed crosswalk encounter projected by saved analyzer",
+          "evidence": "channels/participant_classification_context.jsonl"
+        },
+        "contact_events": {
+          "entrypoint": "analysis.py",
+          "method": "Original source-hashed crosswalk encounter projected by saved analyzer",
+          "evidence": "channels/contact_events.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "Original source-hashed crosswalk encounter projected by saved analyzer",
+          "evidence": "channels/camera_frame_map.jsonl"
+        },
+        "crosswalk_site_context": {
+          "entrypoint": "analysis.py",
+          "method": "Original OpenDRIVE crosswalk and driver-input context projection",
+          "evidence": "channels/context.json"
+        },
+        "driver_input_context": {
+          "entrypoint": "analysis.py",
+          "method": "Original OpenDRIVE crosswalk and driver-input context projection",
+          "evidence": "channels/context.json"
+        }
+      },
+      "offline": {
+        "command": "SCENARIO_TEST_TMPDIR=\"$PWD/.runtime-work\" .venv-cpu/bin/python runtime.py offline --manifest work/testing__C230221__NRS-484B-280-1c__motor_vehicle_driver/execution-manifest.json --case testing__C230221__NRS-484B-280-1c__motor_vehicle_driver__marked_crosswalk --candidate primary --output .runtime-work/c230221-offline-marked_crosswalk-primary-v2",
+        "construction_sha256": "994ba39f3110177bb98b4d1f34e466391b19caf770ed92cddd1eb534e0d6ca09",
+        "exit_code": 0,
+        "log": "proof-marked_crosswalk-primary.log",
+        "log_sha256": "4c2dd67a3e613c8977f501253bbd45001cb0dd0c099e2e4d5b37b5374ccda86e"
+      },
+      "compatibility": {
+        "command": "SCENARIO_TEST_TMPDIR=\"$PWD/.runtime-work\" .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C230221__NRS-484B-280-1c__motor_vehicle_driver/execution-manifest.json --case testing__C230221__NRS-484B-280-1c__motor_vehicle_driver__marked_crosswalk --candidate primary --output .runtime-work/c230221-compat-marked_crosswalk-primary-v1 --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "log": "compat-marked_crosswalk-primary-analysis.log",
+        "negative_log": "compat-marked_crosswalk-primary-negative.log",
+        "receipt": "compat-marked_crosswalk-primary-receipt.json",
+        "sha256": "9b101e1c1679554f7e78c7f5c3adf643b855d817edaf8b7494a755f0cc494d7e"
+      },
+      "negative": {
+        "log": "compat-marked_crosswalk-primary-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-marked_crosswalk-proof.json",
+        "sha256": "b80507b1618c86604c34ccf1ddfdde7cefb596470b415b1c23ea1ecd6d8d12fd"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230221__NRS-484B-280-1c__motor_vehicle_driver/execution-manifest.json --case testing__C230221__NRS-484B-280-1c__motor_vehicle_driver__marked_crosswalk --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230221-saved-marked_crosswalk-attempt-v1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230221-saved-marked_crosswalk-v1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230221__NRS-484B-280-1c__motor_vehicle_driver/execution-manifest.json --case testing__C230221__NRS-484B-280-1c__motor_vehicle_driver__marked_crosswalk --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230221-saved-marked_crosswalk-attempt-v1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230221-saved-marked_crosswalk-v1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "test_log": "saved-marked_crosswalk.log",
+        "test_log_sha256": "6c18cd114e2fc80649a6297e0c8bb6f382b5bf17b1fb5d19fe044bab60b8b70b",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C230221__NRS-484B-280-1c__motor_vehicle_driver__marked_crosswalk",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "5a3dece435194d077d12538e997d539cf1ebd027d5df5aeafed827cab3da440c",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c230221-audit-tests\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C230221__NRS-484B-280-1c__motor_vehicle_driver/audit_probe.py --case testing__C230221__NRS-484B-280-1c__motor_vehicle_driver__marked_crosswalk --output .runtime-work/c230221-audit-marked_crosswalk-positive-v1",
+        "test_exit_code": 0,
+        "test_log": "audit-marked_crosswalk-positive.log",
+        "test_log_sha256": "2a55a9fbd2f7e65d4578e704a64c1f7b8d27577fd898aaa25fc9cfcb06313bf6",
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c230221-audit-tests\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C230221__NRS-484B-280-1c__motor_vehicle_driver/audit_probe.py --case testing__C230221__NRS-484B-280-1c__motor_vehicle_driver__marked_crosswalk --output .runtime-work/c230221-audit-marked_crosswalk-negative-v1 --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "sealed original missing or changed",
+        "negative_log": "audit-marked_crosswalk-negative.log",
+        "negative_log_sha256": "ae082a102977816f5c1a3109a61072c24b19cab4a6df707239d6d565a0169cda"
+      }
+    },
+    {
+      "case_id": "testing__C230221__NRS-484B-280-1c__motor_vehicle_driver__unmarked_crosswalk",
+      "kind": "delivery",
+      "construction": "cases/unmarked_crosswalk/construction.json",
+      "construction_sha256": "48e88c38773ae73aa0f6897bb228597fafd7505795ac756556c541c095f1696f",
+      "measurement_contract": "measurement-contract.json",
+      "measurement_procedure": {
+        "entrypoint": "analysis.py"
+      },
+      "fixture_recipe": "work/testing__C230221__NRS-484B-280-1c__motor_vehicle_driver/diagnostic-unmarked_crosswalk-recipe.json",
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "The primary Native ego spawn can be occupied by an ambient vehicle; a same-road upstream spawn is an engineering alternative shared across the pair."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "fallback-unmarked_crosswalk-construction.json",
+          "construction_sha256": "6578ce044c68732851571192f102585f49b17e972c6e35c89a19ba919babd7f0",
+          "changed_knobs": [
+            "ego_start_xy_m.x: primary -30 m -> fallback -33 m on the same reviewed road"
+          ],
+          "trigger": {
+            "source": "Native CARLA ego spawn result and original actor inventory",
+            "metric": "primary ego spawn availability",
+            "failure_condition": "primary ego spawn occupied or rejected by the Native world"
+          },
+          "offline": {
+            "command": "SCENARIO_TEST_TMPDIR=\"$PWD/.runtime-work\" .venv-cpu/bin/python runtime.py offline --manifest work/testing__C230221__NRS-484B-280-1c__motor_vehicle_driver/execution-manifest.json --case testing__C230221__NRS-484B-280-1c__motor_vehicle_driver__unmarked_crosswalk --candidate fallback1 --output .runtime-work/c230221-offline-unmarked_crosswalk-fallback1-v2",
+            "construction_sha256": "6578ce044c68732851571192f102585f49b17e972c6e35c89a19ba919babd7f0",
+            "exit_code": 0,
+            "log": "proof-unmarked_crosswalk-fallback1.log",
+            "log_sha256": "c14a8d6bf9355d073211047f4e6ac010b108966dea40bc1043ef67e98d06a38c"
+          },
+          "compatibility": {
+            "command": "SCENARIO_TEST_TMPDIR=\"$PWD/.runtime-work\" .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C230221__NRS-484B-280-1c__motor_vehicle_driver/execution-manifest.json --case testing__C230221__NRS-484B-280-1c__motor_vehicle_driver__unmarked_crosswalk --candidate fallback1 --output .runtime-work/c230221-compat-unmarked_crosswalk-fallback1-v1 --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+            "log": "compat-unmarked_crosswalk-fallback1-analysis.log",
+            "negative_log": "compat-unmarked_crosswalk-fallback1-negative.log",
+            "receipt": "compat-unmarked_crosswalk-fallback1-receipt.json",
+            "sha256": "c901f308365f53f76711bdc965871ebb3da6294b7ffc2c09f8d974754b1b26a5"
+          }
+        }
+      ],
+      "acquisition": {
+        "ego_body_history": {
+          "entrypoint": "analysis.py",
+          "method": "Original source-hashed crosswalk encounter projected by saved analyzer",
+          "evidence": "channels/ego_body_history.jsonl"
+        },
+        "pedestrian_body_history": {
+          "entrypoint": "analysis.py",
+          "method": "Original source-hashed crosswalk encounter projected by saved analyzer",
+          "evidence": "channels/pedestrian_body_history.jsonl"
+        },
+        "ego_speed_and_brake_history": {
+          "entrypoint": "analysis.py",
+          "method": "Original source-hashed crosswalk encounter projected by saved analyzer",
+          "evidence": "channels/ego_speed_and_brake_history.jsonl"
+        },
+        "driver_observation_input_history": {
+          "entrypoint": "analysis.py",
+          "method": "Original source-hashed crosswalk encounter projected by saved analyzer",
+          "evidence": "channels/driver_observation_input_history.jsonl"
+        },
+        "crosswalk_context": {
+          "entrypoint": "analysis.py",
+          "method": "Original source-hashed crosswalk encounter projected by saved analyzer",
+          "evidence": "channels/crosswalk_context.jsonl"
+        },
+        "participant_classification_context": {
+          "entrypoint": "analysis.py",
+          "method": "Original source-hashed crosswalk encounter projected by saved analyzer",
+          "evidence": "channels/participant_classification_context.jsonl"
+        },
+        "contact_events": {
+          "entrypoint": "analysis.py",
+          "method": "Original source-hashed crosswalk encounter projected by saved analyzer",
+          "evidence": "channels/contact_events.jsonl"
+        },
+        "camera_frame_map": {
+          "entrypoint": "analysis.py",
+          "method": "Original source-hashed crosswalk encounter projected by saved analyzer",
+          "evidence": "channels/camera_frame_map.jsonl"
+        },
+        "crosswalk_site_context": {
+          "entrypoint": "analysis.py",
+          "method": "Original OpenDRIVE crosswalk and driver-input context projection",
+          "evidence": "channels/context.json"
+        },
+        "driver_input_context": {
+          "entrypoint": "analysis.py",
+          "method": "Original OpenDRIVE crosswalk and driver-input context projection",
+          "evidence": "channels/context.json"
+        }
+      },
+      "offline": {
+        "command": "SCENARIO_TEST_TMPDIR=\"$PWD/.runtime-work\" .venv-cpu/bin/python runtime.py offline --manifest work/testing__C230221__NRS-484B-280-1c__motor_vehicle_driver/execution-manifest.json --case testing__C230221__NRS-484B-280-1c__motor_vehicle_driver__unmarked_crosswalk --candidate primary --output .runtime-work/c230221-offline-unmarked_crosswalk-primary-v2",
+        "construction_sha256": "48e88c38773ae73aa0f6897bb228597fafd7505795ac756556c541c095f1696f",
+        "exit_code": 0,
+        "log": "proof-unmarked_crosswalk-primary.log",
+        "log_sha256": "8085dd11a6d44a20f0bf6cec0354e400cb2ee0964b64eb8414e85b171b7451a3"
+      },
+      "compatibility": {
+        "command": "SCENARIO_TEST_TMPDIR=\"$PWD/.runtime-work\" .venv-cpu/bin/python runtime.py compatibility --manifest work/testing__C230221__NRS-484B-280-1c__motor_vehicle_driver/execution-manifest.json --case testing__C230221__NRS-484B-280-1c__motor_vehicle_driver__unmarked_crosswalk --candidate primary --output .runtime-work/c230221-compat-unmarked_crosswalk-primary-v1 --library runtime/library --validator .runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "log": "compat-unmarked_crosswalk-primary-analysis.log",
+        "negative_log": "compat-unmarked_crosswalk-primary-negative.log",
+        "receipt": "compat-unmarked_crosswalk-primary-receipt.json",
+        "sha256": "9384efd7cd96621be18580b76691c6142d547a9b0dabbed1a71de1343bb929fe"
+      },
+      "negative": {
+        "log": "compat-unmarked_crosswalk-primary-negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-unmarked_crosswalk-proof.json",
+        "sha256": "9c7f48d661a3051bd63dca5b4864b350ac0ae087ee3f75bc90c937366235c3cc"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230221__NRS-484B-280-1c__motor_vehicle_driver/execution-manifest.json --case testing__C230221__NRS-484B-280-1c__motor_vehicle_driver__unmarked_crosswalk --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230221-saved-unmarked_crosswalk-attempt-v1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230221-saved-unmarked_crosswalk-v1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "feedback_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.venv-cpu/bin/python runtime.py process-saved --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/work/testing__C230221__NRS-484B-280-1c__motor_vehicle_driver/execution-manifest.json --case testing__C230221__NRS-484B-280-1c__motor_vehicle_driver__unmarked_crosswalk --attempt /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230221-saved-unmarked_crosswalk-attempt-v1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c230221-saved-unmarked_crosswalk-v1 --library /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/runtime/library --validator /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-test/.runtime-work/c109755-decoder-v2/.lake/build/bin/adapterCheck",
+        "test_log": "saved-unmarked_crosswalk.log",
+        "test_log_sha256": "535012f82c7628331b9757982c8b59274f909aa86f31a3d20a8c45839475582e",
+        "test_exit_code": 0
+      },
+      "delivery_acceptance": {
+        "case_id": "testing__C230221__NRS-484B-280-1c__motor_vehicle_driver__unmarked_crosswalk",
+        "sets": [
+          "full-test"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "5a3dece435194d077d12538e997d539cf1ebd027d5df5aeafed827cab3da440c",
+        "command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c230221-audit-tests\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C230221__NRS-484B-280-1c__motor_vehicle_driver/audit_probe.py --case testing__C230221__NRS-484B-280-1c__motor_vehicle_driver__unmarked_crosswalk --output .runtime-work/c230221-audit-unmarked_crosswalk-positive-v1",
+        "test_exit_code": 0,
+        "test_log": "audit-unmarked_crosswalk-positive.log",
+        "test_log_sha256": "500c16d73abcfd73394a8f182df39530b8d1ffb4b9265c6a974ba3b1846d8ab1",
+        "negative_command": "SCENARIO_PIPELINE_OUTPUT_ROOT=\"$PWD/.runtime-work/c230221-audit-tests\" PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python work/testing__C230221__NRS-484B-280-1c__motor_vehicle_driver/audit_probe.py --case testing__C230221__NRS-484B-280-1c__motor_vehicle_driver__unmarked_crosswalk --output .runtime-work/c230221-audit-unmarked_crosswalk-negative-v1 --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "sealed original missing or changed",
+        "negative_log": "audit-unmarked_crosswalk-negative.log",
+        "negative_log_sha256": "ae082a102977816f5c1a3109a61072c24b19cab4a6df707239d6d565a0169cda"
+      }
+    }
+  ]
+}

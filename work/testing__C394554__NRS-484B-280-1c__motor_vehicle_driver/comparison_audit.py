@@ -61,7 +61,8 @@ def audit(waiting, boarding):
             "fixed_conditions": list(FIXED) + ["original stop/bus placement and bus-side region within 0.1 m measurement tolerance"],
             "difference": "measured pedestrian movement toward bus-side ingress region",
             "waiting_door_approach_m": before, "boarding_door_approach_m": after,
-            "actual_boarding_reviewed": True,
+            "actual_boarding_reviewed": not (waiting.get("fixture_only") or
+                                              boarding.get("fixture_only")),
             "human_observation_claimed": False, "legal_verdict": None}
 
 
