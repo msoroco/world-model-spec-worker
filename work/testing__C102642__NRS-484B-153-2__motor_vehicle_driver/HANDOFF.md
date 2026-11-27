@@ -1,3 +1,9 @@
+## 2026-11-27 exact saved-processing repair
+
+All eight manifest cases now include executable recorded-only `post_capture.command` and `feedback_command` values matching the queued `process-saved` handoff. `prove_post_capture.py` exercised every command against current-construction source-shaped compatibility attempts. Each positive run produced a passing saved-processing receipt with originals preserved and final video checks passed. Each negative run used an unavailable validator and produced actionable failure feedback without Native replay. `cpu-nov27-post-saved-all.log` has SHA-256 `f60c2da83e688fd83095ca6125d386e95ba61ad97b3b0218fe49360a0149f988`; its exit code was zero and each case binds this log. These are diagnostic software proofs, not original physical or legal acceptance.
+
+The exact scoped strict check `.venv-cpu/bin/python worker_check.py --assignment testing__C102642__NRS-484B-153-2__motor_vehicle_driver --complete --require-delivery-ready` exited zero and reported `static_checks_passed: true`. The assignment is ready for the queued original Native review.
+
 # C102642 delivery-prepared handoff
 
 Status: ready after exact scoped CPU strict gate exited 0 on 2026-11-25. The selected package has eight cases: five door-action cases and three source-gated engineering clearance setpoints (0.25, 1.25, 0.75 m). It retains three independent comparisons and one fallback construction per case. `gpu-queue-proposal.json` names the selected manifest and binds each comparison command to its exact comparison ID.

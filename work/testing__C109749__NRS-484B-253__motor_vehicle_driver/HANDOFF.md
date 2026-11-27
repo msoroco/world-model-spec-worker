@@ -199,3 +199,9 @@ All eight primaries and two reciprocal fallbacks were rebuilt and revalidated ag
 - `strict-dispatch-final.log` exit 0, SHA256 `5892be2c5d35a6d4093e4414ae3e5d2d240429afe8f0f3a28dc415d363ea8d93`.
 - Exact command: `.venv-cpu/bin/python worker_check.py --assignment testing__C109749__NRS-484B-253__motor_vehicle_driver --complete --require-delivery-ready`.
 Actual Native route, map review, camera visibility and physical/legal conclusions remain local source-review and capture work.
+
+## 2026-11-27 saved-only full-branch processing
+
+All eight exact manifest cases now bind `post_capture.command` and `feedback_command` to `runtime.py process-saved`, with `recorded_only: true`. `.venv-cpu/bin/python work/testing__C109749__NRS-484B-253__motor_vehicle_driver/prove_post_capture.py` passed for every case; the log is `cpu-nov27-post-saved-all.log` (SHA-256 `91ca1ed79b4009a457615bb6bd60f90b92f877a86eae89bd4e5597bc83838e3f`). Each `cpu-saved-<case>.json` records the source-shaped successful processing hash, source hashes, timestamp join and full video decode; each `cpu-saved-<case>-negative.json` records missing-validator failure feedback without Native replay. Scratch and media live under `.runtime-work/c109749-post-capture-proof/`. These are software fixtures, not original physical or legal acceptance. The selected cases cover opposing traffic within/approaching the intersection, initial yield, signal, and reciprocal yield branches of the supplied NRS 484B.253 text.
+
+Exact scoped strict gate passed on 2026-11-27: `.venv-cpu/bin/python worker_check.py --assignment testing__C109749__NRS-484B-253__motor_vehicle_driver --complete --require-delivery-ready`; `strict-nov27-post-capture.log` SHA-256 `5892be2c5d35a6d4093e4414ae3e5d2d240429afe8f0f3a28dc415d363ea8d93`. Ready denotes CPU preparation only; CARLA motion, original pixels and canonical acceptance remain later local checks.

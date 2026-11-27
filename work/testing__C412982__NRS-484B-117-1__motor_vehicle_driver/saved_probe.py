@@ -23,6 +23,7 @@ def main():
     parser.add_argument('--case', required=True)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--validator', type=Path, required=True)
+    parser.add_argument('--mode', choices=('positive', 'missing_source', 'missing_validator'), default='positive')
     args = parser.parse_args()
     suffix = args.case.removeprefix(ROOT.name + '__')
     if suffix == args.case:
@@ -50,6 +51,8 @@ def main():
         (attempt / name).unlink(missing_ok=True)
     for path in attempt.glob('source-*.json'):
         path.unlink()
+    if args.mode == 'missing_source':
+        (attempt / 'sidewalk-site.json').unlink()
     (attempt / 'candidate-selection.json').write_text(json.dumps({
         'format': 'worker-candidate-selection', 'case_id': args.case,
         'candidate_id': 'primary',
@@ -70,11 +73,19 @@ def main():
                '--manifest', str(manifest), '--case', args.case,
                '--attempt', str(attempt), '--output', str(output / 'processed'),
                '--library', str(REPO / 'runtime/library'),
-               '--validator', str(args.validator.resolve()),
+               '--validator', str(args.validator.resolve() if args.mode != 'missing_validator' else output / 'absent-validator'),
                '--owner-release-receipt', str(attempt / 'owner-release.json')]
     result = subprocess.run(command, cwd=REPO, text=True, capture_output=True,
                             timeout=600)
     (output / 'process-saved.log').write_text((result.stdout + result.stderr).rstrip() + '\n')
+    if args.mode == 'missing_validator':
+        if result.returncode == 0:
+            raise ValueError('missing validator unexpectedly passed')
+        feedback = json.loads((output / 'processed/v0001/feedback.json').read_text())
+        if feedback.get('recorded_only') is not True or feedback.get('native_replay_requested') is not False or not feedback.get('error'):
+            raise ValueError('missing-validator feedback incomplete')
+        print(json.dumps({'case_id': args.case, 'mode': args.mode, 'feedback': feedback['error'][-250:], 'process_exit_code': result.returncode}))
+        return
     if result.returncode:
         raise ValueError('saved-only processing failed: ' + result.stderr[-1200:])
     after = {p.name: sha(p) for p in attempt.iterdir() if p.is_file()}
@@ -84,6 +95,12 @@ def main():
     if (receipt.get('passed') is not True or receipt.get('recorded_only') is not True or
             receipt.get('case_id') != args.case or receipt.get('originals_preserved') is not True):
         raise ValueError('saved-only receipt incomplete')
+    if args.mode == 'missing_source':
+        feedback = json.loads((output / 'processed/v0001/feedback.json').read_text())
+        if receipt.get('missing_evidence') is not True or feedback.get('classification') != 'incomplete_or_unavailable_law_evidence' or 'Missing required source: sidewalk-site.json' not in feedback.get('error', ''):
+            raise ValueError('missing-source feedback incomplete')
+        print(json.dumps({'case_id': args.case, 'mode': args.mode, 'feedback': 'Missing required source: sidewalk-site.json', 'recorded_only': True, 'acquisition_unchanged': True}))
+        return
     print(json.dumps({'case_id': args.case, 'saved_only_passed': True,
                       'diagnostic_fixture': True, 'acquisition_unchanged': True}))
 

@@ -34,7 +34,11 @@ class OfflineDraftTests(unittest.TestCase):
             for source in MODULE.SOURCES:
                 self.assertEqual(files[source], (HERE / source).read_text())
             config = json.loads(files["config.json"])
-            self.assertEqual(config["plan_sha256"], hashlib.sha256(plan_bytes).hexdigest())
+            bundled_plan = files["case-plan.json"]
+            self.assertEqual(config["plan_sha256"],
+                             hashlib.sha256(bundled_plan.encode()).hexdigest())
+            for key, value in json.loads(bundled_plan).items():
+                self.assertEqual(plan[key], value)
             self.assertEqual((config["requested_front_body_gap_ft"], config["activity"],
                               config["halt_cause"]),
                              tuple(by_case[entry["case_id"]][key] for key in

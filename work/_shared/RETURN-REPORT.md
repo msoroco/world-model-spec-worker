@@ -1986,3 +1986,39 @@ C255863/NRS-484B-363-3 owner and lead exact scoped strict checks passed after si
 
 - `testing__C276300__NRS-484B-533__motor_vehicle_driver` passed owner and lead exact scoped strict gates after all seven saved-processing and missing-engine failure-feedback CPU proofs. Seven jobs, six comparisons and six runnable matrix branches were restored to the ready queue.
 - `testing__C110969__LVMC-11-52-130-A11__motor_vehicle_driver` is truthfully partial while its owner adds seven recorded-only post-capture paths. Seven jobs, three comparisons and three matrix branches were withdrawn pending its exact gate. The ready-only queue has 239 assignments, 1,684 cases and 1,208 comparisons (4,825,324 bytes). C229023 and C142510 remain owned and partial. No frozen file or Git command was used.
+
+## 2026-11-27 20:48 UTC — C229023 published; C126120 assigned
+
+- `testing__C229023__LVMC-11-30-030__motor_vehicle_driver` passed six positive recorded-only saved-processing and six missing-trace feedback CPU proofs, its owner's scoped strict gate, and the lead's independent strict repeat. The lead restored six exact jobs, five comparisons and five runnable matrix branches.
+- `testing__C126120__NRS-484B-227-1__motor_vehicle_driver` is truthfully partial while a fresh owner repairs seven post-capture paths. Seven jobs, six comparisons and six branches were withdrawn. C142510 and C110969 remain owned partial repairs. Current ready-only queue: 239 assignments, 1,683 cases, 1,207 comparisons, 4,822,946 bytes.
+- A scan of 641 files modified in the preceding hour found 74 non-UTF-8 files, all generated `__pycache__/*.pyc`; no oversized text, trailing whitespace, blank EOF or conflict markers were found. The lead removed ten generated cache directories outside active owner folders and instructed all owners to disable bytecode output and clean their own folders. No frozen file or Git command was used.
+
+## 2026-11-27 20:55 UTC — C126120 and C142510 strict passes published
+
+- `testing__C126120__NRS-484B-227-1__motor_vehicle_driver` passed seven positive saved-only and seven missing-source feedback CPU proofs, its owner exact scoped strict gate and the lead's independent repeat. The lead restored seven jobs, six comparisons and six runnable matrix branches.
+- `testing__C142510__LVMC-11-40-180-C__cycle_or_scooter_operator` likewise passed six positive/missing-validator CPU proof pairs and both exact strict gates; six jobs, five comparisons and five branches were restored. Its owner scanned all 374 own-folder returned files clean.
+- `testing__C102642__NRS-484B-153-2__motor_vehicle_driver` and `testing__C109749__NRS-484B-253__motor_vehicle_driver` are truthfully partial during eight-case post-capture repairs, with their queue rows and matrix branches withdrawn. C110969 remains an owned partial proof batch. Current ready-only queue: 239 assignments, 1,680 cases, 1,209 comparisons (4,827,830 bytes). No frozen file or Git command was used.
+
+## 2026-11-27 — C102642 NRS-484B-153-2 strict pass
+
+The owner completed all eight exact saved-processing and failure-feedback CPU proofs for `testing__C102642__NRS-484B-153-2__motor_vehicle_driver`. The lead independently reran `.venv-cpu/bin/python worker_check.py --assignment testing__C102642__NRS-484B-153-2__motor_vehicle_driver --complete --require-delivery-ready`; it exited 0 with `static_checks_passed: true`. Its eight case rows, four comparison commands, and four branch rows were restored to the shared ready queue and matrix. The queue now contains 240 ready assignments before the next owner demotion.
+
+## 2026-11-27 — active saved-processing repair wave
+
+The lead truthfully withdrew C136559/NRS-484B-600-1c after its new owner demoted it to partial for eight missing exact post-capture paths. The current ready-only queue has 239 assignments, 1,680 cases and 1,207 comparison commands; the queue/catalog static audit passed 22,750 checks with zero errors. C109749/NRS-484B-253 and C110969/LVMC-11-52-130-A11 remain owned partial repairs. A current manifest inventory shows 127 unbound `post_capture.command` or `feedback_command` cases across twelve other packages, including the active C136559; owners are processing the nearest-to-ready packages first. A recent returned-file scan found one active C110969 proof log with trailing whitespace while its test suite was still writing; the owner will strip it after the suite exits. No batch-wide strict readiness is claimed.
+
+## 2026-11-27 — C136559 NRS-484B-600-1c strict pass
+
+The owner completed all eight exact recorded-only saved-processing and missing-source/missing-validator CPU feedback proofs, with per-case logs, exit codes and hashes. Both its own and the lead's independent `.venv-cpu/bin/python worker_check.py --assignment testing__C136559__NRS-484B-600-1c__motor_vehicle_driver --complete --require-delivery-ready` passed (lead exit 0, `static_checks_passed: true`). Eight case rows, six comparison commands and six runnable branch rows were restored to the shared queue/matrix. Current queue: 240 ready assignments before the next owner demotion. The batch-wide strict gate remains pending.
+
+## 2026-11-27 — C109749 NRS-484B-253 strict pass; next wave active
+
+C109749's eight exact recorded-only source-shaped saved-processing proofs and eight missing-validator feedback proofs passed. The owner and lead independently ran the exact scoped strict delivery gate; the lead run exited 0 with `static_checks_passed: true`. The lead restored eight cases, five comparison commands and five runnable branch rows to the ready queue/matrix. C145696/NRS-486-351-1 and C202480/NRS-484B-557 were truthfully demoted to partial as their owners began eight- and nine-case post-capture repair, and their rows were withdrawn. C110969's seven-case proof passed and its strict gate is in progress. Current queue has 239 ready assignments before C110969 restoration. The full batch delivery gate remains pending.
+
+## 2026-11-27 — C110969 LVMC-11-52-130-A11 strict pass
+
+The owner completed all seven exact source-shaped saved-processing/negative feedback CPU proofs and repaired a stale draft test SHA assertion without changing the selected manifest or proof-bound construction. The owner's exact scoped strict gate and the lead's independent repeat both exited 0 with `static_checks_passed: true`. The lead restored seven ready queue jobs, three comparison commands and three runnable branch rows. C145696, C202480 and C412262 are the three owned partial post-capture repairs; their queue rows are withdrawn. Current ready-only queue has 239 assignments before the next restoration. No full batch strict pass is claimed.
+
+## 2026-11-27 — C412262 NRS-484B-493 strict pass
+
+The owner completed nine exact recorded-only saved-processing and missing-source/unavailable-validator feedback CPU proofs. The owner's final exact scoped strict gate and the lead's independent repeat exited 0 with `static_checks_passed: true`. The lead restored nine cases, eight comparison commands and eight runnable branch rows to the ready queue/matrix. Current queue: 240 ready assignments before the next demotion. C145696 and C202480 remain truthfully partial with proof work underway; C412982 has been assigned next. Batch-wide delivery readiness remains pending.

@@ -1,6 +1,6 @@
 # C202480 NRS 484B.557 delivery handoff
 
-Status: `ready` for CPU delivery preparation. The exact scoped strict gate passed on 2026-11-25. No actual CARLA capture, physical completion, or legal verdict is claimed.
+Status: `partial` while current-runtime recorded-only post-capture handoff proofs are being refreshed. The prior scoped strict gate passed on 2026-11-25 against the previous runtime; current-runtime readiness is pending. No actual CARLA capture, physical completion, or legal verdict is claimed.
 
 ## Exact package
 

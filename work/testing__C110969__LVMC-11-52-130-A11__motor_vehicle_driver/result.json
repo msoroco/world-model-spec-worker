@@ -6,7 +6,7 @@
   "remaining_gpu_checks": [
     "Actual CARLA source-bound route capture, camera visibility and physical acceptance; legal necessity remains unresolved"
   ],
-  "status": "partial",
+  "status": "ready",
   "tests": [
     {
       "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C110969__LVMC-11-52-130-A11__motor_vehicle_driver/tests -v",
@@ -631,8 +631,22 @@
       "exit_code": 0,
       "log": "cpu-comparison-cli-tests.log",
       "sha256": "13c52ad9542997d1ae97e035994a29e1e2d7ac4fa2af60bd39f74865898cb92c"
+    },
+    {
+      "command": ".venv-cpu/bin/python work/testing__C110969__LVMC-11-52-130-A11__motor_vehicle_driver/prove_saved_processing.py",
+      "exit_code": 0,
+      "log": "cpu-bound-saved-processing-20261127.log",
+      "name": "bound_saved_processing",
+      "sha256": "9f584dd887ee67842d123052a1858ff69dc69aaabd47cfc9e4bea1a3df081ba5"
+    },
+    {
+      "command": ".venv-cpu/bin/python -m unittest discover -s work/testing__C110969__LVMC-11-52-130-A11__motor_vehicle_driver/tests -p test_offline_draft.py -v",
+      "exit_code": 0,
+      "log": "cpu-offline-draft-current-20261127.log",
+      "name": "current_plan_extension_test",
+      "sha256": "21a1eca16e582f254340f78fdf7167b97a82cfb1e050f9e434f6ba86ddf7b026"
     }
   ],
   "first_gpu_delivery_command": "PYTHONPATH=\"$PWD/runtime\" .venv-cpu/bin/python -m scenario_pipeline.worker_exchange --root \"$LOCAL_ROOT\" execute-delivery --repo \"$PWD\" --batch full-test-delivery --db \"$DB\" --run \"$RUN\" --assignment testing__C110969__LVMC-11-52-130-A11__motor_vehicle_driver --case testing__C110969__LVMC-11-52-130-A11__motor_vehicle_driver__stop_14ft --job \"$JOB_ID\" --python \"$CARLA_PYTHON\" --host \"$CARLA_HOST\" --port \"$CARLA_PORT\"",
-  "reason": "Full-branch review found seven exact cases lack bound recorded-only saved-processing and feedback commands; repair and CPU proof are pending."
+  "reason": ""
 }
