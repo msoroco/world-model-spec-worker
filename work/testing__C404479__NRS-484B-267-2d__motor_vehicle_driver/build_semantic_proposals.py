@@ -29,6 +29,7 @@ PARAMS = (
     ("officer_direction_requested", "world_setup", "false or true", "boolean"),
     ("approach_direction", "world_setup", "same_direction", "class"),
     ("unit_state", "world_setup", "moving or preparing", "class"),
+    ("preparation_cue", "world_setup", "none, visible hand signal or visible vehicle movement", "class"),
 )
 
 
@@ -42,7 +43,7 @@ def write(name, value):
 
 def assignments(case):
     values = (case.unit_class, case.light_request, case.immediate, case.maneuver,
-              case.officer_direction, case.direction, case.state)
+              case.officer_direction, case.direction, case.state, case.preparation_cue)
     return {name: {"kind": kind, "value": value, "unit": unit}
             for (name, kind, _, unit), value in zip(PARAMS, values)}
 

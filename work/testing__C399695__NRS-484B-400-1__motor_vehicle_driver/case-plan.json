@@ -24,9 +24,207 @@
   "topic_inventory": {
     "exact-text": "If the driver of a vehicle intends to turn at an intersection and: The turn is a right turn, both the approach for the right turn and the right turn must be made from the right turn lane if the highway has a right turn lane as set forth in subsection 4 of NRS 484B.223 [NRS-484B-223-4a, NRS-484B-223-4b], or must be made from the extreme right lane."
   },
-  "cases": [],
-  "comparisons": [],
-  "observations": [],
+  "cases": [
+    {
+      "case_id": "testing__C399695__NRS-484B-400-1__motor_vehicle_driver__lane_both_intervals",
+      "kind": "delivery",
+      "branch": "Right-turn lane at a terminating-road intersection.",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "new_capture_selected": true,
+      "target_law_id": "NRS-484B-400-1",
+      "qualifying_right_turn_lane": true,
+      "approach_lane_request": "turn",
+      "turn_lane_request": "turn",
+      "construction_probe": "turn_position.py",
+      "construction_status": "source_gated_native_bundle_cpu_preparation",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Actual Native lane geometry, 20 Hz lane identity and connected right exit may differ from the reviewed source packet; a surveyed alternate spawn/controller is needed only if the first run shows this failure."
+      }
+    },
+    {
+      "case_id": "testing__C399695__NRS-484B-400-1__motor_vehicle_driver__approach_from_other_lane",
+      "kind": "delivery",
+      "branch": "Right-turn lane at a terminating-road intersection.",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "new_capture_selected": true,
+      "target_law_id": "NRS-484B-400-1",
+      "qualifying_right_turn_lane": true,
+      "approach_lane_request": "extreme",
+      "turn_lane_request": "turn",
+      "construction_probe": "turn_position.py",
+      "construction_status": "source_gated_native_bundle_cpu_preparation",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Actual Native lane geometry, 20 Hz lane identity and connected right exit may differ from the reviewed source packet; a surveyed alternate spawn/controller is needed only if the first run shows this failure."
+      }
+    },
+    {
+      "case_id": "testing__C399695__NRS-484B-400-1__motor_vehicle_driver__turn_from_other_lane",
+      "kind": "delivery",
+      "branch": "Right-turn lane at a terminating-road intersection.",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "new_capture_selected": true,
+      "target_law_id": "NRS-484B-400-1",
+      "qualifying_right_turn_lane": true,
+      "approach_lane_request": "turn",
+      "turn_lane_request": "extreme",
+      "construction_probe": "turn_position.py",
+      "construction_status": "source_gated_native_bundle_cpu_preparation",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Actual Native lane geometry, 20 Hz lane identity and connected right exit may differ from the reviewed source packet; a surveyed alternate spawn/controller is needed only if the first run shows this failure."
+      }
+    },
+    {
+      "case_id": "testing__C399695__NRS-484B-400-1__motor_vehicle_driver__other_lane_both_intervals",
+      "kind": "delivery",
+      "branch": "Right-turn lane at a terminating-road intersection.",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "new_capture_selected": true,
+      "target_law_id": "NRS-484B-400-1",
+      "qualifying_right_turn_lane": true,
+      "approach_lane_request": "extreme",
+      "turn_lane_request": "extreme",
+      "construction_probe": "turn_position.py",
+      "construction_status": "source_gated_native_bundle_cpu_preparation",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Actual Native lane geometry, 20 Hz lane identity and connected right exit may differ from the reviewed source packet; a surveyed alternate spawn/controller is needed only if the first run shows this failure."
+      }
+    },
+    {
+      "case_id": "testing__C399695__NRS-484B-400-1__motor_vehicle_driver__extreme_right_no_qualifying_lane",
+      "kind": "delivery",
+      "branch": "Right-turn lane at a terminating-road intersection.",
+      "gap_ids": [
+        "no-accepted-recording"
+      ],
+      "new_capture_selected": true,
+      "target_law_id": "NRS-484B-400-1",
+      "qualifying_right_turn_lane": false,
+      "approach_lane_request": "extreme",
+      "turn_lane_request": "extreme",
+      "construction_probe": "turn_position.py",
+      "construction_status": "source_gated_native_bundle_cpu_preparation",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Actual Native lane geometry, 20 Hz lane identity and connected right exit may differ from the reviewed source packet; a surveyed alternate spawn/controller is needed only if the first run shows this failure."
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "comparison_id": "approach_lane_position",
+      "case_ids": [
+        "testing__C399695__NRS-484B-400-1__motor_vehicle_driver__lane_both_intervals",
+        "testing__C399695__NRS-484B-400-1__motor_vehicle_driver__approach_from_other_lane"
+      ],
+      "fixed_conditions": [
+        "same reviewed public-highway T intersection",
+        "same independently sourced right-turn intention",
+        "same qualifying NRS 484B.223(4) right-turn lane",
+        "same turn interval lane",
+        "same driver and connected exit",
+        "same 20 Hz camera and duration plan"
+      ],
+      "deliberate_differences": [
+        "original approach interval lane identity and body positions"
+      ]
+    },
+    {
+      "comparison_id": "turn_lane_position",
+      "case_ids": [
+        "testing__C399695__NRS-484B-400-1__motor_vehicle_driver__lane_both_intervals",
+        "testing__C399695__NRS-484B-400-1__motor_vehicle_driver__turn_from_other_lane"
+      ],
+      "fixed_conditions": [
+        "same reviewed public-highway T intersection",
+        "same independently sourced right-turn intention",
+        "same qualifying NRS 484B.223(4) right-turn lane",
+        "same approach interval lane",
+        "same driver and connected exit",
+        "same 20 Hz camera and duration plan"
+      ],
+      "deliberate_differences": [
+        "original turn interval lane identity and body positions"
+      ]
+    },
+    {
+      "comparison_id": "both_intervals_position",
+      "case_ids": [
+        "testing__C399695__NRS-484B-400-1__motor_vehicle_driver__lane_both_intervals",
+        "testing__C399695__NRS-484B-400-1__motor_vehicle_driver__other_lane_both_intervals"
+      ],
+      "fixed_conditions": [
+        "same reviewed public-highway T intersection",
+        "same independently sourced right-turn intention",
+        "same qualifying NRS 484B.223(4) right-turn lane",
+        "same driver and connected exit",
+        "same 20 Hz camera and duration plan"
+      ],
+      "deliberate_differences": [
+        "original approach and turn interval lane identities and body positions"
+      ]
+    },
+    {
+      "comparison_id": "conditional_lane_design",
+      "case_ids": [
+        "testing__C399695__NRS-484B-400-1__motor_vehicle_driver__lane_both_intervals",
+        "testing__C399695__NRS-484B-400-1__motor_vehicle_driver__extreme_right_no_qualifying_lane"
+      ],
+      "fixed_conditions": [
+        "same public-highway T intersection and connected right exit",
+        "same right-turn intention and driver",
+        "same camera and duration plan",
+        "both approach and turn remain in the source-selected lane"
+      ],
+      "deliberate_differences": [
+        "reviewed NRS 484B.223(4) right-turn lane qualification",
+        "conditional required lane identity: qualified turn lane versus extreme right lane"
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "name": "intersection_and_highway",
+      "method": "reviewed public highway, non-alley T intersection and connected right exit",
+      "source": "original source-sealed map/site packet and joined 20 Hz Native frames"
+    },
+    {
+      "name": "conditional_lane_qualification",
+      "method": "separate reviewed NRS 484B.223(4) lane-design source",
+      "source": "original source-sealed map/site packet and joined 20 Hz Native frames"
+    },
+    {
+      "name": "driver_and_intention",
+      "method": "original identified driver and independent pre-approach right-turn intention",
+      "source": "original source-sealed map/site packet and joined 20 Hz Native frames"
+    },
+    {
+      "name": "approach_lane_position",
+      "method": "joined original body pose, road/lane ID and approach interval",
+      "source": "original source-sealed map/site packet and joined 20 Hz Native frames"
+    },
+    {
+      "name": "turn_lane_position",
+      "method": "joined original body pose, junction/lane ID and right-turn interval",
+      "source": "original source-sealed map/site packet and joined 20 Hz Native frames"
+    },
+    {
+      "name": "connected_departure",
+      "method": "joined original road ID and pose on connected right exit",
+      "source": "original source-sealed map/site packet and joined 20 Hz Native frames"
+    }
+  ],
   "sources": [
     {
       "path": "inputs/testing__C399695__NRS-484B-400-1__motor_vehicle_driver/assignment.json",
@@ -51,17 +249,25 @@
   ],
   "existing_evidence": [],
   "runtime_uncertainties": [
-    "Physical realization and actual camera coverage require a later CARLA run or original recording review.",
-    "No exact construction, source-bound finalizer, delivery audit, or comparison audit has yet been implemented."
+    "Native map source packet and CARLA motion require later local physical review.",
+    "Lane boundaries and legal application remain source review matters; worker measurements carry no legal verdict.",
+    "Exact delivery manifest, compatibility, saved-only, physical/lifecycle and independent audit proofs remain CPU work."
   ],
   "evidence_review": {
     "reviewer": "CPU worker",
-    "method": "Reviewed every frozen evidence inventory entry and its local accepted metadata; compared case identities and acceptance fields only. Physical equivalence and branch coverage remain unresolved.",
+    "method": "Reviewed the empty frozen evidence inventory, exact statutory text, and same-cell right-turn-lane design precedent. No accepted recording supports either the qualified-turn-lane or conditional extreme-right alternative. The latter needs a distinct reviewed lane-design packet; no threshold for lane entry or turn phase is inferred.",
     "facts": [],
-    "gaps": []
+    "gaps": [
+      {
+        "id": "no-accepted-recording",
+        "requirement": "Source-reviewed driver, highway, conditional lane qualification, both lane intervals and connected right turn at C399695",
+        "source": "inputs/testing__C399695__NRS-484B-400-1__motor_vehicle_driver/evidence.json",
+        "why_existing_insufficient": "Frozen recording inventory is empty; same-cell NRS 484B.223(4)(a) package tests lane purpose and is not evidence for both NRS 484B.400(1) intervals."
+      }
+    ]
   },
   "judgment_range_inventory": [],
-  "planning_status": "partial_source_inventory",
+  "planning_status": "five_exact_source_gated_cases_delivery_proofs_pending",
   "witness_review": [
     {
       "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
@@ -81,5 +287,103 @@
       ],
       "reason": "A terminating-road intersection can support the intended right turn through its designated right-turn lane."
     }
-  ]
+  ],
+  "requirement_dispositions": [
+    {
+      "disposition_index": 0,
+      "requirement": "driver of a vehicle intends to turn right at an intersection",
+      "source": "NRS 484B.400(1)",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C399695__NRS-484B-400-1__motor_vehicle_driver__lane_both_intervals",
+        "testing__C399695__NRS-484B-400-1__motor_vehicle_driver__approach_from_other_lane",
+        "testing__C399695__NRS-484B-400-1__motor_vehicle_driver__turn_from_other_lane",
+        "testing__C399695__NRS-484B-400-1__motor_vehicle_driver__other_lane_both_intervals",
+        "testing__C399695__NRS-484B-400-1__motor_vehicle_driver__extreme_right_no_qualifying_lane"
+      ],
+      "evidence_or_gap": "independent pre-approach intention and original driver identity"
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "right-turn lane if the highway has a lane as set forth in NRS 484B.223(4)",
+      "source": "NRS 484B.400(1) and 484B.223(4)",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C399695__NRS-484B-400-1__motor_vehicle_driver__lane_both_intervals",
+        "testing__C399695__NRS-484B-400-1__motor_vehicle_driver__approach_from_other_lane",
+        "testing__C399695__NRS-484B-400-1__motor_vehicle_driver__turn_from_other_lane",
+        "testing__C399695__NRS-484B-400-1__motor_vehicle_driver__other_lane_both_intervals",
+        "testing__C399695__NRS-484B-400-1__motor_vehicle_driver__extreme_right_no_qualifying_lane"
+      ],
+      "evidence_or_gap": "reviewed highway and lane-design qualification packet; source-selected lane ID"
+    },
+    {
+      "disposition_index": 2,
+      "requirement": "approach for right turn made from conditional required lane",
+      "source": "NRS 484B.400(1)",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C399695__NRS-484B-400-1__motor_vehicle_driver__lane_both_intervals",
+        "testing__C399695__NRS-484B-400-1__motor_vehicle_driver__approach_from_other_lane",
+        "testing__C399695__NRS-484B-400-1__motor_vehicle_driver__turn_from_other_lane",
+        "testing__C399695__NRS-484B-400-1__motor_vehicle_driver__other_lane_both_intervals",
+        "testing__C399695__NRS-484B-400-1__motor_vehicle_driver__extreme_right_no_qualifying_lane"
+      ],
+      "evidence_or_gap": "original approach phase body pose and Native lane/road IDs"
+    },
+    {
+      "disposition_index": 3,
+      "requirement": "right turn made from conditional required lane",
+      "source": "NRS 484B.400(1)",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C399695__NRS-484B-400-1__motor_vehicle_driver__lane_both_intervals",
+        "testing__C399695__NRS-484B-400-1__motor_vehicle_driver__approach_from_other_lane",
+        "testing__C399695__NRS-484B-400-1__motor_vehicle_driver__turn_from_other_lane",
+        "testing__C399695__NRS-484B-400-1__motor_vehicle_driver__other_lane_both_intervals",
+        "testing__C399695__NRS-484B-400-1__motor_vehicle_driver__extreme_right_no_qualifying_lane"
+      ],
+      "evidence_or_gap": "original junction turn phase body pose and Native lane/road IDs"
+    },
+    {
+      "disposition_index": 4,
+      "requirement": "extreme right lane when no qualifying right-turn lane exists",
+      "source": "NRS 484B.400(1)",
+      "status": "selected_required",
+      "case_ids": [
+        "testing__C399695__NRS-484B-400-1__motor_vehicle_driver__extreme_right_no_qualifying_lane"
+      ],
+      "evidence_or_gap": "reviewed nonqualification and source-surveyed extreme right lane"
+    }
+  ],
+  "source_observation_mapping": {},
+  "selected_branch": "Right-turn lane at a terminating-road intersection.",
+  "camera_plan": {
+    "profile": "overview1080-capability",
+    "duration_s": 45,
+    "composition": "synchronized_four_view_primary",
+    "coverage": [
+      {
+        "view": "overview",
+        "subject": "T junction, right-turn lane and connected exit",
+        "interval": "first through final original frame"
+      },
+      {
+        "view": "approach",
+        "subject": "driver vehicle and source-selected approach lane",
+        "interval": "approach through junction entry"
+      },
+      {
+        "view": "reference_corner",
+        "subject": "source-selected turn lane and vehicle body",
+        "interval": "junction entry through connected exit"
+      },
+      {
+        "view": "driver_reference",
+        "subject": "vehicle path, turn and exit",
+        "interval": "first through final original frame"
+      }
+    ],
+    "limitation": "Video supplements original lane and body readback; it cannot by itself establish lane qualification or legal outcome."
+  }
 }

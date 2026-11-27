@@ -1,22 +1,17 @@
-# testing__C399695__NRS-484B-400-1__motor_vehicle_driver
+# NRS 484B.400(1) at C399695
 
-Status: partial source inventory. No case or recording is proposed by this checkpoint.
+Status: partial CPU construction. The frozen evidence inventory has zero accepted recordings. The same-cell NRS 484B.223(4)(a) package concerns lane purpose; it does not prove both approach and turn lane position under this law.
 
-Exact law: NRS 484B.400(1) — If the driver of a vehicle intends to turn at an intersection and: The turn is a right turn, both the approach for the right turn and the right turn must be made from the right turn lane if the highway has a right turn lane as set forth in subsection 4 of NRS 484B.223 [NRS-484B-223-4a, NRS-484B-223-4b], or must be made from the extreme right lane.
-Assigned branch(es): Right-turn lane at a terminating-road intersection..
-Cell: C399695 (t_intersection, right_turn, right_turn_lane); actor: motor_vehicle_driver.
-Frozen accepted recordings reviewed at metadata level: 0. See case-plan.json evidence_review for exact IDs, source paths, hashes, demonstrated metadata and limits. Metadata does not establish law-specific coverage.
-Judgment range entries inventoried for this exact law and actor: 0. Bounds are training coverage targets, not legal cutoffs.
+The exact text requires an identified driver intending a right turn, both the approach and the turn from a qualifying NRS 484B.223(4) right-turn lane if one exists, or from the extreme right lane otherwise. `case-plan.json` selects five exact cases. `approach_lane_position` isolates the approach interval; `turn_lane_position` isolates the turn interval; `both_intervals_position` samples the combined divergence; `conditional_lane_design` compares a source-reviewed qualifying lane to the extreme-right alternative. The latter needs a distinct original site lane-design packet; its feasibility in the frozen cell remains for local map review. No numeric lane-entry deadline or legal lateral cutoff is invented. `judgment_ranges.json` contains zero ranges for this law.
 
-## Next CPU actions
+`turn_position.py` measures original joined road/lane IDs, body pose, driver identity, approach and turn phase ordering, connected departure, and independently sourced right-turn intention. It rejects missing NRS 484B.223(4) qualification, source gaps, nonmonotone frames, driver mismatch and wrong road topology. `native_turn_construction.py` chooses exact source-surveyed Native lane trajectories and rejects unsourced lane changes or wrong conditional lane design. These are software preparation only; no actual site geometry, CARLA path, video or legal outcome is asserted.
 
-1. Read the full exact law and applicable definitions, branch topic inventory, source witnesses and original scenario skills. Split all alternatives and exceptions; resolve the accepted-evidence sufficiency against available source summaries.
-2. Author every required exact case and controlled comparison, including below/inside/above judgment probes when applicable. Map observations to actual capture sources.
-3. Implement and CPU-test construction/controllers, finalizers, semantic proposals, saved-only processing, delivery/comparison audits and risk-based fallbacks where concrete risks justify them. Add physical-risk assessment for every manifest case.
-4. Run `.venv-cpu/bin/python worker_check.py --assignment testing__C399695__NRS-484B-400-1__motor_vehicle_driver --complete --require-delivery-ready` and repair every failing gate. Keep original inputs and runtime frozen.
+## Proven CPU checks
 
-## Proven checks and dependency boundary
+- `PYTHONDONTWRITEBYTECODE=1 .venv-cpu/bin/python -m unittest discover -s work/testing__C399695__NRS-484B-400-1__motor_vehicle_driver -p 'test_*.py' -v`: six focused tests passed; retained `cpu-turn-position-tests.log`.
+- `.venv-cpu/bin/python worker_check.py --assignment testing__C399695__NRS-484B-400-1__motor_vehicle_driver --complete`: static partial check passed.
+- Exact `--complete --require-delivery-ready` fails while result remains partial, as intended.
 
-`.venv-cpu/bin/python runtime.py preflight` passed; `.venv-cpu/bin/python worker_check.py` passed static checks; `.venv-cpu/bin/python -m unittest discover -s tests` passed 3 tests. These are repository checks, not this assignment's delivery proofs. CARLA is needed only after the CPU package is ready, for actual motion and video verification. No external blocker has been demonstrated for the remaining CPU work.
+## Remaining CPU work
 
-Frozen witness review: 1 entries retained in `case-plan.json.witness_review`, including conditional context requirements and source indices. No exported review-context/review.json is present.
+Implement the executable Native capture/controller and saved finalizer using this source-gated contract. Bind each exact construction and current-runtime offline, positive/negative compatibility and saved-only receipts. Add canonical semantic proposals, physical/lifecycle checks, independent delivery and comparison audits, justified fallback candidates, exact manifest and GPU queue proposal. Then run the exact strict assignment gate and repair every failure. Actual CARLA motion, lane realization, video coverage and local acceptance remain later physical checks; they are not a CPU blocker.

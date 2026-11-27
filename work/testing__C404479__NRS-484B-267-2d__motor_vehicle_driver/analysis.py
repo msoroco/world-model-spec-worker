@@ -5,7 +5,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-from math import hypot
+from math import hypot, isfinite
 from pathlib import Path
 
 from emergency_construction import CASES
@@ -120,14 +120,25 @@ def measure_case(case, site, frames):
             raise ValueError("missing original authority, route, lane or extent source: " + key)
     if case.state == "preparing" and not site.get("visible_preparation_source"):
         raise ValueError("visible preparation source missing")
+    if site.get("preparation_cue") != case.preparation_cue:
+        raise ValueError("visible preparation cue differs from exact case")
     movement = [i for i in range(1, len(frames))
                 if frames[i]["emergency_xy"] != frames[i - 1]["emergency_xy"]]
     if not movement:
         raise ValueError("target unit has no original movement")
     hand = [f["original_frame"] for f in frames if f.get("visible_hand_signal")]
-    if case.state == "preparing" and (not hand or min(movement) <= 400
+    preparation_motion = [f["original_frame"] for f in frames
+                          if f.get("preparation_movement_visible")]
+    if case.preparation_cue == "hand_signal" and (not hand or min(movement) <= 400
             or max(hand) >= frames[min(movement)]["original_frame"]):
         raise ValueError("visible hand signal must precede target movement")
+    if case.preparation_cue == "vehicle_movement" and (
+            hand or not preparation_motion
+            or not any(200 < i < 400 for i in movement)
+            or not any(i > 400 for i in movement)):
+        raise ValueError("visible preparation movement and later same-direction travel required")
+    if case.preparation_cue is None and (hand or preparation_motion):
+        raise ValueError("undeclared visible preparation cue")
     if case.light_request == "qualified_inactive" and any(f["flashing_light_on"] for f in frames):
         raise ValueError("inactive light contrast has active lights")
     if case.light_request != "qualified_inactive" and not any(f["flashing_light_on"] for f in frames):
@@ -143,19 +154,38 @@ def measure_case(case, site, frames):
         if not isinstance(ego, list) or len(ego) < 4 or not isinstance(unit, list) or len(unit) < 4:
             raise ValueError("original body-footprint polygons required")
         tangent, other_tangent = f.get("ego_route_tangent_xy"), f.get("unit_route_tangent_xy")
-        if tangent != [1.0, 0.0] or other_tangent != [1.0, 0.0]:
+        if (not isinstance(tangent, list) or len(tangent) != 2
+                or not isinstance(other_tangent, list) or len(other_tangent) != 2
+                or not all(type(v) in (int, float) and isfinite(v)
+                           for v in tangent + other_tangent)):
             raise ValueError("reviewed same-direction route tangent required")
-        ex = [point[0] for point in ego]
-        ux = [point[0] for point in unit]
-        ey = [point[1] for point in ego]
-        uy = [point[1] for point in unit]
+        tn = hypot(*tangent)
+        un = hypot(*other_tangent)
+        if tn <= 0 or un <= 0:
+            raise ValueError("nonzero route tangent required")
+        tx, ty = tangent[0] / tn, tangent[1] / tn
+        ux, uy = other_tangent[0] / un, other_tangent[1] / un
+        if tx * ux + ty * uy <= 0:
+            raise ValueError("reviewed same-direction route tangent required")
+        if any(not isinstance(point, list) or len(point) != 2
+               or not all(type(v) in (int, float) and isfinite(v) for v in point)
+               for point in ego + unit):
+            raise ValueError("finite original body polygons required")
+        ex = [point[0] * tx + point[1] * ty for point in ego]
+        ux = [point[0] * tx + point[1] * ty for point in unit]
+        ey = [-point[0] * ty + point[1] * tx for point in ego]
+        uy = [-point[0] * ty + point[1] * tx for point in unit]
+        ego_long = f["ego_xy"][0] * tx + f["ego_xy"][1] * ty
+        unit_long = f["emergency_xy"][0] * tx + f["emergency_xy"][1] * ty
+        ego_lat = -f["ego_xy"][0] * ty + f["ego_xy"][1] * tx
+        unit_lat = -f["emergency_xy"][0] * ty + f["emergency_xy"][1] * tx
         if (min(ex) >= max(ex) or min(ux) >= max(ux)
-                or min(ex) > f["ego_xy"][0] or max(ex) < f["ego_xy"][0]
-                or min(ux) > f["emergency_xy"][0] or max(ux) < f["emergency_xy"][0]
-                or min(ey) > f["ego_xy"][1] or max(ey) < f["ego_xy"][1]
-                or min(uy) > f["emergency_xy"][1] or max(uy) < f["emergency_xy"][1]):
+                or min(ex) > ego_long or max(ex) < ego_long
+                or min(ux) > unit_long or max(ux) < unit_long
+                or min(ey) > ego_lat or max(ey) < ego_lat
+                or min(uy) > unit_lat or max(uy) < unit_lat):
             raise ValueError("body polygons do not enclose original actor poses")
-        if max(ey) >= min(uy):
+        if not (max(ey) < min(uy) or max(uy) < min(ey)):
             raise ValueError("adjacent lane body clearance failed")
         overlap.append(min(max(ex), max(ux)) - max(min(ex), min(ux)) >= 0)
         ego_ahead.append(min(ex) > max(ux))
@@ -164,8 +194,11 @@ def measure_case(case, site, frames):
     started_ahead = ego_ahead[0]
     ego_overtook = started_behind and any(overlap) and any(ego_ahead)
     unit_overtook = started_ahead and any(overlap) and any(unit_ahead)
-    approach = min(abs(f["emergency_xy"][0] - f["ego_xy"][0]) for f in frames[1:400]) < abs(
-        frames[0]["emergency_xy"][0] - frames[0]["ego_xy"][0])
+    approach = min(hypot(f["emergency_xy"][0] - f["ego_xy"][0],
+                         f["emergency_xy"][1] - f["ego_xy"][1])
+                   for f in frames[1:400]) < hypot(
+        frames[0]["emergency_xy"][0] - frames[0]["ego_xy"][0],
+        frames[0]["emergency_xy"][1] - frames[0]["ego_xy"][1])
     if case.immediate and not approach:
         raise ValueError("subject does not approach target on original frames")
     if not case.immediate and case.maneuver != "unit_overtakes" and approach:
@@ -181,6 +214,7 @@ def measure_case(case, site, frames):
     return {
         "moving_original_frames": [frames[i]["original_frame"] for i in movement],
         "visible_hand_signal_original_frames": hand,
+        "visible_preparation_movement_original_frames": preparation_motion,
         "first_abreast_original_frame": next((f["original_frame"] for f, yes in zip(frames, overlap) if yes), None),
         "first_ego_ahead_original_frame": next((f["original_frame"] for f, yes in zip(frames, ego_ahead) if yes), None),
         "first_unit_ahead_original_frame": next((f["original_frame"] for f, yes in zip(frames, unit_ahead) if yes), None),
@@ -221,7 +255,8 @@ def analyze(root):
         "subject_driver": lambda row: {"class": site["subject_vehicle_class"],
                                          "driver_source": site["subject_driver_source"]},
         "driver_view_movement_cue": lambda row: {"movement_visible": row["movement_visible"],
-                                                   "hand_signal_visible": bool(row.get("visible_hand_signal"))},
+                                                   "hand_signal_visible": bool(row.get("visible_hand_signal")),
+                                                   "preparation_movement_visible": bool(row.get("preparation_movement_visible"))},
         "relative_approach": lambda row: {"ego_xy": row["ego_xy"], "unit_xy": row["emergency_xy"]},
         "abreast_overtake_order": lambda row: {
             "ego_body_polygon_xy": row["ego_body_polygon_xy"],

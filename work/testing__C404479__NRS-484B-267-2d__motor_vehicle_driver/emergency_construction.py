@@ -13,6 +13,7 @@ class Case:
     officer_direction: bool = False
     direction: str = "same_direction"
     state: str = "moving"
+    preparation_cue: str | None = None
 
     @property
     def yielding(self):
@@ -24,7 +25,8 @@ CASES = (
     Case("moving_overtake", maneuver="overtake"),
     Case("moving_abreast", maneuver="abreast"),
     Case("unit_overtakes_ego", maneuver="unit_overtakes", immediate=False),
-    Case("preparing_visible_hand_signal", state="preparing"),
+    Case("preparing_visible_hand_signal", state="preparing", preparation_cue="hand_signal"),
+    Case("preparing_visible_vehicle_movement", state="preparing", preparation_cue="vehicle_movement"),
     Case("lights_inactive", light_request="qualified_inactive"),
     Case("lights_unqualified", light_request="unqualified_active"),
     Case("officer_directs_otherwise", maneuver="overtake", officer_direction=True),
@@ -52,6 +54,8 @@ def plan(case, map_source, actor_source, authority):
         require(isinstance(map_source.get(key), str) and map_source[key], key + " missing")
     if case.state == "preparing":
         require(map_source.get("visible_preparation_source"), "visible preparation source required")
+        require(case.preparation_cue in {"hand_signal", "vehicle_movement"},
+                "reviewed visible preparation cue required")
     require(actor_source.get("source_kind") == "native_blueprint_readback", "Native blueprint readback required")
     for key in ("ego_blueprint_id", "unit_blueprint_id", "ego_body_extent_source", "unit_body_extent_source"):
         require(isinstance(actor_source.get(key), str) and actor_source[key], key + " missing")
@@ -112,7 +116,7 @@ def execute(adapter, case, map_source, actor_source, authority, engineering=None
     adapter.configure_unit_movement(unit, specification["movement"])
     if case.state == "preparing":
         adapter.configure_visible_preparation(unit, {
-            "cue": "driver_hand_signal", "from_s": 10.0, "to_s": 20.0,
+            "cue": case.preparation_cue, "from_s": 10.0, "to_s": 20.0,
             "reviewed_source": map_source["visible_preparation_source"]})
     if case.officer_direction:
         adapter.configure_officer_direction(specification["officer_direction"])

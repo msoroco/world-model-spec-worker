@@ -1,4 +1,4 @@
-"""Generate ten exact synthetic sources for software compatibility only."""
+"""Generate exact synthetic sources for software compatibility only."""
 
 from __future__ import annotations
 
@@ -40,6 +40,9 @@ def frame(index, case):
     if case.state == "preparing":
         unit_x = 180.0 + 5.0 * max(0.0, time_s - 20.0)
         unit_speed = 0.0 if time_s < 20.0 else 5.0
+        if case.preparation_cue == "vehicle_movement":
+            unit_x += 0.3 * min(max(time_s - 10.0, 0.0), 10.0)
+            unit_speed = 0.3 if 10.0 <= time_s < 20.0 else unit_speed
     if case.maneuver == "unit_overtakes":
         unit_x = -80.0 + 8.0 * time_s
         unit_speed = 8.0
@@ -58,7 +61,8 @@ def frame(index, case):
     else:
         ego_x = -80.0 + 7.5 * min(time_s, 19.0) + 5.0 * max(0.0, time_s - 19.0)
         ego_speed = 7.5 if time_s < 19.0 else 5.0
-    movement_visible = case.state == "moving" or time_s >= 20.0
+    movement_visible = (case.state == "moving" or time_s >= 20.0 or
+                        case.preparation_cue == "vehicle_movement" and time_s >= 10.0)
     ego_body = [[ego_x - 2.0, -1.0], [ego_x + 2.0, -1.0],
                 [ego_x + 2.0, 1.0], [ego_x - 2.0, 1.0]]
     unit_body = [[unit_x - 2.2, 3.0], [unit_x + 2.2, 3.0],
@@ -69,7 +73,9 @@ def frame(index, case):
             "ego_route_tangent_xy": [1.0, 0.0], "unit_route_tangent_xy": [1.0, 0.0],
             "flashing_light_on": case.light_request != "qualified_inactive" and index % 8 < 4,
             "movement_visible": movement_visible,
-            "visible_hand_signal": case.state == "preparing" and 10.0 <= time_s < 20.0,
+            "visible_hand_signal": case.preparation_cue == "hand_signal" and 10.0 <= time_s < 20.0,
+            "preparation_movement_visible": (
+                case.preparation_cue == "vehicle_movement" and 10.0 <= time_s < 20.0),
             "ego_speed_mps": ego_speed, "unit_speed_mps": unit_speed,
             "ego_brake": 0.5 if case.yielding and time_s >= 19.0 else 0.0,
             "officer_direction": "proceed" if case.officer_direction and 18 <= time_s < 20 else None,
@@ -109,7 +115,10 @@ def build():
             "ego_body_extent_source": "synthetic-blueprint-bounding-box",
             "unit_body_extent_source": "synthetic-blueprint-bounding-box",
             "unit_state": case.state,
-            "visible_preparation_source": "synthetic-original-driver-view-hand-signal" if case.state == "preparing" else None,
+            "visible_preparation_source": (
+                "synthetic-original-driver-view-" + case.preparation_cue
+                if case.state == "preparing" else None),
+            "preparation_cue": case.preparation_cue,
             "authorization_source": "synthetic-authority", "qualifying_lights_source": "synthetic-equipment",
             "light_rule_source": "DEF-NRS-484A-480-3", "route_source": "synthetic-native-map",
             "front_visible_red_lamp_source": "synthetic-front-view-lamp",

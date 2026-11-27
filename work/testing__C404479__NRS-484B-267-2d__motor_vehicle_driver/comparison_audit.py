@@ -44,7 +44,10 @@ def audit(attempts, comparison_id, plan):
         "moving_overtake": {"passing_maneuver_request"},
         "moving_abreast": {"passing_maneuver_request"},
         "unit_overtakes_ego": {"passing_maneuver_request", "immediate_approach_request"},
-        "preparing_visible_hand_signal": {"unit_state", "visible_preparation_source"},
+        "preparing_visible_hand_signal": {"unit_state", "visible_preparation_source",
+                                          "preparation_cue"},
+        "preparing_visible_vehicle_movement": {"unit_state", "visible_preparation_source",
+                                                "preparation_cue"},
         "lights_inactive": {"light_request"},
         "lights_unqualified": {"light_request", "front_visible_red_lamp_qualified",
                                "qualifying_lights_source"},
@@ -65,7 +68,8 @@ def audit(attempts, comparison_id, plan):
         raise ValueError("original frame clock differs across comparison")
     change_ego = suffix in {"moving_overtake", "moving_abreast", "unit_overtakes_ego",
                             "officer_directs_otherwise", "no_approach"}
-    change_unit = suffix in {"unit_overtakes_ego", "preparing_visible_hand_signal"}
+    change_unit = suffix in {"unit_overtakes_ego", "preparing_visible_hand_signal",
+                             "preparing_visible_vehicle_movement"}
     if not change_ego and any(
             x["ego_xy"] != y["ego_xy"] or
             x["ego_body_polygon_xy"] != y["ego_body_polygon_xy"] or
@@ -83,6 +87,9 @@ def audit(attempts, comparison_id, plan):
         "unit_overtakes_ego": b["unit_overtook"] and not b["ego_overtook"],
         "preparing_visible_hand_signal": bool(b["visible_hand_signal_original_frames"])
             and not a["visible_hand_signal_original_frames"],
+        "preparing_visible_vehicle_movement": bool(
+            b["visible_preparation_movement_original_frames"])
+            and not b["visible_hand_signal_original_frames"],
         "lights_inactive": any(r["flashing_light_on"] for r in fa)
             and not any(r["flashing_light_on"] for r in fb),
         "lights_unqualified": first[1]["light_request"] == "qualified_active"
