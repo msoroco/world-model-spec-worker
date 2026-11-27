@@ -74,6 +74,10 @@ def main():
             for name in ("st.elevated_structure", "drv.approaching", "rel.centre_distance",
                          "st.sight_distance", "drv.sight_distance_adequate", "st.centre_line",
                          "rel.occupies", "st.one_way_roadway")}
+        entry["acquisition"].update({name: {"entrypoint": "one_way_capture.py",
+            "method": "Original Native 20 Hz actor transform and heading capture",
+            "evidence": "trace.jsonl and capture/evidence.jsonl"}
+            for name in ("kin.position", "kin.heading")})
         physical = HERE / ("physical-preparation-" + suffix + ".json")
         entry["physical_preparation"] = {"case_id": case_id,
             "receipt": physical.name, "sha256": digest(physical)}

@@ -78,6 +78,18 @@ def main():
                 'method': 'survey and authority context retained separately',
                 'evidence': 'road_edge_survey.json and activity_context.json'}},
             'offline': offline(index, case_id, 'primary', old['construction_sha256'])}
+        construction = json.loads((FOLDER / primary).read_text())
+        config = json.loads(next(item['content'] for item in construction['files']
+                                 if item['path'] == 'config.json'))
+        for channel in config['recording_description']['channels']:
+            name = channel['name']
+            derived = name in ('edge_parallel_angle_deg', 'lawful_traffic_heading_angle_deg')
+            entry['acquisition'][name] = {
+                'entrypoint': 'finalize.py' if derived else 'capture.py',
+                'method': 'saved original Native pose and roadway geometry projection' if derived
+                          else 'same-tick Native readback with saved source context',
+                'evidence': 'native_samples.jsonl, video_frames.jsonl, body_history.jsonl, '
+                            'road_geometry.json, road_edge_survey.json, activity_context.json'}
         entries.append(entry)
     manifest = {'format': 'worker-execution-manifest', 'assignment_id': IDENT,
         'runtime_manifest_sha256': digest(ROOT / 'runtime/SOURCE-MANIFEST.json'),

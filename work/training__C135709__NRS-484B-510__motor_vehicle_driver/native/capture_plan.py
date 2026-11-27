@@ -35,11 +35,15 @@ def require(value: bool, message: str) -> None:
         raise ValueError(message)
 
 
-def build(suffix: str, *, stop_center_x_m: float = 5.0) -> dict:
+def build(suffix: str, *, stop_center_x_m: float = 5.0,
+          approach_speed_cap_mps: float = 4.0) -> dict:
     require(suffix in CASES, "unknown exact restricted-zone case")
+    require(approach_speed_cap_mps in (3.0, 4.0),
+            "only tested same-case approach caps are supported")
     require(isinstance(stop_center_x_m, (float, int)) and
             math.isfinite(stop_center_x_m), "finite parking target required")
-    motion = ParkingPlan(target_center_x_m=float(stop_center_x_m))
+    motion = ParkingPlan(target_center_x_m=float(stop_center_x_m),
+                         max_speed_mps=float(approach_speed_cap_mps))
     motion.validate()
     case = CASES[suffix]
     geometry = geometry_check()

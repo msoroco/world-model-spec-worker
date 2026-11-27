@@ -32,10 +32,14 @@ def audit():
     assert existing["cell"]["maneuver"] == "enter_road"
     assert existing["cell"]["candidate_ego_parties"].count("motor_vehicle_driver") == 1
     cells = catalog["cells"]
+    actor_cells = [c for c in cells if "motor_vehicle_driver" in c.get("candidate_ego_parties", [])]
+    eligible_actor_cells = [c for c in actor_cells if eligible(c)]
     entry = [c for c in cells if c.get("maneuver") == "enter_road"]
     eligible_entry = [c["cell_id"] for c in entry if eligible(c)]
     assert len({c["cell_id"] for c in cells}) == len(cells)
     assert "C177626" not in {c["cell_id"] for c in cells}
+    assert not actor_cells
+    assert not eligible_actor_cells
     assert not eligible_entry
     mutation = dict(existing["cell"], allocated_sets=[])
     assert eligible(mutation)
@@ -51,6 +55,8 @@ def audit():
         "candidate_catalog_sha256": digest(source),
         "auditor_sha256": digest(Path(__file__)),
         "catalog_cells": len(cells),
+        "motor_vehicle_driver_cells": len(actor_cells),
+        "training_eligible_motor_vehicle_driver_cells": len(eligible_actor_cells),
         "entry_cells": [{"cell_id": c["cell_id"], "layout": c["layout"],
                          "control": c["control"], "actor_eligible": eligible(c)} for c in entry],
         "eligible_entry_cell_ids": eligible_entry,

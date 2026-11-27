@@ -18,8 +18,10 @@ def digest(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def check_case(suffix: str) -> dict:
+def check_case(suffix: str, candidate: str) -> dict:
     folder = ROOT / "cases" / suffix
+    if candidate == "fallback1":
+        folder = folder / "fallback1"
     proposal = json.loads((folder / "construction.json").read_text())
     assert proposal["case_id"] == AID + "__" + suffix
     assert proposal["entrypoint"] == "runner.py"
@@ -31,7 +33,8 @@ def check_case(suffix: str) -> dict:
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_text(entry["content"], encoding="utf-8")
             if entry["path"] in ("runner.py", "capture_plan.py", "geometry.py",
-                                 "parking_controller.py"):
+                                 "parking_controller.py", "original_source_contract.py",
+                                 "finalize.py"):
                 assert digest(target) == digest(ROOT / "native" / entry["path"])
         env = dict(os.environ, PYTHONDONTWRITEBYTECODE="1")
         command = [sys.executable, "-B", "runner.py", "--check"]
@@ -51,14 +54,16 @@ def check_case(suffix: str) -> dict:
         negative = subprocess.run(command, cwd=output, env=env, capture_output=True,
                                   text=True, timeout=30)
         assert negative.returncode != 0 and "exact case required" in negative.stderr
-    return {"case_id": proposal["case_id"], "construction_sha256": digest(folder / "construction.json"),
+    return {"case_id": proposal["case_id"], "candidate_id": candidate,
+            "construction_sha256": digest(folder / "construction.json"),
             "check_exit_code": 0, "unit_exit_code": 0,
             "wrong_case_rejected": True, "carla_contacted": False}
 
 
 def main() -> None:
     SCRATCH.mkdir(parents=True, exist_ok=True)
-    rows = [check_case(suffix) for suffix in CASES]
+    rows = [check_case(suffix, candidate) for suffix in CASES
+            for candidate in ("primary", "fallback1")]
     print(json.dumps({"format": "restricted-zone-exact-construction-proof-v1",
                       "cases": rows, "selected_for_delivery": False,
                       "physical_or_legal_acceptance_claimed": False}, sort_keys=True))

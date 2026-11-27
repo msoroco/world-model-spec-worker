@@ -11,6 +11,7 @@ import tempfile
 
 from original_source_contract import AID, CAMERAS, FRAME_COUNT, FPS, sha, validate
 from geometry import SIGN_NAME, open_drive
+from finalize import run as finalize
 
 
 def write(path: Path, value) -> None:
@@ -88,6 +89,19 @@ def prove() -> dict:
         assert positive["requested_waiting_or_entering_overlap_frames"] == 10
         assert positive["legal_conclusion"] is None
         assert positive["case_id"] == case_id
+        selected_config = Path(__file__).resolve().parent.parent / "cases/witness_1/config.json"
+        (attempt / "config.json").write_bytes(selected_config.read_bytes())
+        report = finalize(attempt, attempt / "analysis-report.json")
+        finalized = json.loads((attempt / "result.json").read_text(encoding="utf-8"))
+        assert report["measurements"]["restricted_zone_original_facts"]["value"] == positive
+        assert finalized["case_id"] == case_id
+        assert finalized["legal_verdict_claimed"] is False
+        assert finalized["physical_acceptance_claimed"] is False
+        assert len((attempt / "trace.jsonl").read_text().splitlines()) == FRAME_COUNT
+        assert len((attempt / "video_frames.jsonl").read_text().splitlines()) == FRAME_COUNT
+        assert all(len((attempt / "channels" / (name + ".jsonl")).read_text().splitlines()) == FRAME_COUNT
+                   for name in ("st.curb_zone", "dev.regulatory_sign", "ru.occupant_count",
+                                "sig.door_open", "ru.pedestrian", "ru.motor_vehicle"))
         negatives = {}
         negatives["wrong_case_review"] = expect_rejection(
             attempt, review, review,
@@ -160,6 +174,8 @@ def prove() -> dict:
                              "requested_waiting_or_entering_overlap_frames": positive["requested_waiting_or_entering_overlap_frames"]},
                 "negative_rejections": negatives,
                 "fixture_video_bytes": "four 600-frame FFV1 color videos fully decoded; no physical visibility claim",
+                "finalizer": {"original_source_join": True, "frames": FRAME_COUNT,
+                              "channels": 10, "physical_or_legal_acceptance": False},
                 "original_native_observed": False}
 
 

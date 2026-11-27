@@ -68,6 +68,71 @@
           "entrypoint": "capture.py",
           "method": "survey and authority context retained separately",
           "evidence": "road_edge_survey.json and activity_context.json"
+        },
+        "native_pose_extract": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "road_edge_tangent": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "lawful_traffic_direction": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "edge_parallel_angle_deg": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native pose and roadway geometry projection",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "lawful_traffic_heading_angle_deg": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native pose and roadway geometry projection",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "kin.heading": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "kin.speed": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "st.roadway": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "st.road_edge": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "st.lane_direction": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "rel.occupies": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "st.parking_space": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
         }
       },
       "offline": {
@@ -85,6 +150,47 @@
       },
       "negative": {
         "log": "compatibility/parking_parallel_lawful-primary-negative-analysis.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/parking_parallel_lawful/proof.json",
+        "sha256": "8f840a924bc80aa273c2586f8100c6fa113795834d96630118282d44e1200ce0"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__parking_parallel_lawful",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "648b06390f89c549b9d544698fe6e09ebc88052e0f8ac61cc15e28a6c4af76d2",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C229351__LVMC-11-52-040-A__motor_vehicle_driver/delivery_audit.py --case training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__parking_parallel_lawful --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/parking_parallel_lawful-positive.log",
+        "test_log_sha256": "3653dd2baa39c868580031ce5b0323591efc8b02e571c9c959ee57c426e3b426",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C229351__LVMC-11-52-040-A__motor_vehicle_driver/delivery_audit.py --case training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__parking_parallel_lawful --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: exact original Native result",
+        "negative_log": "delivery-proofs/parking_parallel_lawful-negative.log",
+        "negative_log_sha256": "a9d54e78abfe406f0a3a17e2f8d12e0b33f3e436ead8e57a3a22bcf0178ce425",
+        "scope": "CPU source predicates; original Native review pending"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C229351__LVMC-11-52-040-A__motor_vehicle_driver/execution-manifest.json --case training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__parking_parallel_lawful --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C229351__LVMC-11-52-040-A__motor_vehicle_driver/execution-manifest.json --case training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__parking_parallel_lawful --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/parking_parallel_lawful-processing.log",
+        "test_log_sha256": "36e32a8bcad5c802a993ab1ef5a35631bf7c30dcd30a511f8d12bc8a901ae3eb",
+        "processing_receipt": "saved/parking_parallel_lawful-processing.json",
+        "processing_receipt_sha256": "36e32a8bcad5c802a993ab1ef5a35631bf7c30dcd30a511f8d12bc8a901ae3eb",
+        "test_scope": "synthetic saved diagnostic; original Native pending"
       }
     },
     {
@@ -151,6 +257,71 @@
           "entrypoint": "capture.py",
           "method": "survey and authority context retained separately",
           "evidence": "road_edge_survey.json and activity_context.json"
+        },
+        "native_pose_extract": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "road_edge_tangent": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "lawful_traffic_direction": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "edge_parallel_angle_deg": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native pose and roadway geometry projection",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "lawful_traffic_heading_angle_deg": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native pose and roadway geometry projection",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "kin.heading": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "kin.speed": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "st.roadway": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "st.road_edge": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "st.lane_direction": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "rel.occupies": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "st.parking_space": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
         }
       },
       "offline": {
@@ -168,6 +339,47 @@
       },
       "negative": {
         "log": "compatibility/parking_angled_traffic_side-primary-negative-analysis.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/parking_angled_traffic_side/proof.json",
+        "sha256": "d0a37605f6181474159fb28c5af9004ec3f54b448d3c69cf23b87d9178c0e2ae"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__parking_angled_traffic_side",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "648b06390f89c549b9d544698fe6e09ebc88052e0f8ac61cc15e28a6c4af76d2",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C229351__LVMC-11-52-040-A__motor_vehicle_driver/delivery_audit.py --case training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__parking_angled_traffic_side --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/parking_angled_traffic_side-positive.log",
+        "test_log_sha256": "d5731afa363a9f4e4310c6039d512aa2cce78796f1443ee6b46489881a31e8ee",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C229351__LVMC-11-52-040-A__motor_vehicle_driver/delivery_audit.py --case training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__parking_angled_traffic_side --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: exact original Native result",
+        "negative_log": "delivery-proofs/parking_angled_traffic_side-negative.log",
+        "negative_log_sha256": "a9d54e78abfe406f0a3a17e2f8d12e0b33f3e436ead8e57a3a22bcf0178ce425",
+        "scope": "CPU source predicates; original Native review pending"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C229351__LVMC-11-52-040-A__motor_vehicle_driver/execution-manifest.json --case training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__parking_angled_traffic_side --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C229351__LVMC-11-52-040-A__motor_vehicle_driver/execution-manifest.json --case training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__parking_angled_traffic_side --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/parking_angled_traffic_side-processing.log",
+        "test_log_sha256": "55bbe8710c0a4e2b0a58d2b4a308a1377a49950a06a3dbcb245a40c8752189ef",
+        "processing_receipt": "saved/parking_angled_traffic_side-processing.json",
+        "processing_receipt_sha256": "55bbe8710c0a4e2b0a58d2b4a308a1377a49950a06a3dbcb245a40c8752189ef",
+        "test_scope": "synthetic saved diagnostic; original Native pending"
       }
     },
     {
@@ -234,6 +446,71 @@
           "entrypoint": "capture.py",
           "method": "survey and authority context retained separately",
           "evidence": "road_edge_survey.json and activity_context.json"
+        },
+        "native_pose_extract": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "road_edge_tangent": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "lawful_traffic_direction": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "edge_parallel_angle_deg": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native pose and roadway geometry projection",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "lawful_traffic_heading_angle_deg": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native pose and roadway geometry projection",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "kin.heading": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "kin.speed": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "st.roadway": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "st.road_edge": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "st.lane_direction": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "rel.occupies": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "st.parking_space": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
         }
       },
       "offline": {
@@ -251,6 +528,47 @@
       },
       "negative": {
         "log": "compatibility/parking_parallel_against_traffic-primary-negative-analysis.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/parking_parallel_against_traffic/proof.json",
+        "sha256": "7777272d2c16b5855030dff00064ce8117923ecf747572f307f157989b4cfb6a"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__parking_parallel_against_traffic",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "648b06390f89c549b9d544698fe6e09ebc88052e0f8ac61cc15e28a6c4af76d2",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C229351__LVMC-11-52-040-A__motor_vehicle_driver/delivery_audit.py --case training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__parking_parallel_against_traffic --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/parking_parallel_against_traffic-positive.log",
+        "test_log_sha256": "db18e4ceddeb07a22144d14b9471788603e7f1420f3e5102e9ec291a0be59aa7",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C229351__LVMC-11-52-040-A__motor_vehicle_driver/delivery_audit.py --case training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__parking_parallel_against_traffic --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: exact original Native result",
+        "negative_log": "delivery-proofs/parking_parallel_against_traffic-negative.log",
+        "negative_log_sha256": "a9d54e78abfe406f0a3a17e2f8d12e0b33f3e436ead8e57a3a22bcf0178ce425",
+        "scope": "CPU source predicates; original Native review pending"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C229351__LVMC-11-52-040-A__motor_vehicle_driver/execution-manifest.json --case training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__parking_parallel_against_traffic --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C229351__LVMC-11-52-040-A__motor_vehicle_driver/execution-manifest.json --case training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__parking_parallel_against_traffic --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/parking_parallel_against_traffic-processing.log",
+        "test_log_sha256": "26d98fee5bed24267327d513fcc35ffaed5a4d53f8bc4deafebc285f5a028591",
+        "processing_receipt": "saved/parking_parallel_against_traffic-processing.json",
+        "processing_receipt_sha256": "26d98fee5bed24267327d513fcc35ffaed5a4d53f8bc4deafebc285f5a028591",
+        "test_scope": "synthetic saved diagnostic; original Native pending"
       }
     },
     {
@@ -317,6 +635,71 @@
           "entrypoint": "capture.py",
           "method": "survey and authority context retained separately",
           "evidence": "road_edge_survey.json and activity_context.json"
+        },
+        "native_pose_extract": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "road_edge_tangent": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "lawful_traffic_direction": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "edge_parallel_angle_deg": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native pose and roadway geometry projection",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "lawful_traffic_heading_angle_deg": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native pose and roadway geometry projection",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "kin.heading": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "kin.speed": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "st.roadway": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "st.road_edge": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "st.lane_direction": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "rel.occupies": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "st.parking_space": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
         }
       },
       "offline": {
@@ -334,6 +717,47 @@
       },
       "negative": {
         "log": "compatibility/standing_parallel_lawful-primary-negative-analysis.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/standing_parallel_lawful/proof.json",
+        "sha256": "b04a0dae359168640d2d31199c9d539d16b6d2ce630a31bf6d8d6093879acd7b"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__standing_parallel_lawful",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "648b06390f89c549b9d544698fe6e09ebc88052e0f8ac61cc15e28a6c4af76d2",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C229351__LVMC-11-52-040-A__motor_vehicle_driver/delivery_audit.py --case training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__standing_parallel_lawful --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/standing_parallel_lawful-positive.log",
+        "test_log_sha256": "c7a74685baaa2245cfa3d76d4dce35453a1c1ffcf843707cf4ad78ce15298e2a",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C229351__LVMC-11-52-040-A__motor_vehicle_driver/delivery_audit.py --case training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__standing_parallel_lawful --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: exact original Native result",
+        "negative_log": "delivery-proofs/standing_parallel_lawful-negative.log",
+        "negative_log_sha256": "a9d54e78abfe406f0a3a17e2f8d12e0b33f3e436ead8e57a3a22bcf0178ce425",
+        "scope": "CPU source predicates; original Native review pending"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C229351__LVMC-11-52-040-A__motor_vehicle_driver/execution-manifest.json --case training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__standing_parallel_lawful --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C229351__LVMC-11-52-040-A__motor_vehicle_driver/execution-manifest.json --case training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__standing_parallel_lawful --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/standing_parallel_lawful-processing.log",
+        "test_log_sha256": "cf2959b69e5ed8a8736c5b55aa910012e46f7f174f73d8774fec5f38d550f280",
+        "processing_receipt": "saved/standing_parallel_lawful-processing.json",
+        "processing_receipt_sha256": "cf2959b69e5ed8a8736c5b55aa910012e46f7f174f73d8774fec5f38d550f280",
+        "test_scope": "synthetic saved diagnostic; original Native pending"
       }
     },
     {
@@ -400,6 +824,71 @@
           "entrypoint": "capture.py",
           "method": "survey and authority context retained separately",
           "evidence": "road_edge_survey.json and activity_context.json"
+        },
+        "native_pose_extract": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "road_edge_tangent": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "lawful_traffic_direction": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "edge_parallel_angle_deg": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native pose and roadway geometry projection",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "lawful_traffic_heading_angle_deg": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native pose and roadway geometry projection",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "kin.heading": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "kin.speed": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "st.roadway": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "st.road_edge": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "st.lane_direction": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "rel.occupies": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "st.parking_space": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
         }
       },
       "offline": {
@@ -417,6 +906,47 @@
       },
       "negative": {
         "log": "compatibility/standing_angled_traffic_side-primary-negative-analysis.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/standing_angled_traffic_side/proof.json",
+        "sha256": "5c7e5f6139b2e8cc52bdf246d93046d4bafd8b661facc5ebf5cdf26401b8e203"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__standing_angled_traffic_side",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "648b06390f89c549b9d544698fe6e09ebc88052e0f8ac61cc15e28a6c4af76d2",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C229351__LVMC-11-52-040-A__motor_vehicle_driver/delivery_audit.py --case training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__standing_angled_traffic_side --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/standing_angled_traffic_side-positive.log",
+        "test_log_sha256": "255d21baa1dcf0b069b124b96356cdde3cbea115dfd7f632c30a362c4c5ed9b7",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C229351__LVMC-11-52-040-A__motor_vehicle_driver/delivery_audit.py --case training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__standing_angled_traffic_side --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: exact original Native result",
+        "negative_log": "delivery-proofs/standing_angled_traffic_side-negative.log",
+        "negative_log_sha256": "a9d54e78abfe406f0a3a17e2f8d12e0b33f3e436ead8e57a3a22bcf0178ce425",
+        "scope": "CPU source predicates; original Native review pending"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C229351__LVMC-11-52-040-A__motor_vehicle_driver/execution-manifest.json --case training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__standing_angled_traffic_side --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C229351__LVMC-11-52-040-A__motor_vehicle_driver/execution-manifest.json --case training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__standing_angled_traffic_side --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/standing_angled_traffic_side-processing.log",
+        "test_log_sha256": "999ae71e17c092bf17ec9a3994d8f89888dfe19209870b9cf26c490b3236d2f9",
+        "processing_receipt": "saved/standing_angled_traffic_side-processing.json",
+        "processing_receipt_sha256": "999ae71e17c092bf17ec9a3994d8f89888dfe19209870b9cf26c490b3236d2f9",
+        "test_scope": "synthetic saved diagnostic; original Native pending"
       }
     },
     {
@@ -447,6 +977,12 @@
             "construction_sha256": "d0744f59f48c8df4164c354777de8828354b206e18fc19219e72fabf6d421380",
             "log": "native/condition-5-fallback1-offline-tests.log",
             "log_sha256": "6278ec10f4448ef48afca0f1a2d2461c5923254e955ece7813bc14d9f65f44d3"
+          },
+          "compatibility": {
+            "receipt": "compatibility/standing_parallel_against_traffic-fallback1-compatibility.json",
+            "log": "compatibility/standing_parallel_against_traffic-fallback1-compatibility-analysis.log",
+            "negative_log": "compatibility/standing_parallel_against_traffic-fallback1-negative-analysis.log",
+            "sha256": "937b57726584668f94321e638cebc33eaabfafffdbabba821bae1de3f1108278"
           }
         }
       ],
@@ -477,6 +1013,71 @@
           "entrypoint": "capture.py",
           "method": "survey and authority context retained separately",
           "evidence": "road_edge_survey.json and activity_context.json"
+        },
+        "native_pose_extract": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "road_edge_tangent": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "lawful_traffic_direction": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "edge_parallel_angle_deg": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native pose and roadway geometry projection",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "lawful_traffic_heading_angle_deg": {
+          "entrypoint": "finalize.py",
+          "method": "saved original Native pose and roadway geometry projection",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "kin.heading": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "kin.speed": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "drv.standing_or_parked": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "st.roadway": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "st.road_edge": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "st.lane_direction": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "rel.occupies": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
+        },
+        "st.parking_space": {
+          "entrypoint": "capture.py",
+          "method": "same-tick Native readback with saved source context",
+          "evidence": "native_samples.jsonl, video_frames.jsonl, body_history.jsonl, road_geometry.json, road_edge_survey.json, activity_context.json"
         }
       },
       "offline": {
@@ -485,6 +1086,56 @@
         "construction_sha256": "c7f566cac4d2598424e0ea256907f65eadfc94842b0adb65658ac983fa156ca7",
         "log": "native/condition-5-primary-offline-tests.log",
         "log_sha256": "6278ec10f4448ef48afca0f1a2d2461c5923254e955ece7813bc14d9f65f44d3"
+      },
+      "compatibility": {
+        "receipt": "compatibility/standing_parallel_against_traffic-primary-compatibility.json",
+        "log": "compatibility/standing_parallel_against_traffic-primary-compatibility-analysis.log",
+        "negative_log": "compatibility/standing_parallel_against_traffic-primary-negative-analysis.log",
+        "sha256": "2f3ddb140ff0baffc4a20291958460f828c22d26eead5b6526a2d58c45e05af8"
+      },
+      "negative": {
+        "log": "compatibility/standing_parallel_against_traffic-primary-negative-analysis.log"
+      },
+      "physical_preparation": {
+        "receipt": "physical-proof/standing_parallel_against_traffic/proof.json",
+        "sha256": "8876240d1296e0b68a5f616d946ff4e0846535067214fdb9985300ba7ce147b3"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__standing_parallel_against_traffic",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "648b06390f89c549b9d544698fe6e09ebc88052e0f8ac61cc15e28a6c4af76d2",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C229351__LVMC-11-52-040-A__motor_vehicle_driver/delivery_audit.py --case training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__standing_parallel_against_traffic --self-test",
+        "test_exit_code": 0,
+        "test_log": "delivery-proofs/standing_parallel_against_traffic-positive.log",
+        "test_log_sha256": "394bbb45731c3d5c4db2b3ec0664b7a547012cffa363afd36e161b99f1e550aa",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C229351__LVMC-11-52-040-A__motor_vehicle_driver/delivery_audit.py --case training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__standing_parallel_against_traffic --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing original source: exact original Native result",
+        "negative_log": "delivery-proofs/standing_parallel_against_traffic-negative.log",
+        "negative_log_sha256": "a9d54e78abfe406f0a3a17e2f8d12e0b33f3e436ead8e57a3a22bcf0178ce425",
+        "scope": "CPU source predicates; original Native review pending"
+      },
+      "post_capture": {
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C229351__LVMC-11-52-040-A__motor_vehicle_driver/execution-manifest.json --case training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__standing_parallel_against_traffic --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "feedback_command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C229351__LVMC-11-52-040-A__motor_vehicle_driver/execution-manifest.json --case training__C229351__LVMC-11-52-040-A__motor_vehicle_driver__standing_parallel_against_traffic --attempt $ATTEMPT --output $SAVED_OUTPUT --library runtime/library --validator $DECODER",
+        "recorded_only": true,
+        "test_exit_code": 0,
+        "test_log": "saved/standing_parallel_against_traffic-processing.log",
+        "test_log_sha256": "168e7fedef57fae10122b94669875fee795f4a149ed12d6dc1bc4ba9a0386513",
+        "processing_receipt": "saved/standing_parallel_against_traffic-processing.json",
+        "processing_receipt_sha256": "168e7fedef57fae10122b94669875fee795f4a149ed12d6dc1bc4ba9a0386513",
+        "test_scope": "synthetic saved diagnostic; original Native pending"
       }
     }
   ]

@@ -37,7 +37,9 @@ def check(request: dict) -> dict:
     require(isinstance(case_id, str) and case_id.startswith(AID + "__"),
             "exact restricted-zone case required")
     suffix = case_id[len(AID) + 2:]
-    require(suffix in CASES and request == build(suffix),
+    speed_cap = request.get("primary_max_speed_mps")
+    require(suffix in CASES and speed_cap in (3.0, 4.0) and
+            request == build(suffix, approach_speed_cap_mps=speed_cap),
             "Native request differs from exact construction plan")
     geometry = geometry_check()
     require(request["frames"] == FRAMES and request["fps"] == RATE and
@@ -256,7 +258,13 @@ if __name__ == "__main__":
         if case_id.startswith(AID + "__"):
             suffix = case_id[len(AID) + 2:]
     require(suffix in CASES, "exact case required by --case or config.json")
-    request = build(suffix)
+    speed_cap = 4.0
+    if Path("config.json").is_file():
+        config = json.loads(Path("config.json").read_text())
+        require(config.get("case_id") == AID + "__" + suffix,
+                "materialized exact case differs")
+        speed_cap = config.get("approach_speed_cap_mps", 4.0)
+    request = build(suffix, approach_speed_cap_mps=speed_cap)
     if args.check:
         print(json.dumps(check(request), sort_keys=True))
     else:

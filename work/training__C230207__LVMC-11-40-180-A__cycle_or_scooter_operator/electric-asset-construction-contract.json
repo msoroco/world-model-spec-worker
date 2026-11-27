@@ -1,0 +1,51 @@
+{
+  "format": "worker-electric-asset-construction-contract-v1",
+  "assignment_id": "training__C230207__LVMC-11-40-180-A__cycle_or_scooter_operator",
+  "law_id": "LVMC-11-40-180-A",
+  "case_families": [
+    {
+      "machine_class": "electric_bicycle",
+      "controlled_behaviors": [
+        "walk_cycle",
+        "mounted_sidewalk"
+      ],
+      "state": "unselected_source_review_pending"
+    },
+    {
+      "machine_class": "electric_scooter",
+      "controlled_behaviors": [
+        "walk_cycle",
+        "mounted_sidewalk"
+      ],
+      "state": "unselected_source_review_pending"
+    }
+  ],
+  "source_gate": {
+    "implementation": "native/electric_asset.py",
+    "sha256": "943d1abcbf1d24fbea5e717e400723547f1ef72664e824d986d70b51339c3a37",
+    "requires": [
+      "exact live CARLA vehicle blueprint",
+      "independent class review",
+      "power source evidence",
+      "device geometry evidence",
+      "source-hashed asset files",
+      "matching spawned actor type"
+    ],
+    "rejects": [
+      "ordinary bicycle substituted for an electric device",
+      "class label without source review",
+      "changed or absent source",
+      "absent exact Native blueprint",
+      "wrong spawned actor type"
+    ]
+  },
+  "cpu_test": {
+    "command": "cd work/training__C230207__LVMC-11-40-180-A__cycle_or_scooter_operator/native && ../../../.venv-cpu/bin/python -B -m unittest discover -s tests -v",
+    "log": "electric-asset-cpu.log",
+    "log_sha256": "eb715550ebbf9355521c0dccaafc3bba17383009d5020ca75dc635a3b9b6a686",
+    "exit_code": 0
+  },
+  "asset_review_selected": false,
+  "exact_electric_cases_selected": false,
+  "physical_acceptance_claimed": false
+}
