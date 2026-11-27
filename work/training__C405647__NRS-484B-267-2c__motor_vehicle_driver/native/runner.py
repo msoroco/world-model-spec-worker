@@ -183,6 +183,7 @@ def execute(case, output, host, port):
                 "-an", "-c:v", "ffv1", str(output / (name + ".mkv"))],
                 stdin=subprocess.PIPE, stderr=handles[name])
         with (output / "observed-actors.jsonl").open("x") as observed_file, \
+             (output / "motion_history.jsonl").open("x") as motion_file, \
              (output / "video_frames.jsonl").open("x") as frame_file:
             for index in range(item["frames"]):
                 target = item["ego_response_policy"]
@@ -219,6 +220,13 @@ def execute(case, output, host, port):
                                            bool(emergency.get_light_state() &
                                                 carla.VehicleLightState.Special2),
                     "light_qualification": "pending_independent_source_review"}) + "\n")
+                motion_file.write(json.dumps({"frame": native_frame,
+                    "time_s": index / 20,
+                    "ego_body_xy_m": observed["ego"]["native_body_xy_m"],
+                    "emergency_body_xy_m": observed["emergency"]["native_body_xy_m"],
+                    "ego_speed_mps": observed["ego"]["native_speed_mps"],
+                    "emergency_speed_mps": observed["emergency"]["native_speed_mps"],
+                    "ego_brake_observed": ego.get_control().brake}) + "\n")
                 for spec in item["cameras"]:
                     name = spec["name"]
                     image = cameras[name].get(timeout=30)
@@ -230,7 +238,8 @@ def execute(case, output, host, port):
                         spec["height"], spec["width"], 4)[:, :, :3][:, :, ::-1]
                     encoders[name].stdin.write(rgb.tobytes())
                 frame_file.write(json.dumps({"video_frame": index,
-                    "native_frame": native_frame, "time_s": index / 20}) + "\n")
+                    "native_frame": native_frame, "carla_frame": native_frame,
+                    "time_s": index / 20}) + "\n")
                 frames += 1
     except BaseException as exc:
         error = {"type": type(exc).__name__, "message": str(exc),

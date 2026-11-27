@@ -57,6 +57,21 @@ for branch, value in [('below', 499), ('at', 500), ('above', 501)]:
     case['variable_assignments']['beam_request_policy'] = {'kind': 'controller', 'value': 'dim_within_500'}
     cases.append(case)
 
+for branch, policy in [('visibility_dim', 'dim_within_500'),
+                       ('visibility_high', 'retain_high')]:
+    case = deepcopy(base)
+    case.update(case_id=f'{PACKAGE.name}__{branch}', target_law_id=template['law_id'],
+                target_type='judgment_sweep', paired_probe_id=f'{PACKAGE.name}__visibility_1000ft',
+                deliberate_differences=['beam_request_policy'],
+                rationale='Controlled fog and an authored 1000-foot oncoming vehicle target; original actor range and decoded discernibility review remain decisive.',
+                probe={'primary_variable': 'beam_request_policy',
+                       'comparison_or_standard': 'fixed original 1000-foot target, fog request, road and trajectory',
+                       'target_value_or_branch': policy})
+    case['variable_assignments']['beam_request_policy'] = {'kind': 'controller', 'value': policy}
+    case['probe']['fixed_visibility_request'] = 'controlled_fog_1000ft_target'
+    case['unresolved_judgment_calls'] = base['unresolved_judgment_calls']
+    cases.append(case)
+
 specs = []
 for index, judgment in enumerate(template['structure']['judgment_calls_needed']):
     specs.append({'sweep_id': f'{PACKAGE.name}__judgment_{index}', 'target_law_id': template['law_id'],
@@ -75,4 +90,4 @@ stages.validate('cases', result, {'request': request, 'dependencies': [binding],
 destination = proposal / 'canonical_cases.json'
 destination.write_text(json.dumps(result, indent=2, ensure_ascii=False) + '\n')
 (proposal / 'cases.json').write_text(json.dumps(result, indent=2, ensure_ascii=False) + '\n')
-print(f'PASS: canonical baseline, two physical beam contrast cases, linked 499/500/501 ft probes, and three explicit incomplete judgment sweep plans; {destination.relative_to(PACKAGE)}')
+print(f'PASS: canonical baseline, two beam contrast cases, linked 499/500/501 ft probes, two visibility cases, and three explicit incomplete judgment sweep plans; {destination.relative_to(PACKAGE)}')

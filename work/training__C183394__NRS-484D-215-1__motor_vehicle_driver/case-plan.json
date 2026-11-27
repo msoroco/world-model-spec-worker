@@ -49,7 +49,9 @@
         "training__C183394__NRS-484D-215-1__motor_vehicle_driver__selected_6fb122bc__condition_b",
         "training__C183394__NRS-484D-215-1__motor_vehicle_driver__distance_below_500ft",
         "training__C183394__NRS-484D-215-1__motor_vehicle_driver__distance_at_500ft",
-        "training__C183394__NRS-484D-215-1__motor_vehicle_driver__distance_above_500ft"
+        "training__C183394__NRS-484D-215-1__motor_vehicle_driver__distance_above_500ft",
+        "training__C183394__NRS-484D-215-1__motor_vehicle_driver__visibility_dim",
+        "training__C183394__NRS-484D-215-1__motor_vehicle_driver__visibility_high"
       ]
     },
     {
@@ -63,7 +65,9 @@
         "training__C183394__NRS-484D-215-1__motor_vehicle_driver__selected_6fb122bc__condition_b",
         "training__C183394__NRS-484D-215-1__motor_vehicle_driver__distance_below_500ft",
         "training__C183394__NRS-484D-215-1__motor_vehicle_driver__distance_at_500ft",
-        "training__C183394__NRS-484D-215-1__motor_vehicle_driver__distance_above_500ft"
+        "training__C183394__NRS-484D-215-1__motor_vehicle_driver__distance_above_500ft",
+        "training__C183394__NRS-484D-215-1__motor_vehicle_driver__visibility_dim",
+        "training__C183394__NRS-484D-215-1__motor_vehicle_driver__visibility_high"
       ]
     },
     {
@@ -218,6 +222,60 @@
         "lighting-trigger-alternatives",
         "lowermost-equipment-identity"
       ]
+    },
+    {
+      "case_id": "training__C183394__NRS-484D-215-1__motor_vehicle_driver__visibility_dim",
+      "target_law_id": "NRS-484D-215-1",
+      "target_type": "delivery",
+      "planning_status": "cpu_construction_offline_proven_compatibility_pending",
+      "source_branch": "NRS 484D.100 1000-foot discernibility alternative on adjacent shoulder",
+      "comparison_variable": "beam_request_policy_with_fixed_visibility_target",
+      "condition_index": 5,
+      "fixed_conditions": {
+        "cell_id": "C183394",
+        "layout": "paved_shoulder",
+        "maneuver": "travel",
+        "control": "other_vehicle",
+        "actor": "motor_vehicle_driver",
+        "law_id": "NRS-484D-215-1",
+        "selection_targets": [
+          "full-train"
+        ]
+      },
+      "source_text": "Whenever a motor vehicle is being operated on the traveled portion of the highway, or shoulder adjacent thereto, during the times specified in NRS 484D.100 [NRS-484D-100-1], the driver shall use a distribution of light, or composite beam, directed high enough and of sufficient intensity to reveal persons and vehicles at a safe distance in advance of the vehicle, subject to the following requirements and limitations: Whenever a driver of a vehicle approaches an oncoming vehicle within 500 feet, the driver shall use a distribution of light, or composite beam, so aimed that the glaring rays are not projected into the eyes of the oncoming driver. The lowermost distribution of light, or composite beam, specified in subsection 2 of NRS 484D.210 [DEF-NRS-484D-210-1-2] shall be deemed to avoid glare at all times, regardless of road contour and loading.",
+      "claim": "Authored 1000-foot oncoming target and controlled fog request only; original discernibility, glare and legal outcome unverified.",
+      "gap_ids": [
+        "no-accepted-original",
+        "lighting-trigger-alternatives",
+        "lowermost-equipment-identity"
+      ]
+    },
+    {
+      "case_id": "training__C183394__NRS-484D-215-1__motor_vehicle_driver__visibility_high",
+      "target_law_id": "NRS-484D-215-1",
+      "target_type": "delivery",
+      "planning_status": "cpu_construction_offline_proven_compatibility_pending",
+      "source_branch": "NRS 484D.100 1000-foot discernibility alternative on adjacent shoulder",
+      "comparison_variable": "beam_request_policy_with_fixed_visibility_target",
+      "condition_index": 6,
+      "fixed_conditions": {
+        "cell_id": "C183394",
+        "layout": "paved_shoulder",
+        "maneuver": "travel",
+        "control": "other_vehicle",
+        "actor": "motor_vehicle_driver",
+        "law_id": "NRS-484D-215-1",
+        "selection_targets": [
+          "full-train"
+        ]
+      },
+      "source_text": "Whenever a motor vehicle is being operated on the traveled portion of the highway, or shoulder adjacent thereto, during the times specified in NRS 484D.100 [NRS-484D-100-1], the driver shall use a distribution of light, or composite beam, directed high enough and of sufficient intensity to reveal persons and vehicles at a safe distance in advance of the vehicle, subject to the following requirements and limitations: Whenever a driver of a vehicle approaches an oncoming vehicle within 500 feet, the driver shall use a distribution of light, or composite beam, so aimed that the glaring rays are not projected into the eyes of the oncoming driver. The lowermost distribution of light, or composite beam, specified in subsection 2 of NRS 484D.210 [DEF-NRS-484D-210-1-2] shall be deemed to avoid glare at all times, regardless of road contour and loading.",
+      "claim": "Authored 1000-foot oncoming target and controlled fog request only; original discernibility, glare and legal outcome unverified.",
+      "gap_ids": [
+        "no-accepted-original",
+        "lighting-trigger-alternatives",
+        "lowermost-equipment-identity"
+      ]
     }
   ],
   "comparisons": [
@@ -265,6 +323,29 @@
         "duration_s": 30
       },
       "measurement": "Original actor centre separation in each frame, with one-foot planning spacing only; exact 500-foot observation is not guaranteed and carries no legal tolerance."
+    },
+    {
+      "comparison_id": "training__C183394__NRS-484D-215-1__motor_vehicle_driver__visibility_1000ft_beam_comparison",
+      "case_ids": [
+        "training__C183394__NRS-484D-215-1__motor_vehicle_driver__visibility_dim",
+        "training__C183394__NRS-484D-215-1__motor_vehicle_driver__visibility_high"
+      ],
+      "deliberate_differences": [
+        "beam request policy: dim within measured 500 feet versus retain high"
+      ],
+      "fixed_conditions": {
+        "cell_id": "C183394",
+        "law_id": "NRS-484D-215-1",
+        "actor": "motor_vehicle_driver",
+        "road": "same adjacent paved shoulder OpenDRIVE",
+        "fog_density_request": 80,
+        "authored_target_distance_ft": 1000,
+        "oncoming_target_kind": "vehicle",
+        "camera_count": 4,
+        "rate_hz": 20,
+        "duration_s": 30
+      },
+      "measurement": "Original oncoming actor range and decoded forward video review at 1000 feet are decisive; fog request does not establish statutory discernibility."
     }
   ],
   "observations": [

@@ -6,6 +6,7 @@ import hashlib
 import json
 from pathlib import Path
 import shutil
+import tempfile
 import unittest
 
 from scene import CASES, check_pair, request
@@ -109,10 +110,10 @@ class SceneTest(unittest.TestCase):
         no_readback[180].pop("ego_brake_observed")
         with self.assertRaisesRegex(ValueError, "brake readback"):
             convert(frames, no_readback, review)
-        scratch = Path(__file__).resolve().parents[3] / ".runtime-work" / "C405647-original-converter-test"
-        if scratch.exists():
-            shutil.rmtree(scratch)
-        scratch.mkdir(parents=True)
+        scratch_root = Path(__file__).resolve().parents[3] / ".runtime-work"
+        scratch_root.mkdir(parents=True, exist_ok=True)
+        scratch = Path(tempfile.mkdtemp(prefix="C405647-original-converter-test-",
+                                        dir=scratch_root))
         try:
             for name, rows in (("video_frames.jsonl", frames),
                                ("observed-actors.jsonl", actors)):

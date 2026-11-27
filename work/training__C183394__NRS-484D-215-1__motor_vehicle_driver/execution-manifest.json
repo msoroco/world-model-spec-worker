@@ -958,6 +958,388 @@
         "test_log": "saved-proof/distance_above_500ft/processing.json",
         "test_log_sha256": "155e76b1e343a91052d033b674bc29e10a01c280ffd56c77330713787e994688"
       }
+    },
+    {
+      "case_id": "training__C183394__NRS-484D-215-1__motor_vehicle_driver__visibility_dim",
+      "kind": "delivery",
+      "id": "primary",
+      "construction": "constructions/visibility_dim/primary/construction.json",
+      "construction_sha256": "50dda8257d836a4902ae454dd05f73fb6e9ee6b3183b07178cfb9eed4f0ff9b8",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original target range, fog rendering and shoulder placement may miss the planned source review; acceleration gain fallback retains the pair and source contract."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "constructions/visibility_dim/fallback1/construction.json",
+          "construction_sha256": "a8c31c9b393afb887f9f679d08b2c361b4fa3354b19362483c5c2e45dbb47cd1",
+          "trigger": {
+            "source": "original Native actor positions and forward decoded video",
+            "metric": "target_range_and_discernibility_source_quality",
+            "failure_condition": "original target is not range-identified in the forward camera or shoulder motion is incomplete"
+          },
+          "changed_knobs": [
+            "vehicle acceleration gain 0.20 to 0.26; fog, target geometry and beam policy held fixed"
+          ],
+          "offline": {
+            "case_id": "training__C183394__NRS-484D-215-1__motor_vehicle_driver__visibility_dim",
+            "candidate_id": "fallback1",
+            "construction_sha256": "a8c31c9b393afb887f9f679d08b2c361b4fa3354b19362483c5c2e45dbb47cd1",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C183394__NRS-484D-215-1__motor_vehicle_driver/execution-manifest.json --case training__C183394__NRS-484D-215-1__motor_vehicle_driver__visibility_dim --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c183394/offline-visibility_dim-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "offline/visibility_dim-fallback1.log",
+            "log_sha256": "15826e50ccf5aced6b4cc06a8741f032c77f9186deb1807da2fd1eec1b2e04b7"
+          },
+          "compatibility": {
+            "receipt": "compatibility/visibility_dim-fallback1/compatibility.json",
+            "sha256": "69511004a77a74c51460987b1bdb08b40f17930c5f3552f115ab60e5cbdddc3f",
+            "log": "compatibility/visibility_dim-fallback1/analysis.log",
+            "negative_log": "compatibility/visibility_dim-fallback1/negative.log"
+          }
+        }
+      ],
+      "fixture_recipe": "work/training__C183394__NRS-484D-215-1__motor_vehicle_driver/fixture-recipe-visibility_dim.json",
+      "measurement_contract": "measurement-visibility_dim.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-oncoming-beam-measurement"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "negative": {
+        "log": "compatibility/visibility_dim-primary/negative.log"
+      },
+      "acquisition": {
+        "sig.headlamp": {
+          "entrypoint": "beam_capture.py",
+          "method": "Original 20 Hz CARLA actor, lamp and four camera source join",
+          "evidence": [
+            "beam-rows.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "rel.oncoming": {
+          "entrypoint": "beam_capture.py",
+          "method": "Original 20 Hz CARLA actor, lamp and four camera source join",
+          "evidence": [
+            "beam-rows.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "rel.centre_distance": {
+          "entrypoint": "beam_capture.py",
+          "method": "Original 20 Hz CARLA actor, lamp and four camera source join",
+          "evidence": [
+            "beam-rows.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "drv.approaching": {
+          "entrypoint": "beam_capture.py",
+          "method": "Original 20 Hz CARLA actor, lamp and four camera source join",
+          "evidence": [
+            "beam-rows.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "drv.civil_night": {
+          "entrypoint": "beam_capture.py",
+          "method": "Original 20 Hz CARLA actor, lamp and four camera source join",
+          "evidence": [
+            "beam-rows.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "env.civil_time": {
+          "entrypoint": "beam_capture.py",
+          "method": "Original 20 Hz CARLA actor, lamp and four camera source join",
+          "evidence": [
+            "beam-rows.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "st.roadway": {
+          "entrypoint": "beam_capture.py",
+          "method": "Original 20 Hz CARLA actor, lamp and four camera source join",
+          "evidence": [
+            "beam-rows.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "st.shoulder": {
+          "entrypoint": "beam_capture.py",
+          "method": "Original 20 Hz CARLA actor, lamp and four camera source join",
+          "evidence": [
+            "beam-rows.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "env.visibility": {
+          "entrypoint": "beam_capture.py",
+          "method": "Original 20 Hz CARLA actor, lamp and four camera source join",
+          "evidence": [
+            "beam-rows.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        }
+      },
+      "offline": {
+        "case_id": "training__C183394__NRS-484D-215-1__motor_vehicle_driver__visibility_dim",
+        "candidate_id": "primary",
+        "construction_sha256": "50dda8257d836a4902ae454dd05f73fb6e9ee6b3183b07178cfb9eed4f0ff9b8",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C183394__NRS-484D-215-1__motor_vehicle_driver/execution-manifest.json --case training__C183394__NRS-484D-215-1__motor_vehicle_driver__visibility_dim --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c183394/offline-visibility_dim-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "offline/visibility_dim-primary.log",
+        "log_sha256": "15826e50ccf5aced6b4cc06a8741f032c77f9186deb1807da2fd1eec1b2e04b7"
+      },
+      "compatibility": {
+        "receipt": "compatibility/visibility_dim-primary/compatibility.json",
+        "sha256": "9e80215c99d36ec23154af312ccb82dda3a93dc1a6cb75b424548fb1d11b3f4e",
+        "log": "compatibility/visibility_dim-primary/analysis.log",
+        "negative_log": "compatibility/visibility_dim-primary/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "native/physical-visibility_dim-receipt.json",
+        "sha256": "75c7213f8c9f6d7ff2ebd9d58217161c3f2b863e411a31c64bf01f12a3d14cb6"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C183394__NRS-484D-215-1__motor_vehicle_driver__visibility_dim",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "2e2bf07f2029e9e95065aa4ec852c0e0a2bf408f688cc884e801e0a554cae8a8",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C183394__NRS-484D-215-1__motor_vehicle_driver/delivery_audit.py --case training__C183394__NRS-484D-215-1__motor_vehicle_driver__visibility_dim --self-test",
+        "test_exit_code": 0,
+        "test_log": "native/delivery-visibility_dim-positive.log",
+        "test_log_sha256": "80d85d87f75ca14a63d60d3997024d24b5ee4423e7aad2c59477cb56415a0def",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C183394__NRS-484D-215-1__motor_vehicle_driver/delivery_audit.py --case training__C183394__NRS-484D-215-1__motor_vehicle_driver__visibility_dim --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing exact original Native beam result",
+        "negative_log": "native/delivery-visibility_dim-negative.log",
+        "negative_log_sha256": "5bcbd43c539dee410e1ff153a9f30748042c4eb685739ff9553ec92058d5694e"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C183394__NRS-484D-215-1__motor_vehicle_driver/execution-manifest.json --case training__C183394__NRS-484D-215-1__motor_vehicle_driver__visibility_dim --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_scope": "Public source-shaped diagnostic saved-only processing; no Native or optical acceptance",
+        "test_exit_code": 0,
+        "test_log": "saved-proof/visibility_dim/processing.json",
+        "test_log_sha256": "9a019b52c06cca22757aec174c1203591274c2c89e8cd9823e0a19d214bf08e1"
+      }
+    },
+    {
+      "case_id": "training__C183394__NRS-484D-215-1__motor_vehicle_driver__visibility_high",
+      "kind": "delivery",
+      "id": "primary",
+      "construction": "constructions/visibility_high/primary/construction.json",
+      "construction_sha256": "b81249c23bdbd9262339afa732f47338c298344e194e37ac8a1106a142786ea1",
+      "candidate_risk": {
+        "status": "physical",
+        "reason": "Original target range, fog rendering and shoulder placement may miss the planned source review; acceleration gain fallback retains the pair and source contract."
+      },
+      "candidates": [
+        {
+          "id": "fallback1",
+          "construction": "constructions/visibility_high/fallback1/construction.json",
+          "construction_sha256": "bdf9a8d47ffb7eef27e12418c476846133777b26bb5d5b7a01584fd7fece18ff",
+          "trigger": {
+            "source": "original Native actor positions and forward decoded video",
+            "metric": "target_range_and_discernibility_source_quality",
+            "failure_condition": "original target is not range-identified in the forward camera or shoulder motion is incomplete"
+          },
+          "changed_knobs": [
+            "vehicle acceleration gain 0.20 to 0.26; fog, target geometry and beam policy held fixed"
+          ],
+          "offline": {
+            "case_id": "training__C183394__NRS-484D-215-1__motor_vehicle_driver__visibility_high",
+            "candidate_id": "fallback1",
+            "construction_sha256": "bdf9a8d47ffb7eef27e12418c476846133777b26bb5d5b7a01584fd7fece18ff",
+            "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C183394__NRS-484D-215-1__motor_vehicle_driver/execution-manifest.json --case training__C183394__NRS-484D-215-1__motor_vehicle_driver__visibility_high --candidate fallback1 --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c183394/offline-visibility_high-fallback1 --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+            "exit_code": 0,
+            "log": "offline/visibility_high-fallback1.log",
+            "log_sha256": "dca25e849d53fdedec2c5f535a8ee5f9e889d325ef828bda6eba4e30050cd90f"
+          },
+          "compatibility": {
+            "receipt": "compatibility/visibility_high-fallback1/compatibility.json",
+            "sha256": "d30ef61d890f027cbca08db1fb69086b471283f86384a27fd785fac974fed7d4",
+            "log": "compatibility/visibility_high-fallback1/analysis.log",
+            "negative_log": "compatibility/visibility_high-fallback1/negative.log"
+          }
+        }
+      ],
+      "fixture_recipe": "work/training__C183394__NRS-484D-215-1__motor_vehicle_driver/fixture-recipe-visibility_high.json",
+      "measurement_contract": "measurement-visibility_high.json",
+      "measurement_procedure": {
+        "entrypoint": "finalize.py",
+        "output_schema": "worker-oncoming-beam-measurement"
+      },
+      "native_handoff": {
+        "python_env_var": "CARLA_PYTHON",
+        "host_env_var": "CARLA_HOST",
+        "port_env_var": "CARLA_PORT"
+      },
+      "negative": {
+        "log": "compatibility/visibility_high-primary/negative.log"
+      },
+      "acquisition": {
+        "sig.headlamp": {
+          "entrypoint": "beam_capture.py",
+          "method": "Original 20 Hz CARLA actor, lamp and four camera source join",
+          "evidence": [
+            "beam-rows.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "rel.oncoming": {
+          "entrypoint": "beam_capture.py",
+          "method": "Original 20 Hz CARLA actor, lamp and four camera source join",
+          "evidence": [
+            "beam-rows.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "rel.centre_distance": {
+          "entrypoint": "beam_capture.py",
+          "method": "Original 20 Hz CARLA actor, lamp and four camera source join",
+          "evidence": [
+            "beam-rows.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "drv.approaching": {
+          "entrypoint": "beam_capture.py",
+          "method": "Original 20 Hz CARLA actor, lamp and four camera source join",
+          "evidence": [
+            "beam-rows.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "drv.civil_night": {
+          "entrypoint": "beam_capture.py",
+          "method": "Original 20 Hz CARLA actor, lamp and four camera source join",
+          "evidence": [
+            "beam-rows.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "env.civil_time": {
+          "entrypoint": "beam_capture.py",
+          "method": "Original 20 Hz CARLA actor, lamp and four camera source join",
+          "evidence": [
+            "beam-rows.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "st.roadway": {
+          "entrypoint": "beam_capture.py",
+          "method": "Original 20 Hz CARLA actor, lamp and four camera source join",
+          "evidence": [
+            "beam-rows.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "st.shoulder": {
+          "entrypoint": "beam_capture.py",
+          "method": "Original 20 Hz CARLA actor, lamp and four camera source join",
+          "evidence": [
+            "beam-rows.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        },
+        "env.visibility": {
+          "entrypoint": "beam_capture.py",
+          "method": "Original 20 Hz CARLA actor, lamp and four camera source join",
+          "evidence": [
+            "beam-rows.jsonl",
+            "video_frames.jsonl",
+            "capture/evidence.jsonl"
+          ]
+        }
+      },
+      "offline": {
+        "case_id": "training__C183394__NRS-484D-215-1__motor_vehicle_driver__visibility_high",
+        "candidate_id": "primary",
+        "construction_sha256": "b81249c23bdbd9262339afa732f47338c298344e194e37ac8a1106a142786ea1",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/runtime.py offline --manifest /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C183394__NRS-484D-215-1__motor_vehicle_driver/execution-manifest.json --case training__C183394__NRS-484D-215-1__motor_vehicle_driver__visibility_high --candidate primary --output /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.runtime-work/c183394/offline-visibility_high-primary --python /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python",
+        "exit_code": 0,
+        "log": "offline/visibility_high-primary.log",
+        "log_sha256": "dca25e849d53fdedec2c5f535a8ee5f9e889d325ef828bda6eba4e30050cd90f"
+      },
+      "compatibility": {
+        "receipt": "compatibility/visibility_high-primary/compatibility.json",
+        "sha256": "513b7ddcd07d22e2d0e36278fc77beb6594a340931d050729fdca75411983bd1",
+        "log": "compatibility/visibility_high-primary/analysis.log",
+        "negative_log": "compatibility/visibility_high-primary/negative.log"
+      },
+      "physical_preparation": {
+        "receipt": "native/physical-visibility_high-receipt.json",
+        "sha256": "29511e271b3e0685e65795313ac41c6b0ace62aa206a7c6cda53ee4733a5d710"
+      },
+      "delivery_acceptance": {
+        "case_id": "training__C183394__NRS-484D-215-1__motor_vehicle_driver__visibility_high",
+        "sets": [
+          "full-train"
+        ],
+        "checks": [
+          "native_source",
+          "all_participants",
+          "time_join",
+          "full_video_decode",
+          "actual_pixels",
+          "physical_completion"
+        ],
+        "script": "delivery_audit.py",
+        "script_sha256": "2e2bf07f2029e9e95065aa4ec852c0e0a2bf408f688cc884e801e0a554cae8a8",
+        "command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C183394__NRS-484D-215-1__motor_vehicle_driver/delivery_audit.py --case training__C183394__NRS-484D-215-1__motor_vehicle_driver__visibility_high --self-test",
+        "test_exit_code": 0,
+        "test_log": "native/delivery-visibility_high-positive.log",
+        "test_log_sha256": "899edcd7fd54c0edfa7a97503c879f0929fc803f4524efc8946ba065fb307250",
+        "negative_command": "/scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/.venv-cpu/bin/python -B /scratch/fsw/portfolios/av/projects/av_alpamayo_reasoning/users/wcong/scenario-worker-full-train/work/training__C183394__NRS-484D-215-1__motor_vehicle_driver/delivery_audit.py --case training__C183394__NRS-484D-215-1__motor_vehicle_driver__visibility_high --self-test --negative",
+        "negative_exit_code": 1,
+        "negative_expected_error": "Missing exact original Native beam result",
+        "negative_log": "native/delivery-visibility_high-negative.log",
+        "negative_log_sha256": "5bcbd43c539dee410e1ff153a9f30748042c4eb685739ff9553ec92058d5694e"
+      },
+      "post_capture": {
+        "recorded_only": true,
+        "command": ".venv-cpu/bin/python runtime.py process-saved --manifest work/training__C183394__NRS-484D-215-1__motor_vehicle_driver/execution-manifest.json --case training__C183394__NRS-484D-215-1__motor_vehicle_driver__visibility_high --attempt \"$SAVED_ATTEMPT\" --output \"$PROCESSED_OUT\" --library runtime/library --validator \"$DECODER\"",
+        "feedback_command": "cat \"$PROCESSED_OUT/v0001/feedback.json\"",
+        "test_scope": "Public source-shaped diagnostic saved-only processing; no Native or optical acceptance",
+        "test_exit_code": 0,
+        "test_log": "saved-proof/visibility_high/processing.json",
+        "test_log_sha256": "188f6aa616662ecd553ac04c642cf7f32f7965bc4fb3ceef485a9e80c38dd08a"
+      }
     }
   ]
 }

@@ -1,0 +1,40 @@
+{
+  "format": "worker-measurement-contract",
+  "case_id": "training__C183394__NRS-484D-215-1__motor_vehicle_driver__visibility_high",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "text-0",
+      "source": "NRS 484D.215(1)",
+      "output_key": "activation_beam_context",
+      "method": "activation_beam_context",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "road-position-source.json",
+        "lighting-trigger-source.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "text-1",
+      "source": "NRS 484D.215(1)",
+      "output_key": "oncoming_beam_interaction",
+      "method": "oncoming_beam_interaction",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "beam-rows.jsonl",
+        "oncoming-driver-source.json",
+        "eye-region-source.json",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "beam-rows.jsonl"
+    ],
+    "error_contains": "Missing required source: beam-rows.jsonl"
+  }
+}

@@ -14,6 +14,7 @@ REPO = ROOT.parents[1]
 sys.path.insert(0, str(ROOT / "native"))
 from beam_scene import CAMERAS, MODES, beam_request, road_opendrive  # noqa: E402
 from probe_scene import MODES as PROBE_MODES, request as probe_request  # noqa: E402
+from visibility_scene import MODES as VISIBILITY_MODES, request as visibility_request  # noqa: E402
 
 
 def sha(path):
@@ -37,18 +38,24 @@ def bbox(x, y):
 
 def build(case):
     aid = "training__C183394__NRS-484D-215-1__motor_vehicle_driver"
-    case_id = aid + ("__" if case in PROBE_MODES else "__selected_6fb122bc__") + case
+    case_id = aid + ("__" if case in PROBE_MODES or case in VISIBILITY_MODES else "__selected_6fb122bc__") + case
     dest = ROOT / "fixture-source" / case
     dest.mkdir(parents=True, exist_ok=True)
     files = {}
     write(dest / "road.xodr", road_opendrive() + "\n")
+    visibility_plan = visibility_request(case) if case in VISIBILITY_MODES else None
     for name, value in {
         "road-position-source.json": {"road_position": "adjacent_shoulder",
             "map_and_adjacency_source": "synthetic authored OpenDRIVE lane -2 adjacent lane -1",
             "highway_status_review_required": True},
-        "lighting-trigger-source.json": {"lighting_trigger": "night_interval",
+        "lighting-trigger-source.json": ({"lighting_trigger": "poor_visibility",
+            "original_trigger_source": "synthetic controlled fog request and vehicle target",
+            "NRS_484D_100_review_required": True,
+            "authored_initial_target_ft": 1000,
+            "discernibility_verified": False} if visibility_plan else
+            {"lighting_trigger": "night_interval",
             "original_trigger_source": "synthetic night request only",
-            "NRS_484D_100_review_required": True, "civil_time_condition_verified": False},
+            "NRS_484D_100_review_required": True, "civil_time_condition_verified": False}),
         "oncoming-driver-source.json": {"oncoming_actor_source": "synthetic opposed actor",
             "driver_eye_identity_review_required": True},
         "eye-region-source.json": {"driver_reference_camera": "driver_reference",
@@ -59,18 +66,20 @@ def build(case):
         dump(dest / name, value)
     beam, frames, trace, evidence, native_frames, graphs = [], [], [], [], [], []
     probe_plan = probe_request(case) if case in PROBE_MODES else None
+    speed = 3.0 if visibility_plan else 2.5
     for i in range(600):
         t = i / 20
-        ex = -100 + 2.5*t
-        ox = (probe_plan["oncoming"]["start_xyz_m"][0] if probe_plan else 100) - 2.5*t
+        ex = -100 + speed*t
+        ox = (probe_plan["oncoming"]["start_xyz_m"][0] if probe_plan else
+              visibility_plan["oncoming"]["start_xyz_m"][0] if visibility_plan else 100) - speed*t
         ey, oy = -5.0, 1.75
         separation = ((ex-ox)**2 + (ey-oy)**2)**.5
-        state = beam_request((MODES | PROBE_MODES)[case], separation)
+        state = beam_request((MODES | PROBE_MODES | VISIBILITY_MODES)[case], separation)
         beam.append({"frame": i, "native_frame": i, "time_s": t,
             "ego_x_m": ex, "ego_y_m": ey, "ego_heading_x": 1, "ego_heading_y": 0,
             "oncoming_x_m": ox, "oncoming_y_m": oy,
             "oncoming_heading_x": -1, "oncoming_heading_y": 0,
-            "ego_speed_mps": 2.5, "oncoming_speed_mps": 2.5,
+            "ego_speed_mps": speed, "oncoming_speed_mps": speed,
             "requested_beam_state": state,
             "observed_light_state_bits": 1 + (2 if state == "low_beam" else 4),
             "lamp_state_source": "synthetic diagnostic state",
@@ -80,19 +89,19 @@ def build(case):
         trace.append({"frame": i, "time_s": t,
             "position": {"x": ex, "y": ey, "z": .5},
             "position_m": [ex, ey, .5], "heading_deg": 0,
-            "velocity_mps": [2.5, 0, 0], "speed_mps": 2.5,
-            "speed_mph": 2.5/.44704,
+            "velocity_mps": [speed, 0, 0], "speed_mps": speed,
+            "speed_mph": speed/.44704,
             "control": {"throttle": 0, "brake": 0, "hand_brake": False}})
         vertices = bbox(ex, ey)
         evidence.append({"actor_id": 107, "ego": {"body_vertices_m": vertices,
-            "heading_deg": 0, "position_m": [ex, ey, .5], "speed_mps": 2.5,
+            "heading_deg": 0, "position_m": [ex, ey, .5], "speed_mps": speed,
             "speed_provenance": "synthetic_native_sample",
             "synthetic_diagnostic": True},
             "original_frame": i, "recording_time_s": t, "replay_frame": i,
             "replay_simulation_time_s": t,
             "world": {"road_projection": {"lane_id": -2, "road_id": 183394,
                 "s_m": ex+250, "section_id": 0},
-                "weather": {"cloudiness": 0, "fog_density": 0,
+                "weather": {"cloudiness": 0, "fog_density": 80 if visibility_plan else 0,
                             "precipitation": 0, "wetness": 0}}})
         graph_path = f"capture/native/graphs/base/{i:08d}.adapter.json"
         native_frames.append({"frame": i, "simulation_time": t,

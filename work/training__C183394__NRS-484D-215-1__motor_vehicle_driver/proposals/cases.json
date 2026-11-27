@@ -790,6 +790,246 @@
         "unit": "ft",
         "rationale": "Planning grid spacing only; exact at-boundary observation cannot be guaranteed by this controller."
       }
+    },
+    {
+      "case_id": "training__C183394__NRS-484D-215-1__motor_vehicle_driver__visibility_dim",
+      "target_law_id": "NRS-484D-215-1",
+      "target_type": "judgment_sweep",
+      "variable_assignments": {
+        "beam_request_policy": {
+          "kind": "controller",
+          "value": "dim_within_500"
+        },
+        "oncoming_centre_distance_ft": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sig.headlamp",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor/lamp sample and source join",
+            "time_window": "entire original 30 s / 600-frame attempt",
+            "reference_frame": "original CARLA tick and four synchronized cameras",
+            "uncertainty": "50 ms sample bracket; emitted glare and civil time need independent review"
+          },
+          {
+            "name": "rel.oncoming",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor/lamp sample and source join",
+            "time_window": "entire original 30 s / 600-frame attempt",
+            "reference_frame": "original CARLA tick and four synchronized cameras",
+            "uncertainty": "50 ms sample bracket; emitted glare and civil time need independent review"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor/lamp sample and source join",
+            "time_window": "entire original 30 s / 600-frame attempt",
+            "reference_frame": "original CARLA tick and four synchronized cameras",
+            "uncertainty": "50 ms sample bracket; emitted glare and civil time need independent review"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor/lamp sample and source join",
+            "time_window": "entire original 30 s / 600-frame attempt",
+            "reference_frame": "original CARLA tick and four synchronized cameras",
+            "uncertainty": "50 ms sample bracket; emitted glare and civil time need independent review"
+          },
+          {
+            "name": "drv.civil_night",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor/lamp sample and source join",
+            "time_window": "entire original 30 s / 600-frame attempt",
+            "reference_frame": "original CARLA tick and four synchronized cameras",
+            "uncertainty": "50 ms sample bracket; emitted glare and civil time need independent review"
+          },
+          {
+            "name": "env.civil_time",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor/lamp sample and source join",
+            "time_window": "entire original 30 s / 600-frame attempt",
+            "reference_frame": "original CARLA tick and four synchronized cameras",
+            "uncertainty": "50 ms sample bracket; emitted glare and civil time need independent review"
+          },
+          {
+            "name": "st.roadway",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor/lamp sample and source join",
+            "time_window": "entire original 30 s / 600-frame attempt",
+            "reference_frame": "original CARLA tick and four synchronized cameras",
+            "uncertainty": "50 ms sample bracket; emitted glare and civil time need independent review"
+          },
+          {
+            "name": "st.shoulder",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor/lamp sample and source join",
+            "time_window": "entire original 30 s / 600-frame attempt",
+            "reference_frame": "original CARLA tick and four synchronized cameras",
+            "uncertainty": "50 ms sample bracket; emitted glare and civil time need independent review"
+          },
+          {
+            "name": "env.visibility",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor/lamp sample and source join",
+            "time_window": "entire original 30 s / 600-frame attempt",
+            "reference_frame": "original CARLA tick and four synchronized cameras",
+            "uncertainty": "50 ms sample bracket; emitted glare and civil time need independent review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Original beam optics, driver-eye exposure and NRS 484D.100 timing require independent review"
+        ]
+      },
+      "rationale": "Controlled fog and an authored 1000-foot oncoming vehicle target; original actor range and decoded discernibility review remain decisive.",
+      "unresolved_judgment_calls": [
+        "safe distance in advance of the vehicle",
+        "glaring rays are not projected into the eyes of the oncoming driver",
+        "lowermost distribution of light, or composite beam, specified in subsection 2 of NRS 484D.210"
+      ],
+      "paired_probe_id": "training__C183394__NRS-484D-215-1__motor_vehicle_driver__visibility_1000ft",
+      "deliberate_differences": [
+        "beam_request_policy"
+      ],
+      "probe": {
+        "primary_variable": "beam_request_policy",
+        "comparison_or_standard": "fixed original 1000-foot target, fog request, road and trajectory",
+        "target_value_or_branch": "dim_within_500",
+        "fixed_visibility_request": "controlled_fog_1000ft_target"
+      }
+    },
+    {
+      "case_id": "training__C183394__NRS-484D-215-1__motor_vehicle_driver__visibility_high",
+      "target_law_id": "NRS-484D-215-1",
+      "target_type": "judgment_sweep",
+      "variable_assignments": {
+        "beam_request_policy": {
+          "kind": "controller",
+          "value": "retain_high"
+        },
+        "oncoming_centre_distance_ft": {
+          "kind": "subject_behavior",
+          "value": null
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sig.headlamp",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor/lamp sample and source join",
+            "time_window": "entire original 30 s / 600-frame attempt",
+            "reference_frame": "original CARLA tick and four synchronized cameras",
+            "uncertainty": "50 ms sample bracket; emitted glare and civil time need independent review"
+          },
+          {
+            "name": "rel.oncoming",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor/lamp sample and source join",
+            "time_window": "entire original 30 s / 600-frame attempt",
+            "reference_frame": "original CARLA tick and four synchronized cameras",
+            "uncertainty": "50 ms sample bracket; emitted glare and civil time need independent review"
+          },
+          {
+            "name": "rel.centre_distance",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor/lamp sample and source join",
+            "time_window": "entire original 30 s / 600-frame attempt",
+            "reference_frame": "original CARLA tick and four synchronized cameras",
+            "uncertainty": "50 ms sample bracket; emitted glare and civil time need independent review"
+          },
+          {
+            "name": "drv.approaching",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor/lamp sample and source join",
+            "time_window": "entire original 30 s / 600-frame attempt",
+            "reference_frame": "original CARLA tick and four synchronized cameras",
+            "uncertainty": "50 ms sample bracket; emitted glare and civil time need independent review"
+          },
+          {
+            "name": "drv.civil_night",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor/lamp sample and source join",
+            "time_window": "entire original 30 s / 600-frame attempt",
+            "reference_frame": "original CARLA tick and four synchronized cameras",
+            "uncertainty": "50 ms sample bracket; emitted glare and civil time need independent review"
+          },
+          {
+            "name": "env.civil_time",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor/lamp sample and source join",
+            "time_window": "entire original 30 s / 600-frame attempt",
+            "reference_frame": "original CARLA tick and four synchronized cameras",
+            "uncertainty": "50 ms sample bracket; emitted glare and civil time need independent review"
+          },
+          {
+            "name": "st.roadway",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor/lamp sample and source join",
+            "time_window": "entire original 30 s / 600-frame attempt",
+            "reference_frame": "original CARLA tick and four synchronized cameras",
+            "uncertainty": "50 ms sample bracket; emitted glare and civil time need independent review"
+          },
+          {
+            "name": "st.shoulder",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor/lamp sample and source join",
+            "time_window": "entire original 30 s / 600-frame attempt",
+            "reference_frame": "original CARLA tick and four synchronized cameras",
+            "uncertainty": "50 ms sample bracket; emitted glare and civil time need independent review"
+          },
+          {
+            "name": "env.visibility",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "method": "Original Native actor/lamp sample and source join",
+            "time_window": "entire original 30 s / 600-frame attempt",
+            "reference_frame": "original CARLA tick and four synchronized cameras",
+            "uncertainty": "50 ms sample bracket; emitted glare and civil time need independent review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Original beam optics, driver-eye exposure and NRS 484D.100 timing require independent review"
+        ]
+      },
+      "rationale": "Controlled fog and an authored 1000-foot oncoming vehicle target; original actor range and decoded discernibility review remain decisive.",
+      "unresolved_judgment_calls": [
+        "safe distance in advance of the vehicle",
+        "glaring rays are not projected into the eyes of the oncoming driver",
+        "lowermost distribution of light, or composite beam, specified in subsection 2 of NRS 484D.210"
+      ],
+      "paired_probe_id": "training__C183394__NRS-484D-215-1__motor_vehicle_driver__visibility_1000ft",
+      "deliberate_differences": [
+        "beam_request_policy"
+      ],
+      "probe": {
+        "primary_variable": "beam_request_policy",
+        "comparison_or_standard": "fixed original 1000-foot target, fog request, road and trajectory",
+        "target_value_or_branch": "retain_high",
+        "fixed_visibility_request": "controlled_fog_1000ft_target"
+      }
     }
   ]
 }
