@@ -1,0 +1,90 @@
+{
+  "template_id": "NRS-484B-413-2@motor_vehicle_driver",
+  "law_id": "NRS-484B-413-2",
+  "actor": "motor_vehicle_driver",
+  "quote": "A signal of intention to turn right or left, or otherwise turn a vehicle from a direct course, shall be given continuously during not less than the last 100 feet traveled in a business or residential district and not less than the last 300 feet traveled in any other area prior to changing the course of a vehicle. This rule shall be observed, regardless of the weather.",
+  "status": "draft",
+  "structure": {
+    "activation": {
+      "description": "Driver changes course from a direct course, including same-direction lane change",
+      "source_clause": "turn right or left, or otherwise turn a vehicle from a direct course"
+    },
+    "obligation": {
+      "description": "Give a continuous signal over the applicable final traveled distance before course change",
+      "type": "must",
+      "source_clause": "shall be given continuously during not less than the last 100 feet traveled in a business or residential district and not less than the last 300 feet traveled in any other area prior to changing the course of a vehicle"
+    },
+    "exceptions": [],
+    "timing": {
+      "description": "Final traveled path distance; weather does not alter the duty"
+    },
+    "judgment_calls_needed": [
+      {
+        "phrase": "during not less than the last 100 feet traveled in a business or residential district",
+        "note": "Original area class and complete sampled path distance must be established."
+      },
+      {
+        "phrase": "during not less than the last 300 feet traveled in any other area",
+        "note": "Original other-area class and complete sampled path distance must be established."
+      },
+      {
+        "phrase": "shall be given continuously",
+        "note": "Post-tick samples test sampled continuity; visible pixels and intersample behavior require review."
+      },
+      {
+        "phrase": "prior to changing the course of a vehicle",
+        "note": "Original body/lane transition must establish actual course change independent of command."
+      },
+      {
+        "phrase": "regardless of the weather",
+        "note": "Original precipitation source is retained; no weather waiver or changed threshold is inferred."
+      }
+    ]
+  },
+  "parameter_refs": [
+    {
+      "name": "area_class_request",
+      "kind": "world_setup",
+      "range_or_domain": [
+        "business_or_residential",
+        "other"
+      ]
+    },
+    {
+      "name": "signal_distance_ft",
+      "kind": "controller",
+      "range_or_domain": [
+        90,
+        100,
+        110,
+        290,
+        300,
+        310
+      ]
+    },
+    {
+      "name": "signal_continuity_request",
+      "kind": "controller",
+      "range_or_domain": [
+        "continuous",
+        "interrupted"
+      ]
+    },
+    {
+      "name": "weather_request",
+      "kind": "world_setup",
+      "range_or_domain": [
+        "clear",
+        "rain"
+      ]
+    },
+    {
+      "name": "signal_side_request",
+      "kind": "controller",
+      "range_or_domain": [
+        "left",
+        "right"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1014 @@
+{
+  "cell_id": "C228817",
+  "actor": "motor_vehicle_driver",
+  "status": "draft",
+  "sweep_specs": [
+    {
+      "sweep_id": "training__C228817__NRS-484B-153-2__motor_vehicle_driver__board_passing_arrival",
+      "target_law_id": "NRS-484B-153-2",
+      "judgment_refs": [
+        {
+          "phrase": "closest to passing traffic",
+          "note": "Join original road direction and passing trajectory with independently observed door or transfer side."
+        },
+        {
+          "phrase": "open the door of or board or alight",
+          "note": "Observe distinct door motion and boarding or alighting; command requests are not physical observations."
+        },
+        {
+          "phrase": "in such a manner as to interfere with moving vehicular traffic",
+          "note": "Measure passing vehicle motion, door/person geometry and response ordering; legal interference remains contextual."
+        }
+      ],
+      "rationale": "Compare controlled passing arrival while door and person action requests stay fixed; no legal threshold inferred.",
+      "status": "complete",
+      "mode": "one_dimensional",
+      "axes": [
+        {
+          "variable": "passing_arrival_frame",
+          "observable": "passing_arrival_frame",
+          "unit": "frame",
+          "min": 110,
+          "max": 310,
+          "spacing": 200,
+          "range_rationale": "Two authored passing approach windows aligned with the selected comparison pair.",
+          "spacing_rationale": "200 frames separate the selected requests at 20 Hz.",
+          "feasibility_evidence": "Four exact Native offline and source-shaped saved checks pass.",
+          "measurement": {
+            "method": "Read requested arrival separately from measured original passing trajectory and response",
+            "time_window": "600 original Native frames",
+            "statistic": "first"
+          }
+        }
+      ],
+      "landmarks": [],
+      "variable_assignments": {
+        "transfer_action": {
+          "kind": "world_setup",
+          "value": "board",
+          "unit": "categorical",
+          "source": "selected Native configuration"
+        },
+        "passing_arrival_frame": {
+          "kind": "controller",
+          "value": 110,
+          "unit": "frame",
+          "source": "selected Native passing controller"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sig.door_open",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "kin.time",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "ru.occupant_count",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "ru.pedestrian",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "st.lane",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "rel.surface_gap",
+            "unit": "structured",
+            "method": "original Native actor, door-pixel and passing-vehicle source join",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "engineering diagnostic; contextual legal interference and actual pixel visibility require independent review"
+          },
+          {
+            "name": "drv.time_to_conflict",
+            "unit": "structured",
+            "method": "original Native actor, door-pixel and passing-vehicle source join",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "engineering diagnostic; contextual legal interference and actual pixel visibility require independent review"
+          },
+          {
+            "name": "drv.hard_deceleration",
+            "unit": "structured",
+            "method": "original Native actor, door-pixel and passing-vehicle source join",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "engineering diagnostic; contextual legal interference and actual pixel visibility require independent review"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "method": "original Native actor, door-pixel and passing-vehicle source join",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "engineering diagnostic; contextual legal interference and actual pixel visibility require independent review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Door pose, boarding or alighting, passing traffic motion and camera visibility require original-source review",
+          "Interference with moving vehicular traffic requires contextual legal review"
+        ]
+      },
+      "spec_version": "096efa874b4df3c36f2ae0dd8b80ba85728f75c0e1750c4f49a38988ce12e202",
+      "planned_case_count": 2,
+      "selection_order": [
+        "training__C228817__NRS-484B-153-2__motor_vehicle_driver__board_overlap",
+        "training__C228817__NRS-484B-153-2__motor_vehicle_driver__board_clear"
+      ]
+    },
+    {
+      "sweep_id": "training__C228817__NRS-484B-153-2__motor_vehicle_driver__alight_passing_arrival",
+      "target_law_id": "NRS-484B-153-2",
+      "judgment_refs": [
+        {
+          "phrase": "closest to passing traffic",
+          "note": "Join original road direction and passing trajectory with independently observed door or transfer side."
+        },
+        {
+          "phrase": "open the door of or board or alight",
+          "note": "Observe distinct door motion and boarding or alighting; command requests are not physical observations."
+        },
+        {
+          "phrase": "in such a manner as to interfere with moving vehicular traffic",
+          "note": "Measure passing vehicle motion, door/person geometry and response ordering; legal interference remains contextual."
+        }
+      ],
+      "rationale": "Compare controlled passing arrival while door and person action requests stay fixed; no legal threshold inferred.",
+      "status": "complete",
+      "mode": "one_dimensional",
+      "axes": [
+        {
+          "variable": "passing_arrival_frame",
+          "observable": "passing_arrival_frame",
+          "unit": "frame",
+          "min": 110,
+          "max": 310,
+          "spacing": 200,
+          "range_rationale": "Two authored passing approach windows aligned with the selected comparison pair.",
+          "spacing_rationale": "200 frames separate the selected requests at 20 Hz.",
+          "feasibility_evidence": "Four exact Native offline and source-shaped saved checks pass.",
+          "measurement": {
+            "method": "Read requested arrival separately from measured original passing trajectory and response",
+            "time_window": "600 original Native frames",
+            "statistic": "first"
+          }
+        }
+      ],
+      "landmarks": [],
+      "variable_assignments": {
+        "transfer_action": {
+          "kind": "world_setup",
+          "value": "alight",
+          "unit": "categorical",
+          "source": "selected Native configuration"
+        },
+        "passing_arrival_frame": {
+          "kind": "controller",
+          "value": 110,
+          "unit": "frame",
+          "source": "selected Native passing controller"
+        }
+      },
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sig.door_open",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "kin.time",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "ru.occupant_count",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "ru.pedestrian",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "st.lane",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "rel.surface_gap",
+            "unit": "structured",
+            "method": "original Native actor, door-pixel and passing-vehicle source join",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "engineering diagnostic; contextual legal interference and actual pixel visibility require independent review"
+          },
+          {
+            "name": "drv.time_to_conflict",
+            "unit": "structured",
+            "method": "original Native actor, door-pixel and passing-vehicle source join",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "engineering diagnostic; contextual legal interference and actual pixel visibility require independent review"
+          },
+          {
+            "name": "drv.hard_deceleration",
+            "unit": "structured",
+            "method": "original Native actor, door-pixel and passing-vehicle source join",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "engineering diagnostic; contextual legal interference and actual pixel visibility require independent review"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "method": "original Native actor, door-pixel and passing-vehicle source join",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "engineering diagnostic; contextual legal interference and actual pixel visibility require independent review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Door pose, boarding or alighting, passing traffic motion and camera visibility require original-source review",
+          "Interference with moving vehicular traffic requires contextual legal review"
+        ]
+      },
+      "spec_version": "8ac39a85930e63b58d28bc6275912d6b06088aa16ab428b077e98da041dee205",
+      "planned_case_count": 2,
+      "selection_order": [
+        "training__C228817__NRS-484B-153-2__motor_vehicle_driver__alight_overlap",
+        "training__C228817__NRS-484B-153-2__motor_vehicle_driver__alight_clear"
+      ]
+    }
+  ],
+  "sweeps_expanded": true,
+  "cases": [
+    {
+      "case_id": "training__C228817__NRS-484B-153-2__motor_vehicle_driver__board_overlap",
+      "target_law_id": "NRS-484B-153-2",
+      "target_type": "judgment_sweep",
+      "rationale": "Compare observed door/person action with moving passing traffic timing; actual interference remains a legal judgment",
+      "variable_assignments": {
+        "transfer_action": {
+          "kind": "world_setup",
+          "value": "board",
+          "unit": "categorical",
+          "source": "selected Native configuration"
+        },
+        "passing_arrival_frame": {
+          "kind": "controller",
+          "value": 110,
+          "unit": "frame",
+          "source": "selected Native passing controller"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "closest to passing traffic",
+        "open the door of or board or alight",
+        "in such a manner as to interfere with moving vehicular traffic"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sig.door_open",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "kin.time",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "ru.occupant_count",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "ru.pedestrian",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "st.lane",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "rel.surface_gap",
+            "unit": "structured",
+            "method": "original Native actor, door-pixel and passing-vehicle source join",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "engineering diagnostic; contextual legal interference and actual pixel visibility require independent review"
+          },
+          {
+            "name": "drv.time_to_conflict",
+            "unit": "structured",
+            "method": "original Native actor, door-pixel and passing-vehicle source join",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "engineering diagnostic; contextual legal interference and actual pixel visibility require independent review"
+          },
+          {
+            "name": "drv.hard_deceleration",
+            "unit": "structured",
+            "method": "original Native actor, door-pixel and passing-vehicle source join",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "engineering diagnostic; contextual legal interference and actual pixel visibility require independent review"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "method": "original Native actor, door-pixel and passing-vehicle source join",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "engineering diagnostic; contextual legal interference and actual pixel visibility require independent review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Door pose, boarding or alighting, passing traffic motion and camera visibility require original-source review",
+          "Interference with moving vehicular traffic requires contextual legal review"
+        ]
+      },
+      "paired_probe_id": "training__C228817__NRS-484B-153-2__motor_vehicle_driver__board_passing_arrival",
+      "deliberate_differences": [
+        "passing_arrival_frame"
+      ],
+      "probe": {
+        "primary_variable": "passing_arrival_frame",
+        "comparison_or_standard": "controlled passing-arrival request; original interference remains unjudged",
+        "target_value_or_branch": 110
+      },
+      "sweep_id": "training__C228817__NRS-484B-153-2__motor_vehicle_driver__board_passing_arrival",
+      "sweep_spec_version": "096efa874b4df3c36f2ae0dd8b80ba85728f75c0e1750c4f49a38988ce12e202",
+      "sweep_point": {
+        "passing_arrival_frame": 110.0
+      },
+      "selection_rank": 0
+    },
+    {
+      "case_id": "training__C228817__NRS-484B-153-2__motor_vehicle_driver__board_clear",
+      "target_law_id": "NRS-484B-153-2",
+      "target_type": "judgment_sweep",
+      "rationale": "Compare observed door/person action with moving passing traffic timing; actual interference remains a legal judgment",
+      "variable_assignments": {
+        "transfer_action": {
+          "kind": "world_setup",
+          "value": "board",
+          "unit": "categorical",
+          "source": "selected Native configuration"
+        },
+        "passing_arrival_frame": {
+          "kind": "controller",
+          "value": 310,
+          "unit": "frame",
+          "source": "selected Native passing controller"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "closest to passing traffic",
+        "open the door of or board or alight",
+        "in such a manner as to interfere with moving vehicular traffic"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sig.door_open",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "kin.time",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "ru.occupant_count",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "ru.pedestrian",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "st.lane",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "rel.surface_gap",
+            "unit": "structured",
+            "method": "original Native actor, door-pixel and passing-vehicle source join",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "engineering diagnostic; contextual legal interference and actual pixel visibility require independent review"
+          },
+          {
+            "name": "drv.time_to_conflict",
+            "unit": "structured",
+            "method": "original Native actor, door-pixel and passing-vehicle source join",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "engineering diagnostic; contextual legal interference and actual pixel visibility require independent review"
+          },
+          {
+            "name": "drv.hard_deceleration",
+            "unit": "structured",
+            "method": "original Native actor, door-pixel and passing-vehicle source join",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "engineering diagnostic; contextual legal interference and actual pixel visibility require independent review"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "method": "original Native actor, door-pixel and passing-vehicle source join",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "engineering diagnostic; contextual legal interference and actual pixel visibility require independent review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Door pose, boarding or alighting, passing traffic motion and camera visibility require original-source review",
+          "Interference with moving vehicular traffic requires contextual legal review"
+        ]
+      },
+      "paired_probe_id": "training__C228817__NRS-484B-153-2__motor_vehicle_driver__board_passing_arrival",
+      "deliberate_differences": [
+        "passing_arrival_frame"
+      ],
+      "probe": {
+        "primary_variable": "passing_arrival_frame",
+        "comparison_or_standard": "controlled passing-arrival request; original interference remains unjudged",
+        "target_value_or_branch": 310
+      },
+      "sweep_id": "training__C228817__NRS-484B-153-2__motor_vehicle_driver__board_passing_arrival",
+      "sweep_spec_version": "096efa874b4df3c36f2ae0dd8b80ba85728f75c0e1750c4f49a38988ce12e202",
+      "sweep_point": {
+        "passing_arrival_frame": 310.0
+      },
+      "selection_rank": 1
+    },
+    {
+      "case_id": "training__C228817__NRS-484B-153-2__motor_vehicle_driver__alight_overlap",
+      "target_law_id": "NRS-484B-153-2",
+      "target_type": "judgment_sweep",
+      "rationale": "Compare observed door/person action with moving passing traffic timing; actual interference remains a legal judgment",
+      "variable_assignments": {
+        "transfer_action": {
+          "kind": "world_setup",
+          "value": "alight",
+          "unit": "categorical",
+          "source": "selected Native configuration"
+        },
+        "passing_arrival_frame": {
+          "kind": "controller",
+          "value": 110,
+          "unit": "frame",
+          "source": "selected Native passing controller"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "closest to passing traffic",
+        "open the door of or board or alight",
+        "in such a manner as to interfere with moving vehicular traffic"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sig.door_open",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "kin.time",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "ru.occupant_count",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "ru.pedestrian",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "st.lane",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "rel.surface_gap",
+            "unit": "structured",
+            "method": "original Native actor, door-pixel and passing-vehicle source join",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "engineering diagnostic; contextual legal interference and actual pixel visibility require independent review"
+          },
+          {
+            "name": "drv.time_to_conflict",
+            "unit": "structured",
+            "method": "original Native actor, door-pixel and passing-vehicle source join",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "engineering diagnostic; contextual legal interference and actual pixel visibility require independent review"
+          },
+          {
+            "name": "drv.hard_deceleration",
+            "unit": "structured",
+            "method": "original Native actor, door-pixel and passing-vehicle source join",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "engineering diagnostic; contextual legal interference and actual pixel visibility require independent review"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "method": "original Native actor, door-pixel and passing-vehicle source join",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "engineering diagnostic; contextual legal interference and actual pixel visibility require independent review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Door pose, boarding or alighting, passing traffic motion and camera visibility require original-source review",
+          "Interference with moving vehicular traffic requires contextual legal review"
+        ]
+      },
+      "paired_probe_id": "training__C228817__NRS-484B-153-2__motor_vehicle_driver__alight_passing_arrival",
+      "deliberate_differences": [
+        "passing_arrival_frame"
+      ],
+      "probe": {
+        "primary_variable": "passing_arrival_frame",
+        "comparison_or_standard": "controlled passing-arrival request; original interference remains unjudged",
+        "target_value_or_branch": 110
+      },
+      "sweep_id": "training__C228817__NRS-484B-153-2__motor_vehicle_driver__alight_passing_arrival",
+      "sweep_spec_version": "8ac39a85930e63b58d28bc6275912d6b06088aa16ab428b077e98da041dee205",
+      "sweep_point": {
+        "passing_arrival_frame": 110.0
+      },
+      "selection_rank": 0
+    },
+    {
+      "case_id": "training__C228817__NRS-484B-153-2__motor_vehicle_driver__alight_clear",
+      "target_law_id": "NRS-484B-153-2",
+      "target_type": "judgment_sweep",
+      "rationale": "Compare observed door/person action with moving passing traffic timing; actual interference remains a legal judgment",
+      "variable_assignments": {
+        "transfer_action": {
+          "kind": "world_setup",
+          "value": "alight",
+          "unit": "categorical",
+          "source": "selected Native configuration"
+        },
+        "passing_arrival_frame": {
+          "kind": "controller",
+          "value": 310,
+          "unit": "frame",
+          "source": "selected Native passing controller"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "closest to passing traffic",
+        "open the door of or board or alight",
+        "in such a manner as to interfere with moving vehicular traffic"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sig.door_open",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "kin.time",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "ru.occupant_count",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "ru.pedestrian",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "st.lane",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "rel.surface_gap",
+            "unit": "structured",
+            "method": "original Native actor, door-pixel and passing-vehicle source join",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "engineering diagnostic; contextual legal interference and actual pixel visibility require independent review"
+          },
+          {
+            "name": "drv.time_to_conflict",
+            "unit": "structured",
+            "method": "original Native actor, door-pixel and passing-vehicle source join",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "engineering diagnostic; contextual legal interference and actual pixel visibility require independent review"
+          },
+          {
+            "name": "drv.hard_deceleration",
+            "unit": "structured",
+            "method": "original Native actor, door-pixel and passing-vehicle source join",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "engineering diagnostic; contextual legal interference and actual pixel visibility require independent review"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "method": "original Native actor, door-pixel and passing-vehicle source join",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "engineering diagnostic; contextual legal interference and actual pixel visibility require independent review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Door pose, boarding or alighting, passing traffic motion and camera visibility require original-source review",
+          "Interference with moving vehicular traffic requires contextual legal review"
+        ]
+      },
+      "paired_probe_id": "training__C228817__NRS-484B-153-2__motor_vehicle_driver__alight_passing_arrival",
+      "deliberate_differences": [
+        "passing_arrival_frame"
+      ],
+      "probe": {
+        "primary_variable": "passing_arrival_frame",
+        "comparison_or_standard": "controlled passing-arrival request; original interference remains unjudged",
+        "target_value_or_branch": 310
+      },
+      "sweep_id": "training__C228817__NRS-484B-153-2__motor_vehicle_driver__alight_passing_arrival",
+      "sweep_spec_version": "8ac39a85930e63b58d28bc6275912d6b06088aa16ab428b077e98da041dee205",
+      "sweep_point": {
+        "passing_arrival_frame": 310.0
+      },
+      "selection_rank": 1
+    },
+    {
+      "case_id": "training__C228817__NRS-484B-153-2__motor_vehicle_driver__neutral_baseline",
+      "target_law_id": "NRS-484B-153-2",
+      "target_type": "baseline",
+      "rationale": "Unselected shared road/loading context; no recording or legal outcome",
+      "variable_assignments": {
+        "transfer_action": {
+          "kind": "world_setup",
+          "value": "board",
+          "unit": "categorical",
+          "source": "selected Native configuration"
+        },
+        "passing_arrival_frame": {
+          "kind": "controller",
+          "value": 110,
+          "unit": "frame",
+          "source": "selected Native passing controller"
+        }
+      },
+      "unresolved_judgment_calls": [
+        "closest to passing traffic",
+        "open the door of or board or alight",
+        "in such a manner as to interfere with moving vehicular traffic"
+      ],
+      "recording_description": {
+        "channels": [
+          {
+            "name": "sig.door_open",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "kin.time",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "drv.standing_or_parked",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "ru.occupant_count",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "ru.pedestrian",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "st.lane",
+            "unit": "structured",
+            "method": "original Native source frame join and reviewed four-camera pixels",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "actuator request does not establish observed physical state; necessity remains unresolved"
+          },
+          {
+            "name": "rel.surface_gap",
+            "unit": "structured",
+            "method": "original Native actor, door-pixel and passing-vehicle source join",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "engineering diagnostic; contextual legal interference and actual pixel visibility require independent review"
+          },
+          {
+            "name": "drv.time_to_conflict",
+            "unit": "structured",
+            "method": "original Native actor, door-pixel and passing-vehicle source join",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "engineering diagnostic; contextual legal interference and actual pixel visibility require independent review"
+          },
+          {
+            "name": "drv.hard_deceleration",
+            "unit": "structured",
+            "method": "original Native actor, door-pixel and passing-vehicle source join",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "engineering diagnostic; contextual legal interference and actual pixel visibility require independent review"
+          },
+          {
+            "name": "kin.velocity",
+            "unit": "structured",
+            "method": "original Native actor, door-pixel and passing-vehicle source join",
+            "sampling_rate_hz": 20,
+            "time_window": "all 600 frames",
+            "reference_frame": "original Native tick and camera frame map",
+            "uncertainty": "engineering diagnostic; contextual legal interference and actual pixel visibility require independent review"
+          }
+        ],
+        "context_inputs": [],
+        "limitations": [
+          "Door pose, boarding or alighting, passing traffic motion and camera visibility require original-source review",
+          "Interference with moving vehicular traffic requires contextual legal review"
+        ]
+      },
+      "sweep_id": "training__C228817__NRS-484B-153-2__motor_vehicle_driver__board_passing_arrival",
+      "sweep_spec_version": "096efa874b4df3c36f2ae0dd8b80ba85728f75c0e1750c4f49a38988ce12e202",
+      "sweep_point": {
+        "passing_arrival_frame": 110.0
+      },
+      "selection_rank": 0
+    }
+  ]
+}

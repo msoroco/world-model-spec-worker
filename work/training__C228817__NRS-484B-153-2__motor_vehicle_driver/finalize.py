@@ -187,6 +187,16 @@ def interference_rows(trace, states, review, config, measured):
     summary = measure_trace(rows, scene)
     summary["first_door_open_frame"] = measured["open_frame"]
     summary["transfer_frame"] = transfer_frame
+    opening_only = [diagnostic_rows[i] for i in range(measured["open_frame"], transfer_frame)
+        if states[i]["door_open"] and trace[i]["passing_speed_mps"] > 0.05]
+    summary["opening_only_before_transfer"] = {
+        "frame_range": [measured["open_frame"], transfer_frame-1],
+        "moving_traffic_observed_frames": len(opening_only),
+        "minimum_door_to_vehicle_gap_m": min(
+            (row["door_to_vehicle_gap_m"] for row in opening_only), default=None),
+        "maximum_passing_deceleration_mps2": max(
+            (row["passing_deceleration_mps2"] for row in opening_only), default=None),
+        "legal_interference_conclusion": None}
     summary["passing_response_after_door_motion"] = [row["passing_deceleration_mps2"]
         for i, row in enumerate(diagnostic_rows) if i > measured["open_frame"]]
     summary["passing_response_after_door_motion"] = max(summary["passing_response_after_door_motion"], default=0.0)

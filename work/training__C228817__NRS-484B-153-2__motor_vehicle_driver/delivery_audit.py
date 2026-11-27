@@ -12,8 +12,8 @@ from pathlib import Path
 import tempfile
 
 
-PREFIX = "training__C228817__NRS-484B-153-2__motor_vehicle_driver__probe_"
-CASES = {PREFIX + str(n) for n in range(1, 5)}
+PREFIX = "training__C228817__NRS-484B-153-2__motor_vehicle_driver__"
+CASES = {PREFIX + suffix for suffix in ("board_overlap", "board_clear", "alight_overlap", "alight_clear")}
 VIEWS = ("overview", "approach", "reference_corner", "driver_reference")
 CHECKS = ("native_source", "all_participants", "time_join", "full_video_decode",
           "actual_pixels", "physical_completion")
@@ -66,10 +66,12 @@ def inspect_join(case, attempt, review):
     require(set(review.get("camera_sha256", {})) == set(VIEWS) and
             all(review["camera_sha256"][view] == sha(attempt / (view + ".mkv"))
                 for view in VIEWS), "Reviewed camera bytes differ")
+    require(review.get("ground_plane_calibration_source"), "Original door ground-plane calibration missing")
     observations = review.get("door_observations", [])
     require(len(observations) == 600 and
             all(row.get("video_frame") == i and type(row.get("door_open")) is bool and
-                row.get("source_camera") in VIEWS and row.get("pixel_box_xyxy")
+                row.get("source_camera") in VIEWS and row.get("pixel_box_xyxy") and
+                row.get("hinge_world_xy_m") and row.get("tip_world_xy_m")
                 for i, row in enumerate(observations)),
             "Every source frame needs a reviewed door pixel")
     opened = [i for i, row in enumerate(observations) if row["door_open"]]
@@ -79,21 +81,27 @@ def inspect_join(case, attempt, review):
             review.get("observed_door_side") in ("left", "right"),
             "Closest-to-passing-traffic door side unverified")
     events = review.get("transfer_events", [])
-    kind = "cargo" if case.endswith(("3", "4")) else "passenger"
-    require(events and all(event.get("kind") == kind and
+    require(events and all(event.get("kind") == "passenger" and
                            event.get("video_frame") in range(opened[0], opened[-1] + 1) and
                            event.get("source_camera") in VIEWS and
-                           event.get("pixel_box_xyxy") for event in events),
-            "Contemporaneous passenger/cargo transfer pixels missing")
-    if kind == "cargo":
-        require(trace[0].get("cargo_actor_id") and
-                all(event.get("cargo_actor_id_observed") == trace[0]["cargo_actor_id"]
-                    for event in events), "Cargo actor identity unreviewed")
-    else:
-        require(all(event.get("occupancy_delta_observed") in (-1, 1)
-                    for event in events), "Passenger occupancy change unreviewed")
+                           event.get("pixel_box_xyxy") and
+                           event.get("occupancy_delta_observed") in (-1, 1)
+                           for event in events),
+            "Contemporaneous boarding or alighting source pixels missing")
+    expected_delta = 1 if case.removeprefix(PREFIX).startswith("board") else -1
+    require(all(event["occupancy_delta_observed"] == expected_delta for event in events),
+            "Selected boarding or alighting alternative differs")
+    moving = [i for i, row in enumerate(trace) if row.get("passing_speed_mps", 0) > 0.05]
+    require(moving and all(trace[i].get("passing_lateral_offset_m", 0) > 0.25 for i in moving),
+            "Moving vehicular traffic on observed door side missing")
+    observed_start = moving[0]
+    expected_start = 110 if case.endswith("overlap") else 310
+    require(abs(observed_start - expected_start) <= 20,
+            "Passing traffic timing differs from selected source comparison")
     return {"open_frames": len(opened), "open_interval_s": [opened[0] / 20,
             (opened[-1] + 1) / 20], "transfer_events": len(events),
+            "moving_passing_frames": len(moving),
+            "passing_arrival_frame": observed_start,
             "traffic_side": review["observed_traffic_side"]}
 
 

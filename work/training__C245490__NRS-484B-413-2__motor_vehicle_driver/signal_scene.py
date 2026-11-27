@@ -5,6 +5,9 @@ import math
 import xml.etree.ElementTree as ET
 
 DISTANCES_FT = (90, 100, 110, 290, 300, 310)
+CASE_SUFFIXES = tuple(str(distance) for distance in DISTANCES_FT) + (
+    '100_interrupt', '100_rain', '100_right',
+    '300_interrupt', '300_rain', '300_right')
 FRAMES = 600
 RATE_HZ = 20
 COURSE_CHANGE_ODOMETER_M = 120.0
@@ -43,31 +46,54 @@ def verify_road(xml: str) -> dict:
             'source_kind': 'authored_OpenDRIVE_unverified_Native'}
 
 
+def case_spec(case: int | str) -> dict:
+    suffix = str(case)
+    if suffix not in CASE_SUFFIXES:
+        raise ValueError('Unselected signal variant')
+    distance = int(suffix.split('_')[0])
+    variant = suffix.split('_', 1)[1] if '_' in suffix else 'boundary'
+    return {'suffix': suffix, 'distance_ft': distance, 'variant': variant,
+        'weather_requested': 'rain' if variant == 'rain' else 'clear',
+        'signal_side': 'right' if variant == 'right' else 'left',
+        'interruption_requested': variant == 'interrupt'}
+
+
 def area_for_distance(distance_ft: int) -> str:
     if distance_ft not in DISTANCES_FT:
         raise ValueError('Unselected signal boundary')
     return 'business_or_residential' if distance_ft < 200 else 'other'
 
 
-def request(distance_ft: int) -> dict:
+def request(case: int | str) -> dict:
+    spec = case_spec(case)
+    distance_ft = spec['distance_ft']
     area = area_for_distance(distance_ft)
     onset = COURSE_CHANGE_ODOMETER_M - distance_ft * 0.3048
     if onset <= 0 or COURSE_CHANGE_ODOMETER_M / SPEED_REQUEST_MPS >= FRAMES / RATE_HZ:
         raise ValueError('Signal onset or lane change outside 600-frame approach')
-    return {'requested_signal_distance_ft': distance_ft, 'area_class_requested': area,
+    return {'requested_signal_distance_ft': distance_ft,
+        'case_variant': spec['variant'],
+        'weather_requested': spec['weather_requested'],
+        'interruption_requested': spec['interruption_requested'],
+        'area_class_requested': area,
         'signal_onset_odometer_m': onset,
         'course_change_request_odometer_m': COURSE_CHANGE_ODOMETER_M,
         'speed_request_mps': SPEED_REQUEST_MPS, 'frames': FRAMES,
         'rate_hz': RATE_HZ, 'duration_s': FRAMES / RATE_HZ,
-        'signal_side': 'left', 'maneuver': 'change_lane',
+        'signal_side': spec['signal_side'], 'maneuver': 'change_lane',
         'layout': 'same_direction_multilane', 'control': 'lane_marking',
         'area_class_originally_verified': False, 'legal_verdict': None}
 
 
-def controls(distance_ft: int, odometer_m: float) -> dict:
+def controls(case: int | str, odometer_m: float) -> dict:
     if not math.isfinite(odometer_m) or odometer_m < 0:
         raise ValueError('Invalid original odometer readback')
-    plan = request(distance_ft)
-    return {'left_signal_requested': odometer_m >= plan['signal_onset_odometer_m'],
+    plan = request(case)
+    signal = odometer_m >= plan['signal_onset_odometer_m']
+    if plan['interruption_requested']:
+        gap_start = plan['signal_onset_odometer_m'] + 10 * .3048
+        signal = signal and not (gap_start <= odometer_m < gap_start + 5 * .3048)
+    return {'signal_requested': signal,
+        'signal_side': plan['signal_side'],
         'lane_change_requested': odometer_m >= COURSE_CHANGE_ODOMETER_M,
         'signal_requested_only': True}

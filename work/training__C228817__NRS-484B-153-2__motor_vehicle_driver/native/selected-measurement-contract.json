@@ -1,0 +1,41 @@
+{
+  "format": "worker-measurement-contract",
+  "requirements": [
+    {
+      "disposition_index": 0,
+      "requirement": "text-0",
+      "source": "NRS 484B.153(2)",
+      "output_key": "interference_context",
+      "method": "interference_rows",
+      "value_type": "object",
+      "kind": "measured",
+      "inputs": [
+        "native-door-trace.jsonl",
+        "video_frames.jsonl",
+        "door-pixel-review.json",
+        "original-road.json"
+      ]
+    },
+    {
+      "disposition_index": 1,
+      "requirement": "reviewed-scope-0",
+      "source": "inputs/planning/focused-coverage-20261016-v1/coverage-witnesses.json",
+      "output_key": "interference_window",
+      "method": "measure_interference_context",
+      "value_type": "object",
+      "kind": "sourced_context",
+      "inputs": [
+        "door-pixel-review.json",
+        "original-scene-review.json",
+        "native-door-trace.jsonl",
+        "video_frames.jsonl"
+      ]
+    }
+  ],
+  "negative": {
+    "remove": [
+      "door-pixel-review.json"
+    ],
+    "error_contains": "Missing required source: door-pixel-review.json"
+  }
+}

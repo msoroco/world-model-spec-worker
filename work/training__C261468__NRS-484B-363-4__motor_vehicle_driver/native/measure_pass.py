@@ -94,7 +94,7 @@ def measure(root):
     if context['beacon_operational'] and not context.get('beacon_with_sign'):
         raise ValueError('Beacon definition requires an accompanying sign')
     prev_native, prev_time = -1, -1.0
-    diffs, inside, times = [], [], []
+    diffs, inside, times, lateral_offsets = [], [], [], []
     route = context.get('route_direction_id')
     if not route:
         raise ValueError('Sourced route direction missing')
@@ -113,9 +113,14 @@ def measure(root):
         ego, other = row.get('ego_station_m'), row.get('other_station_m')
         if not finite(ego) or not finite(other):
             raise ValueError('Missing finite original longitudinal stations')
+        ego_lateral = row.get('ego_lateral_m')
+        other_lateral = row.get('other_lateral_m')
+        if not finite(ego_lateral) or not finite(other_lateral):
+            raise ValueError('Missing sourced lateral lane positions')
         if i and (ego < trace[i-1]['ego_station_m'] or other < trace[i-1]['other_station_m']):
             raise ValueError('Route stations do not advance in the same direction')
         diffs.append(ego - other)
+        lateral_offsets.append(ego_lateral - other_lateral)
         inside.append(boundary[0] <= ego <= boundary[1] and boundary[0] <= other <= boundary[1])
         times.append(t)
         prev_native, prev_time = native, t
@@ -127,7 +132,25 @@ def measure(root):
     cross = crossing[0]
     if not inside[cross]:
         raise ValueError('Pass crossing is outside the signed school zone')
+    origin = lateral_offsets[0]
+    if abs(origin) > .75 or abs(lateral_offsets[-1]) > .75:
+        raise ValueError('Pass must begin and end in the original route lane')
+    departures = [i for i in range(1, cross) if abs(lateral_offsets[i] - origin) > .75]
+    if not departures:
+        raise ValueError('No observed lane departure before passing')
+    start = departures[0]
+    if abs(lateral_offsets[cross] - origin) < 2:
+        raise ValueError('No adjacent-lane separation at abreast crossing')
+    returns = [i for i in range(cross + 1, FRAMES)
+               if abs(lateral_offsets[i] - origin) <= .75 and diffs[i] >= 7]
+    if not returns:
+        raise ValueError('No observed lane return after passing')
+    end = returns[0]
+    if not all(inside[start:end + 1]):
+        raise ValueError('Whole pass and lane return must remain in signed school zone')
     civil_at_cross = context['civil_time_unix_s'] + times[cross] - times[0]
+    seconds_after_end = civil_at_cross - context['operation_end_unix_s']
+    seconds_before_next = context['next_operation_start_unix_s'] - civil_at_cross
     return {
         'format': 'saved-school-zone-pass-observation', 'assignment_id': ASSIGNMENT,
         'source_kind': context['review_kind'],
@@ -137,12 +160,17 @@ def measure(root):
         'sample_count': FRAMES, 'sample_span_s': times[-1] - times[0],
         'pass_crossing_video_frame': cross, 'pass_crossing_time_s': times[cross],
         'pass_crossing_in_signed_zone': inside[cross],
+        'lane_departure_video_frame': start, 'lane_return_video_frame': end,
+        'whole_pass_in_signed_zone': True,
         'same_direction_route_source': context['route_direction_source'],
         'civil_time_at_cross_unix_s': civil_at_cross,
         'school_in_session': context['school_in_session'],
         'pupils_in_class': context['pupils_in_class'],
-        'minutes_after_operation_end_at_cross': (civil_at_cross - context['operation_end_unix_s']) / 60,
-        'minutes_before_next_operation_at_cross': (context['next_operation_start_unix_s'] - civil_at_cross) / 60,
+        'minutes_after_operation_end_at_cross': seconds_after_end / 60,
+        'minutes_before_next_operation_at_cross': seconds_before_next / 60,
+        'at_least_half_hour_after_end_observed': seconds_after_end >= 1800,
+        'at_least_half_hour_before_next_observed': seconds_before_next >= 1800,
+        'within_half_hour_window_observed': seconds_after_end >= 1800 and seconds_before_next >= 1800,
         'beacon_operational': context['beacon_operational'],
         'beacon_yellow_lights': context.get('beacon_yellow_lights'),
         'beacon_yellow_alternating': context['beacon_yellow_alternating'],

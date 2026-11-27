@@ -1,0 +1,2360 @@
+{
+  "actor": "motor_vehicle_driver",
+  "cell_id": "C245490",
+  "status": "draft",
+  "sweeps_expanded": true,
+  "cases": [
+    {
+      "case_id": "training__C245490__NRS-484B-413-2__motor_vehicle_driver__baseline",
+      "target_law_id": null,
+      "target_type": "baseline",
+      "rationale": "Unselected neutral signaling definition.",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "sig.turn_indicator",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "sig.hand_signal",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "drv.distance_while",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "kin.path_length",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "drv.turning",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "drv.lane_change",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "env.precipitation",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "continuous_signal_distance_before_course_change",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "area_class_source",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          },
+          {
+            "name": "original_video",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          },
+          {
+            "name": "lane_source",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          },
+          {
+            "name": "weather_source",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          }
+        ],
+        "limitations": [
+          "Signal command differs from observed light and visible pixels.",
+          "Requested area class is not legal classification."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "during not less than the last 100 feet traveled in a business or residential district",
+        "during not less than the last 300 feet traveled in any other area",
+        "shall be given continuously",
+        "prior to changing the course of a vehicle",
+        "regardless of the weather"
+      ],
+      "variable_assignments": {
+        "area_class_request": {
+          "kind": "world_setup",
+          "unit": "category",
+          "value": "business_or_residential"
+        },
+        "signal_distance_ft": {
+          "kind": "controller",
+          "unit": "ft",
+          "value": 90
+        },
+        "signal_continuity_request": {
+          "kind": "controller",
+          "unit": "category",
+          "value": "continuous"
+        },
+        "weather_request": {
+          "kind": "world_setup",
+          "unit": "category",
+          "value": "clear"
+        },
+        "signal_side_request": {
+          "kind": "controller",
+          "unit": "category",
+          "value": "left"
+        }
+      }
+    },
+    {
+      "case_id": "training__C245490__NRS-484B-413-2__motor_vehicle_driver__90",
+      "target_law_id": "NRS-484B-413-2",
+      "target_type": "boundary_probe",
+      "probe": {
+        "primary_variable": "signal_distance_ft",
+        "comparison_or_standard": "Original sampled final path distance and applicable area class; no inferred legal verdict",
+        "target_value_or_branch": "90"
+      },
+      "paired_probe_id": "C245490-signal-course-change-contrasts",
+      "deliberate_differences": [
+        "signal_distance_ft"
+      ],
+      "rationale": "Source-bound request contrast; original area and pixels remain unverified.",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "sig.turn_indicator",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "sig.hand_signal",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "drv.distance_while",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "kin.path_length",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "drv.turning",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "drv.lane_change",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "env.precipitation",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "continuous_signal_distance_before_course_change",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "area_class_source",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          },
+          {
+            "name": "original_video",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          },
+          {
+            "name": "lane_source",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          },
+          {
+            "name": "weather_source",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          }
+        ],
+        "limitations": [
+          "Signal command differs from observed light and visible pixels.",
+          "Requested area class is not legal classification."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "during not less than the last 100 feet traveled in a business or residential district",
+        "during not less than the last 300 feet traveled in any other area",
+        "shall be given continuously",
+        "prior to changing the course of a vehicle",
+        "regardless of the weather"
+      ],
+      "variable_assignments": {
+        "area_class_request": {
+          "kind": "world_setup",
+          "unit": "category",
+          "value": "business_or_residential"
+        },
+        "signal_distance_ft": {
+          "kind": "controller",
+          "unit": "ft",
+          "value": 90
+        },
+        "signal_continuity_request": {
+          "kind": "controller",
+          "unit": "category",
+          "value": "continuous"
+        },
+        "weather_request": {
+          "kind": "world_setup",
+          "unit": "category",
+          "value": "clear"
+        },
+        "signal_side_request": {
+          "kind": "controller",
+          "unit": "category",
+          "value": "left"
+        }
+      }
+    },
+    {
+      "case_id": "training__C245490__NRS-484B-413-2__motor_vehicle_driver__100",
+      "target_law_id": "NRS-484B-413-2",
+      "target_type": "boundary_probe",
+      "probe": {
+        "primary_variable": "signal_distance_ft",
+        "comparison_or_standard": "Original sampled final path distance and applicable area class; no inferred legal verdict",
+        "target_value_or_branch": "100"
+      },
+      "paired_probe_id": "C245490-signal-course-change-contrasts",
+      "deliberate_differences": [
+        "signal_distance_ft"
+      ],
+      "rationale": "Source-bound request contrast; original area and pixels remain unverified.",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "sig.turn_indicator",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "sig.hand_signal",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "drv.distance_while",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "kin.path_length",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "drv.turning",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "drv.lane_change",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "env.precipitation",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "continuous_signal_distance_before_course_change",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "area_class_source",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          },
+          {
+            "name": "original_video",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          },
+          {
+            "name": "lane_source",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          },
+          {
+            "name": "weather_source",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          }
+        ],
+        "limitations": [
+          "Signal command differs from observed light and visible pixels.",
+          "Requested area class is not legal classification."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "during not less than the last 100 feet traveled in a business or residential district",
+        "during not less than the last 300 feet traveled in any other area",
+        "shall be given continuously",
+        "prior to changing the course of a vehicle",
+        "regardless of the weather"
+      ],
+      "variable_assignments": {
+        "area_class_request": {
+          "kind": "world_setup",
+          "unit": "category",
+          "value": "business_or_residential"
+        },
+        "signal_distance_ft": {
+          "kind": "controller",
+          "unit": "ft",
+          "value": 100
+        },
+        "signal_continuity_request": {
+          "kind": "controller",
+          "unit": "category",
+          "value": "continuous"
+        },
+        "weather_request": {
+          "kind": "world_setup",
+          "unit": "category",
+          "value": "clear"
+        },
+        "signal_side_request": {
+          "kind": "controller",
+          "unit": "category",
+          "value": "left"
+        }
+      }
+    },
+    {
+      "case_id": "training__C245490__NRS-484B-413-2__motor_vehicle_driver__110",
+      "target_law_id": "NRS-484B-413-2",
+      "target_type": "boundary_probe",
+      "probe": {
+        "primary_variable": "signal_distance_ft",
+        "comparison_or_standard": "Original sampled final path distance and applicable area class; no inferred legal verdict",
+        "target_value_or_branch": "110"
+      },
+      "paired_probe_id": "C245490-signal-course-change-contrasts",
+      "deliberate_differences": [
+        "signal_distance_ft"
+      ],
+      "rationale": "Source-bound request contrast; original area and pixels remain unverified.",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "sig.turn_indicator",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "sig.hand_signal",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "drv.distance_while",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "kin.path_length",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "drv.turning",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "drv.lane_change",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "env.precipitation",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "continuous_signal_distance_before_course_change",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "area_class_source",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          },
+          {
+            "name": "original_video",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          },
+          {
+            "name": "lane_source",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          },
+          {
+            "name": "weather_source",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          }
+        ],
+        "limitations": [
+          "Signal command differs from observed light and visible pixels.",
+          "Requested area class is not legal classification."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "during not less than the last 100 feet traveled in a business or residential district",
+        "during not less than the last 300 feet traveled in any other area",
+        "shall be given continuously",
+        "prior to changing the course of a vehicle",
+        "regardless of the weather"
+      ],
+      "variable_assignments": {
+        "area_class_request": {
+          "kind": "world_setup",
+          "unit": "category",
+          "value": "business_or_residential"
+        },
+        "signal_distance_ft": {
+          "kind": "controller",
+          "unit": "ft",
+          "value": 110
+        },
+        "signal_continuity_request": {
+          "kind": "controller",
+          "unit": "category",
+          "value": "continuous"
+        },
+        "weather_request": {
+          "kind": "world_setup",
+          "unit": "category",
+          "value": "clear"
+        },
+        "signal_side_request": {
+          "kind": "controller",
+          "unit": "category",
+          "value": "left"
+        }
+      }
+    },
+    {
+      "case_id": "training__C245490__NRS-484B-413-2__motor_vehicle_driver__290",
+      "target_law_id": "NRS-484B-413-2",
+      "target_type": "boundary_probe",
+      "probe": {
+        "primary_variable": "signal_distance_ft",
+        "comparison_or_standard": "Original sampled final path distance and applicable area class; no inferred legal verdict",
+        "target_value_or_branch": "290"
+      },
+      "paired_probe_id": "C245490-signal-course-change-contrasts",
+      "deliberate_differences": [
+        "signal_distance_ft",
+        "area_class_request"
+      ],
+      "rationale": "Source-bound request contrast; original area and pixels remain unverified.",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "sig.turn_indicator",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "sig.hand_signal",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "drv.distance_while",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "kin.path_length",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "drv.turning",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "drv.lane_change",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "env.precipitation",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "continuous_signal_distance_before_course_change",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "area_class_source",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          },
+          {
+            "name": "original_video",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          },
+          {
+            "name": "lane_source",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          },
+          {
+            "name": "weather_source",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          }
+        ],
+        "limitations": [
+          "Signal command differs from observed light and visible pixels.",
+          "Requested area class is not legal classification."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "during not less than the last 100 feet traveled in a business or residential district",
+        "during not less than the last 300 feet traveled in any other area",
+        "shall be given continuously",
+        "prior to changing the course of a vehicle",
+        "regardless of the weather"
+      ],
+      "variable_assignments": {
+        "area_class_request": {
+          "kind": "world_setup",
+          "unit": "category",
+          "value": "other"
+        },
+        "signal_distance_ft": {
+          "kind": "controller",
+          "unit": "ft",
+          "value": 290
+        },
+        "signal_continuity_request": {
+          "kind": "controller",
+          "unit": "category",
+          "value": "continuous"
+        },
+        "weather_request": {
+          "kind": "world_setup",
+          "unit": "category",
+          "value": "clear"
+        },
+        "signal_side_request": {
+          "kind": "controller",
+          "unit": "category",
+          "value": "left"
+        }
+      }
+    },
+    {
+      "case_id": "training__C245490__NRS-484B-413-2__motor_vehicle_driver__300",
+      "target_law_id": "NRS-484B-413-2",
+      "target_type": "boundary_probe",
+      "probe": {
+        "primary_variable": "signal_distance_ft",
+        "comparison_or_standard": "Original sampled final path distance and applicable area class; no inferred legal verdict",
+        "target_value_or_branch": "300"
+      },
+      "paired_probe_id": "C245490-signal-course-change-contrasts",
+      "deliberate_differences": [
+        "signal_distance_ft",
+        "area_class_request"
+      ],
+      "rationale": "Source-bound request contrast; original area and pixels remain unverified.",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "sig.turn_indicator",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "sig.hand_signal",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "drv.distance_while",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "kin.path_length",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "drv.turning",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "drv.lane_change",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "env.precipitation",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "continuous_signal_distance_before_course_change",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "area_class_source",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          },
+          {
+            "name": "original_video",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          },
+          {
+            "name": "lane_source",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          },
+          {
+            "name": "weather_source",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          }
+        ],
+        "limitations": [
+          "Signal command differs from observed light and visible pixels.",
+          "Requested area class is not legal classification."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "during not less than the last 100 feet traveled in a business or residential district",
+        "during not less than the last 300 feet traveled in any other area",
+        "shall be given continuously",
+        "prior to changing the course of a vehicle",
+        "regardless of the weather"
+      ],
+      "variable_assignments": {
+        "area_class_request": {
+          "kind": "world_setup",
+          "unit": "category",
+          "value": "other"
+        },
+        "signal_distance_ft": {
+          "kind": "controller",
+          "unit": "ft",
+          "value": 300
+        },
+        "signal_continuity_request": {
+          "kind": "controller",
+          "unit": "category",
+          "value": "continuous"
+        },
+        "weather_request": {
+          "kind": "world_setup",
+          "unit": "category",
+          "value": "clear"
+        },
+        "signal_side_request": {
+          "kind": "controller",
+          "unit": "category",
+          "value": "left"
+        }
+      }
+    },
+    {
+      "case_id": "training__C245490__NRS-484B-413-2__motor_vehicle_driver__310",
+      "target_law_id": "NRS-484B-413-2",
+      "target_type": "boundary_probe",
+      "probe": {
+        "primary_variable": "signal_distance_ft",
+        "comparison_or_standard": "Original sampled final path distance and applicable area class; no inferred legal verdict",
+        "target_value_or_branch": "310"
+      },
+      "paired_probe_id": "C245490-signal-course-change-contrasts",
+      "deliberate_differences": [
+        "signal_distance_ft",
+        "area_class_request"
+      ],
+      "rationale": "Source-bound request contrast; original area and pixels remain unverified.",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "sig.turn_indicator",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "sig.hand_signal",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "drv.distance_while",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "kin.path_length",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "drv.turning",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "drv.lane_change",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "env.precipitation",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "continuous_signal_distance_before_course_change",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "area_class_source",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          },
+          {
+            "name": "original_video",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          },
+          {
+            "name": "lane_source",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          },
+          {
+            "name": "weather_source",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          }
+        ],
+        "limitations": [
+          "Signal command differs from observed light and visible pixels.",
+          "Requested area class is not legal classification."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "during not less than the last 100 feet traveled in a business or residential district",
+        "during not less than the last 300 feet traveled in any other area",
+        "shall be given continuously",
+        "prior to changing the course of a vehicle",
+        "regardless of the weather"
+      ],
+      "variable_assignments": {
+        "area_class_request": {
+          "kind": "world_setup",
+          "unit": "category",
+          "value": "other"
+        },
+        "signal_distance_ft": {
+          "kind": "controller",
+          "unit": "ft",
+          "value": 310
+        },
+        "signal_continuity_request": {
+          "kind": "controller",
+          "unit": "category",
+          "value": "continuous"
+        },
+        "weather_request": {
+          "kind": "world_setup",
+          "unit": "category",
+          "value": "clear"
+        },
+        "signal_side_request": {
+          "kind": "controller",
+          "unit": "category",
+          "value": "left"
+        }
+      }
+    },
+    {
+      "case_id": "training__C245490__NRS-484B-413-2__motor_vehicle_driver__100_interrupt",
+      "target_law_id": "NRS-484B-413-2",
+      "target_type": "boundary_probe",
+      "probe": {
+        "primary_variable": "signal_continuity_request",
+        "comparison_or_standard": "Original sampled final path distance and applicable area class; no inferred legal verdict",
+        "target_value_or_branch": "100_interrupt"
+      },
+      "paired_probe_id": "C245490-signal-course-change-contrasts",
+      "deliberate_differences": [
+        "signal_continuity_request",
+        "signal_distance_ft"
+      ],
+      "rationale": "Source-bound request contrast; original area and pixels remain unverified.",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "sig.turn_indicator",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "sig.hand_signal",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "drv.distance_while",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "kin.path_length",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "drv.turning",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "drv.lane_change",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "env.precipitation",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "continuous_signal_distance_before_course_change",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "area_class_source",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          },
+          {
+            "name": "original_video",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          },
+          {
+            "name": "lane_source",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          },
+          {
+            "name": "weather_source",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          }
+        ],
+        "limitations": [
+          "Signal command differs from observed light and visible pixels.",
+          "Requested area class is not legal classification."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "during not less than the last 100 feet traveled in a business or residential district",
+        "during not less than the last 300 feet traveled in any other area",
+        "shall be given continuously",
+        "prior to changing the course of a vehicle",
+        "regardless of the weather"
+      ],
+      "variable_assignments": {
+        "area_class_request": {
+          "kind": "world_setup",
+          "unit": "category",
+          "value": "business_or_residential"
+        },
+        "signal_distance_ft": {
+          "kind": "controller",
+          "unit": "ft",
+          "value": 100
+        },
+        "signal_continuity_request": {
+          "kind": "controller",
+          "unit": "category",
+          "value": "interrupted"
+        },
+        "weather_request": {
+          "kind": "world_setup",
+          "unit": "category",
+          "value": "clear"
+        },
+        "signal_side_request": {
+          "kind": "controller",
+          "unit": "category",
+          "value": "left"
+        }
+      }
+    },
+    {
+      "case_id": "training__C245490__NRS-484B-413-2__motor_vehicle_driver__100_rain",
+      "target_law_id": "NRS-484B-413-2",
+      "target_type": "boundary_probe",
+      "probe": {
+        "primary_variable": "weather_request",
+        "comparison_or_standard": "Original sampled final path distance and applicable area class; no inferred legal verdict",
+        "target_value_or_branch": "100_rain"
+      },
+      "paired_probe_id": "C245490-signal-course-change-contrasts",
+      "deliberate_differences": [
+        "weather_request",
+        "signal_distance_ft"
+      ],
+      "rationale": "Source-bound request contrast; original area and pixels remain unverified.",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "sig.turn_indicator",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "sig.hand_signal",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "drv.distance_while",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "kin.path_length",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "drv.turning",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "drv.lane_change",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "env.precipitation",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "continuous_signal_distance_before_course_change",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "area_class_source",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          },
+          {
+            "name": "original_video",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          },
+          {
+            "name": "lane_source",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          },
+          {
+            "name": "weather_source",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          }
+        ],
+        "limitations": [
+          "Signal command differs from observed light and visible pixels.",
+          "Requested area class is not legal classification."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "during not less than the last 100 feet traveled in a business or residential district",
+        "during not less than the last 300 feet traveled in any other area",
+        "shall be given continuously",
+        "prior to changing the course of a vehicle",
+        "regardless of the weather"
+      ],
+      "variable_assignments": {
+        "area_class_request": {
+          "kind": "world_setup",
+          "unit": "category",
+          "value": "business_or_residential"
+        },
+        "signal_distance_ft": {
+          "kind": "controller",
+          "unit": "ft",
+          "value": 100
+        },
+        "signal_continuity_request": {
+          "kind": "controller",
+          "unit": "category",
+          "value": "continuous"
+        },
+        "weather_request": {
+          "kind": "world_setup",
+          "unit": "category",
+          "value": "rain"
+        },
+        "signal_side_request": {
+          "kind": "controller",
+          "unit": "category",
+          "value": "left"
+        }
+      }
+    },
+    {
+      "case_id": "training__C245490__NRS-484B-413-2__motor_vehicle_driver__100_right",
+      "target_law_id": "NRS-484B-413-2",
+      "target_type": "boundary_probe",
+      "probe": {
+        "primary_variable": "signal_side_request",
+        "comparison_or_standard": "Original sampled final path distance and applicable area class; no inferred legal verdict",
+        "target_value_or_branch": "100_right"
+      },
+      "paired_probe_id": "C245490-signal-course-change-contrasts",
+      "deliberate_differences": [
+        "signal_side_request",
+        "signal_distance_ft"
+      ],
+      "rationale": "Source-bound request contrast; original area and pixels remain unverified.",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "sig.turn_indicator",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "sig.hand_signal",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "drv.distance_while",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "kin.path_length",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "drv.turning",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "drv.lane_change",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "env.precipitation",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "continuous_signal_distance_before_course_change",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "area_class_source",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          },
+          {
+            "name": "original_video",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          },
+          {
+            "name": "lane_source",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          },
+          {
+            "name": "weather_source",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          }
+        ],
+        "limitations": [
+          "Signal command differs from observed light and visible pixels.",
+          "Requested area class is not legal classification."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "during not less than the last 100 feet traveled in a business or residential district",
+        "during not less than the last 300 feet traveled in any other area",
+        "shall be given continuously",
+        "prior to changing the course of a vehicle",
+        "regardless of the weather"
+      ],
+      "variable_assignments": {
+        "area_class_request": {
+          "kind": "world_setup",
+          "unit": "category",
+          "value": "business_or_residential"
+        },
+        "signal_distance_ft": {
+          "kind": "controller",
+          "unit": "ft",
+          "value": 100
+        },
+        "signal_continuity_request": {
+          "kind": "controller",
+          "unit": "category",
+          "value": "continuous"
+        },
+        "weather_request": {
+          "kind": "world_setup",
+          "unit": "category",
+          "value": "clear"
+        },
+        "signal_side_request": {
+          "kind": "controller",
+          "unit": "category",
+          "value": "right"
+        }
+      }
+    },
+    {
+      "case_id": "training__C245490__NRS-484B-413-2__motor_vehicle_driver__300_interrupt",
+      "target_law_id": "NRS-484B-413-2",
+      "target_type": "boundary_probe",
+      "probe": {
+        "primary_variable": "signal_continuity_request",
+        "comparison_or_standard": "Original sampled final path distance and applicable area class; no inferred legal verdict",
+        "target_value_or_branch": "300_interrupt"
+      },
+      "paired_probe_id": "C245490-signal-course-change-contrasts",
+      "deliberate_differences": [
+        "signal_continuity_request",
+        "area_class_request",
+        "signal_distance_ft"
+      ],
+      "rationale": "Source-bound request contrast; original area and pixels remain unverified.",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "sig.turn_indicator",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "sig.hand_signal",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "drv.distance_while",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "kin.path_length",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "drv.turning",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "drv.lane_change",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "env.precipitation",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "continuous_signal_distance_before_course_change",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "area_class_source",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          },
+          {
+            "name": "original_video",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          },
+          {
+            "name": "lane_source",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          },
+          {
+            "name": "weather_source",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          }
+        ],
+        "limitations": [
+          "Signal command differs from observed light and visible pixels.",
+          "Requested area class is not legal classification."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "during not less than the last 100 feet traveled in a business or residential district",
+        "during not less than the last 300 feet traveled in any other area",
+        "shall be given continuously",
+        "prior to changing the course of a vehicle",
+        "regardless of the weather"
+      ],
+      "variable_assignments": {
+        "area_class_request": {
+          "kind": "world_setup",
+          "unit": "category",
+          "value": "other"
+        },
+        "signal_distance_ft": {
+          "kind": "controller",
+          "unit": "ft",
+          "value": 300
+        },
+        "signal_continuity_request": {
+          "kind": "controller",
+          "unit": "category",
+          "value": "interrupted"
+        },
+        "weather_request": {
+          "kind": "world_setup",
+          "unit": "category",
+          "value": "clear"
+        },
+        "signal_side_request": {
+          "kind": "controller",
+          "unit": "category",
+          "value": "left"
+        }
+      }
+    },
+    {
+      "case_id": "training__C245490__NRS-484B-413-2__motor_vehicle_driver__300_rain",
+      "target_law_id": "NRS-484B-413-2",
+      "target_type": "boundary_probe",
+      "probe": {
+        "primary_variable": "weather_request",
+        "comparison_or_standard": "Original sampled final path distance and applicable area class; no inferred legal verdict",
+        "target_value_or_branch": "300_rain"
+      },
+      "paired_probe_id": "C245490-signal-course-change-contrasts",
+      "deliberate_differences": [
+        "weather_request",
+        "area_class_request",
+        "signal_distance_ft"
+      ],
+      "rationale": "Source-bound request contrast; original area and pixels remain unverified.",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "sig.turn_indicator",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "sig.hand_signal",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "drv.distance_while",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "kin.path_length",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "drv.turning",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "drv.lane_change",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "env.precipitation",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "continuous_signal_distance_before_course_change",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "area_class_source",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          },
+          {
+            "name": "original_video",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          },
+          {
+            "name": "lane_source",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          },
+          {
+            "name": "weather_source",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          }
+        ],
+        "limitations": [
+          "Signal command differs from observed light and visible pixels.",
+          "Requested area class is not legal classification."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "during not less than the last 100 feet traveled in a business or residential district",
+        "during not less than the last 300 feet traveled in any other area",
+        "shall be given continuously",
+        "prior to changing the course of a vehicle",
+        "regardless of the weather"
+      ],
+      "variable_assignments": {
+        "area_class_request": {
+          "kind": "world_setup",
+          "unit": "category",
+          "value": "other"
+        },
+        "signal_distance_ft": {
+          "kind": "controller",
+          "unit": "ft",
+          "value": 300
+        },
+        "signal_continuity_request": {
+          "kind": "controller",
+          "unit": "category",
+          "value": "continuous"
+        },
+        "weather_request": {
+          "kind": "world_setup",
+          "unit": "category",
+          "value": "rain"
+        },
+        "signal_side_request": {
+          "kind": "controller",
+          "unit": "category",
+          "value": "left"
+        }
+      }
+    },
+    {
+      "case_id": "training__C245490__NRS-484B-413-2__motor_vehicle_driver__300_right",
+      "target_law_id": "NRS-484B-413-2",
+      "target_type": "boundary_probe",
+      "probe": {
+        "primary_variable": "signal_side_request",
+        "comparison_or_standard": "Original sampled final path distance and applicable area class; no inferred legal verdict",
+        "target_value_or_branch": "300_right"
+      },
+      "paired_probe_id": "C245490-signal-course-change-contrasts",
+      "deliberate_differences": [
+        "signal_side_request",
+        "area_class_request",
+        "signal_distance_ft"
+      ],
+      "rationale": "Source-bound request contrast; original area and pixels remain unverified.",
+      "recording_description": {
+        "channels": [
+          {
+            "name": "kin.position",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "kin.speed",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "sig.turn_indicator",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "sig.hand_signal",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "drv.distance_while",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "kin.path_length",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "drv.turning",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "drv.lane_change",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "env.precipitation",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "ego_pose",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          },
+          {
+            "name": "continuous_signal_distance_before_course_change",
+            "unit": "structured",
+            "sampling_rate_hz": 20,
+            "time_window": "600 original frames",
+            "method": "post-tick signal/pose/body/lane/weather joined by Native frame",
+            "reference_frame": "original Native frame",
+            "uncertainty": "Area class, pixels and legal judgment need independent original review"
+          }
+        ],
+        "context_inputs": [
+          {
+            "name": "area_class_source",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          },
+          {
+            "name": "original_video",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          },
+          {
+            "name": "lane_source",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          },
+          {
+            "name": "weather_source",
+            "unit": "structured",
+            "method": "retained source for independent original review"
+          }
+        ],
+        "limitations": [
+          "Signal command differs from observed light and visible pixels.",
+          "Requested area class is not legal classification."
+        ]
+      },
+      "unresolved_judgment_calls": [
+        "during not less than the last 100 feet traveled in a business or residential district",
+        "during not less than the last 300 feet traveled in any other area",
+        "shall be given continuously",
+        "prior to changing the course of a vehicle",
+        "regardless of the weather"
+      ],
+      "variable_assignments": {
+        "area_class_request": {
+          "kind": "world_setup",
+          "unit": "category",
+          "value": "other"
+        },
+        "signal_distance_ft": {
+          "kind": "controller",
+          "unit": "ft",
+          "value": 300
+        },
+        "signal_continuity_request": {
+          "kind": "controller",
+          "unit": "category",
+          "value": "continuous"
+        },
+        "weather_request": {
+          "kind": "world_setup",
+          "unit": "category",
+          "value": "clear"
+        },
+        "signal_side_request": {
+          "kind": "controller",
+          "unit": "category",
+          "value": "right"
+        }
+      }
+    }
+  ],
+  "sweep_specs": [
+    {
+      "sweep_id": "signal_source_judgments",
+      "target_law_id": "NRS-484B-413-2",
+      "judgment_refs": [
+        {
+          "phrase": "during not less than the last 100 feet traveled in a business or residential district",
+          "note": "Original area class and complete sampled path distance must be established."
+        },
+        {
+          "phrase": "during not less than the last 300 feet traveled in any other area",
+          "note": "Original other-area class and complete sampled path distance must be established."
+        },
+        {
+          "phrase": "shall be given continuously",
+          "note": "Post-tick samples test sampled continuity; visible pixels and intersample behavior require review."
+        },
+        {
+          "phrase": "prior to changing the course of a vehicle",
+          "note": "Original body/lane transition must establish actual course change independent of command."
+        },
+        {
+          "phrase": "regardless of the weather",
+          "note": "Original precipitation source is retained; no weather waiver or changed threshold is inferred."
+        }
+      ],
+      "status": "incomplete",
+      "rationale": "Twelve controlled requests do not establish original area class, visible signal pixels, intersample continuity or legal compliance.",
+      "missing_inputs": [
+        "Independent original area classification",
+        "Original visible indicator and continuous signal review",
+        "Original weather and lane-change source review"
+      ]
+    }
+  ]
+}

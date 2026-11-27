@@ -4,7 +4,7 @@ import hashlib
 import json
 from pathlib import Path
 
-from signal_scene import DISTANCES_FT, request, verify_road
+from signal_scene import CASE_SUFFIXES, request, verify_road
 
 
 def sha(path):
@@ -18,24 +18,23 @@ def check(bundle):
     case = config.get('selected_case_id')
     if not isinstance(case, str) or not case.startswith(assignment['assignment_id'] + '__'):
         raise ValueError('Exact assignment or case changed')
-    try:
-        distance = int(case.rsplit('__', 1)[1])
-    except (ValueError, IndexError):
-        raise ValueError('Unselected signal distance') from None
-    if distance not in DISTANCES_FT or config.get('requested_signal_distance_ft') != distance:
-        raise ValueError('Unselected signal distance')
+    suffix = case.rsplit('__', 1)[-1]
+    if suffix not in CASE_SUFFIXES:
+        raise ValueError('Unselected signal variant')
     if (config.get('law_id'), config.get('cell_id'), config.get('actor')) != (
             'NRS-484B-413-2', 'C245490', 'motor_vehicle_driver'):
         raise ValueError('Law, cell or actor changed')
-    expected = request(distance)
+    expected = request(suffix)
     for name in ('area_class_requested', 'signal_onset_odometer_m',
                  'course_change_request_odometer_m', 'frames', 'rate_hz',
-                 'duration_s', 'maneuver', 'layout', 'control', 'signal_side'):
+                 'duration_s', 'maneuver', 'layout', 'control', 'signal_side',
+                 'weather_requested', 'interruption_requested', 'case_variant',
+                 'requested_signal_distance_ft'):
         if config.get(name) != expected[name]:
             raise ValueError('Exact signal and lane-change request changed: ' + name)
     if set(config.get('supported_case_ids', [])) != {
-            assignment['assignment_id'] + '__' + str(value) for value in DISTANCES_FT}:
-        raise ValueError('Incomplete six-case selection')
+            assignment['assignment_id'] + '__' + value for value in CASE_SUFFIXES}:
+        raise ValueError('Incomplete twelve-case selection')
     for key, name in (('assignment_sha256', 'assignment-source.json'),
                       ('road_sha256', 'road.xodr')):
         if config.get(key) != sha(bundle / name):

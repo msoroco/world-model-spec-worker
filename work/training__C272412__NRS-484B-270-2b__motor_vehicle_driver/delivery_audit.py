@@ -2,7 +2,9 @@
 import argparse
 import hashlib
 import json
+import math
 from pathlib import Path
+import xml.etree.ElementTree as ET
 
 CAMERAS = ('overview', 'approach', 'reference_corner', 'driver_reference')
 CHECKS = ('native_source', 'all_participants', 'time_join', 'full_video_decode',
@@ -58,6 +60,8 @@ def check_review(review, case, video, mapping, metric):
             raise ValueError('Conditional centerline authority unreviewed')
     if case.endswith('exception_1_2') and findings.get('no_passing_zone_designation_confirmed') is not True:
         raise ValueError('Original no-passing-zone designation unreviewed')
+    if case.endswith('exception_1_1') and findings.get('no_passing_zone_absence_confirmed') is not True:
+        raise ValueError('Original no-passing-zone absence unreviewed')
     if review.get('decisive_frames', {}).get('first_abreast') != metric['first_abreast_frame'] or review.get('decisive_frames', {}).get('last_abreast') != metric['last_abreast_frame']:
         raise ValueError('Original decisive pass frames differ')
 
@@ -88,6 +92,11 @@ def audit(args):
         if not all(pose.get(actor, {}).get('body_xy_m') for actor in ('ego', 'scooter')):
             raise ValueError('Original participant body history missing')
     if args.case.endswith(('exception_1_1', 'exception_1_2')):
+        road = ET.fromstring(inside(attempt, 'road.xodr').read_text())
+        geometry = road.find('road/planView/geometry')
+        if (geometry is None or 'y' not in geometry.attrib or
+                not math.isfinite(float(geometry.attrib['y'])) or abs(float(geometry.attrib['y'])) > 1e-5):
+            raise ValueError('Original road center reference differs')
         context = read(inside(attempt, 'pass-context.json'))
         survey_path = Path(context.get('survey_path', ''))
         if not survey_path.is_file() or sha(survey_path) != context.get('survey_sha256'):
@@ -95,9 +104,9 @@ def audit(args):
         survey = read(survey_path)
         if not survey.get('cited_213_217_applicability_source'):
             raise ValueError('Original NRS 484B.213/.217 applicability source missing')
-        if args.case.endswith('exception_1_2') and (not survey.get('no_passing_zone_source') or
-                                                     survey.get('no_passing_zone_designated') is not True):
-            raise ValueError('Original no-passing-zone designation source missing')
+        if (not survey.get('no_passing_zone_source') or
+                survey.get('no_passing_zone_designated') is not args.case.endswith('exception_1_2')):
+            raise ValueError('Original case-specific no-passing-zone designation source missing')
         if not any(max(point[1] for point in pose['ego']['body_xy_m']) > 0
                    for pose in poses[metric['first_abreast_frame']:metric['last_abreast_frame'] + 1]):
             raise ValueError('Original centerline crossing body geometry absent')

@@ -70,8 +70,11 @@ class SceneTests(unittest.TestCase):
             path.write_text(json.dumps({**source, "cited_213_217_applicability_source": "reviewed"}) + "\n")
             with self.assertRaisesRegex(ValueError, "designation source"):
                 load_survey(path, "exception_1_2")
+            with self.assertRaisesRegex(ValueError, "designation source"):
+                load_survey(path, "exception_1_1")
             path.write_text(json.dumps({**source, "cited_213_217_applicability_source": "reviewed",
                                         "no_passing_zone_source": "reviewed", "no_passing_zone_designated": False}) + "\n")
+            self.assertFalse(load_survey(path, "exception_1_1")["no_passing_zone_designated"])
             with self.assertRaisesRegex(ValueError, "designation source"):
                 load_survey(path, "exception_1_2")
             path.write_text(json.dumps({**source, "cited_213_217_applicability_source": "reviewed",

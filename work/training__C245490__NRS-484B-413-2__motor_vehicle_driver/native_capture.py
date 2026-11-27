@@ -87,7 +87,8 @@ def run(bundle, output, host, port):
         settings.max_substep_delta_time = .01
         settings.max_substeps = 10
         world.apply_settings(settings)
-        world.set_weather(carla.WeatherParameters.ClearNoon)
+        world.set_weather(carla.WeatherParameters.HardRainNoon if
+            config['weather_requested'] == 'rain' else carla.WeatherParameters.ClearNoon)
         road_map = world.get_map()
         lanes = []
         for y, expected in ((-1.75, -1), (-5.25, -2)):
@@ -102,12 +103,16 @@ def run(bundle, output, host, port):
             'public_highway_verified': False})
         write_new(output / 'area-source.json', {'area_class_requested':
             config['area_class_requested'], 'area_class_originally_verified': False,
-            'district_or_other_original_authority': None, 'weather_requested': 'clear',
+            'district_or_other_original_authority': None,
+            'weather_requested': config['weather_requested'],
             'weather_originally_reviewed': False, 'legal_verdict': None})
         bp = world.get_blueprint_library().find(config['vehicle_blueprint'])
         bp.set_attribute('role_name', 'c245490_signal_subject')
+        rightward = config['signal_side'] == 'right'
+        start_lane, destination_lane = (-1, -2) if rightward else (-2, -1)
+        start_y, destination_y = (-1.75, -5.25) if rightward else (-5.25, -1.75)
         ego = world.try_spawn_actor(bp, carla.Transform(
-            carla.Location(x=-90, y=-5.25, z=1.5), carla.Rotation(yaw=0)))
+            carla.Location(x=-90, y=start_y, z=1.5), carla.Rotation(yaw=0)))
         if ego is None:
             raise RuntimeError('Original change-lane ego unavailable')
         owned.append(ego)
@@ -137,16 +142,18 @@ def run(bundle, output, host, port):
             visibility=False, required_observations=[])
         previous = ego.get_location()
         odometer = 0.0
-        prior_lane = -2
+        prior_lane = start_lane
         with (output / 'signal-source.jsonl').open('x') as signal, \
              (output / 'body_history.jsonl').open('x') as body_history, \
              (output / 'video_frames.jsonl').open('x') as frame_map:
             for index in range(600):
-                request = controls(config['requested_signal_distance_ft'], odometer)
-                ego.set_light_state(carla.VehicleLightState.LeftBlinker if
-                    request['left_signal_requested'] else carla.VehicleLightState.NONE)
-                ego.apply_control(control(carla, ego, -1.75 if
-                    request['lane_change_requested'] else -5.25,
+                request = controls(config['selected_case_id'].rsplit('__', 1)[-1], odometer)
+                blink = (carla.VehicleLightState.RightBlinker if rightward else
+                    carla.VehicleLightState.LeftBlinker)
+                ego.set_light_state(blink if request['signal_requested'] else
+                    carla.VehicleLightState.NONE)
+                ego.apply_control(control(carla, ego, destination_y if
+                    request['lane_change_requested'] else start_y,
                     config['controller_gain']))
                 native_frame = world.tick()
                 pose = ego.get_transform()
@@ -157,7 +164,7 @@ def run(bundle, output, host, port):
                 waypoint = road_map.get_waypoint(location, project_to_road=False,
                     lane_type=carla.LaneType.Driving)
                 lane = None if waypoint is None else waypoint.lane_id
-                changed_lane = prior_lane == -2 and lane == -1
+                changed_lane = prior_lane == start_lane and lane == destination_lane
                 prior_lane = lane
                 lights = int(ego.get_light_state())
                 time_s = world.get_snapshot().timestamp.elapsed_seconds
@@ -168,10 +175,9 @@ def run(bundle, output, host, port):
                     'ego_xy_m': [location.x, location.y],
                     'native_yaw_deg': pose.rotation.yaw, 'native_lane_id': lane,
                     'observed_odometer_m': odometer,
-                    'turn_indicator': 'left' if lights & int(
-                        carla.VehicleLightState.LeftBlinker) else 'off',
+                    'turn_indicator': config['signal_side'] if lights & int(blink) else 'off',
                     'course_change': changed_lane,
-                    'signal_requested': request['left_signal_requested'],
+                    'signal_requested': request['signal_requested'],
                     'lane_change_requested': request['lane_change_requested'],
                     'source_kind': 'original_post_tick_native',
                     'visible_signal_pixels_reviewed': False}

@@ -61,11 +61,12 @@ def load_survey(path, case_suffix):
     if not path:
         raise ValueError("SCENARIO_CONTEXT_SURVEY required for original scooter identity")
     survey = survey_check(json.loads(Path(path).read_text()))
-    if case_suffix == "exception_1_2" and (not survey.get("no_passing_zone_source") or
-                                           survey.get("no_passing_zone_designated") is not True):
-        raise ValueError("Original affirmative no-passing-zone designation source required")
     if case_suffix.startswith("exception_") and not survey.get("cited_213_217_applicability_source"):
         raise ValueError("Original NRS 484B.213/.217 applicability source required")
+    if case_suffix.startswith("exception_"):
+        expected_zone = case_suffix == "exception_1_2"
+        if not survey.get("no_passing_zone_source") or survey.get("no_passing_zone_designated") is not expected_zone:
+            raise ValueError("Original case-specific no-passing-zone designation source required")
     return survey
 
 

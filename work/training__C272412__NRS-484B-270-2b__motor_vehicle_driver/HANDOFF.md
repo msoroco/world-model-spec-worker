@@ -1,3 +1,11 @@
+# C272412 current handoff, 2026-11-26
+
+Nine exact selected Native constructions and four controlled comparisons are authored. Both exception cases request an observed left-of-center body crossing. `exception_1_1` requires an original survey establishing that the road is outside a no-passing zone; `exception_1_2` requires an original affirmative no-passing-zone designation. Broken versus solid authored marking is a construction difference and never substitutes for the zone source. Both require original NRS 484B.213/.217 applicability source, frame-joined body crossing during the abreast interval, and independent safety review. No original actor, zone or legal finding is claimed by CPU fixtures.
+
+The latest inline draft manifest is under changed-byte offline, public positive/missing-source negative, saved-only and physical/lifecycle CPU rerun. Root and Native suites each pass eight tests, including false or absent zone designation rejection. Four independent comparison self-test pairs and nine delivery self-test pairs pass. Status remains partial until final receipts are bound and the exact scoped strict gate exits zero.
+
+## Historical handoff
+
 # NRS-484B-270-2b at C272412
 
 ## 2026-11-26 selected Native CPU implementation (current)

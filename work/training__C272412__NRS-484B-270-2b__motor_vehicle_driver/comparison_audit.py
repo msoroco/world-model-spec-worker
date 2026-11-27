@@ -3,7 +3,9 @@ import argparse
 import copy
 import hashlib
 import json
+import math
 from pathlib import Path
+import xml.etree.ElementTree as ET
 
 HERE = Path(__file__).resolve().parent
 GROUPS = {'witness_comparison': ('witness_1', 'witness_2'),
@@ -47,8 +49,8 @@ def check(group, sources):
                              if source[index]['ego']['center_xy_m'][1] <
                              source[index - 1]['ego']['center_xy_m'][1] - 1e-8), 600))
         for row in source:
-            if row['scooter']['actor_id'] != first[0]['scooter']['actor_id']:
-                raise ValueError('Fixed surveyed scooter identity changed')
+            if row['scooter']['blueprint_id'] != first[0]['scooter']['blueprint_id']:
+                raise ValueError('Fixed surveyed scooter blueprint changed')
     for source in sources[1:]:
         for a, b in zip(first, source):
             for part in ('ego', 'scooter'):
@@ -92,6 +94,7 @@ def audit(group, attempts, output):
         raise ValueError('Exact original attempts required')
     source_rows = []
     digests = []
+    rider_sources = []
     for suffix, attempt in zip(GROUPS[group], map(Path, attempts)):
         result = read(attempt / 'result.json')
         metric = result.get('measured_values', {})
@@ -103,6 +106,11 @@ def audit(group, attempts, output):
         if sha(source) != metric.get('source_sha256', {}).get(source.name):
             raise ValueError('Original rider/driver source hash differs')
         if group == 'exception_1_comparison':
+            road = ET.fromstring((attempt / 'road.xodr').read_text())
+            geometry = road.find('road/planView/geometry')
+            if (geometry is None or 'y' not in geometry.attrib or
+                    not math.isfinite(float(geometry.attrib['y'])) or abs(float(geometry.attrib['y'])) > 1e-5):
+                raise ValueError('Original road center reference differs')
             context = read(attempt / 'pass-context.json')
             survey_path = Path(context.get('survey_path', ''))
             if not survey_path.is_file() or sha(survey_path) != context.get('survey_sha256'):
@@ -110,14 +118,23 @@ def audit(group, attempts, output):
             survey = read(survey_path)
             if not survey.get('cited_213_217_applicability_source'):
                 raise ValueError('Original NRS 484B.213/.217 source missing')
-            if suffix == 'exception_1_2' and (not survey.get('no_passing_zone_source') or
-                                               survey.get('no_passing_zone_designated') is not True):
-                raise ValueError('Original no-passing-zone designation source missing')
+            if (not survey.get('no_passing_zone_source') or
+                    survey.get('no_passing_zone_designated') is not (suffix == 'exception_1_2')):
+                raise ValueError('Original case-specific no-passing-zone designation source missing')
             if not any(max(point[1] for point in row['ego']['body_xy_m']) > 0
                        for row in rows(source)[metric['first_abreast_frame']:metric['last_abreast_frame'] + 1]):
                 raise ValueError('Original centerline crossing geometry missing')
+        else:
+            context = read(attempt / 'pass-context.json')
+            survey_path = Path(context.get('survey_path', ''))
+            if not survey_path.is_file() or sha(survey_path) != context.get('survey_sha256'):
+                raise ValueError('Original rider survey binding differs')
+            survey = read(survey_path)
+        rider_sources.append(survey.get('rider_identity_source'))
         source_rows.append(rows(source))
         digests.append(sha(source))
+    if not rider_sources[0] or len(set(rider_sources)) != 1:
+        raise ValueError('Fixed original rider identity source differs')
     checked = check(group, source_rows)
     value = {'format': 'c272412-original-comparison-audit', 'passed': True,
              'comparison_id': HERE.name + '__' + group,

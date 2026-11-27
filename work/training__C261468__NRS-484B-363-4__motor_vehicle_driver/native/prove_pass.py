@@ -45,10 +45,19 @@ def main():
     trace_path = ROOT / 'pass_trace.jsonl'
     context_path = ROOT / 'school_zone_context.json'
     frames = [{'video_frame': i, 'native_frame': 100 + i, 'time_s': i / 20} for i in range(600)]
+    def lateral(i):
+        if i < 100 or i >= 370:
+            return 0
+        if i < 120:
+            return 3.5 * (i - 100) / 20
+        if i < 350:
+            return 3.5
+        return 3.5 * (370 - i) / 20
     trace = [{'video_frame': i, 'native_frame': 100 + i,
               'source_kind': 'synthetic_native_sample',
               'ego_route_direction_id': 'route_A', 'other_route_direction_id': 'route_A',
-              'ego_station_m': 10 + i * .28, 'other_station_m': 30 + i * .20}
+              'ego_station_m': 10 + i * .28, 'other_station_m': 30 + i * .20,
+              'ego_lateral_m': lateral(i), 'other_lateral_m': 0}
              for i in range(600)]
     lines(frame_path, frames)
     lines(trace_path, trace)
@@ -69,6 +78,8 @@ def main():
     write(context_path, context)
     active = module.measure(ROOT)
     assert active['pass_crossing_in_signed_zone'] and active['beacon_yellow_alternating']
+    assert active['lane_departure_video_frame'] < active['pass_crossing_video_frame'] < active['lane_return_video_frame']
+    assert active['whole_pass_in_signed_zone']
     no_school = copy.deepcopy(context)
     no_school['school_in_session'] = False
     write(context_path, no_school)
@@ -92,6 +103,27 @@ def main():
     write(context_path, half_hour)
     boundary = module.measure(ROOT)
     assert boundary['minutes_after_operation_end_at_cross'] == 30
+    assert boundary['within_half_hour_window_observed']
+    just_before = copy.deepcopy(half_hour)
+    just_before['operation_end_unix_s'] += 60
+    write(context_path, just_before)
+    assert not module.measure(ROOT)['within_half_hour_window_observed']
+    just_after = copy.deepcopy(half_hour)
+    just_after['operation_end_unix_s'] -= 60
+    write(context_path, just_after)
+    assert module.measure(ROOT)['within_half_hour_window_observed']
+    near_next = copy.deepcopy(half_hour)
+    near_next['next_operation_start_unix_s'] = active['civil_time_at_cross_unix_s'] + 29 * 60
+    write(context_path, near_next)
+    assert not module.measure(ROOT)['within_half_hour_window_observed']
+    at_next = copy.deepcopy(half_hour)
+    at_next['next_operation_start_unix_s'] = active['civil_time_at_cross_unix_s'] + 30 * 60
+    write(context_path, at_next)
+    assert module.measure(ROOT)['within_half_hour_window_observed']
+    after_next = copy.deepcopy(half_hour)
+    after_next['next_operation_start_unix_s'] = active['civil_time_at_cross_unix_s'] + 31 * 60
+    write(context_path, after_next)
+    assert module.measure(ROOT)['within_half_hour_window_observed']
     write(context_path, context)
     failures = {}
     failures['missing_trace'] = rejected('missing_trace', 'Missing required saved source',
@@ -113,6 +145,20 @@ def main():
     bad_context['zone_station_m'] = [0, 20]
     failures['outside_zone'] = rejected('outside_zone', 'outside the signed school zone',
         lambda: write(context_path, bad_context), lambda: write(context_path, context))
+    bad_context = copy.deepcopy(context)
+    bad_context['zone_station_m'] = [50, 100]
+    failures['partial_zone_pass'] = rejected('partial_zone_pass', 'Whole pass and lane return',
+        lambda: write(context_path, bad_context), lambda: write(context_path, context))
+    bad = copy.deepcopy(trace)
+    for row in bad:
+        row.pop('ego_lateral_m')
+    failures['missing_lateral_source'] = rejected('missing_lateral_source', 'lateral lane positions',
+        lambda: lines(trace_path, bad), lambda: lines(trace_path, trace))
+    bad = copy.deepcopy(trace)
+    for row in bad:
+        row['ego_lateral_m'] = 0
+    failures['no_lane_departure'] = rejected('no_lane_departure', 'No observed lane departure',
+        lambda: lines(trace_path, bad), lambda: lines(trace_path, trace))
     bad_context = copy.deepcopy(context)
     bad_context['camera_sha256']['forward'] = '0' * 64
     failures['stale_video'] = rejected('stale_video', 'not bound to original camera bytes',
